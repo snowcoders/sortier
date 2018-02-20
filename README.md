@@ -5,6 +5,7 @@
 Sortier (German for Sort) is an opinionated code sorter similar to how Prettier is a opinionated code formatter. Given a file, it parses it and figures out how to rearrange items in a consistent way.
 
 ### Input
+```
 import { 
         a2, 
         a1 } 
@@ -13,8 +14,9 @@ import { b2, b1 } from "./b";
 import { 
         c2, 
         c1 } from "c";
-        
+```
 ### Output
+```
 import { 
         a1, 
         a2 } 
@@ -23,17 +25,7 @@ import { b1, b2 } from "./b";
 import { 
         c1, 
         c2 } from "./c";
-
-// Here is an example sortier file with the defaults provided
-{
-  "sortImportDeclarations": {
-    "orderBy": "alpha"
-  },
-  "sortImportDeclarationSpecifiers": {
-    "groups": ["*"],
-    "orderBy": "alpha"
-  }
-}
+```
 
 ## Options
 

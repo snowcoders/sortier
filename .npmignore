@@ -1,8 +1,9 @@
 .circleci/**
+.nyc_output/**
 .vscode/**
 coverage/**
 .gitignore
-.mocha
 .npmignore
+.nycrc
 package-lock.json
 tsconfig.json

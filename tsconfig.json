@@ -5,7 +5,6 @@
         "module": "commonjs",
         "target": "es2015",
         "moduleResolution": "node",
-        "jsx": "react",
         "noImplicitReturns": true,
         "noImplicitThis": true,
         "noImplicitAny": false,

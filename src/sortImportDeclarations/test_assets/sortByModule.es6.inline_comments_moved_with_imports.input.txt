@@ -1,0 +1,4 @@
+/* Beginning comment */        import * as React from "react"; // Needed to make react work
+        import { Manager } from "./Manager";
+        import { shallow, configure } from "enzyme"; // Our test system
+        import { expect } from "chai";

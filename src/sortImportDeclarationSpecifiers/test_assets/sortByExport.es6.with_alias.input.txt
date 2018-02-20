@@ -1,0 +1,1 @@
+import { c3, c2, c1 as other } from "./c";

@@ -1,0 +1,5 @@
+import { Component, type ComponentState, type ComponentProp } from "./c";
+import { Component, type C2, type C1 as C1_New } from "./c";
+
+import { Component, typeof ComponentState, typeof ComponentProp } from "./c";
+import { Component, typeof C2, typeof C1 as C1_New } from "./c";

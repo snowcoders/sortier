@@ -1,0 +1,8 @@
+import * as React from 'react';
+
+import { HashRouter, Link, Switch, Route } from 'react-router-dom'
+
+import { ExamplePageTabs } from '../example-page-tabs';
+import { ExamplePageUnstyledButton } from "../example-page-unstyled-button";
+import { ExamplePageUnstyledInput } from "../example-page-unstyled-input";
+import { Home } from "../home";

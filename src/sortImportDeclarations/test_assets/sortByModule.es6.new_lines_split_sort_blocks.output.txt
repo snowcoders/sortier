@@ -1,0 +1,6 @@
+import * as React from "react";
+
+import { Manager } from "./Manager";
+
+import { expect } from "chai";
+import { shallow, configure } from "enzyme";

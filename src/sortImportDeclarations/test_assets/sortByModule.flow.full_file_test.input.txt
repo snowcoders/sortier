@@ -1,0 +1,20 @@
+// @flow
+import * as React from "react"; // Needed to make react work
+
+import * as c from "c";
+import {b} from "b";
+import "a";
+import * as local_c from "./c";
+import {local_b} from "./b";
+import "./a";
+
+export type Props = {
+    foo: number,
+    bar?: string,
+};
+  
+export class MyComponent extends React.Component<Props> {
+    render() {
+        return <div>{this.props.bar}</div>;
+    }
+}

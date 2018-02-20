@@ -102,8 +102,6 @@ export function sortByModule(parser: (fileContents: string) => any, fileContents
             let spliceAddIndexEnd = nthIndexOf(fileContents, "\n", sortedImportSources[x].originalLocation.end.line);
             if (spliceAddIndexEnd === -1) {
                 spliceAddIndexEnd = fileContents.length;
-            } else {
-                spliceAddIndexEnd--;
             }
             if (fileContents[spliceAddIndexEnd - 1] === "\r") {
                 spliceAddIndexEnd--;

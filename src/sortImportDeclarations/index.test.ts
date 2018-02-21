@@ -83,15 +83,24 @@ describe('sortImportDeclarations', () => {
               describe(testInfo.testName, () => {
 
                 it("Unix line endings", () => {
-                  let input = readFileSync(testInfo.inputFilePath, "utf8").replace(/\r/g, "");
-                  let expected = readFileSync(testInfo.outputFilePath, "utf8").replace(/\r/g, "");
+                  let input = readFileSync(testInfo.inputFilePath, "utf8");
+                  let expected = readFileSync(testInfo.outputFilePath, "utf8");
+                  if (input.indexOf("\r") !== -1) {
+                    input = input.replace(/\r/g, "");
+                    expected = expected.replace(/\r/g, "");
+                  }
                   let actual = methodsToTest[methodName](parser, input);
 
                   expect(actual).to.equal(expected);
                 });
+
                 it("Windows line endings", () => {
-                  let input = readFileSync(testInfo.inputFilePath, "utf8")
-                  let expected = readFileSync(testInfo.outputFilePath, "utf8")
+                  let input = readFileSync(testInfo.inputFilePath, "utf8");
+                  let expected = readFileSync(testInfo.outputFilePath, "utf8");
+                  if (input.indexOf("\r") === -1) {
+                    input = input.replace(/\n/g, "\r\n");
+                    expected = expected.replace(/\n/g, "\r\n");
+                  }
                   let actual = methodsToTest[methodName](parser, input);
 
                   expect(actual).to.equal(expected);

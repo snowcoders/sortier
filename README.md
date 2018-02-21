@@ -5,7 +5,9 @@
 [![CircleCI branch](https://img.shields.io/circleci/project/github/snowcoders/sortier.svg)](https://circleci.com/gh/snowcoders/sortier)
 
 ## Introduction
-Sortier (German for Sort) is an opinionated code sorter similar to how Prettier is a opinionated code formatter. Given a file, it parses it and figures out how to rearrange items in a consistent way.
+Sortier is an opinionated code sorter similar to how Prettier is a opinionated code formatter. Given a file, it parses it and figures out how to rearrange items in a consistent way.
+
+It should work with ES6, Flow and Typescript but if you find a piece of code that doesn't sort the way you expect it to, feel free to open an issue in Github!
 
 ### Input
 ```
@@ -49,3 +51,5 @@ Configuring your options
   }
 }
 ```
+
+And more to come!

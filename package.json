@@ -30,6 +30,7 @@
   ],
   "author": "Snowcoders",
   "license": "MIT",
+  "repository": "https://github.com/snowcoders/sortier",
   "devDependencies": {
     "@types/chai": "^4.0.10",
     "@types/mocha": "^2.2.45",

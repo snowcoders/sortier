@@ -15,10 +15,13 @@ import {
         a2, 
         a1 } 
         from "./a";
-import { b2, b1 } from "./b";
 import { 
         c2, 
-        c1 } from "c";
+        c1 } from "c"; // Inline comments will move with the import
+import { b2, b1 } from "./b";
+
+// Line comments act like syntax barriers and will divide sorting blocks
+import { c1 } from "c1";
 ```
 ### Output
 ```
@@ -29,7 +32,10 @@ import {
 import { b1, b2 } from "./b";
 import { 
         c1, 
-        c2 } from "./c";
+        c2 } from "./c"; // Inline comments will move with the import
+
+// Line comments act like syntax barriers and will divide sorting blocks
+import { c1 } from "c1";
 ```
 
 ## Options
@@ -51,5 +57,28 @@ Configuring your options
   }
 }
 ```
-
 And more to come!
+
+## How to run it
+```
+sortier [glob-file-path]
+```
+
+## Pre-commit Hook
+We went with a system similar to [prettier](https://prettier.io/docs/en/precommit.html) so hopefully you have already picked a solution and can keep going with it. If not, this repository uses `lint-staged` and `husky`
+
+1. Run `npm install --save-dev lint-staged husky`
+2. Add the following to your package.json
+```
+{
+  "scripts": {
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "sortier",
+      "git add"
+    ]
+  }
+}
+```

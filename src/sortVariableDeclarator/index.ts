@@ -5,18 +5,7 @@ export interface SortByNameOptions {
     orderBy: "alpha"
 }
 
-interface SingleSpecifier {
-    originalIndex: number,
-    importedName: string,
-    isType: boolean,
-    isInterface: boolean,
-    originalLocation: {
-        start: number,
-        end: number
-    }
-};
-
-export function sortByName(parser: (fileContents: string) => any, fileContents: string, options?: SortByNameOptions) {
+export function sort(parser: (fileContents: string) => any, fileContents: string, options?: SortByNameOptions) {
     let ensuredOptions = ensureOptions(options);
 
     let ast = parser(fileContents);
@@ -82,9 +71,13 @@ interface OperatorInfo {
 }
 
 class VariableDeclaratorSorter {
-    bodyItem: any;
-    fileContents: string;
-    options: SortByNameOptions;
+    // The list of operators we can flip around without actually causing logical differences
+    // https://caligari.dartmouth.edu/doc/ibmcxx/en_US/doc/language/ref/ruclxbin.htm
+    static commutativeOperators = ["*", "&", "|", "^"];
+
+    private bodyItem: any;
+    private fileContents: string;
+    private options: SortByNameOptions;
 
     constructor(bodyItem: any, fileContents: string, options: SortByNameOptions) {
         this.bodyItem = bodyItem;
@@ -93,10 +86,6 @@ class VariableDeclaratorSorter {
     }
 
     public sort(): string {
-        // The list of operators we can flip around without actually causing logical differences
-        // https://caligari.dartmouth.edu/doc/ibmcxx/en_US/doc/language/ref/ruclxbin.htm
-        let commutativeOperators = ["*", "&", "|", "^"];
-
         // If the type is literal, there are no operands to order around
         if (this.bodyItem.init.type == "Literal") {
             return this.fileContents;
@@ -109,7 +98,7 @@ class VariableDeclaratorSorter {
             if (operand.type === "Literal" || operand.type === "Identifier") {
                 continue;
             } else if (operand.type === "BinaryExpression") {
-                if (commutativeOperators.indexOf(operand.operator) === -1) {
+                if (VariableDeclaratorSorter.commutativeOperators.indexOf(operand.operator) === -1) {
                     // TODO - Open Github issue - Should be able to sort items with a mix of commutative and non-commutative operands
                     return this.fileContents;
                 }

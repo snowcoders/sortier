@@ -80,7 +80,7 @@ describe('sortVariableDeclaration', () => {
           testInfos.forEach(testInfo => {
             if (testInfo.methodTested == methodName &&
               testInfo.parserType == fileType) {
-              if (testInfo.inputFilePath.includes("iterates_in_block"))
+              if (testInfo.inputFilePath.includes("sort.es6.and_is_not_changed.input"))
                 it(testInfo.testName, () => {
                   let input = readFileSync(testInfo.inputFilePath, "utf8");
                   let expected = readFileSync(testInfo.outputFilePath, "utf8");

@@ -1,0 +1,2 @@
+let d = null | 1 | 2,
+    temp = undefined | 1 | 3;

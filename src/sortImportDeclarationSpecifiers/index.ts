@@ -1,6 +1,8 @@
+import { ModuleDeclaration, Statement } from "estree";
+
 export type SortByExportOptionsGroups = "*" | "types" | "interfaces";
 
-export interface SortByExportOptions {
+export interface SortImportDeclarationSpecifiersOptions {
     groups: SortByExportOptionsGroups[],
     orderBy: "alpha"
 }
@@ -16,11 +18,8 @@ interface SingleSpecifier {
     }
 };
 
-export function sortByExport(parser: (fileContents: string) => any, fileContents: string, options?: SortByExportOptions) {
+export function sortImportDeclarationSpecifiers(body: Array<Statement | ModuleDeclaration>, fileContents: string, options?: SortImportDeclarationSpecifiersOptions) {
     options = ensureOptions(options);
-
-    let ast = parser(fileContents);
-    let body = ast.body || ast.program.body;
 
     for (let item of body) {
         if (item.type === "ImportDeclaration") {
@@ -31,7 +30,7 @@ export function sortByExport(parser: (fileContents: string) => any, fileContents
     return fileContents;
 }
 
-function sortSingleSpecifier(bodyItem: any, fileContents: string, options: SortByExportOptions): string {
+function sortSingleSpecifier(bodyItem: any, fileContents: string, options: SortImportDeclarationSpecifiersOptions): string {
     // If there is one or less specifiers, there is not anything to sort
     if (bodyItem.specifiers.length <= 1) {
         return fileContents;
@@ -144,7 +143,7 @@ function nameIsLikelyInterface(name: string) {
     );
 }
 
-function ensureOptions(options?: SortByExportOptions | null): SortByExportOptions {
+function ensureOptions(options?: SortImportDeclarationSpecifiersOptions | null): SortImportDeclarationSpecifiersOptions {
     if (options == null) {
         return {
             groups: ["*", "types", "interfaces"],

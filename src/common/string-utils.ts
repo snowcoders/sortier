@@ -15,3 +15,7 @@ export function startsWith(text: string, startString: string) {
 export function endsWith(text: string, endString: string) {
     return text.indexOf(endString, text.length - endString.length) !== -1;
 }
+
+export function sentenceCase(text: string) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}

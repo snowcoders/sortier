@@ -1,6 +1,7 @@
+// Utils
 import { nthIndexOf } from "../common/string-utils";
 
-export interface SortByModuleOptions {
+export interface SortImportDeclarationsOptions {
     orderBy?: "alpha"
 }
 
@@ -21,11 +22,8 @@ interface SingleImportSource {
     }
 };
 
-export function sortByModule(parser: (fileContents: string) => any, fileContents: string, options?: SortByModuleOptions) {
+export function sortImportDeclarations(body: any, fileContents: string, options?: SortImportDeclarationsOptions) {
     options = ensureOptions(options);
-
-    let ast = parser(fileContents);
-    let body = ast.body || ast.program.body;
 
     // First create an object to remember all that we care about
     let overallIndex = 0;
@@ -116,7 +114,7 @@ export function sortByModule(parser: (fileContents: string) => any, fileContents
     return newFileContents;
 }
 
-function ensureOptions(options: SortByModuleOptions | null | undefined): SortByModuleOptions {
+function ensureOptions(options: SortImportDeclarationsOptions | null | undefined): SortImportDeclarationsOptions {
     if (options == null) {
         return {
             orderBy: "alpha"

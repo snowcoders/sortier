@@ -1,3 +1,5 @@
+// Mostly taken from Prettier.io - Credit where credit is due!
+
 import { createError } from "../../common/parser-utils";
 import * as babylon from "babylon";
 

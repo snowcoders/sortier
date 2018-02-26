@@ -1,7 +1,0 @@
-interface Definition {
-  /// Comment about property 1
-  property1: null | undefined | string | integer,
-  
-  /// Comment about property 2
-  property2: null | undefined | string | integer
-}

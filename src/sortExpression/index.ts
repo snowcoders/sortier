@@ -1,3 +1,5 @@
+import { reorderValues } from "../common/sort-utils";
+
 export type SortExpressionOptionsGroups = "*" | "undefined" | "null";
 
 export interface SortExpressionOptions {
@@ -150,20 +152,7 @@ class ExpressionSorter {
       sortedValues = this.getSortedValues(operand.values);
     }
 
-    let newFileContents = this.fileContents.slice(0);
-    let newFileContentIndexCorrection = 0;
-    // Now go through the original specifiers again and if any have moved, switch them
-    for (let x = 0; x < sortedValues.length; x++) {
-      let newValue = sortedValues[x];
-      let oldValue = operand.values[x];
-
-      let untouchedBeginning = newFileContents.slice(0, oldValue.range[0] + newFileContentIndexCorrection);
-      let untouchedEnd = newFileContents.slice(oldValue.range[1] + newFileContentIndexCorrection);
-      let stringToInsert = newValue.value;
-
-      newFileContents = untouchedBeginning + stringToInsert + untouchedEnd;
-      newFileContentIndexCorrection += (newValue.range[1] - newValue.range[0]) - (oldValue.range[1] - oldValue.range[0]);
-    }
+    let newFileContents = reorderValues(this.fileContents, operand.values, sortedValues);
     newFileContents = newFileContents.slice(rangeMin, rangeMax);
 
     return {

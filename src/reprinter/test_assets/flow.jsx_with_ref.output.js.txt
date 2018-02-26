@@ -1,0 +1,19 @@
+import * as React from 'react';
+
+export type PropOptions = {
+  value: null | "hello"
+}
+
+export interface IMyComponentProps {
+  options: undefined | PropOptions
+}
+
+class MyComponent extends React.Component<IMyComponentProps> {
+  // The `?` here is important because you may not always have the instance.
+  button: null | HTMLButtonElement;
+  somethingElse;
+
+  render() {
+    return <button ref={button => (this.button = button)}>Toggle</button>;
+  }
+}

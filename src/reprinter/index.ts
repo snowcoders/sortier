@@ -100,18 +100,32 @@ export class Reprinter {
                     bodyStack.push(item.body.body);
                 }
                 else if (item.type === "ExportNamedDeclaration") {
-                    bodyStack.push(item.declaration.body.body);
+                    if (item.declaration.type === "TypeAlias") {
+                        bodyStack.push(item.declaration.right.properties);
+                    } else if (item.declaration.type === "InterfaceDeclaration") {
+                        bodyStack.push(item.declaration.body.properties);
+                    } else {
+                        bodyStack.push(item.declaration.body.body);
+                    }
                 }
                 else if (item.type === "MethodDefinition") {
                     bodyStack.push(item.value.body.body);
                 }
                 else if (item.type === "ClassProperty") {
-                    if (item.value && item.value.body && item.value.body.body) {
+                    if (item.typeAnnotation && item.typeAnnotation.type === "TypeAnnotation" && item.typeAnnotation.typeAnnotation.type === "UnionTypeAnnotation") {
+                        if (this._options.sortUnionTypeAnnotation !== null) {
+                            fileContents = sortUnionTypeAnnotation(item.typeAnnotation.typeAnnotation, fileContents, this._options.sortUnionTypeAnnotation);
+                        }
+                    }
+                    else if (item.value && item.value.body && item.value.body.body) {
                         bodyStack.push(item.value.body.body);
                     }
                 }
                 else if (item.type === "BlockStatement") {
                     bodyStack.push(item.body);
+                }
+                else if (item.type === "ClassDeclaration") {
+                    bodyStack.push(item.body.body);
                 }
                 else {
                     continue;

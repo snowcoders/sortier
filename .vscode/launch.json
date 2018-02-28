@@ -27,6 +27,21 @@
             "outFiles": [
                 "${workspaceRoot}/dist-test/*"
             ],
+        },
+        {
+            "name": "Debug app",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "program": "${workspaceRoot}/bin/index",
+            "args": [
+                "${workspaceRoot}/src/**/*.ts"
+            ],
+            "runtimeArgs": [
+                "--nolazy"
+            ],
+            "sourceMaps": true,
+            "outFiles": [],
         }
     ]
 }

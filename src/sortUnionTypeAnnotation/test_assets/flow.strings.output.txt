@@ -1,0 +1,7 @@
+interface Definition {
+  property: 
+    undefined |
+    null |
+    "big" |
+    "small",
+}

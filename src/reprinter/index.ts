@@ -20,7 +20,8 @@ export interface ReprinterOptions {
     sortImportDeclarations?: null | SortImportDeclarationsOptions,
     sortVariableDeclarator?: null | SortVariableDeclaratorOptions,
     sortUnionTypeAnnotation?: null | SortUnionTypeAnnotationOptions,
-    sortExpression?: null | SortExpressionOptions
+    sortExpression?: null | SortExpressionOptions,
+    isHelpMode?: boolean
 }
 
 export class Reprinter {
@@ -33,11 +34,13 @@ export class Reprinter {
     }
 
     private _filename: string;
-    private _options: ReprinterOptions
+    private _options: ReprinterOptions;
+    private _helpModeHasPrintedFilename: boolean;
 
     constructor(filename: string, options: ReprinterOptions) {
         this._filename = filename;
         this._options = options;
+        this._helpModeHasPrintedFilename = false;
     }
 
     public getRewrittenFileContents() {
@@ -68,67 +71,143 @@ export class Reprinter {
 
             // Now go through and push any bodies in the current context to the stack
             for (let item of body) {
-                // Sorts that were handled above
-                if (item.type === "ImportDeclaration") { }
-
-                // Sorts that happen per item type
-                else if (item.type === "TSPropertySignature") {
-                    if (this._options.sortUnionTypeAnnotation !== null) {
-                        fileContents = sortTSUnionTypeAnnotation(item.typeAnnotation, fileContents, this._options.sortUnionTypeAnnotation);
-                    }
-                }
-                else if (item.type === "VariableDeclaration") {
-                    if (this._options.sortVariableDeclarator !== null) {
-                        fileContents = sortVariableDeclarator(body, fileContents, this._options.sortVariableDeclarator);
-                    }
-                }
-                else if (item.type === "InterfaceDeclaration") {
-                    bodyStack.push(item.body.properties);
-                }
-                else if (item.type === "ObjectTypeProperty") {
-                    if (this._options.sortUnionTypeAnnotation !== null) {
-                        fileContents = sortUnionTypeAnnotation(item.value, fileContents, this._options.sortUnionTypeAnnotation);
-                    }
-                }
-                else if (item.type === "ReturnStatement") {
-                    if (item.argument != null && this._options.sortExpression !== null) {
-                        fileContents = sortExpression(item.argument, fileContents, this._options.sortExpression);
-                    }
-                }
-                // Possible next body types we may have to deal with
-                else if (item.type === "TSInterfaceDeclaration") {
-                    bodyStack.push(item.body.body);
-                }
-                else if (item.type === "ExportNamedDeclaration") {
-                    if (item.declaration.type === "TypeAlias") {
-                        bodyStack.push(item.declaration.right.properties);
-                    } else if (item.declaration.type === "InterfaceDeclaration") {
-                        bodyStack.push(item.declaration.body.properties);
-                    } else {
-                        bodyStack.push(item.declaration.body.body);
-                    }
-                }
-                else if (item.type === "MethodDefinition") {
-                    bodyStack.push(item.value.body.body);
-                }
-                else if (item.type === "ClassProperty") {
-                    if (item.typeAnnotation && item.typeAnnotation.type === "TypeAnnotation" && item.typeAnnotation.typeAnnotation.type === "UnionTypeAnnotation") {
-                        if (this._options.sortUnionTypeAnnotation !== null) {
-                            fileContents = sortUnionTypeAnnotation(item.typeAnnotation.typeAnnotation, fileContents, this._options.sortUnionTypeAnnotation);
+                try {
+                    switch (item.type) {
+                        // Sorts that were handled above
+                        case "ImportDeclaration": {
+                            break;
                         }
+
+                        case "IfStatement": {
+                            bodyStack.push(item.consequent.body);
+                            break;
+                        }
+                        case "ForStatement":
+                        case "WhileStatement":
+                        case "ForOfStatement": {
+                            bodyStack.push(item.body.body);
+                            break;
+                        }
+
+                        case "SwitchStatement": {
+                            // TODO
+                            break;
+                        }
+
+                        case "TSPropertySignature": {
+                            if (this._options.sortUnionTypeAnnotation !== null) {
+                                fileContents = sortTSUnionTypeAnnotation(item.typeAnnotation, fileContents, this._options.sortUnionTypeAnnotation);
+                            }
+                            break;
+                        }
+                        case "VariableDeclaration": {
+                            if (this._options.sortVariableDeclarator !== null) {
+                                fileContents = sortVariableDeclarator(body, fileContents, this._options.sortVariableDeclarator);
+                            }
+                            break;
+                        }
+                        case "InterfaceDeclaration": {
+                            bodyStack.push(item.body.properties);
+                            break;
+                        }
+                        case "ObjectTypeProperty": {
+                            if (this._options.sortUnionTypeAnnotation !== null) {
+                                fileContents = sortUnionTypeAnnotation(item.value, fileContents, this._options.sortUnionTypeAnnotation);
+                            }
+                            break;
+                        }
+                        case "ReturnStatement": {
+                            if (item.argument != null && this._options.sortExpression !== null) {
+                                fileContents = sortExpression(item.argument, fileContents, this._options.sortExpression);
+                            }
+                            break;
+                        }
+                        case "TSInterfaceDeclaration": {
+                            bodyStack.push(item.body.body);
+                            break;
+                        }
+                        case "FunctionDeclaration":
+                        case "ClassDeclaration": {
+                            if (item.body != null) {
+                                bodyStack.push(item.body.body);
+                            } else if (item.declaration) {
+                                bodyStack.push(item.declaration.body.body);
+                            } else {
+                                this.printHelpModeInfo(item, fileContents);
+                            }
+                            break;
+                        }
+                        case "TypeAlias": {
+                            if (item.right.type === "UnionTypeAnnotation") {
+                                if (this._options.sortUnionTypeAnnotation !== null) {
+                                    fileContents = sortUnionTypeAnnotation(item.right, fileContents, this._options.sortUnionTypeAnnotation);
+                                }
+                            } else if (item.right.type === "ObjectTypeAnnotation") {
+                                bodyStack.push(item.right.properties);
+                            } else {
+                                this.printHelpModeInfo(item, fileContents);
+                            }
+                            break;
+                        }
+                        case "ExportNamedDeclaration": {
+                            body.push(item.declaration);
+                            break;
+                        }
+                        case "MethodDefinition": {
+                            bodyStack.push(item.value.body.body);
+                            break;
+                        }
+                        case "ClassProperty": {
+                            if (item.typeAnnotation && item.typeAnnotation.type === "TypeAnnotation" && item.typeAnnotation.typeAnnotation.type === "UnionTypeAnnotation") {
+                                if (this._options.sortUnionTypeAnnotation !== null) {
+                                    fileContents = sortUnionTypeAnnotation(item.typeAnnotation.typeAnnotation, fileContents, this._options.sortUnionTypeAnnotation);
+                                }
+                                else {
+                                    this.printHelpModeInfo(item, fileContents);
+                                }
+                            } else if (item.value == null) {
+                                // No value to sort...
+                                break;
+                            }
+                            else if (item.value && item.value.body && item.value.body.body) {
+                                bodyStack.push(item.value.body.body);
+                            }
+                            else if ("ArrayExpression") {
+                                // TODO
+                            }
+                            else {
+                                this.printHelpModeInfo(item, fileContents);
+                            }
+                            break;
+                        }
+                        case "BlockStatement": {
+                            bodyStack.push(item.body);
+                            break;
+                        }
+                        case "ExpressionStatement": {
+                            // TODO possibly sortExpression?
+                            break;
+                        }
+                        case "ThrowStatement":
+                        case "ContinueStatement":
+                        case "EmptyStatement":
+                        case "BreakStatement": {
+                            // Skip since there isn't anything for us to sort
+                            break;
+                        }
+                        case "TryStatement": {
+                            bodyStack.push(item.block.body);
+                            bodyStack.push(item.handler.body.body);
+                            break;
+                        }
+                        default:
+                            this.printHelpModeInfo(item, fileContents);
+                            break;
                     }
-                    else if (item.value && item.value.body && item.value.body.body) {
-                        bodyStack.push(item.value.body.body);
-                    }
                 }
-                else if (item.type === "BlockStatement") {
-                    bodyStack.push(item.body);
-                }
-                else if (item.type === "ClassDeclaration") {
-                    bodyStack.push(item.body.body);
-                }
-                else {
-                    continue;
+                catch (e) {
+                    this.printHelpModeInfo(item, fileContents);
+                    throw e;
                 }
             }
         }
@@ -173,6 +252,18 @@ export class Reprinter {
                 `Unable to write file: ${this._filename}\n${error.message}`
             );
             throw new Error("Could not write file");
+        }
+    }
+
+    private printHelpModeInfo(item, fileContents: string) {
+        if (this._options.isHelpMode === true) {
+            if (!this._helpModeHasPrintedFilename) {
+                console.log("");
+                console.log(this._filename);
+            }
+
+            console.log(" - " + item.type + " - " + JSON.stringify(item.loc.start) + " - " + JSON.stringify(item.loc.end));
+            console.log(fileContents.substring(item.range[0], item.range[1]));
         }
     }
 }

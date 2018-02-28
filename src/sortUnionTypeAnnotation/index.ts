@@ -100,7 +100,10 @@ class UnionTypeAnnotationSorter {
   }
 
   private getStringToCompare(a) {
-    if (a.type === "GenericTypeAnnotation") {
+    if (a.value != null) {
+      return a.value;
+    }
+    else if (a.type === "GenericTypeAnnotation") {
       return a.id.name;
     } else {
       return a.type;

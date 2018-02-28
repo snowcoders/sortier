@@ -11,17 +11,25 @@ It should work with ES6, Flow and Typescript but if you find a piece of code tha
 
 ### Input
 ```
+/* Import example */
 import { 
         a2, 
         a1 } 
         from "./a";
-import { b2, b1 } from "./b";
 import { 
         c2, 
-        c1 } from "c";
+        c1 } from "c"; // Inline comments will move with the import
+import { b2, b1 } from "./b";
+
+// Line comments and blank lines act like syntax barriers and will divide sorting blocks
+import { c1 } from "c1";
+
+/* Union type example */
+export type ButtonType = "small" | "big" | undefined | null | "medium";
 ```
 ### Output
 ```
+/* Import example */
 import { 
         a1, 
         a2 } 
@@ -29,7 +37,13 @@ import {
 import { b1, b2 } from "./b";
 import { 
         c1, 
-        c2 } from "./c";
+        c2 } from "c"; // Inline comments will move with the import
+
+// Line comments and blank lines act like syntax barriers and will divide sorting blocks
+import { b1 } from "b1";
+
+/* Union type example */
+export type ButtonType = undefined | null | "big" | "medium" | "small";
 ```
 
 ## Options
@@ -42,13 +56,19 @@ We use [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) to determine the
 Configuring your options
 ```
 {
-  "sortImportDeclarations": {
-    "orderBy: "alpha"                           // Default "alpha"
+  sortImportDeclarationSpecifiers: {
+    groups: ("*" | "types" | "interfaces")[],   // Default ["*", "types", "interfaces"] - Note that "*" is everything not defined
   },
-  "sortImportDeclarationSpecifiers": {
-    groups: ("*" | "types" | "interfaces")[],   // Default ["*", "types", "interfaces"] - Note that "*" is everything that isn't a type or an interface
-    orderBy: "alpha"                            // Default "alpha"
-  }
+  sortImportDeclarations: {
+    orderBy: "source" | "first_specifier",     // Default "source". Source is the module path the import is from, first specifier is the first imported item name
+  },
+  sortUnionTypeAnnotation: {
+    groups: ("*" | "undefined" | "null")[],     // Default ["undefined", "null", "*"] - Note that "*" is everything not defined
+  },
+  sortExpression: {
+    groups: ("*" | "undefined" | "null")[],     // Default ["undefined", "null", "*"] - Note that "*" is everything not defined
+  },
+  isHelpMode: false | true                    // Default "false". If true, prints out lines that sortier doesn't know how to handle so you can open Github issues about them
 }
 ```
 

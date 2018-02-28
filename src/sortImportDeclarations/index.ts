@@ -2,12 +2,13 @@
 import { nthIndexOf } from "../common/string-utils";
 
 export interface SortImportDeclarationsOptions {
-    orderBy?: "alpha"
+    orderBy?: "first_specifier" | "source"
 }
 
 interface SingleImportSource {
     originalIndex: number,
     source: string,
+    firstSpecifier: string,
     originalLocation: {
         start: {
             index: number,
@@ -23,7 +24,7 @@ interface SingleImportSource {
 };
 
 export function sortImportDeclarations(body: any, fileContents: string, options?: SortImportDeclarationsOptions) {
-    options = ensureOptions(options);
+    let ensuredOptions = ensureOptions(options);
 
     // First create an object to remember all that we care about
     let overallIndex = 0;
@@ -47,6 +48,7 @@ export function sortImportDeclarations(body: any, fileContents: string, options?
             }
             sortedImportSources.push({
                 originalIndex: overallIndex,
+                firstSpecifier: importSource.specifiers[0] && importSource.specifiers[0].local.name || "",
                 source: importSource.source.value,
                 originalLocation: {
                     start: {
@@ -65,7 +67,19 @@ export function sortImportDeclarations(body: any, fileContents: string, options?
 
         // Sort them by name
         sortedImportSources.sort((a: SingleImportSource, b: SingleImportSource) => {
-            return a.source.localeCompare(b.source);
+            if (ensuredOptions.orderBy === "first_specifier") {
+                let result = a.firstSpecifier.localeCompare(b.firstSpecifier);
+                if (result !== 0) {
+                    return result;
+                }
+                return a.source.localeCompare(b.source);
+            } else {
+                let result = a.source.localeCompare(b.source);
+                if (result !== 0) {
+                    return result;
+                }
+                return a.firstSpecifier.localeCompare(b.firstSpecifier);
+            }
         });
 
 
@@ -115,13 +129,7 @@ export function sortImportDeclarations(body: any, fileContents: string, options?
 }
 
 function ensureOptions(options: SortImportDeclarationsOptions | null | undefined): SortImportDeclarationsOptions {
-    if (options == null) {
-        return {
-            orderBy: "alpha"
-        };
-    }
-
     return {
-        orderBy: options.orderBy || "alpha"
+        orderBy: options && options.orderBy || "source"
     };
 }

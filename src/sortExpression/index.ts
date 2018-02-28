@@ -55,6 +55,11 @@ class ExpressionSorter {
   }
 
   public sort() {
+    if (this.expression == null) {
+      // Nothing to sort
+      return this.fileContents;
+    }
+
     let operandStack = [this.expression];
     while (operandStack.length !== 0) {
       let operand = operandStack.pop();

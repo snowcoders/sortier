@@ -93,4 +93,24 @@ describe('sortImportDeclarations', () => {
       });
     });
   });
+
+  describe("Sort by first specifier", () => {
+    it("", () => {
+      let input = `import "./styles.scss";
+import "./header.scss";
+import * as React from "react";
+import honda from "./cars";
+import { Apple } from "./food";`;
+      let output = `import "./header.scss";
+import "./styles.scss";
+import { Apple } from "./food";
+import honda from "./cars";
+import * as React from "react";`;
+      let actual = sortImportDeclarations(flowParse(input).body, input, {
+        orderBy: "first_specifier"
+      });
+
+      expect(actual).to.equal(output);
+    });
+  });
 });

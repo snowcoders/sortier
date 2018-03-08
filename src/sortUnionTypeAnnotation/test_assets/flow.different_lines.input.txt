@@ -2,6 +2,7 @@ interface Definition {
   property: 
     null |
     undefined |
+    "home" |
     string |
-    integer,
+    number,
 }

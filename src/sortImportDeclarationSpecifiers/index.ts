@@ -1,5 +1,3 @@
-import { ModuleDeclaration, Statement } from "estree";
-
 export type SortByExportOptionsGroups = "*" | "types" | "interfaces";
 
 export interface SortImportDeclarationSpecifiersOptions {
@@ -18,28 +16,24 @@ interface SingleSpecifier {
     }
 };
 
-export function sortImportDeclarationSpecifiers(body: Array<Statement | ModuleDeclaration>, fileContents: string, options?: SortImportDeclarationSpecifiersOptions) {
+export function sortImportDeclarationSpecifiers(specifiers: any, fileContents: string, options?: SortImportDeclarationSpecifiersOptions) {
     options = ensureOptions(options);
 
-    for (let item of body) {
-        if (item.type === "ImportDeclaration") {
-            fileContents = sortSingleSpecifier(item, fileContents, options);
-        }
-    }
+    fileContents = sortSingleSpecifier(specifiers, fileContents, options);
 
     return fileContents;
 }
 
-function sortSingleSpecifier(bodyItem: any, fileContents: string, options: SortImportDeclarationSpecifiersOptions): string {
+function sortSingleSpecifier(specifiers: any, fileContents: string, options: SortImportDeclarationSpecifiersOptions): string {
     // If there is one or less specifiers, there is not anything to sort
-    if (bodyItem.specifiers.length <= 1) {
+    if (specifiers.length <= 1) {
         return fileContents;
     }
 
     // First create an object to remember all that we care about
     let sortedSpecifiers: SingleSpecifier[] = [];
-    for (let x = 0; x < bodyItem.specifiers.length; x++) {
-        let specifier = bodyItem.specifiers[x];
+    for (let x = 0; x < specifiers.length; x++) {
+        let specifier = specifiers[x];
 
         let importedName = specifier.imported != null ? specifier.imported.name : specifier.local.name;
         sortedSpecifiers.push({
@@ -98,8 +92,8 @@ function sortSingleSpecifier(bodyItem: any, fileContents: string, options: SortI
     let newFileContents = fileContents.slice();
     let newFileContentIndexCorrection = 0;
     // Now go through the original specifiers again and if any have moved, switch them
-    for (let x = 0; x < bodyItem.specifiers.length; x++) {
-        let specifier = bodyItem.specifiers[x];
+    for (let x = 0; x < specifiers.length; x++) {
+        let specifier = specifiers[x];
         if (sortedSpecifiers[x].originalIndex === x) {
             continue;
         }

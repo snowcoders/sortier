@@ -7,8 +7,8 @@ export interface SortExpressionOptions {
   orderBy: "alpha"
 }
 
-export function sortExpression(expression, fileContents: string, options?: SortExpressionOptions) {
-  return new ExpressionSorter(expression, fileContents, ensureOptions(options)).sort();
+export function sortExpression(expression, comments, fileContents: string, options?: SortExpressionOptions) {
+  return new ExpressionSorter(expression, comments, fileContents, ensureOptions(options)).sort();
 }
 
 function ensureOptions(options?: SortExpressionOptions | null): SortExpressionOptions {
@@ -45,11 +45,13 @@ class ExpressionSorter {
   static commutativeOperators = ["*", "&", "|", "^"];
 
   private expression;
+  private comments;
   private fileContents: string;
   private options: SortExpressionOptions;
 
-  constructor(expression, fileContents: string, options: SortExpressionOptions) {
+  constructor(expression, comments, fileContents: string, options: SortExpressionOptions) {
     this.expression = expression;
+    this.comments = comments;
     this.fileContents = fileContents;
     this.options = options;
   }
@@ -157,7 +159,7 @@ class ExpressionSorter {
       sortedValues = this.getSortedValues(operand.values);
     }
 
-    let newFileContents = reorderValues(this.fileContents, operand.values, sortedValues);
+    let newFileContents = reorderValues(this.fileContents, this.comments, operand.values, sortedValues);
     newFileContents = newFileContents.slice(rangeMin, rangeMax);
 
     return {

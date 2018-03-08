@@ -2,11 +2,11 @@ import { SortUnionTypeAnnotationOptions } from "../sortUnionTypeAnnotation";
 
 import { reorderValues } from "../common/sort-utils";
 
-export function sortTSUnionTypeAnnotation(unionTypeAnnotation, fileContents: string, options?: SortUnionTypeAnnotationOptions) {
+export function sortTSUnionTypeAnnotation(unionTypeAnnotation, comments, fileContents: string, options?: SortUnionTypeAnnotationOptions) {
   let ensuredOptions = ensureOptions(options);
 
   if (unionTypeAnnotation.typeAnnotation.type === "TSUnionType") {
-    fileContents = new UnionTypeAnnotationSorter(unionTypeAnnotation, fileContents, ensuredOptions).sort();
+    fileContents = new UnionTypeAnnotationSorter(unionTypeAnnotation, comments, fileContents, ensuredOptions).sort();
   }
 
   return fileContents;
@@ -32,11 +32,13 @@ function ensureOptions(options?: SortUnionTypeAnnotationOptions | null): SortUni
 
 class UnionTypeAnnotationSorter {
   private unionTypeAnnotation;
+  private comments;
   private fileContents: string;
   private options: SortUnionTypeAnnotationOptions;
 
-  constructor(unionTypeAnnotation, fileContents: string, options: SortUnionTypeAnnotationOptions) {
+  constructor(unionTypeAnnotation, comments, fileContents: string, options: SortUnionTypeAnnotationOptions) {
     this.unionTypeAnnotation = unionTypeAnnotation;
+    this.comments = comments;
     this.fileContents = fileContents;
     this.options = options;
   }
@@ -45,7 +47,7 @@ class UnionTypeAnnotationSorter {
     let unsortedTypes = this.unionTypeAnnotation.typeAnnotation.types;
     let sortedTypes = this.getSortOrderOfTypes();
 
-    return reorderValues(this.fileContents, unsortedTypes, sortedTypes);
+    return reorderValues(this.fileContents, this.comments, unsortedTypes, sortedTypes);
   }
 
   private getSortOrderOfTypes() {
@@ -81,13 +83,33 @@ class UnionTypeAnnotationSorter {
       let aRank = getRank(a);
       let bRank = getRank(b);
 
-      // Do the actual compare
-      if (aRank == bRank) {
-        let aString = this.getStringToCompare(a);
-        let bString = this.getStringToCompare(b);
-        return aString.localeCompare(bString);
+      if (aRank != bRank) {
+        return aRank - bRank;
       }
-      return aRank - bRank;
+
+      if (a.type !== b.type) {
+        if (a.type === "TSLastTypeNode") {
+          return 1;
+        }
+        if (b.type === "TSLastTypeNode") {
+          return -1;
+        }
+        return a.type.localeCompare(b.type);
+      }
+
+      if (a.type === "TSLastTypeNode" &&
+        b.type === "TSLastTypeNode") {
+        let typeofA = typeof a.literal.value;
+        let typeofB = typeof b.literal.value;
+
+        if (typeofA !== typeofB) {
+          return typeofA.localeCompare(typeofB);
+        }
+      }
+
+      let aString = this.getStringToCompare(a);
+      let bString = this.getStringToCompare(b);
+      return aString.localeCompare(bString);
     });
 
     return newTypes;
@@ -96,6 +118,8 @@ class UnionTypeAnnotationSorter {
   private getStringToCompare(a) {
     if (a.type === "TSTypeReference") {
       return a.typeName.name;
+    } else if (a.type === "TSLastTypeNode") {
+      return a.literal.raw;
     } else {
       return this.fileContents.substring(a.range[0], a.range[1]);
     }

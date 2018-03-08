@@ -11,6 +11,9 @@ import { parse as typescriptParse } from '../parsers/typescript';
 // The methods being tested here
 import { sortImportDeclarations } from './index';
 
+// Utilities
+import { sentenceCase } from "../common/string-utils";
+
 interface TestInfo {
   parserType: string;
   testName: string;
@@ -32,8 +35,7 @@ describe('sortImportDeclarations', () => {
       parserTypes.push(segments[0]);
     }
 
-    let cleanedTestName = segments[1].replace(/_/g, " ").toLowerCase();
-    cleanedTestName = cleanedTestName.charAt(0).toUpperCase() + cleanedTestName.slice(1);
+    let cleanedTestName = sentenceCase(segments[1].replace(/_/g, " "));
 
     return {
       parserType: segments[0],
@@ -94,8 +96,8 @@ describe('sortImportDeclarations', () => {
     });
   });
 
-  describe("Sort by first specifier", () => {
-    it("", () => {
+  describe("es6 - Custom options", () => {
+    it("Sort by first specifier", () => {
       let input = `import "./styles.scss";
 import "./header.scss";
 import * as React from "react";

@@ -7,11 +7,11 @@ export interface SortUnionTypeAnnotationOptions {
   orderBy: "alpha"
 }
 
-export function sortUnionTypeAnnotation(unionTypeAnnotation, fileContents: string, options?: SortUnionTypeAnnotationOptions) {
+export function sortUnionTypeAnnotation(unionTypeAnnotation, comments, fileContents: string, options?: SortUnionTypeAnnotationOptions) {
   let ensuredOptions = ensureOptions(options);
 
   if (unionTypeAnnotation.type === "UnionTypeAnnotation") {
-    fileContents = new UnionTypeAnnotationSorter(unionTypeAnnotation, fileContents, ensuredOptions).sort();
+    fileContents = new UnionTypeAnnotationSorter(unionTypeAnnotation, comments, fileContents, ensuredOptions).sort();
   }
 
   return fileContents;
@@ -37,11 +37,13 @@ function ensureOptions(options?: SortUnionTypeAnnotationOptions | null): SortUni
 
 class UnionTypeAnnotationSorter {
   private unionTypeAnnotation;
+  private comments;
   private fileContents: string;
   private options: SortUnionTypeAnnotationOptions;
 
-  constructor(unionTypeAnnotation, fileContents: string, options: SortUnionTypeAnnotationOptions) {
+  constructor(unionTypeAnnotation, comments, fileContents: string, options: SortUnionTypeAnnotationOptions) {
     this.unionTypeAnnotation = unionTypeAnnotation;
+    this.comments = comments;
     this.fileContents = fileContents;
     this.options = options;
   }
@@ -49,7 +51,7 @@ class UnionTypeAnnotationSorter {
   public sort() {
     let sortedTypes = this.getSortOrderOfTypes();
 
-    let newFileContents = reorderValues(this.fileContents, this.unionTypeAnnotation.types, sortedTypes);
+    let newFileContents = reorderValues(this.fileContents, this.comments, this.unionTypeAnnotation.types, sortedTypes);
 
     return newFileContents;
   }
@@ -88,20 +90,34 @@ class UnionTypeAnnotationSorter {
       let bRank = getRank(b);
 
       // Do the actual compare
-      if (aRank == bRank) {
-        let aString = this.getStringToCompare(a);
-        let bString = this.getStringToCompare(b);
-        return aString.localeCompare(bString);
+      if (aRank != bRank) {
+        return aRank - bRank;
       }
-      return aRank - bRank;
+
+      let isALiteral = a.type.indexOf("Literal") !== -1;
+      let isBLiteral = b.type.indexOf("Literal") !== -1;
+
+      if (isALiteral && isBLiteral) {
+        if (a.type !== b.type) {
+          return a.type.localeCompare(b.type);
+        }
+      }
+
+      if (isALiteral != isBLiteral) {
+        return (isALiteral ? 1 : 0) - (isBLiteral ? 1 : 0);
+      }
+
+      let aString = this.getStringToCompare(a);
+      let bString = this.getStringToCompare(b);
+      return aString.localeCompare(bString);
     });
 
     return newTypes;
   }
 
   private getStringToCompare(a) {
-    if (a.value != null) {
-      return a.value;
+    if (a.raw != null) {
+      return a.raw;
     }
     else if (a.type === "GenericTypeAnnotation") {
       return a.id.name;

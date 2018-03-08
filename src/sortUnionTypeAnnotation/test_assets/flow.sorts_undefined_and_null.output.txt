@@ -1,3 +1,0 @@
-interface Definition {
-  property: undefined | null | integer | string,
-}

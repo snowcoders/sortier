@@ -11,6 +11,9 @@ import { parse as typescriptParse } from '../parsers/typescript';
 // The methods being tested here
 import { sortTSUnionTypeAnnotation } from './index';
 
+// Utilities
+import { sentenceCase } from "../common/string-utils";
+
 interface TestInfo {
   parserType: string;
   testName: string;
@@ -32,8 +35,7 @@ describe('sortTSUnionTypeAnnotation', () => {
       parserTypes.push(segments[0]);
     }
 
-    let cleanedTestName = segments[1].replace(/_/g, " ").toLowerCase();
-    cleanedTestName = cleanedTestName.charAt(0).toUpperCase() + cleanedTestName.slice(1);
+    let cleanedTestName = sentenceCase(segments[1].replace(/_/g, " "));
 
     return {
       parserType: segments[0],
@@ -66,7 +68,8 @@ describe('sortTSUnionTypeAnnotation', () => {
           it(testInfo.testName, () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
-            let actual = sortTSUnionTypeAnnotation(parser(input).body[0].body.body[0].typeAnnotation, input);
+            let parsed = parser(input);
+            let actual = sortTSUnionTypeAnnotation(parsed.body[0].body.body[0].typeAnnotation, parsed.comments, input);
 
             expect(actual).to.equal(expected);
           });

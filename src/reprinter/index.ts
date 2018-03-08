@@ -48,6 +48,7 @@ export class Reprinter {
         let fileContents = this.readFileContents();
 
         let ast = parser(fileContents);
+        let comments = ast.comments;
         let bodyStack = [ast.body || ast.program.body];
 
         while (bodyStack.length !== 0) {
@@ -56,13 +57,6 @@ export class Reprinter {
                 continue;
             }
 
-            // Sorts that happen over the whole body
-            if (this._options.sortImportDeclarationSpecifiers !== null) {
-                fileContents = sortImportDeclarationSpecifiers(body, fileContents, this._options.sortImportDeclarationSpecifiers);
-            }
-            if (this._options.sortImportDeclarations !== null) {
-                fileContents = sortImportDeclarations(body, fileContents, this._options.sortImportDeclarations);
-            }
             // TODO ObjectExpression
             // TODO ObjectPattern
             // TODO JSXOpeningElement
@@ -73,8 +67,10 @@ export class Reprinter {
             for (let item of body) {
                 try {
                     switch (item.type) {
-                        // Sorts that were handled above
                         case "ImportDeclaration": {
+                            if (this._options.sortImportDeclarationSpecifiers !== null) {
+                                fileContents = sortImportDeclarationSpecifiers(item.specifiers, fileContents, this._options.sortImportDeclarationSpecifiers);
+                            }
                             break;
                         }
 
@@ -96,13 +92,13 @@ export class Reprinter {
 
                         case "TSPropertySignature": {
                             if (this._options.sortUnionTypeAnnotation !== null) {
-                                fileContents = sortTSUnionTypeAnnotation(item.typeAnnotation, fileContents, this._options.sortUnionTypeAnnotation);
+                                fileContents = sortTSUnionTypeAnnotation(item.typeAnnotation, comments, fileContents, this._options.sortUnionTypeAnnotation);
                             }
                             break;
                         }
                         case "VariableDeclaration": {
                             if (this._options.sortVariableDeclarator !== null) {
-                                fileContents = sortVariableDeclarator(body, fileContents, this._options.sortVariableDeclarator);
+                                fileContents = sortVariableDeclarator(body, comments, fileContents, this._options.sortVariableDeclarator);
                             }
                             break;
                         }
@@ -112,13 +108,13 @@ export class Reprinter {
                         }
                         case "ObjectTypeProperty": {
                             if (this._options.sortUnionTypeAnnotation !== null) {
-                                fileContents = sortUnionTypeAnnotation(item.value, fileContents, this._options.sortUnionTypeAnnotation);
+                                fileContents = sortUnionTypeAnnotation(item.value, comments, fileContents, this._options.sortUnionTypeAnnotation);
                             }
                             break;
                         }
                         case "ReturnStatement": {
                             if (item.argument != null && this._options.sortExpression !== null) {
-                                fileContents = sortExpression(item.argument, fileContents, this._options.sortExpression);
+                                fileContents = sortExpression(item.argument, comments, fileContents, this._options.sortExpression);
                             }
                             break;
                         }
@@ -140,7 +136,7 @@ export class Reprinter {
                         case "TypeAlias": {
                             if (item.right.type === "UnionTypeAnnotation") {
                                 if (this._options.sortUnionTypeAnnotation !== null) {
-                                    fileContents = sortUnionTypeAnnotation(item.right, fileContents, this._options.sortUnionTypeAnnotation);
+                                    fileContents = sortUnionTypeAnnotation(item.right, comments, fileContents, this._options.sortUnionTypeAnnotation);
                                 }
                             } else if (item.right.type === "ObjectTypeAnnotation") {
                                 bodyStack.push(item.right.properties);
@@ -160,7 +156,7 @@ export class Reprinter {
                         case "ClassProperty": {
                             if (item.typeAnnotation && item.typeAnnotation.type === "TypeAnnotation" && item.typeAnnotation.typeAnnotation.type === "UnionTypeAnnotation") {
                                 if (this._options.sortUnionTypeAnnotation !== null) {
-                                    fileContents = sortUnionTypeAnnotation(item.typeAnnotation.typeAnnotation, fileContents, this._options.sortUnionTypeAnnotation);
+                                    fileContents = sortUnionTypeAnnotation(item.typeAnnotation.typeAnnotation, comments, fileContents, this._options.sortUnionTypeAnnotation);
                                 }
                                 else {
                                     this.printHelpModeInfo(item, fileContents);
@@ -209,6 +205,11 @@ export class Reprinter {
                     this.printHelpModeInfo(item, fileContents);
                     throw e;
                 }
+            }
+
+            // Sorts that depend on other things sorting first
+            if (this._options.sortImportDeclarations !== null) {
+                fileContents = sortImportDeclarations(body, fileContents, this._options.sortImportDeclarations);
             }
         }
 

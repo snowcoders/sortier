@@ -5,7 +5,6 @@ import { basename, join, relative } from "path";
 
 // Parsers
 import { parse as flowParse } from '../parsers/flow';
-import { parse as javascriptParse } from '../parsers/javascript';
 import { parse as typescriptParse } from '../parsers/typescript';
 
 // The methods being tested here
@@ -51,10 +50,8 @@ describe('sortUnionTypeAnnotation', () => {
       let parser = null;
       switch (fileType) {
         case "flow":
-          parser = flowParse;
-          break;
         case "es6":
-          parser = flowParse;//javascriptParse;
+          parser = flowParse;
           break;
         case "typescript":
           parser = typescriptParse;

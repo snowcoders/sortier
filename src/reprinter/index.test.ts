@@ -6,7 +6,6 @@ import { basename, join, relative } from "path";
 
 // Parsers
 import { parse as flowParse } from '../parsers/flow';
-import { parse as javascriptParse } from '../parsers/javascript';
 import { parse as typescriptParse } from '../parsers/typescript';
 
 // The methods being tested here

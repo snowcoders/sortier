@@ -56,10 +56,11 @@ We use [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) to determine the
 Configuring your options
 ```
 {
+  isHelpMode: false | true,                    // Default "false". If true, prints out lines that sortier doesn't know how to handle so you can open Github issues about them
   sortImportDeclarations: {
     orderBy: "source" | "first_specifier",     // Default "source". Source is the module path the import is from, first specifier is the first imported item name
   },
-  isHelpMode: false | true                    // Default "false". If true, prints out lines that sortier doesn't know how to handle so you can open Github issues about them
+  parser?: "flow" | "typescript"               // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
 }
 ```
 

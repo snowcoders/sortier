@@ -21,7 +21,8 @@ export interface ReprinterOptions {
     sortVariableDeclarator?: null | SortVariableDeclaratorOptions,
     sortUnionTypeAnnotation?: null | SortUnionTypeAnnotationOptions,
     sortExpression?: null | SortExpressionOptions,
-    isHelpMode?: boolean
+    isHelpMode?: boolean,
+    parser?: "flow" | "typescript"
 }
 
 export class Reprinter {
@@ -217,6 +218,15 @@ export class Reprinter {
     }
 
     private getParser() {
+        // If the options overide the parser type
+        if (this._options.parser === "typescript") {
+            return parseTypescript;
+        }
+        if (this._options.parser === "flow") {
+            return parseFlow;
+        }
+
+        // If the user didn't override the parser type, try to infer it
         if (endsWith(this._filename, ".ts") ||
             endsWith(this._filename, ".ts.txt") ||
             endsWith(this._filename, ".tsx")) {

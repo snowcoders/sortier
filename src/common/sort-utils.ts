@@ -1,7 +1,7 @@
 import { Comment } from "estree";
 
 export type MinimumTypeInformation = {
-  range: number[]
+  range?: number[]
 };
 
 export function reorderValues(fileContents: string, comments: Comment[], unsortedTypes: MinimumTypeInformation[], sortedTypes: MinimumTypeInformation[]) {
@@ -49,6 +49,12 @@ export function reorderValues(fileContents: string, comments: Comment[], unsorte
 
     // Swap the specifier
     {
+      if (specifierRange == null) {
+        throw new Error("Range cannot be null");
+      }
+      if (newSpecifierRange == null) {
+        throw new Error("Range cannot be null");
+      }
       let spliceRemoveIndexStart = specifierRange[0] + newFileContentIndexCorrection;
       let spliceRemoveIndexEnd = specifierRange[1] + newFileContentIndexCorrection;
 

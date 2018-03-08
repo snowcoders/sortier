@@ -14,7 +14,9 @@ export class Main {
                 try {
                     Reprinter.rewrite(filePath, options);
                 } catch (e) {
+                    console.log("");
                     console.error("Sorting " + filePath + " has failed!");
+                    console.error("If this is an issue with sortier please provide an issue in Github with minimal source code to reproduce the issue");
                     console.error(e);
                 }
             });

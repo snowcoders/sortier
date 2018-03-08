@@ -15,11 +15,6 @@ export function reorderValues(fileContents: string, comments: Comment[], unsorte
     let specifierRange = specifier.range;
     let newSpecifierRange = newSpecifier.range;
 
-    if (specifierRange == null || newSpecifierRange == null) {
-      // TODO log an error
-      continue;
-    }
-
     let specifierComments = getCommentsForSpecifier(fileContents, comments, specifier);
     let newSpecifierComments = getCommentsForSpecifier(fileContents, comments, newSpecifier);
 
@@ -35,8 +30,7 @@ export function reorderValues(fileContents: string, comments: Comment[], unsorte
         specifierCommentsEndRange == null ||
         newSpecifierCommentsStartRange == null ||
         newSpecifierCommentsEndRange == null) {
-        // TODO log an error
-        continue;
+        throw new Error("Comment specifier is unexpectedly null");
       }
 
       let spliceRemoveIndexStart = specifierCommentsStartRange[0] + newFileContentIndexCorrection;

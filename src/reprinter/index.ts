@@ -87,7 +87,6 @@ export class Reprinter {
                         }
 
                         case "SwitchStatement": {
-                            // TODO
                             break;
                         }
 
@@ -170,7 +169,7 @@ export class Reprinter {
                                 bodyStack.push(item.value.body.body);
                             }
                             else if ("ArrayExpression") {
-                                // TODO
+                                // TODO - Array expression
                             }
                             else {
                                 this.printHelpModeInfo(item, fileContents);
@@ -244,12 +243,7 @@ export class Reprinter {
         try {
             return fs.readFileSync(this._filename, "utf8");
         } catch (error) {
-            // Add newline to split errors from filename line.
-            console.log("");
-            console.error(
-                `Unable to read file: ${this._filename}\n${error.message}`
-            );
-            throw new Error("Could not read file");
+            throw new Error(`Could not read file: ${this._filename}\n${error.message}`);
         }
     }
 
@@ -257,12 +251,7 @@ export class Reprinter {
         try {
             fs.writeFileSync(this._filename, fileContents, "utf8");
         } catch (error) {
-            // Add newline to split errors from filename line.
-            console.log("");
-            console.error(
-                `Unable to write file: ${this._filename}\n${error.message}`
-            );
-            throw new Error("Could not write file");
+            throw new Error(`Could not write file: ${this._filename}\n${error.message}`);
         }
     }
 

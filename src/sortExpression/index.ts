@@ -70,13 +70,13 @@ class ExpressionSorter {
         continue;
       } else if (operand.type === "BinaryExpression") {
         if (ExpressionSorter.commutativeOperators.indexOf(operand.operator) === -1) {
-          // TODO - Open Github issue - Should be able to sort items with a mix of commutative and non-commutative operands
+          // TODO - Should be able to sort items with a mix of commutative and non-commutative operands
           return this.fileContents;
         }
         operandStack.push(operand.left);
         operandStack.push(operand.right);
       } else {
-        // TODO - Open Github issue - Currently only support sorting BinaryExpressions (We need examples of these sorts)
+        // TODO - Currently only support sorting BinaryExpressions (We need examples of these sorts)
         return this.fileContents;
       }
     }

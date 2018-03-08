@@ -63,5 +63,28 @@ Configuring your options
   parser?: "flow" | "typescript"               // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
 }
 ```
-
 And more to come!
+
+## How to run it
+```
+sortier [glob-file-path]
+```
+
+## Pre-commit Hook
+We went with a system similar to [prettier](https://prettier.io/docs/en/precommit.html) so hopefully you have already picked a solution and can keep going with it. If not, this repository uses `lint-staged` and `husky`
+
+1. Run `npm install --save-dev lint-staged husky`
+2. Add the following to your package.json
+```
+{
+  "scripts": {
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "sortier",
+      "git add"
+    ]
+  }
+}
+```

@@ -1,6 +1,10 @@
-import { Comment, Node } from "estree";
+import { Comment } from "estree";
 
-export function reorderValues(fileContents: string, comments: Comment[], unsortedTypes: Node[], sortedTypes: Node[]) {
+export type MinimumTypeInformation = {
+  range: number[]
+};
+
+export function reorderValues(fileContents: string, comments: Comment[], unsortedTypes: MinimumTypeInformation[], sortedTypes: MinimumTypeInformation[]) {
   let newFileContents = fileContents.slice();
   let newFileContentIndexCorrection = 0;
   // Now go through the original specifiers again and if any have moved, switch them
@@ -70,7 +74,7 @@ export function reorderValues(fileContents: string, comments: Comment[], unsorte
 }
 
 // Currently we only accept full line comments before the specifier.
-function getCommentsForSpecifier(fileContents: string, comments: Comment[], specifier: Node): Comment[] {
+function getCommentsForSpecifier(fileContents: string, comments: Comment[], specifier: MinimumTypeInformation): Comment[] {
   if (specifier.range == null) {
     throw new Error("Should never pass in null locations into reorderValues");
   }

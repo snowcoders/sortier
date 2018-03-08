@@ -63,7 +63,6 @@
     "ts-node": "^4.1.0"
   },
   "dependencies": {
-    "babylon": "^7.0.0-beta.34",
     "cosmiconfig": "^4.0.0",
     "flow-parser": "^0.64.0",
     "fs": "0.0.1-security",

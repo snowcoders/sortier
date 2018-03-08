@@ -1,0 +1,8 @@
+interface Definition {
+  property: 
+    undefined |
+    null |
+    number |
+    string |
+    "home",
+}

@@ -8,7 +8,7 @@ import { parse as flowParse } from '../parsers/flow';
 import { parse as typescriptParse } from '../parsers/typescript';
 
 // The methods being tested here
-import { sortImportDeclarations } from './index';
+import { sortVariableDeclarator } from './index';
 
 // Utilities
 import { sentenceCase } from "../common/string-utils";
@@ -20,7 +20,7 @@ interface TestInfo {
   outputFilePath: string;
 }
 
-describe('sortImportDeclarations', () => {
+describe('sortVariableDeclarator', () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 
@@ -62,54 +62,17 @@ describe('sortImportDeclarations', () => {
 
       testInfos.forEach(testInfo => {
         if (testInfo.parserType == fileType) {
-          describe(testInfo.testName, () => {
-
-            it("Unix line endings", () => {
+          // Useful if you want to test a single test
+          if (testInfo.inputFilePath.includes("mixed_binary_and_logical"))
+            it(testInfo.testName, () => {
               let input = readFileSync(testInfo.inputFilePath, "utf8");
               let expected = readFileSync(testInfo.outputFilePath, "utf8");
-              if (input.indexOf("\r") !== -1) {
-                input = input.replace(/\r/g, "");
-                expected = expected.replace(/\r/g, "");
-              }
-              let actual = sortImportDeclarations(parser(input).body, input);
+              let actual = sortVariableDeclarator(parser(input).body, input);
 
               expect(actual).to.equal(expected);
             });
-
-            it("Windows line endings", () => {
-              let input = readFileSync(testInfo.inputFilePath, "utf8");
-              let expected = readFileSync(testInfo.outputFilePath, "utf8");
-              if (input.indexOf("\r") === -1) {
-                input = input.replace(/\n/g, "\r\n");
-                expected = expected.replace(/\n/g, "\r\n");
-              }
-              let actual = sortImportDeclarations(parser(input).body, input);
-
-              expect(actual).to.equal(expected);
-            });
-          });
         }
       });
-    });
-  });
-
-  describe("es6 - Custom options", () => {
-    it("Sort by first specifier", () => {
-      let input = `import "./styles.scss";
-import "./header.scss";
-import * as React from "react";
-import honda from "./cars";
-import { Apple } from "./food";`;
-      let output = `import "./header.scss";
-import "./styles.scss";
-import { Apple } from "./food";
-import honda from "./cars";
-import * as React from "react";`;
-      let actual = sortImportDeclarations(flowParse(input).body, input, {
-        orderBy: "first_specifier"
-      });
-
-      expect(actual).to.equal(output);
     });
   });
 });

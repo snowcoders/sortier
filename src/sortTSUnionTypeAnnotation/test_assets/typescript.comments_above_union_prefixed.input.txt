@@ -1,0 +1,14 @@
+// Definition for the interface
+interface Definition {
+  // Comment for the property
+  property: 
+    // Something else
+    | "hello"
+    // When the service responds and
+    // the object doesn't exist
+    | null
+    // When the request call succeeded
+    | string
+    // When the request call is pending
+    | undefined
+}

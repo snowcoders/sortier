@@ -1,6 +1,6 @@
 {
   "name": "@snowcoders/sortier",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "An opionated code sorter",
   "bin": {
     "sortier": "./bin/index.js"
@@ -30,8 +30,11 @@
   ],
   "author": "Snowcoders",
   "license": "MIT",
-  "repository": "https://github.com/snowcoders/sortier",
+  "repository": "github:snowcoders/sortier",
   "devDependencies": {
+    "@types/estree": "0.0.38",
+    "@types/globby": "^6.1.0",
+    "@types/node": "^9.4.6",
     "@types/chai": "^4.0.10",
     "@types/mocha": "^2.2.45",
     "@types/sinon": "^4.1.2",
@@ -60,9 +63,6 @@
     "ts-node": "^4.1.0"
   },
   "dependencies": {
-    "@types/globby": "^6.1.0",
-    "@types/node": "^9.4.6",
-    "babylon": "^7.0.0-beta.34",
     "cosmiconfig": "^4.0.0",
     "flow-parser": "^0.64.0",
     "fs": "0.0.1-security",

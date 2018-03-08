@@ -1,0 +1,25 @@
+{
+  let seven = 1 | 2 | 3 | 4;
+}
+
+export function getValue() {
+  let seven = 1 | 2 | 3 | 4;
+  return seven;
+}
+
+export class Value {
+  constructor() {
+    let seven = 1 | 2 | 3 | 4;
+    return seven;
+  }
+
+  property = () => {
+    let seven = 1 | 2 | 3 | 4;
+    return seven;
+  };
+
+  getValue() {
+    let seven = 1 | 2 | 3 | 4;
+    return seven;
+  }
+}

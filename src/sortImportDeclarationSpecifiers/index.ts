@@ -1,8 +1,8 @@
 export type SortByExportOptionsGroups = "*" | "types" | "interfaces";
 
-export interface SortByExportOptions {
+export interface SortImportDeclarationSpecifiersOptions {
     groups: SortByExportOptionsGroups[],
-    orderBy: "alpha"
+    orderBy: "name"
 }
 
 interface SingleSpecifier {
@@ -16,31 +16,24 @@ interface SingleSpecifier {
     }
 };
 
-export function sortByExport(parser: (fileContents: string) => any, fileContents: string, options?: SortByExportOptions) {
+export function sortImportDeclarationSpecifiers(specifiers: any, fileContents: string, options?: SortImportDeclarationSpecifiersOptions) {
     options = ensureOptions(options);
 
-    let ast = parser(fileContents);
-    let body = ast.body || ast.program.body;
-
-    for (let item of body) {
-        if (item.type === "ImportDeclaration") {
-            fileContents = sortSingleSpecifier(item, fileContents, options);
-        }
-    }
+    fileContents = sortSingleSpecifier(specifiers, fileContents, options);
 
     return fileContents;
 }
 
-function sortSingleSpecifier(bodyItem: any, fileContents: string, options: SortByExportOptions): string {
+function sortSingleSpecifier(specifiers: any, fileContents: string, options: SortImportDeclarationSpecifiersOptions): string {
     // If there is one or less specifiers, there is not anything to sort
-    if (bodyItem.specifiers.length <= 1) {
+    if (specifiers.length <= 1) {
         return fileContents;
     }
 
     // First create an object to remember all that we care about
     let sortedSpecifiers: SingleSpecifier[] = [];
-    for (let x = 0; x < bodyItem.specifiers.length; x++) {
-        let specifier = bodyItem.specifiers[x];
+    for (let x = 0; x < specifiers.length; x++) {
+        let specifier = specifiers[x];
 
         let importedName = specifier.imported != null ? specifier.imported.name : specifier.local.name;
         sortedSpecifiers.push({
@@ -99,8 +92,8 @@ function sortSingleSpecifier(bodyItem: any, fileContents: string, options: SortB
     let newFileContents = fileContents.slice();
     let newFileContentIndexCorrection = 0;
     // Now go through the original specifiers again and if any have moved, switch them
-    for (let x = 0; x < bodyItem.specifiers.length; x++) {
-        let specifier = bodyItem.specifiers[x];
+    for (let x = 0; x < specifiers.length; x++) {
+        let specifier = specifiers[x];
         if (sortedSpecifiers[x].originalIndex === x) {
             continue;
         }
@@ -144,16 +137,16 @@ function nameIsLikelyInterface(name: string) {
     );
 }
 
-function ensureOptions(options?: SortByExportOptions | null): SortByExportOptions {
+function ensureOptions(options?: SortImportDeclarationSpecifiersOptions | null): SortImportDeclarationSpecifiersOptions {
     if (options == null) {
         return {
             groups: ["*", "types", "interfaces"],
-            orderBy: "alpha"
+            orderBy: "name"
         };
     }
 
     return {
         groups: options.groups || ["*", "types", "interfaces"],
-        orderBy: options.orderBy || "alpha"
+        orderBy: options.orderBy || "name"
     };
 }

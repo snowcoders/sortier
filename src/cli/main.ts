@@ -14,8 +14,10 @@ export class Main {
                 try {
                     Reprinter.rewrite(filePath, options);
                 } catch (e) {
+                    console.log("");
                     console.error("Sorting " + filePath + " has failed!");
-                    throw e;
+                    console.error("If this is an issue with sortier please provide an issue in Github with minimal source code to reproduce the issue");
+                    console.error(e);
                 }
             });
         });
@@ -23,14 +25,13 @@ export class Main {
 
     private resolveConfig(onLoad: (options: ReprinterOptions) => void) {
         cosmiconfig("sortier").load()
-            .then((result: ReprinterOptions) => {
-                onLoad({
-                    sortImportDeclarations: result.sortImportDeclarations,
-                    sortImportDeclarationSpecifiers: result.sortImportDeclarationSpecifiers,
-                });
+            .then((result: { config: ReprinterOptions, filepath: string }) => {
+                onLoad(result.config);
             })
             .catch((parsingError) => {
-                console.log("No sortier config file found... using defaults...");
+                console.warn("No valid sortier config file found");
+                console.warn("Error: " + parsingError);
+                console.warn("Using defaults...");
                 onLoad({});
             });
     }

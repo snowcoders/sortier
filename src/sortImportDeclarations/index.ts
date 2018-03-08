@@ -1,12 +1,14 @@
+// Utils
 import { nthIndexOf } from "../common/string-utils";
 
-export interface SortByModuleOptions {
-    orderBy?: "alpha"
+export interface SortImportDeclarationsOptions {
+    orderBy?: "first_specifier" | "source"
 }
 
 interface SingleImportSource {
     originalIndex: number,
     source: string,
+    firstSpecifier: string,
     originalLocation: {
         start: {
             index: number,
@@ -21,11 +23,8 @@ interface SingleImportSource {
     }
 };
 
-export function sortByModule(parser: (fileContents: string) => any, fileContents: string, options?: SortByModuleOptions) {
-    options = ensureOptions(options);
-
-    let ast = parser(fileContents);
-    let body = ast.body || ast.program.body;
+export function sortImportDeclarations(body: any, fileContents: string, options?: SortImportDeclarationsOptions) {
+    let ensuredOptions = ensureOptions(options);
 
     // First create an object to remember all that we care about
     let overallIndex = 0;
@@ -49,6 +48,7 @@ export function sortByModule(parser: (fileContents: string) => any, fileContents
             }
             sortedImportSources.push({
                 originalIndex: overallIndex,
+                firstSpecifier: importSource.specifiers[0] && importSource.specifiers[0].local.name || "",
                 source: importSource.source.value,
                 originalLocation: {
                     start: {
@@ -67,7 +67,19 @@ export function sortByModule(parser: (fileContents: string) => any, fileContents
 
         // Sort them by name
         sortedImportSources.sort((a: SingleImportSource, b: SingleImportSource) => {
-            return a.source.localeCompare(b.source);
+            if (ensuredOptions.orderBy === "first_specifier") {
+                let result = a.firstSpecifier.localeCompare(b.firstSpecifier);
+                if (result !== 0) {
+                    return result;
+                }
+                return a.source.localeCompare(b.source);
+            } else {
+                let result = a.source.localeCompare(b.source);
+                if (result !== 0) {
+                    return result;
+                }
+                return a.firstSpecifier.localeCompare(b.firstSpecifier);
+            }
         });
 
 
@@ -116,14 +128,8 @@ export function sortByModule(parser: (fileContents: string) => any, fileContents
     return newFileContents;
 }
 
-function ensureOptions(options: SortByModuleOptions | null | undefined): SortByModuleOptions {
-    if (options == null) {
-        return {
-            orderBy: "alpha"
-        };
-    }
-
+function ensureOptions(options: SortImportDeclarationsOptions | null | undefined): SortImportDeclarationsOptions {
     return {
-        orderBy: options.orderBy || "alpha"
+        orderBy: options && options.orderBy || "source"
     };
 }

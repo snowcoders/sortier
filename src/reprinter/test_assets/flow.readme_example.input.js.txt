@@ -1,0 +1,15 @@
+/* Import example */
+import { 
+        a2, 
+        a1 } 
+        from "./a";
+import { 
+        c2, 
+        c1 } from "c"; // Inline comments will move with the import
+import { b2, b1 } from "./b";
+
+// Line comments and blank lines act like syntax barriers and will divide sorting blocks
+import { b1 } from "b1";
+
+/* Union type example */
+export type ButtonType = "small" | "big" | undefined | null | "medium";

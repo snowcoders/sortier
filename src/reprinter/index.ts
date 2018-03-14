@@ -8,6 +8,7 @@ import { parse as parseTypescript } from "../parsers/typescript";
 import { sortExpression, SortExpressionOptions } from "../sortExpression";
 import { sortImportDeclarations, SortImportDeclarationsOptions } from "../sortImportDeclarations";
 import { sortImportDeclarationSpecifiers, SortImportDeclarationSpecifiersOptions } from "../sortImportDeclarationSpecifiers";
+import { sortSwitchCase, SortSwitchCaseOptions } from "../sortSwitchCase";
 import { sortTSUnionTypeAnnotation } from "../sortTSUnionTypeAnnotation";
 import { sortUnionTypeAnnotation, SortUnionTypeAnnotationOptions } from "../sortUnionTypeAnnotation";
 import { sortVariableDeclarator, SortVariableDeclaratorOptions } from "../sortVariableDeclarator";
@@ -21,6 +22,7 @@ export interface ReprinterOptions {
     sortVariableDeclarator?: null | SortVariableDeclaratorOptions,
     sortUnionTypeAnnotation?: null | SortUnionTypeAnnotationOptions,
     sortExpression?: null | SortExpressionOptions,
+    sortSwitchCase?: null | SortSwitchCaseOptions,
     isHelpMode?: boolean,
     parser?: "flow" | "typescript"
 }
@@ -87,6 +89,9 @@ export class Reprinter {
                         }
 
                         case "SwitchStatement": {
+                            if (this._options.sortSwitchCase !== null) {
+                                fileContents = sortSwitchCase(item.cases, comments, fileContents, this._options.sortSwitchCase);
+                            }
                             break;
                         }
 

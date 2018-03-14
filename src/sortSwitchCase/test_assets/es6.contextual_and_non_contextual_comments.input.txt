@@ -1,0 +1,33 @@
+
+switch(button) {
+        // If case 5 happens
+        case 5: 
+                console.log("hi2");
+                console.log("hi2");
+                break
+        // If case 4 happens
+        case 4:
+                console.log("hi");
+                break
+        // If case 3 happens
+        case 3:
+                break
+                
+        // If case 2 happens
+        case 2: 
+                console.log("hi2");
+                console.log("hi2");
+                break
+        // If case 1 happens
+        case 1:
+                console.log("hi");
+                break
+        // If case 0 happens
+        case 0:
+                break
+
+        // If no cases happen
+        default:
+                console.log("break");
+                break
+}

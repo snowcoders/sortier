@@ -31,7 +31,7 @@ function ensureOptions(options?: SortExpressionOptions | null): SortExpressionOp
 
 interface OperandValue {
   value: string,
-  range: number[]
+  range: [number, number]
 }
 
 interface OperatorInfo {

@@ -1,0 +1,15 @@
+
+switch(button) {
+        // If case 0 happens
+        case 0:
+                console.log("hi");
+                break
+        // If case 1 happens
+        case 1:
+                console.log("hi");
+                break
+        // If case 2 happens
+        case 2: 
+                console.log("hi2");
+                break
+}

@@ -93,7 +93,6 @@ export class Reprinter {
                                 fileContents = sortSwitchCase(item.cases, comments, fileContents, this._options.sortSwitchCase);
                             }
                             break;
-                            break;
                         }
 
                         case "TSPropertySignature": {

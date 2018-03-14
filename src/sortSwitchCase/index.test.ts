@@ -20,7 +20,7 @@ interface TestInfo {
   outputFilePath: string;
 }
 
-describe('sortImportDeclarations', () => {
+describe('sortSwitchCase', () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 

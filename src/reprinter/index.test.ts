@@ -56,6 +56,21 @@ describe('reprinter', () => {
 
             expect(actual).to.equal(expected);
           });
+
+          it("All options off - " + testInfo.testName, () => {
+            let input = readFileSync(testInfo.inputFilePath, "utf8");
+            let expected = input.slice();
+            let actual = new Reprinter(testInfo.inputFilePath, {
+              sortExpression: null,
+              sortImportDeclarations: null,
+              sortImportDeclarationSpecifiers: null,
+              sortSwitchCase: null,
+              sortUnionTypeAnnotation: null,
+              sortVariableDeclarator: null,
+            }).getRewrittenFileContents();
+
+            expect(actual).to.equal(expected);
+          });
         }
       });
     });

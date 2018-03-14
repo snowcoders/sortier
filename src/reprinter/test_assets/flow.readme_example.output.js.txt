@@ -13,3 +13,23 @@ import { b1 } from "b1";
 
 /* Union type example */
 export type ButtonType = undefined | null | "big" | "medium" | "small";
+
+/* Switch case example */
+switch (1) {
+  // This is the first context group
+  case 3: {
+    alert(3);
+    // Leads into 2
+  }
+  case 2:
+    break;
+  case 4:
+    break;
+    
+  // This is the second context group
+  case 4:
+  case 5:
+    break;
+  case 7:
+    break;
+}

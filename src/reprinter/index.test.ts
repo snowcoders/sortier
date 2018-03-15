@@ -2,11 +2,7 @@ import { sentenceCase } from "../common/string-utils";
 import { expect } from 'chai';
 import { readFileSync } from "fs";
 import { sync } from "globby";
-import { basename, join, relative } from "path";
-
-// Parsers
-import { parse as flowParse } from '../parsers/flow';
-import { parse as typescriptParse } from '../parsers/typescript';
+import { basename, join } from "path";
 
 // The methods being tested here
 import { Reprinter } from './index';
@@ -50,7 +46,6 @@ describe('reprinter', () => {
           // Useful if you need to test a single file
           //if (testInfo.inputFilePath.includes("flow"))
           it(testInfo.testName, () => {
-            let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let actual = new Reprinter(testInfo.inputFilePath, {}).getRewrittenFileContents();
 

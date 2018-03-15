@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { readFileSync } from "fs";
 import { sync } from "globby";
-import { basename, join, relative } from "path";
+import { basename, join } from "path";
 
 // Parsers
 import { parse as flowParse } from '../parsers/flow';
@@ -47,7 +47,7 @@ describe('sortVariableDeclarator', () => {
   parserTypes.forEach(fileType => {
     describe(fileType, () => {
 
-      let parser = null;
+      let parser;
       switch (fileType) {
         case "flow":
         case "es6":
@@ -67,7 +67,8 @@ describe('sortVariableDeclarator', () => {
             it(testInfo.testName, () => {
               let input = readFileSync(testInfo.inputFilePath, "utf8");
               let expected = readFileSync(testInfo.outputFilePath, "utf8");
-              let actual = sortVariableDeclarator(parser(input).body, input);
+              let parsed = parser(input);
+              let actual = sortVariableDeclarator(parsed.body, parsed.comments, input);
 
               expect(actual).to.equal(expected);
             });

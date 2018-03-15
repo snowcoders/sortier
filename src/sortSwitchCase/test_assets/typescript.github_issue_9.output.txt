@@ -1,0 +1,17 @@
+
+switch ("ForStatement") {
+    case "ImportDeclaration": {
+        break;
+    }
+
+    case "ForStatement":
+    case "WhileStatement":
+    case "ForOfStatement": {
+        break;
+    }
+    case "IfStatement": {
+        break;
+    }
+    default:
+      break;
+}

@@ -5,6 +5,10 @@ export type MinimumTypeInformation = {
 };
 
 export function reorderValues(fileContents: string, comments: Comment[], unsortedTypes: MinimumTypeInformation[], sortedTypes: MinimumTypeInformation[]) {
+  if (unsortedTypes.length !== sortedTypes.length) {
+    throw new Error("Sortier ran into a problem - Expected the same number of unsorted types and sorted types to be provided");
+  }
+
   let newFileContents = fileContents.slice();
   let newFileContentIndexCorrection = 0;
   // Now go through the original specifiers again and if any have moved, switch them

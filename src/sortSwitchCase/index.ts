@@ -97,6 +97,11 @@ export function sortSwitchCase(cases: SwitchCase[], comments: Comment[], fileCon
         for (switchCaseEnd = 0; switchCaseEnd < cases.length; switchCaseEnd++) {
             // Do not rearrange items that are in a non-break statement
             let breakStatement = cases[switchCaseEnd].consequent.filter((value: any) => {
+                if (value.type === "BlockStatement") {
+                    return value.body.filter((value: any) => {
+                        return value.type === "BreakStatement";
+                    }).length !== 0;
+                }
                 return value.type === "BreakStatement";
             });
             if (breakStatement.length === 0) {

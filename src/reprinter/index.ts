@@ -55,7 +55,7 @@ export class Reprinter {
 
         let ast = parser(fileContents);
         let comments: Comment[] = ast.comments;
-        debugger;
+
         return this.rewriteNodes([ast], comments, fileContents);
     }
 

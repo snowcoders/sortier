@@ -261,6 +261,13 @@ export class Reprinter {
                         }
                         break;
                     }
+                    case "ContinueStatement":
+                    case "EmptyStatement":
+                    case "DebuggerStatement":
+                    case "BreakStatement": {
+                        // Skip since there isn't anything for us to sort
+                        break;
+                    }
 
                     // From typescript or flow - TODO need to split these
                     case "TSPropertySignature": {
@@ -284,8 +291,11 @@ export class Reprinter {
                         break;
                     }
                     case "TSInterfaceDeclaration": {
-                        debugger; // Figure out type of body and see if we can just push that instead
-                        nodes.push(node.body.body);
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "TSInterfaceBody": {
+                        fileContents = this.rewriteNodes(node.body, comments, fileContents);
                         break;
                     }
                     case "TypeAlias": {
@@ -315,12 +325,6 @@ export class Reprinter {
                         else {
                             this.printHelpModeInfo(node, fileContents);
                         }
-                        break;
-                    }
-                    case "ContinueStatement":
-                    case "EmptyStatement":
-                    case "BreakStatement": {
-                        // Skip since there isn't anything for us to sort
                         break;
                     }
                     default:

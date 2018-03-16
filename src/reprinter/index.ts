@@ -93,14 +93,12 @@ export class Reprinter {
                         break;
                     }
                     case "ExpressionStatement": {
-                        // TODO possibly sortExpression on node.expression (Type is Expression)
+                        nodes.push(node.expression);
                         break;
                     }
                     case "IfStatement": {
-                        // TODO possibly sortExpression on node.test (Type is Expression)
-                        if (node.consequent != null) {
-                            nodes.push(node.consequent);
-                        }
+                        nodes.push(node.test);
+                        nodes.push(node.consequent);
                         if (node.alternate != null) {
                             nodes.push(node.alternate);
                         }
@@ -111,7 +109,7 @@ export class Reprinter {
                         break;
                     }
                     case "WithStatement": {
-                        // TODO possibly sortExpression on node.object (Type is Expression)
+                        nodes.push(node.object);
                         nodes.push(node.body);
                         break;
                     }
@@ -131,14 +129,14 @@ export class Reprinter {
                         break;
                     }
                     case "ReturnStatement": {
-                        if (node.argument != null && this._options.sortExpression !== null) {
-                            fileContents = sortExpression(node.argument, comments, fileContents, this._options.sortExpression);
+                        if (node.argument) {
+                            nodes.push(node.argument);
                         }
                         break;
                     }
                     case "ThrowStatement": {
-                        if (node.argument != null && this._options.sortExpression !== null) {
-                            fileContents = sortExpression(node.argument, comments, fileContents, this._options.sortExpression);
+                        if (node.argument) {
+                            nodes.push(node.argument);
                         }
                         break;
                     }
@@ -154,21 +152,25 @@ export class Reprinter {
                     }
                     case "WhileStatement":
                     case "DoWhileStatement": {
-                        // TODO possibly sortExpression on node.test (Type is Expression)
+                        nodes.push(node.test);
                         nodes.push(node.body);
                         break;
                     }
                     case "ForStatement": {
                         // TODO possibly sortExpression or sortVariableDeclaration on node.init? (Type is Expression | VariableDeclaration)
-                        // TODO possibly sortExpression on node.test (Type is Expression)
-                        // TODO possibly sortExpression on node.update (Type is Expression)
+                        if (node.test != null) {
+                            nodes.push(node.test);
+                        }
+                        if (node.update != null) {
+                            nodes.push(node.update);
+                        }
                         nodes.push(node.body);
                         break;
                     }
                     case "ForInStatement":
                     case "ForOfStatement": {
-                        // TODO possibly sortExpression or sortVariableDeclaration on node.let (Type is Expression | VariableDeclaration)
-                        // TODO possibly sortExpression on node.right (Type is Expression)
+                        nodes.push(node.left);
+                        nodes.push(node.right);
                         nodes.push(node.body);
                         break;
                     }
@@ -193,7 +195,7 @@ export class Reprinter {
                     }
                     case "ObjectExpression": {
                         // TODO sort the properties
-                        nodes.push(node.properties);
+                        fileContents = this.rewriteNodes(node.properties, comments, fileContents);
                         break;
                     }
                     case "Property": {
@@ -209,6 +211,43 @@ export class Reprinter {
                         // TODO verify
                         debugger;
                         fileContents = this.rewriteNodes(node.expressions, comments, fileContents);
+                        break;
+                    }
+                    case "BinaryExpression": {
+                        // TODO rewrite this so that we call binary directly
+                        if (node.argument != null && this._options.sortExpression !== null) {
+                            fileContents = sortExpression(node.argument, comments, fileContents, this._options.sortExpression);
+                        }
+                        break;
+                    }
+                    case "AssignmentExpression": {
+                        // TODO ?
+                        // nodes.push(node.left);
+                        nodes.push(node.right);
+                        break;
+                    }
+                    case "UpdateExpression": {
+                        nodes.push(node.argument);
+                        break;
+                    }
+                    case "LogicalExpression": {
+                        nodes.push(node.left);
+                        nodes.push(node.right);
+                        break;
+                    }
+                    case "ConditionalExpression": {
+                        nodes.push(node.test);
+                        nodes.push(node.alternate);
+                        nodes.push(node.consequent);
+                        break;
+                    }
+                    case "CallExpression":
+                    case "NewExpression": {
+                        fileContents = this.rewriteNodes(node.arguments, comments, fileContents);
+                        break;
+                    }
+                    case "MemberExpression": {
+                        nodes.push(node.property);
                         break;
                     }
                     case "SwitchCase": {
@@ -265,9 +304,13 @@ export class Reprinter {
                         }
                         break;
                     }
+                    case "ThisExpression":
+                    case "UnaryExpression ":
                     case "ContinueStatement":
                     case "EmptyStatement":
                     case "DebuggerStatement":
+                    case "Literal":
+                    case "Identifier":
                     case "BreakStatement": {
                         // Skip since there isn't anything for us to sort
                         break;

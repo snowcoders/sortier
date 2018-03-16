@@ -187,6 +187,10 @@ export class Reprinter {
                         }
                         break;
                     }
+                    case "ArrayExpression": {
+                        fileContents = this.rewriteNodes(node.elements, comments, fileContents);
+                        break
+                    }
                     case "ObjectExpression": {
                         // TODO sort the properties
                         nodes.push(node.properties);

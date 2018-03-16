@@ -55,7 +55,7 @@ export class Reprinter {
 
         let ast = parser(fileContents);
         let comments: Comment[] = ast.comments;
-
+        debugger;
         return this.rewriteNodes([ast], comments, fileContents);
     }
 
@@ -98,11 +98,11 @@ export class Reprinter {
                     }
                     case "IfStatement": {
                         // TODO possibly sortExpression on node.test (Type is Expression)
-                        if (node.consequent.body != null) {
+                        if (node.consequent != null) {
                             nodes.push(node.consequent);
                         }
-                        if (node.alternate.body != null) {
-                            nodes.push(node.consequent);
+                        if (node.alternate != null) {
+                            nodes.push(node.alternate);
                         }
                         break;
                     }

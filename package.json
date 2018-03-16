@@ -18,7 +18,6 @@
   },
   "lint-staged": {
     "**/*.ts": [
-      "node bin/index.js",
       "git add"
     ]
   },

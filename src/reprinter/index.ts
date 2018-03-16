@@ -52,11 +52,12 @@ export class Reprinter {
 
         let ast = parser(fileContents);
         let comments = ast.comments;
-        let bodyStack = [ast.body || ast.program.body];
+        let nodes = [ast];
+        debugger;
 
-        while (bodyStack.length !== 0) {
-            let body = bodyStack.pop();
-            if (body == null) {
+        while (nodes.length !== 0) {
+            let node = nodes.pop();
+            if (node == null) {
                 continue;
             }
 
@@ -67,156 +68,265 @@ export class Reprinter {
             // TODO SwitchStatement
 
             // Now go through and push any bodies in the current context to the stack
-            for (let item of body) {
-                try {
-                    switch (item.type) {
-                        case "ImportDeclaration": {
-                            if (this._options.sortImportDeclarationSpecifiers !== null) {
-                                fileContents = sortImportDeclarationSpecifiers(item.specifiers, fileContents, this._options.sortImportDeclarationSpecifiers);
-                            }
-                            break;
+            try {
+                switch (node.type) {
+                    case "Program": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "Function": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "BlockStatement": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "ExpressionStatement": {
+                        // TODO possibly sortExpression on node.expression (Type is Expression)
+                        break;
+                    }
+                    case "IfStatement": {
+                        // TODO possibly sortExpression on node.test (Type is Expression)
+                        if (node.consequent.body != null) {
+                            nodes.push(node.consequent);
                         }
+                        if (node.alternate.body != null) {
+                            nodes.push(node.consequent);
+                        }
+                        break;
+                    }
+                    case "LabeledStatement": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "WithStatement": {
+                        // TODO possibly sortExpression on node.object (Type is Expression)
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "SwitchStatement": {
+                        // TODO possibly sortExpression on node.discriminant (Type is Expression)
+                        if (node.body != null) {
+                            // See if we get in here... based on estree.d.ts we shouldn't
+                            debugger;
+                            nodes.push(node.body);
+                        }
+                        if (this._options.sortSwitchCase !== null) {
+                            // TODO need to go into each switch statement and sort the contents before
+                            // sorting the cases
+                            fileContents = sortSwitchCase(node.cases, comments, fileContents, this._options.sortSwitchCase);
+                        }
+                        break;
+                    }
+                    case "ReturnStatement": {
+                        if (node.argument != null && this._options.sortExpression !== null) {
+                            fileContents = sortExpression(node.argument, comments, fileContents, this._options.sortExpression);
+                        }
+                        break;
+                    }
+                    case "ThrowStatement": {
+                        if (node.argument != null && this._options.sortExpression !== null) {
+                            fileContents = sortExpression(node.argument, comments, fileContents, this._options.sortExpression);
+                        }
+                        break;
+                    }
+                    case "TryStatement": {
+                        nodes.push(node.block);
+                        if (node.handler != null) {
+                            nodes.push(node.handler.body);
+                        }
+                        if (node.finalizer != null) {
+                            nodes.push(node.finalizer.body);
+                        }
+                        break;
+                    }
+                    case "WhileStatement":
+                    case "DoWhileStatement": {
+                        // TODO possibly sortExpression on node.test (Type is Expression)
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "ForStatement": {
+                        // TODO possibly sortExpression or sortVariableDeclaration on node.init? (Type is Expression | VariableDeclaration)
+                        // TODO possibly sortExpression on node.test (Type is Expression)
+                        // TODO possibly sortExpression on node.update (Type is Expression)
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "ForInStatement":
+                    case "ForOfStatement": {
+                        // TODO possibly sortExpression or sortVariableDeclaration on node.let (Type is Expression | VariableDeclaration)
+                        // TODO possibly sortExpression on node.right (Type is Expression)
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "FunctionDeclaration": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "VariableDeclaration": {
+                        if (this._options.sortVariableDeclarator !== null) {
+                            fileContents = sortVariableDeclarator(node, comments, fileContents, this._options.sortVariableDeclarator);
+                        }
+                        break;
+                    }
+                    case "ObjectExpression": {
+                        // TODO sort the properties
+                        nodes.push(node.properties);
+                        break;
+                    }
+                    case "Property": {
+                        // TODO possibly sortExpression on node.key (Type is Expression)
+                        // TODO possibly sortExpression on node.value (Type is Expression)
+                        break;
+                    }
+                    case "FunctionExpression": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "SequenceExpression": {
+                        // TODO verify
+                        debugger;
+                        nodes.push(node.expressions);
+                        break;
+                    }
+                    case "SwitchCase": {
+                        nodes.push(node.consequent);
+                        break;
+                    }
+                    case "CatchClause": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "ArrowFunctionExpression": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    // TODO Figure out what Patterns are and maybe sort them
+                    case "Class": {
+                        // Fairly sure there is more in a class than just this
+                        debugger;
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "ClassBody": {
+                        // Fairly sure there is more in a class than just this
+                        debugger;
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "MethodDefinition": {
+                        nodes.push(node.value);
+                        break;
+                    }
+                    case "ClassDeclaration":
+                    case "ClassExpression": {
+                        if (node.body != null) {
+                            nodes.push(node.body);
+                        } else if (node.declaration) {
+                            // TODO this is either node.declaration or node.declaration.body
+                            debugger;
+                            nodes.push(node.declaration);
+                        } else {
+                            this.printHelpModeInfo(node, fileContents);
+                        }
+                        break;
+                    }
+                    case "ImportDeclaration": {
+                        if (this._options.sortImportDeclarationSpecifiers !== null) {
+                            fileContents = sortImportDeclarationSpecifiers(node.specifiers, fileContents, this._options.sortImportDeclarationSpecifiers);
+                        }
+                        break;
+                    }
+                    case "ExportNamedDeclaration": {
+                        nodes.push(node.declaration);
+                        break;
+                    }
 
-                        case "IfStatement": {
-                            bodyStack.push(item.consequent.body);
-                            break;
-                        }
-                        case "ForStatement":
-                        case "WhileStatement":
-                        case "ForOfStatement": {
-                            bodyStack.push(item.body.body);
-                            break;
-                        }
 
-                        case "SwitchStatement": {
-                            if (this._options.sortSwitchCase !== null) {
-                                fileContents = sortSwitchCase(item.cases, comments, fileContents, this._options.sortSwitchCase);
-                            }
-                            break;
+                    case "TSPropertySignature": {
+                        if (this._options.sortUnionTypeAnnotation !== null) {
+                            fileContents = sortTSUnionTypeAnnotation(node.typeAnnotation, comments, fileContents, this._options.sortUnionTypeAnnotation);
                         }
-
-                        case "TSPropertySignature": {
+                        break;
+                    }
+                    case "InterfaceDeclaration": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "ObjectTypeAnnotation": {
+                        nodes.push(node.properties);
+                        break;
+                    }
+                    case "ObjectTypeProperty": {
+                        if (this._options.sortUnionTypeAnnotation !== null) {
+                            fileContents = sortUnionTypeAnnotation(node.value, comments, fileContents, this._options.sortUnionTypeAnnotation);
+                        }
+                        break;
+                    }
+                    case "TSInterfaceDeclaration": {
+                        debugger; // Figure out type of body and see if we can just push that instead
+                        nodes.push(node.body.body);
+                        break;
+                    }
+                    case "TypeAlias": {
+                        if (node.right.type === "UnionTypeAnnotation") {
                             if (this._options.sortUnionTypeAnnotation !== null) {
-                                fileContents = sortTSUnionTypeAnnotation(item.typeAnnotation, comments, fileContents, this._options.sortUnionTypeAnnotation);
+                                fileContents = sortUnionTypeAnnotation(node.right, comments, fileContents, this._options.sortUnionTypeAnnotation);
                             }
-                            break;
+                        } else if (node.right.type === "ObjectTypeAnnotation") {
+                            nodes.push(node.right);
+                        } else {
+                            this.printHelpModeInfo(node, fileContents);
                         }
-                        case "VariableDeclaration": {
-                            if (this._options.sortVariableDeclarator !== null) {
-                                fileContents = sortVariableDeclarator(body, comments, fileContents, this._options.sortVariableDeclarator);
-                            }
-                            break;
-                        }
-                        case "InterfaceDeclaration": {
-                            bodyStack.push(item.body.properties);
-                            break;
-                        }
-                        case "ObjectTypeProperty": {
+                        break;
+                    }
+                    case "ClassProperty": {
+                        if (node.typeAnnotation && node.typeAnnotation.type === "TypeAnnotation" && node.typeAnnotation.typeAnnotation.type === "UnionTypeAnnotation") {
                             if (this._options.sortUnionTypeAnnotation !== null) {
-                                fileContents = sortUnionTypeAnnotation(item.value, comments, fileContents, this._options.sortUnionTypeAnnotation);
-                            }
-                            break;
-                        }
-                        case "ReturnStatement": {
-                            if (item.argument != null && this._options.sortExpression !== null) {
-                                fileContents = sortExpression(item.argument, comments, fileContents, this._options.sortExpression);
-                            }
-                            break;
-                        }
-                        case "TSInterfaceDeclaration": {
-                            bodyStack.push(item.body.body);
-                            break;
-                        }
-                        case "FunctionDeclaration":
-                        case "ClassDeclaration": {
-                            if (item.body != null) {
-                                bodyStack.push(item.body.body);
-                            } else if (item.declaration) {
-                                bodyStack.push(item.declaration.body.body);
-                            } else {
-                                this.printHelpModeInfo(item, fileContents);
-                            }
-                            break;
-                        }
-                        case "TypeAlias": {
-                            if (item.right.type === "UnionTypeAnnotation") {
-                                if (this._options.sortUnionTypeAnnotation !== null) {
-                                    fileContents = sortUnionTypeAnnotation(item.right, comments, fileContents, this._options.sortUnionTypeAnnotation);
-                                }
-                            } else if (item.right.type === "ObjectTypeAnnotation") {
-                                bodyStack.push(item.right.properties);
-                            } else {
-                                this.printHelpModeInfo(item, fileContents);
-                            }
-                            break;
-                        }
-                        case "ExportNamedDeclaration": {
-                            body.push(item.declaration);
-                            break;
-                        }
-                        case "MethodDefinition": {
-                            bodyStack.push(item.value.body.body);
-                            break;
-                        }
-                        case "ClassProperty": {
-                            if (item.typeAnnotation && item.typeAnnotation.type === "TypeAnnotation" && item.typeAnnotation.typeAnnotation.type === "UnionTypeAnnotation") {
-                                if (this._options.sortUnionTypeAnnotation !== null) {
-                                    fileContents = sortUnionTypeAnnotation(item.typeAnnotation.typeAnnotation, comments, fileContents, this._options.sortUnionTypeAnnotation);
-                                }
-                                else {
-                                    this.printHelpModeInfo(item, fileContents);
-                                }
-                            } else if (item.value == null) {
-                                // No value to sort...
-                                break;
-                            }
-                            else if (item.value && item.value.body && item.value.body.body) {
-                                bodyStack.push(item.value.body.body);
-                            }
-                            else if ("ArrayExpression") {
-                                // TODO - Array expression
+                                fileContents = sortUnionTypeAnnotation(node.typeAnnotation.typeAnnotation, comments, fileContents, this._options.sortUnionTypeAnnotation);
                             }
                             else {
-                                this.printHelpModeInfo(item, fileContents);
+                                this.printHelpModeInfo(node, fileContents);
                             }
+                        } else if (node.value == null) {
+                            // No value to sort...
                             break;
                         }
-                        case "BlockStatement": {
-                            bodyStack.push(item.body);
-                            break;
+                        else if (node.value && node.value.body && node.value.body.body) {
+                            nodes.push(node.value.body.body);
                         }
-                        case "ExpressionStatement": {
-                            // TODO possibly sortExpression?
-                            break;
+                        else if ("ArrayExpression") {
+                            // TODO - Array expression
                         }
-                        case "ThrowStatement":
-                        case "ContinueStatement":
-                        case "EmptyStatement":
-                        case "BreakStatement": {
-                            // Skip since there isn't anything for us to sort
-                            break;
+                        else {
+                            this.printHelpModeInfo(node, fileContents);
                         }
-                        case "TryStatement": {
-                            bodyStack.push(item.block.body);
-                            bodyStack.push(item.handler.body.body);
-                            break;
-                        }
-                        default:
-                            this.printHelpModeInfo(item, fileContents);
-                            break;
+                        break;
                     }
-                }
-                catch (e) {
-                    this.printHelpModeInfo(item, fileContents);
-                    throw e;
+                    case "ContinueStatement":
+                    case "EmptyStatement":
+                    case "BreakStatement": {
+                        // Skip since there isn't anything for us to sort
+                        break;
+                    }
+                    default:
+                        this.printHelpModeInfo(node, fileContents);
+                        break;
                 }
             }
-
-            // Sorts that depend on other things sorting first
-            if (this._options.sortImportDeclarations !== null) {
-                fileContents = sortImportDeclarations(body, fileContents, this._options.sortImportDeclarations);
+            catch (e) {
+                this.printHelpModeInfo(node, fileContents);
+                throw e;
             }
         }
+
+        // Sorts that depend on other things sorting first
+        if (this._options.sortImportDeclarations !== null) {
+            fileContents = sortImportDeclarations(ast, fileContents, this._options.sortImportDeclarations);
+        }
+        // TODO Function sort - https://github.com/bryanrsmith/eslint-plugin-sort-class-members
 
         return fileContents;
     }

@@ -6,6 +6,7 @@ export interface SortJsxElementOptions {
 }
 
 export function sortJsxElement(jsxElement: any, comments: Comment[], fileContents: string, options?: SortJsxElementOptions) {
+  debugger;
   let newFileContents = fileContents.slice();
 
   let unsorted: any[] = jsxElement.openingElement.attributes;

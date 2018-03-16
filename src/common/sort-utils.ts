@@ -66,12 +66,26 @@ export function reorderValues(fileContents: string, comments: Comment[], unsorte
 }
 
 function getCommentRangeForSpecifier(fileContents: string, comments: Comment[], specifier: MinimumTypeInformation): [number, number] {
-  let specifierComments = getCommentsForSpecifier(fileContents, comments, specifier);
-
   // Determine where the specifier line starts
   let range = specifier.range;
   if (range == null) {
     throw new Error("Specifier cannot have a null range");
+  }
+
+  let specifierComments = getCommentsForSpecifier(fileContents, comments, specifier);
+
+
+  // If the specifier comments are block comments infront of the specifier
+  if (specifierComments.length >= 1 && specifierComments[0].type === "Block") {
+    let firstCommentRange = specifierComments[0].range;
+    let lastCommentRange = specifierComments[specifierComments.length - 1].range;
+    if (firstCommentRange == null || lastCommentRange == null) {
+      throw new Error("Comment cannot have a null range");
+    }
+
+    if (fileContents.substring(lastCommentRange[1], range[0]).indexOf("\n") === -1) {
+      return [firstCommentRange[0], lastCommentRange[1]];
+    }
   }
   let indexOfNewLineBeforeSpecifier = fileContents.substring(0, range[0]).lastIndexOf("\n");
   let textBetweenLineAndSpecifier = fileContents.substring(indexOfNewLineBeforeSpecifier, range[0]);
@@ -94,22 +108,22 @@ function getCommentRangeForSpecifier(fileContents: string, comments: Comment[], 
   return [specifierLineStart, specifierLineStart];
 }
 
-// Currently we only accept full line comments before the specifier.
+// Currently we only accept comments before the specifier.
 function getCommentsForSpecifier(fileContents: string, comments: Comment[], specifier: MinimumTypeInformation): Comment[] {
   if (specifier.range == null) {
     throw new Error("Should never pass in null locations into reorderValues");
   }
 
+  comments = comments.filter((comment) => {
+    // There seems to be bugs with the parsers regarding certain comments
+    // https://github.com/eslint/typescript-eslint-parser/issues/450
+    return isValidComment(fileContents, comment);
+  });
+
   // Determine the starting location of the comment
   let lastRange = specifier.range;
   let latestCommentIndex: number = -1;
   for (let index = 0; index < comments.length; index++) {
-    // There seems to be bugs with the parsers regarding certain comments
-    // https://github.com/eslint/typescript-eslint-parser/issues/450
-    if (!isValidComment(fileContents, comments[index])) {
-      continue;
-    }
-
     let commentRange = comments[index].range;
     if (commentRange == null) {
       continue;
@@ -131,18 +145,19 @@ function getCommentsForSpecifier(fileContents: string, comments: Comment[], spec
   let earliestCommentIndex = latestCommentIndex;
 
   while (earliestCommentIndex > 0) {
-    let previousComment = comments[earliestCommentIndex - 1].loc;
-    let thisComment = comments[earliestCommentIndex].loc;
+    let previousComment = comments[earliestCommentIndex - 1].range;
+    let thisComment = comments[earliestCommentIndex].range;
 
     if (previousComment == null || thisComment == null) {
-      continue;
+      throw new Error("Comment cannot have a null range");
     }
 
-    if (previousComment.end.line + 1 >= thisComment.start.line) {
-      earliestCommentIndex--;
-    }
-    else {
+    let textBetweenCommentAndSpecier = fileContents.substring(previousComment[1], thisComment[0])
+    // Ignore opeators and whitespace
+    if (textBetweenCommentAndSpecier.match(/[^(\|\&\+\-\*\/\s)]/igm)) {
       break;
+    } else {
+      earliestCommentIndex--;
     }
   }
 

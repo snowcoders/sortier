@@ -20,7 +20,7 @@ interface TestInfo {
   outputFilePath: string;
 }
 
-describe('sortExpression', () => {
+describe('sortJsxElement', () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 

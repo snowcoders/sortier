@@ -1,20 +1,24 @@
 import { Comment } from "estree";
 
-import { reorderValues } from "../common/sort-utils";
+import { reorderValues, getContextGroups } from "../common/sort-utils";
 
 export interface SortJsxElementOptions {
 }
 
 export function sortJsxElement(jsxElement: any, comments: Comment[], fileContents: string, options?: SortJsxElementOptions) {
-  debugger;
   let newFileContents = fileContents.slice();
 
-  let unsorted: any[] = jsxElement.openingElement.attributes;
-  let sorted: any[] = unsorted.slice().sort((a, b) => {
-    return a.name.name.localeCompare(b.name.name);
-  });
+  debugger;
+  let groupings = getContextGroups(jsxElement.openingElement.attributes, comments);
 
-  newFileContents = reorderValues(newFileContents, comments, unsorted, sorted);
+  groupings.forEach(element => {
+    let unsorted: any[] = element.nodes;
+    let sorted: any[] = element.nodes.slice().sort((a, b) => {
+      return a.name.name.localeCompare(b.name.name);
+    });
+
+    newFileContents = reorderValues(newFileContents, comments, unsorted, sorted);
+  });
 
   /*
   if (cases.length <= 1) {

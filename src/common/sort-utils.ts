@@ -1,8 +1,84 @@
-import { Comment } from "estree";
+import { Comment, SourceLocation } from "estree";
 
 export type MinimumTypeInformation = {
   range?: [number, number]
+  loc?: SourceLocation | null | undefined
 };
+
+export function getContextGroups(nodes: MinimumTypeInformation[], comments: Comment[]) {
+  // Blank lines between cases are considered Context breakers... we don't sort through them.
+  let groupings: any[] = [];
+  let contextGroups: any[] = [];
+  let commentGroups: Comment[][] = [];
+  let partialNodes = [nodes[0]];
+  let partialComments: Comment[] = [];
+  let lastLoc = nodes[0].loc;
+  let firstCaseCommentIndex = comments.findIndex((value) => {
+    if (value.loc == null || lastLoc == null) {
+      throw new Error("Comment location is null?");
+    }
+    return ((value.loc.end.line + 1) === lastLoc.start.line);
+  });
+  for (let nodesIndex = 1; nodesIndex < nodes.length; nodesIndex++) {
+    if (lastLoc == null) {
+      throw new Error("Case location is null?");
+    }
+    let thisLoc = nodes[nodesIndex].loc;
+    if (thisLoc == null) {
+      throw new Error("Case location is null?");
+    }
+    if ((lastLoc.end.line + 1) === thisLoc.start.line) {
+      partialNodes.push(nodes[nodesIndex])
+      lastLoc = thisLoc;
+      continue;
+    }
+    let nextComment = comments.find((value) => {
+      if (value.loc == null || lastLoc == null) {
+        throw new Error("Comment location is null?");
+      }
+      return ((lastLoc.end.line + 1) === value.loc.start.line);
+    });
+    if (nextComment != null) {
+      partialComments.push(nextComment);
+      lastLoc = nextComment.loc;
+      nodesIndex--;
+      continue;
+    }
+
+    // The first comment can either bet a contextual comment or a non-contextual comment... you just don't know.
+    // We base it on if there are other comments in the context group... if so, then we guess that it's not contextual
+    if (firstCaseCommentIndex !== -1 && partialComments.length !== 0) {
+      partialComments.unshift(comments[firstCaseCommentIndex]);
+    }
+    groupings.push({
+      nodes: partialNodes,
+      comments: partialComments,
+    });
+
+    partialNodes = [nodes[nodesIndex]];
+    partialComments = [];
+    lastLoc = nodes[nodesIndex].loc;
+    firstCaseCommentIndex = comments.findIndex((value) => {
+      if (value.loc == null || lastLoc == null) {
+        throw new Error("Comment location is null?");
+      }
+      return ((value.loc.end.line + 1) === lastLoc.start.line);
+    });
+  }
+
+  // The first comment can either bet a contextual comment or a non-contextual comment... you just don't know.
+  // We base it on if there are other comments in the context group... if so, then we guess that it's not contextual
+  if (firstCaseCommentIndex != null && partialComments.length !== 0) {
+    partialComments.unshift(comments[firstCaseCommentIndex]);
+  }
+
+  groupings.push({
+    nodes: partialNodes,
+    comments: partialComments,
+  });
+
+  return groupings;
+}
 
 export function reorderValues(fileContents: string, comments: Comment[], unsortedTypes: MinimumTypeInformation[], sortedTypes: MinimumTypeInformation[]) {
   if (unsortedTypes.length !== sortedTypes.length) {

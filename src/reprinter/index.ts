@@ -1,5 +1,7 @@
 import * as fs from "fs";
 
+import { Comment } from "estree";
+
 // Parsers
 import { parse as parseFlow } from "../parsers/flow";
 import { parse as parseTypescript } from "../parsers/typescript";
@@ -15,6 +17,7 @@ import { sortVariableDeclarator, SortVariableDeclaratorOptions } from "../sortVa
 
 // Utils
 import { endsWith } from "../common/string-utils";
+import { isArray } from "util";
 
 export interface ReprinterOptions {
     sortImportDeclarationSpecifiers?: null | SortImportDeclarationSpecifiersOptions,
@@ -51,14 +54,20 @@ export class Reprinter {
         let fileContents = this.readFileContents();
 
         let ast = parser(fileContents);
-        let comments = ast.comments;
-        let nodes = [ast];
-        debugger;
+        let comments: Comment[] = ast.comments;
 
+        return this.rewriteNodes([ast], comments, fileContents);
+    }
+
+    private rewriteNodes(originalNodes: any[], comments: Comment[], fileContents: string) {
+        let nodes = originalNodes.slice();
         while (nodes.length !== 0) {
-            let node = nodes.pop();
+            let node = nodes.shift();
+            if (isArray(node)) {
+                throw new Error("Unexpected Exception - Array sent as node in rewrite nodes");
+            }
             if (node == null) {
-                continue;
+                throw new Error("Unexpected Exception - Node received is null");
             }
 
             // TODO ObjectExpression
@@ -70,8 +79,9 @@ export class Reprinter {
             // Now go through and push any bodies in the current context to the stack
             try {
                 switch (node.type) {
+                    // From estree.d.ts
                     case "Program": {
-                        nodes.push(node.body);
+                        fileContents = this.rewriteNodes(node.body, comments, fileContents);
                         break;
                     }
                     case "Function": {
@@ -79,7 +89,7 @@ export class Reprinter {
                         break;
                     }
                     case "BlockStatement": {
-                        nodes.push(node.body);
+                        fileContents = this.rewriteNodes(node.body, comments, fileContents);
                         break;
                     }
                     case "ExpressionStatement": {
@@ -112,8 +122,9 @@ export class Reprinter {
                             debugger;
                             nodes.push(node.body);
                         }
+                        // Sort the contents of the cases
+                        fileContents = this.rewriteNodes(node.cases, comments, fileContents);
                         if (this._options.sortSwitchCase !== null) {
-                            // TODO need to go into each switch statement and sort the contents before
                             // sorting the cases
                             fileContents = sortSwitchCase(node.cases, comments, fileContents, this._options.sortSwitchCase);
                         }
@@ -166,6 +177,11 @@ export class Reprinter {
                         break;
                     }
                     case "VariableDeclaration": {
+                        // Sort the contents of each declarator
+                        fileContents = this.rewriteNodes(node.declarations, comments, fileContents);
+                        break;
+                    }
+                    case "VariableDeclarator": {
                         if (this._options.sortVariableDeclarator !== null) {
                             fileContents = sortVariableDeclarator(node, comments, fileContents, this._options.sortVariableDeclarator);
                         }
@@ -188,11 +204,11 @@ export class Reprinter {
                     case "SequenceExpression": {
                         // TODO verify
                         debugger;
-                        nodes.push(node.expressions);
+                        fileContents = this.rewriteNodes(node.expressions, comments, fileContents);
                         break;
                     }
                     case "SwitchCase": {
-                        nodes.push(node.consequent);
+                        fileContents = this.rewriteNodes(node.consequent, comments, fileContents);
                         break;
                     }
                     case "CatchClause": {
@@ -212,8 +228,7 @@ export class Reprinter {
                     }
                     case "ClassBody": {
                         // Fairly sure there is more in a class than just this
-                        debugger;
-                        nodes.push(node.body);
+                        fileContents = this.rewriteNodes(node.body, comments, fileContents);
                         break;
                     }
                     case "MethodDefinition": {
@@ -241,10 +256,13 @@ export class Reprinter {
                     }
                     case "ExportNamedDeclaration": {
                         nodes.push(node.declaration);
+                        if (this._options.sortImportDeclarationSpecifiers !== null) {
+                            fileContents = sortImportDeclarationSpecifiers(node.specifiers, fileContents, this._options.sortImportDeclarationSpecifiers);
+                        }
                         break;
                     }
 
-
+                    // From typescript or flow - TODO need to split these
                     case "TSPropertySignature": {
                         if (this._options.sortUnionTypeAnnotation !== null) {
                             fileContents = sortTSUnionTypeAnnotation(node.typeAnnotation, comments, fileContents, this._options.sortUnionTypeAnnotation);
@@ -256,7 +274,7 @@ export class Reprinter {
                         break;
                     }
                     case "ObjectTypeAnnotation": {
-                        nodes.push(node.properties);
+                        fileContents = this.rewriteNodes(node.properties, comments, fileContents);
                         break;
                     }
                     case "ObjectTypeProperty": {
@@ -271,14 +289,12 @@ export class Reprinter {
                         break;
                     }
                     case "TypeAlias": {
-                        if (node.right.type === "UnionTypeAnnotation") {
-                            if (this._options.sortUnionTypeAnnotation !== null) {
-                                fileContents = sortUnionTypeAnnotation(node.right, comments, fileContents, this._options.sortUnionTypeAnnotation);
-                            }
-                        } else if (node.right.type === "ObjectTypeAnnotation") {
-                            nodes.push(node.right);
-                        } else {
-                            this.printHelpModeInfo(node, fileContents);
+                        nodes.push(node.right);
+                        break;
+                    }
+                    case "UnionTypeAnnotation": {
+                        if (this._options.sortUnionTypeAnnotation !== null) {
+                            fileContents = sortUnionTypeAnnotation(node, comments, fileContents, this._options.sortUnionTypeAnnotation);
                         }
                         break;
                     }
@@ -292,13 +308,9 @@ export class Reprinter {
                             }
                         } else if (node.value == null) {
                             // No value to sort...
-                            break;
                         }
-                        else if (node.value && node.value.body && node.value.body.body) {
-                            nodes.push(node.value.body.body);
-                        }
-                        else if ("ArrayExpression") {
-                            // TODO - Array expression
+                        else if (node.value != null) {
+                            nodes.push(node.value);
                         }
                         else {
                             this.printHelpModeInfo(node, fileContents);
@@ -324,7 +336,7 @@ export class Reprinter {
 
         // Sorts that depend on other things sorting first
         if (this._options.sortImportDeclarations !== null) {
-            fileContents = sortImportDeclarations(ast, fileContents, this._options.sortImportDeclarations);
+            fileContents = sortImportDeclarations(originalNodes, fileContents, this._options.sortImportDeclarations);
         }
         // TODO Function sort - https://github.com/bryanrsmith/eslint-plugin-sort-class-members
 

@@ -49,7 +49,7 @@ describe('reprinter', () => {
         if (testInfo.parserType === parserType) {
           // Useful if you need to test a single file
           //if (testInfo.inputFilePath.includes("flow"))
-          it(testInfo.testName, () => {
+          it.only(testInfo.testName, () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let actual = new Reprinter(testInfo.inputFilePath, {}).getRewrittenFileContents();

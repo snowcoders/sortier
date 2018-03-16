@@ -262,7 +262,6 @@ export class Reprinter {
                         nodes.push(node.body);
                         break;
                     }
-                    // TODO Figure out what Patterns are and maybe sort them
                     case "Class": {
                         // Fairly sure there is more in a class than just this
                         debugger;

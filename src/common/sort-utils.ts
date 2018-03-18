@@ -1,82 +1,123 @@
 import { Comment, SourceLocation } from "estree";
 
-export type MinimumTypeInformation = {
-  range?: [number, number]
-  loc?: SourceLocation | null | undefined
+export interface MinimumTypeInformation {
+  range?: [number, number];
+  loc?: SourceLocation | null | undefined;
 };
 
-export function getContextGroups(nodes: MinimumTypeInformation[], comments: Comment[]) {
-  // Blank lines between cases are considered Context breakers... we don't sort through them.
-  let groupings: any[] = [];
-  let contextGroups: any[] = [];
-  let commentGroups: Comment[][] = [];
-  let partialNodes = [nodes[0]];
-  let partialComments: Comment[] = [];
-  let lastLoc = nodes[0].loc;
-  let firstCaseCommentIndex = comments.findIndex((value) => {
-    if (value.loc == null || lastLoc == null) {
-      throw new Error("Comment location is null?");
-    }
-    return ((value.loc.end.line + 1) === lastLoc.start.line);
+export interface ContextGroup {
+  nodes: any[];
+  comments: Comment[]
+};
+
+// Blank lines between cases are considered Context breakers... we don't sort through them.
+export function getContextGroups(nodes: MinimumTypeInformation[], comments: Comment[], fileContents: string): ContextGroup[] {
+  comments = comments.filter((comment) => {
+    // There seems to be bugs with the parsers regarding certain comments
+    // https://github.com/eslint/typescript-eslint-parser/issues/450
+    return isValidComment(fileContents, comment);
   });
-  for (let nodesIndex = 1; nodesIndex < nodes.length; nodesIndex++) {
-    if (lastLoc == null) {
-      throw new Error("Case location is null?");
+
+  if (nodes.length === 0) {
+    return [{
+      nodes: nodes,
+      comments: comments
+    }];
+  }
+
+  // Determine the start and end of the nodes and comments provided
+  let firstNodeLoc = nodes[0].range;
+  let lastNodeLoc = nodes[nodes.length - 1].range;
+  if (firstNodeLoc == null || lastNodeLoc == null) {
+    throw new Error("Node location is null?");
+  }
+  let rangeStart = firstNodeLoc[0];
+  let rangeEnd = lastNodeLoc[1];
+  let firstNodeComments = getCommentsForSpecifier(fileContents, comments, nodes[0]);
+  if (firstNodeComments.length > 0) {
+    let firstNodeCommentsRange = firstNodeComments[0].range;
+    if (firstNodeCommentsRange != null) {
+      rangeStart = firstNodeCommentsRange[0];
     }
-    let thisLoc = nodes[nodesIndex].loc;
-    if (thisLoc == null) {
-      throw new Error("Case location is null?");
+  }
+
+  // Now figure out all the indexes of any whitespace surrounded by two new lines (e.g. context separator)
+  let regex = /\n\s*\n/igm;
+  let result: RegExpExecArray | null;
+  let contextBarrierIndices: number[] = [];
+  while (result = regex.exec(fileContents)) {
+    if (rangeStart < result.index && result.index < rangeEnd) {
+      contextBarrierIndices.push(result.index);
     }
-    if ((lastLoc.end.line + 1) === thisLoc.start.line) {
-      partialNodes.push(nodes[nodesIndex])
-      lastLoc = thisLoc;
-      continue;
-    }
-    let nextComment = comments.find((value) => {
-      if (value.loc == null || lastLoc == null) {
-        throw new Error("Comment location is null?");
-      }
-      return ((lastLoc.end.line + 1) === value.loc.start.line);
-    });
-    if (nextComment != null) {
-      partialComments.push(nextComment);
-      lastLoc = nextComment.loc;
-      nodesIndex--;
-      continue;
+  }
+
+  // Now that we have the indices of all context breaks, anything that is between those breaks will be a single context
+  let groupings: ContextGroup[] = [];
+  let nodeIndex = 0;
+  let commentIndex = 0;
+
+  while (contextBarrierIndices.length > 0) {
+    let partialNodes: MinimumTypeInformation[] = [];
+    let partialComments: Comment[] = [];
+    let contextBarrierIndex = contextBarrierIndices.shift();
+
+    if (contextBarrierIndex == null) {
+      throw new Error("Context barrier index is null?");
     }
 
-    // The first comment can either bet a contextual comment or a non-contextual comment... you just don't know.
-    // We base it on if there are other comments in the context group... if so, then we guess that it's not contextual
-    if (firstCaseCommentIndex !== -1 && partialComments.length !== 0) {
-      partialComments.unshift(comments[firstCaseCommentIndex]);
+    // Nodes
+    while (nodeIndex < nodes.length) {
+      let range = nodes[nodeIndex].range;
+      if (range == null) {
+        throw new Error("Node location is null?");
+      }
+      if (contextBarrierIndex < range[1]) {
+        break;
+      }
+      partialNodes.push(nodes[nodeIndex]);
+      let nodeComments = getCommentsForSpecifier(fileContents, comments, nodes[nodeIndex]);
+      partialComments.push(...nodeComments);
+      nodeIndex++;
     }
+
+    // If the only comments for the whole group are above the first node, it's contextual
+    firstNodeComments = [];
+    if (partialNodes.length > 0) {
+      firstNodeComments = getCommentsForSpecifier(fileContents, comments, partialNodes[0]);
+    }
+    if (partialComments.length === firstNodeComments.length) {
+      partialComments = [];
+    }
+
     groupings.push({
       nodes: partialNodes,
-      comments: partialComments,
-    });
-
-    partialNodes = [nodes[nodesIndex]];
-    partialComments = [];
-    lastLoc = nodes[nodesIndex].loc;
-    firstCaseCommentIndex = comments.findIndex((value) => {
-      if (value.loc == null || lastLoc == null) {
-        throw new Error("Comment location is null?");
-      }
-      return ((value.loc.end.line + 1) === lastLoc.start.line);
-    });
+      comments: partialComments
+    })
   }
 
-  // The first comment can either bet a contextual comment or a non-contextual comment... you just don't know.
-  // We base it on if there are other comments in the context group... if so, then we guess that it's not contextual
-  if (firstCaseCommentIndex != null && partialComments.length !== 0) {
-    partialComments.unshift(comments[firstCaseCommentIndex]);
-  }
 
-  groupings.push({
-    nodes: partialNodes,
-    comments: partialComments,
+  let partialNodes = nodes.slice(nodeIndex);
+  let partialComments: Comment[] = [];
+  partialNodes.forEach((node) => {
+    let nodeComments = getCommentsForSpecifier(fileContents, comments, node);
+    partialComments.push(...nodeComments);
   });
 
+  // If the only comments for the whole group are above the first node, it's contextual
+  firstNodeComments = [];
+  if (partialNodes.length > 0) {
+    firstNodeComments = getCommentsForSpecifier(fileContents, comments, partialNodes[0]);
+  }
+  if (partialComments.length === firstNodeComments.length) {
+    partialComments = [];
+  }
+
+  if (commentIndex < comments.length || nodeIndex < nodes.length) {
+    groupings.push({
+      nodes: nodes.slice(nodeIndex),
+      comments: partialComments
+    });
+  }
   return groupings;
 }
 
@@ -98,9 +139,12 @@ export function reorderValues(fileContents: string, comments: Comment[], unsorte
     let specifierCommentRange = getCommentRangeForSpecifier(fileContents, comments, specifier);
     let newSpecifierCommentRange = getCommentRangeForSpecifier(fileContents, comments, newSpecifier);
 
+    // As long as the comment isn't the same comment and one of the specifiers has a comment
     // Swap the specifier comments (as they will be before the specifier)
-    if (specifierCommentRange[0] !== specifierCommentRange[1] ||
-      newSpecifierCommentRange[0] !== newSpecifierCommentRange[1]) {
+    if (specifierCommentRange[0] !== newSpecifierCommentRange[0] &&
+      specifierCommentRange[1] !== newSpecifierCommentRange[1] &&
+      (specifierCommentRange[0] !== specifierCommentRange[1] ||
+        newSpecifierCommentRange[0] !== newSpecifierCommentRange[1])) {
       let spliceRemoveIndexStart = specifierCommentRange[0] + newFileContentIndexCorrection;
       let spliceRemoveIndexEnd = specifierCommentRange[1] + newFileContentIndexCorrection;
 
@@ -205,9 +249,13 @@ function getCommentsForSpecifier(fileContents: string, comments: Comment[], spec
       continue;
     }
 
-    let textBetweenCommentAndSpecier = fileContents.substring(commentRange[1], lastRange[0])
+    if (commentRange[0] > lastRange[0]) {
+      break;
+    }
+
+    let textBetweenCommentAndSpecier = fileContents.substring(commentRange[1], lastRange[0]);
     // Ignore opeators and whitespace
-    if (textBetweenCommentAndSpecier.match(/[^(\|\&\+\-\*\/\s)]/igm)) {
+    if ((textBetweenCommentAndSpecier.match(/\n/igm) || []).length > 1) {
       continue;
     } else {
       latestCommentIndex = index;

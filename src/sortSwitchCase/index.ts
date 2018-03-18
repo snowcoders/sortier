@@ -1,6 +1,6 @@
 import { Comment, SwitchCase } from "estree";
 
-import { reorderValues } from "../common/sort-utils";
+import { reorderValues, getContextGroups } from "../common/sort-utils";
 
 export interface SortSwitchCaseOptions {
 }
@@ -17,76 +17,11 @@ export function sortSwitchCase(cases: SwitchCase[], comments: Comment[], fileCon
         cases = cases.slice(0, cases.length - 1);
     }
 
-    // Blank lines between cases are considered Context breakers... we don't sort through them.
-    let contextGroups: any[] = [];
-    let commentGroups: Comment[][] = [];
-    let partialCases = [cases[0]];
-    let partialComments: Comment[] = [];
-    let lastLoc = cases[0].loc;
-    let firstCaseComment = comments.find((value) => {
-        if (value.loc == null || lastLoc == null) {
-            throw new Error("Comment location is null?");
-        }
-        return ((value.loc.end.line + 1) === lastLoc.start.line);
-    });
-    for (let casesIndex = 1; casesIndex < cases.length; casesIndex++) {
-        if (lastLoc == null) {
-            throw new Error("Case location is null?");
-        }
-        let thisLoc = cases[casesIndex].loc;
-        if (thisLoc == null) {
-            throw new Error("Case location is null?");
-        }
-        if ((lastLoc.end.line + 1) === thisLoc.start.line) {
-            partialCases.push(cases[casesIndex])
-            lastLoc = thisLoc;
-            continue;
-        }
-        let nextComment = comments.find((value) => {
-            if (value.loc == null || lastLoc == null) {
-                throw new Error("Comment location is null?");
-            }
-            return ((lastLoc.end.line + 1) === value.loc.start.line);
-        });
-        if (nextComment != null) {
-            partialComments.push(nextComment);
-            lastLoc = nextComment.loc;
-            casesIndex--;
-            continue;
-        }
-
-        // The first comment can either bet a contextual comment or a non-contextual comment... you just don't know.
-        // We base it on if there are other comments in the context group... if so, then we guess that it's not contextual
-        if (firstCaseComment != null && partialComments.length !== 0) {
-            partialComments.unshift(firstCaseComment);
-        }
-        contextGroups.push(partialCases);
-        commentGroups.push(partialComments);
-
-        partialCases = [cases[casesIndex]];
-        partialComments = [];
-        lastLoc = cases[casesIndex].loc;
-        firstCaseComment = comments.find((value) => {
-            if (value.loc == null || lastLoc == null) {
-                throw new Error("Comment location is null?");
-            }
-            return ((value.loc.end.line + 1) === lastLoc.start.line);
-        });
-    }
-
-    // The first comment can either bet a contextual comment or a non-contextual comment... you just don't know.
-    // We base it on if there are other comments in the context group... if so, then we guess that it's not contextual
-    if (firstCaseComment != null && partialComments.length !== 0) {
-        partialComments.unshift(firstCaseComment);
-    }
-
-    contextGroups.push(partialCases);
-    commentGroups.push(partialComments);
+    let contextGroups = getContextGroups(cases, comments, fileContents);
 
     for (let x = 0; x < contextGroups.length; x++) {
-        let contextGroup = contextGroups[x];
-        let commentGroup = commentGroups[x];
-        let cases = contextGroup;
+        let cases = contextGroups[x].nodes;
+        let comments = contextGroups[x].comments;
         if (cases.length === 0) {
             continue;
         }
@@ -144,7 +79,7 @@ export function sortSwitchCase(cases: SwitchCase[], comments: Comment[], fileCon
 
         let newOrder = [].concat.apply([], switchGroupsWithBreaks);
 
-        newFileContents = reorderValues(newFileContents, commentGroup, cases, newOrder);
+        newFileContents = reorderValues(newFileContents, comments, cases, newOrder);
     }
 
     return newFileContents;

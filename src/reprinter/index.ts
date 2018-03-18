@@ -10,6 +10,7 @@ import { parse as parseTypescript } from "../parsers/typescript";
 import { sortExpression, SortExpressionOptions } from "../sortExpression";
 import { sortImportDeclarations, SortImportDeclarationsOptions } from "../sortImportDeclarations";
 import { sortImportDeclarationSpecifiers, SortImportDeclarationSpecifiersOptions } from "../sortImportDeclarationSpecifiers";
+import { sortObjectTypeAnnotation, SortObjectTypeAnnotationOptions } from "../sortObjectTypeAnnotation";
 import { sortSwitchCase, SortSwitchCaseOptions } from "../sortSwitchCase";
 import { sortTSUnionTypeAnnotation } from "../sortTSUnionTypeAnnotation";
 import { sortUnionTypeAnnotation, SortUnionTypeAnnotationOptions } from "../sortUnionTypeAnnotation";
@@ -26,6 +27,7 @@ export interface ReprinterOptions {
     sortUnionTypeAnnotation?: null | SortUnionTypeAnnotationOptions,
     sortExpression?: null | SortExpressionOptions,
     sortSwitchCase?: null | SortSwitchCaseOptions,
+    sortObjectTypeAnnotation?: null | SortObjectTypeAnnotationOptions,
     isHelpMode?: boolean,
     parser?: "flow" | "typescript"
 }
@@ -328,6 +330,9 @@ export class Reprinter {
                     }
                     case "ObjectTypeAnnotation": {
                         fileContents = this.rewriteNodes(node.properties, comments, fileContents);
+                        if (this._options.sortObjectTypeAnnotation !== null) {
+                            fileContents = sortObjectTypeAnnotation(node, comments, fileContents, this._options.sortObjectTypeAnnotation);
+                        }
                         break;
                     }
                     case "ObjectTypeProperty": {

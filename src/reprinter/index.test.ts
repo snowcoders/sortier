@@ -47,6 +47,7 @@ describe('reprinter', () => {
           //if (testInfo.inputFilePath.includes("flow"))
           it(testInfo.testName, () => {
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
+            debugger;
             let actual = new Reprinter(testInfo.inputFilePath, {}).getRewrittenFileContents();
 
             expect(actual).to.equal(expected);

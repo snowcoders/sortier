@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { readFileSync } from "fs";
 import { sync } from "globby";
-import { basename, join, relative } from "path";
+import { basename, join } from "path";
 
 // Parsers
 import { parse as flowParse } from '../parsers/flow';
@@ -55,7 +55,7 @@ describe('sortImportDeclarationSpecifiers', () => {
   parserTypes.forEach(fileType => {
     describe(fileType, () => {
 
-      let parser = null;
+      let parser;
       switch (fileType) {
         case "flow":
         case "es6":

@@ -8,7 +8,7 @@ export interface SortImportDeclarationSpecifiersOptions {
 interface SingleSpecifier {
     originalIndex: number,
     importedName: string,
-    isType: boolean,
+    importKind: string | null,
     isInterface: boolean,
     originalLocation: {
         start: number,
@@ -39,7 +39,7 @@ function sortSingleSpecifier(specifiers: any, fileContents: string, options: Sor
         sortedSpecifiers.push({
             originalIndex: x,
             importedName: importedName,
-            isType: fileContents.substr((specifier.start || specifier.range[0]) - 5, 5) === "type " || fileContents.substr((specifier.start || specifier.range[0]) - 7, 7) === "typeof ",
+            importKind: specifier.importKind,
             isInterface: nameIsLikelyInterface(importedName),
             originalLocation: {
                 start: specifier.start || specifier.range[0],
@@ -63,7 +63,7 @@ function sortSingleSpecifier(specifiers: any, fileContents: string, options: Sor
     }
     sortedSpecifiers.sort((a: SingleSpecifier, b: SingleSpecifier) => {
         if (a.isInterface === b.isInterface &&
-            a.isType === b.isType) {
+            a.importKind === b.importKind) {
             return a.importedName.localeCompare(b.importedName);
         }
 
@@ -71,7 +71,7 @@ function sortSingleSpecifier(specifiers: any, fileContents: string, options: Sor
         if (a.isInterface) {
             aRank = interfaceRank;
         }
-        if (a.isType) {
+        if (a.importKind != null) {
             aRank = typeRanking;
         }
 
@@ -79,7 +79,7 @@ function sortSingleSpecifier(specifiers: any, fileContents: string, options: Sor
         if (b.isInterface) {
             bRank = interfaceRank;
         }
-        if (b.isType) {
+        if (b.importKind != null) {
             bRank = typeRanking;
         }
         if (aRank == bRank) {
@@ -101,11 +101,10 @@ function sortSingleSpecifier(specifiers: any, fileContents: string, options: Sor
         let spliceRemoveIndexStart = (specifier.start || specifier.range[0]) + newFileContentIndexCorrection;
         let spliceRemoveIndexEnd = (specifier.end || specifier.range[1]) + newFileContentIndexCorrection;
         // Flow allows for "type " and  "typeof " to prefix any export"
-        if (spliceRemoveIndexStart > 5 && newFileContents.substr(spliceRemoveIndexStart - 5, 5) === "type ") {
-            spliceRemoveIndexStart = spliceRemoveIndexStart - 5;
-        }
-        if (spliceRemoveIndexStart > 7 && newFileContents.substr(spliceRemoveIndexStart - 7, 7) === "typeof ") {
-            spliceRemoveIndexStart = spliceRemoveIndexStart - 7;
+        if (specifier.importKind != null) {
+            let text = fileContents.substring(0, spliceRemoveIndexStart - newFileContentIndexCorrection);
+            let importKindIndex = text.lastIndexOf(specifier.importKind);
+            spliceRemoveIndexStart = importKindIndex + newFileContentIndexCorrection;
         }
 
         let untouchedBeginning = newFileContents.slice(0, spliceRemoveIndexStart);
@@ -114,11 +113,9 @@ function sortSingleSpecifier(specifiers: any, fileContents: string, options: Sor
         let spliceAddIndexStart = sortedSpecifiers[x].originalLocation.start;
         let spliceAddIndexEnd = sortedSpecifiers[x].originalLocation.end;
         // Flow allows for "type " and  "typeof " to prefix any export"
-        if (spliceAddIndexStart > 5 && fileContents.substr(spliceAddIndexStart - 5, 5) === "type ") {
-            spliceAddIndexStart = spliceAddIndexStart - 5;
-        }
-        if (spliceAddIndexStart > 7 && fileContents.substr(spliceAddIndexStart - 7, 7) === "typeof ") {
-            spliceAddIndexStart = spliceAddIndexStart - 7;
+        if (sortedSpecifiers[x].importKind != null) {
+            let importKindIndex = fileContents.substring(0, spliceAddIndexStart).lastIndexOf((sortedSpecifiers[x] as any).importKind);
+            spliceAddIndexStart = importKindIndex;
         }
         let stringToInsert = fileContents.substring(spliceAddIndexStart, spliceAddIndexEnd);
 

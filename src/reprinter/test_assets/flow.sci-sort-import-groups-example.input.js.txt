@@ -2,22 +2,22 @@
 import React from 'react';
 
 // Components - External
-import { Button } from 'button';
 import { Checkbox } from 'checkbox';
-import {RadioButton, RadioGroup} from 'radio-group';
 import RangePicker from 'range-picker';
+import {RadioGroup, RadioButton} from 'radio-group';
+import { Button } from 'button';
 
 // Components - Internal
-import AnotherPane from '../../another-pane';
 import AwesomePanel from '../../awesome-panel';
+import ChildComponent4 from './child-component-4';
+import ChildComponent1 from './child-component-1';
+import AnotherPane from '../../another-pane';
+import ChildComponent3 from './child-component-3';
+import ChildComponent2 from './child-component-2';
 import { 
     Something,
-    type SomethingProps,
-    type SomethingSubProps } from '../something';
-import ChildComponent1 from './child-component-1';
-import ChildComponent2 from './child-component-2';
-import ChildComponent3 from './child-component-3';
-import ChildComponent4 from './child-component-4';
+    type   SomethingSubProps,
+    type SomethingProps } from '../something';
 
 export class BestComponent extends React.Component<> {
 }

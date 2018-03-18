@@ -1,0 +1,3 @@
+
+
+return <input /*On*//* click */ onClick={() =>{}} /* OnBlur */ onBlur={() =>{}} />;

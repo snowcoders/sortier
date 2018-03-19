@@ -44,10 +44,10 @@ export interface ReprinterOptions {
     sortSwitchCase?: null | SortSwitchCaseOptions,
     sortObjectTypeAnnotation?: null | SortObjectTypeAnnotationOptions,
     isHelpMode?: boolean,
-    parser?: "flow" | "typescript" | {
+    parser?: "flow" | {
       d: () => void,
       b: () => void,
       c: string,
       a: string
-    },
+    } | "typescript",
 }

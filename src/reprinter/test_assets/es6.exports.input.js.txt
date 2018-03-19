@@ -1,0 +1,8 @@
+let a = "a";
+let b = "b";
+
+export { b, a };
+export { b as d, a as c };
+export default function getA() {
+  return a;
+}

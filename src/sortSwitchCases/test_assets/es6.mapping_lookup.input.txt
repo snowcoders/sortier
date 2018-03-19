@@ -1,0 +1,13 @@
+switch (state) {
+  case states.NOT_STARTED:
+    console.log("Not started");
+    break;
+  case states.PENDING:
+    console.log("Pending");
+    break;
+  case states.Complete:
+    console.log("Finished");
+    break;
+  default:
+    throw new Error("not supported");
+}

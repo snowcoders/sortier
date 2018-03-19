@@ -38,10 +38,10 @@ switch (1) {
 export interface ReprinterOptions {
     isHelpMode?: boolean,
     parser?: "flow" | "typescript" | {
-      d: () => void,
-      b: () => void,
-      c: string,
       a: string
+      c: string,
+      b: () => void,
+      d: () => void,
     },
     sortExpression?: null | SortExpressionOptions,
     sortImportDeclarations?: null | SortImportDeclarationsOptions,

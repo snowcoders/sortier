@@ -141,9 +141,11 @@ export class Reprinter {
                         break;
                     }
                     case "ExportNamedDeclaration": {
-                        nodes.push(node.declaration);
+                        if (node.declaration != null) {
+                            nodes.push(node.declaration);
+                        }
                         if (node.specifiers.length !== 0) {
-                            this.printHelpModeInfo(node, fileContents);
+                            fileContents = sortImportDeclarationSpecifiers(node.specifiers, fileContents);
                         }
                         break;
                     }
@@ -213,8 +215,10 @@ export class Reprinter {
                         break;
                     }
                     case "ObjectExpression": {
-                        // TODO sort the properties
                         fileContents = this.rewriteNodes(node.properties, comments, fileContents);
+                        fileContents = sortObjectTypeAnnotation(node, comments, fileContents, this._options.sortTypeAnnotations && {
+                            groups: this._options.sortTypeAnnotations
+                        });
                         break;
                     }
                     case "Program": {
@@ -237,6 +241,19 @@ export class Reprinter {
                         fileContents = this.rewriteNodes(node.expressions, comments, fileContents);
                         break;
                     }
+                    case "SpreadElement":
+                    case "TemplateLiteral":
+                    case "ThisExpression":
+                    case "UnaryExpression":
+                    case "ContinueStatement":
+                    case "EmptyStatement":
+                    case "DebuggerStatement":
+                    case "Literal":
+                    case "Identifier":
+                    case "BreakStatement": {
+                        // Skip since there isn't anything for us to sort
+                        break;
+                    }
                     case "SwitchCase": {
                         fileContents = this.rewriteNodes(node.consequent, comments, fileContents);
                         break;
@@ -252,19 +269,6 @@ export class Reprinter {
                         fileContents = this.rewriteNodes(node.cases, comments, fileContents);
                         // Sort the cases
                         fileContents = sortSwitchCases(node.cases, comments, fileContents);
-                        break;
-                    }
-                    case "SpreadElement":
-                    case "TemplateLiteral":
-                    case "ThisExpression":
-                    case "UnaryExpression":
-                    case "ContinueStatement":
-                    case "EmptyStatement":
-                    case "DebuggerStatement":
-                    case "Literal":
-                    case "Identifier":
-                    case "BreakStatement": {
-                        // Skip since there isn't anything for us to sort
                         break;
                     }
                     case "ThrowStatement": {
@@ -326,13 +330,13 @@ export class Reprinter {
                     case "TSTupleType": {
                         break;
                     }
+                    case "TSTypeAnnotation": {
+                        nodes.push(node.typeAnnotation);
+                        break;
+                    }
                     case "TSTypeLiteral": {
                         fileContents = this.rewriteNodes(node.members, comments, fileContents);
                         // TODO sort the members
-                        break;
-                    }
-                    case "TSTypeAnnotation": {
-                        nodes.push(node.typeAnnotation);
                         break;
                     }
                     case "TSUnionType": {

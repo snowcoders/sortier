@@ -71,17 +71,19 @@ function getSortGroupIndex(property, options: SortObjectTypeAnnotationOptions): 
   }
 
   let aRank = everythingRank;
-  if (property.value.type === "NullLiteralTypeAnnotation") {
-    aRank = nullRank;
-  }
-  else if (property.value.type === "GenericTypeAnnotation" && property.value.id.name === "undefined") {
-    aRank = undefinedRank;
-  }
-  else if (property.value.type === "ObjectTypeAnnotation") {
-    aRank = objectRank;
-  }
-  else if (property.value.type === "FunctionTypeAnnotation") {
-    aRank = functionRank;
+  if (property.value != null) {
+    if (property.value.type === "NullLiteralTypeAnnotation") {
+      aRank = nullRank;
+    }
+    else if (property.value.type === "GenericTypeAnnotation" && property.value.id.name === "undefined") {
+      aRank = undefinedRank;
+    }
+    else if (property.value.type === "ObjectTypeAnnotation") {
+      aRank = objectRank;
+    }
+    else if (property.value.type === "FunctionTypeAnnotation") {
+      aRank = functionRank;
+    }
   }
 
   return aRank;

@@ -69,10 +69,6 @@ export class Reprinter {
                 throw new Error("Unexpected Exception - Node received is null");
             }
 
-            // TODO ObjectExpression
-            // TODO ObjectPattern
-            // TODO JSXOpeningElement
-
             // Now go through and push any bodies in the current context to the stack
             try {
                 switch (node.type) {
@@ -138,6 +134,10 @@ export class Reprinter {
                         nodes.push(node.test);
                         nodes.push(node.alternate);
                         nodes.push(node.consequent);
+                        break;
+                    }
+                    case "ExportDefaultDeclaration": {
+                        nodes.push(node.declaration);
                         break;
                     }
                     case "ExportNamedDeclaration": {
@@ -345,6 +345,15 @@ export class Reprinter {
                         });
                         break;
                     }
+
+                    // Flow
+                    case "StringLiteralTypeAnnotation":
+                    case "StringTypeAnnotation":
+                    case "NumberTypeAnnotation":
+                    case "BooleanTypeAnnotation":
+                    case "GenericTypeAnnotation":
+                    case "NullLiteralTypeAnnotation":
+                        break;
 
                     // From typescript or flow - TODO need to split these
                     case "ClassProperty": {

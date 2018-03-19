@@ -65,8 +65,9 @@ export function sortSwitchCases(cases: SwitchCase[], comments: Comment[], fileCo
             if (bTest == null) {
                 throw new Error("Null value for switch case statement");
             }
-            let aValue = aTest.raw;
-            let bValue = bTest.raw;
+
+            let aValue = fileContents.substring(aTest.range[0], aTest.range[1]);
+            let bValue = fileContents.substring(bTest.range[0], bTest.range[1]);
             if (aValue == null) {
                 throw new Error("Null value for switch case statement");
             }

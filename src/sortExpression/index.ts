@@ -1,10 +1,9 @@
 import { reorderValues } from "../common/sort-utils";
 
-export type SortExpressionOptionsGroups = "*" | "undefined" | "null";
+export type SortExpressionOptionsGroups = "null" | "undefined" | "*" | "function" | "object";
 
 export interface SortExpressionOptions {
   groups: SortExpressionOptionsGroups[],
-  orderBy: "alpha"
 }
 
 export function sortExpression(expression, comments, fileContents: string, options?: SortExpressionOptions) {
@@ -14,8 +13,7 @@ export function sortExpression(expression, comments, fileContents: string, optio
 function ensureOptions(options?: SortExpressionOptions | null): SortExpressionOptions {
   if (options == null) {
     return {
-      groups: ["undefined", "null", "*"],
-      orderBy: "alpha"
+      groups: ["undefined", "null", "*", "object", "function"],
     };
   }
 
@@ -24,8 +22,7 @@ function ensureOptions(options?: SortExpressionOptions | null): SortExpressionOp
   }
 
   return {
-    groups: options.groups || ["undefined", "null", "*"],
-    orderBy: options.orderBy || "alpha"
+    groups: options.groups || ["undefined", "null", "*", "object", "function"],
   };
 }
 
@@ -187,6 +184,7 @@ class ExpressionSorter {
     if (typeRanking === -1) {
       typeRanking = everythingRank;
     }
+    // TODO Can these operand values be functions or objects?
     sortedValues.sort((a: OperandValue, b: OperandValue) => {
       let aRank = everythingRank;
       if (a.value == "null") {

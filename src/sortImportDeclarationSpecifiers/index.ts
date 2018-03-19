@@ -137,13 +137,13 @@ function nameIsLikelyInterface(name: string) {
 function ensureOptions(options?: SortImportDeclarationSpecifiersOptions | null): SortImportDeclarationSpecifiersOptions {
     if (options == null) {
         return {
-            groups: ["*", "types", "interfaces"],
+            groups: ["*", "interfaces", "types"],
             orderBy: "name"
         };
     }
 
     return {
-        groups: options.groups || ["*", "types", "interfaces"],
+        groups: options.groups || ["*", "interfaces", "types"],
         orderBy: options.orderBy || "name"
     };
 }

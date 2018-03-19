@@ -1,0 +1,53 @@
+/* Import example */
+import { 
+        a1, 
+        a2 } 
+        from "./a";
+import { b1, b2 } from "./b";
+import { 
+        c1, 
+        c2 } from "c"; // Inline comments will move with the import
+
+// Line comments and blank lines act like syntax barriers and will divide sorting blocks
+import { b1 } from "b1";
+
+/* Union type example */
+export type ButtonType = undefined | null | "big" | "medium" | "small";
+
+/* Switch case example */
+switch (1) {
+  // This is the first context group
+  case 3: {
+    alert(3);
+    // Leads into 2
+  }
+  case 2:
+    break;
+  case 4:
+    break;
+    
+  // This is the second context group
+  case 4:
+  case 5:
+    break;
+  case 7:
+    break;
+}
+
+
+export interface ReprinterOptions {
+    isHelpMode?: boolean,
+    parser?: "flow" | "typescript" | {
+      a: string,
+      c: string,
+      b: () => void,
+      d: () => void,
+    },
+    sortExpression?: null | SortExpressionOptions,
+    sortImportDeclarations?: null | SortImportDeclarationsOptions,
+    sortImportDeclarationSpecifiers?: null | SortImportDeclarationSpecifiersOptions,
+    sortObjectTypeAnnotation?: null | SortObjectTypeAnnotationOptions,
+    sortSwitchCase?: null | SortSwitchCaseOptions,
+    sortUnionTypeAnnotation?: null | SortUnionTypeAnnotationOptions,
+    sortVariableDeclarator?: null | SortVariableDeclaratorOptions,
+}

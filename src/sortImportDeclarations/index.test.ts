@@ -106,7 +106,7 @@ import { Apple } from "./food";
 import honda from "./cars";
 import * as React from "react";`;
       let actual = sortImportDeclarations(flowParse(input).body, input, {
-        orderBy: "first_specifier"
+        orderBy: "first-specifier"
       });
 
       expect(actual).to.equal(output);

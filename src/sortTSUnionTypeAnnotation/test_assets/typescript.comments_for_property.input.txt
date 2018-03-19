@@ -1,5 +1,0 @@
-// Definition for the interface
-interface Definition {
-  // Comment for the property
-  property: null | string | undefined
-}

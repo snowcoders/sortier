@@ -1,11 +1,11 @@
 import { Comment, SwitchCase } from "estree";
 
-import { reorderValues, getContextGroups } from "../common/sort-utils";
+import { getContextGroups, reorderValues } from "../common/sort-utils";
 
 export interface SortSwitchCaseOptions {
 }
 
-export function sortSwitchCase(cases: SwitchCase[], comments: Comment[], fileContents: string, options?: SortSwitchCaseOptions) {
+export function sortSwitchCases(cases: SwitchCase[], comments: Comment[], fileContents: string, options?: SortSwitchCaseOptions) {
     let newFileContents = fileContents.slice();
 
     if (cases.length <= 1) {

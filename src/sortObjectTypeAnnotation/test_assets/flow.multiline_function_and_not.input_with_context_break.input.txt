@@ -1,0 +1,7 @@
+export type Hello = {
+  d: string,
+  b: string,
+  
+  c: () => void,
+  a(): string,
+}  

@@ -8,7 +8,7 @@ import { parse as flowParse } from '../parsers/flow';
 import { parse as typescriptParse } from '../parsers/typescript';
 
 // The methods being tested here
-import { sortSwitchCase } from './index';
+import { sortObjectTypeAnnotation } from './index';
 
 // Utilities
 import { sentenceCase } from "../common/string-utils";
@@ -20,7 +20,7 @@ interface TestInfo {
   outputFilePath: string;
 }
 
-describe('sortSwitchCase', () => {
+describe('sortObjectTypeAnnotation', () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 
@@ -67,7 +67,7 @@ describe('sortSwitchCase', () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);
-            let actual = sortSwitchCase(parsed.body[0].cases, parsed.comments, input);
+            let actual = sortObjectTypeAnnotation(parsed.body[0].declaration.right, parsed.comments, input);
 
             expect(actual).to.equal(expected);
           });

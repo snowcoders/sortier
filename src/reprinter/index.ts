@@ -7,26 +7,23 @@ import { parse as parseFlow } from "../parsers/flow";
 import { parse as parseTypescript } from "../parsers/typescript";
 
 // Types of sorts
-import { sortExpression, SortExpressionOptions } from "../sortExpression";
-import { sortImportDeclarations, SortImportDeclarationsOptions } from "../sortImportDeclarations";
-import { sortImportDeclarationSpecifiers, SortImportDeclarationSpecifiersOptions } from "../sortImportDeclarationSpecifiers";
-import { sortSwitchCase, SortSwitchCaseOptions } from "../sortSwitchCase";
-import { sortTSUnionTypeAnnotation } from "../sortTSUnionTypeAnnotation";
-import { sortUnionTypeAnnotation, SortUnionTypeAnnotationOptions } from "../sortUnionTypeAnnotation";
-import { sortVariableDeclarator, SortVariableDeclaratorOptions } from "../sortVariableDeclarator";
+import { sortExpression } from "../sortExpression";
+import { sortImportDeclarations } from "../sortImportDeclarations";
+import { sortImportDeclarationSpecifiers } from "../sortImportDeclarationSpecifiers";
+import { sortJsxElement } from "../sortJsxElement";
+import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation";
+import { sortSwitchCases } from "../sortSwitchCases";
+import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation";
 
 // Utils
 import { endsWith } from "../common/string-utils";
 import { isArray } from "util";
 
 export interface ReprinterOptions {
-    sortImportDeclarationSpecifiers?: null | SortImportDeclarationSpecifiersOptions,
-    sortImportDeclarations?: null | SortImportDeclarationsOptions,
-    sortVariableDeclarator?: null | SortVariableDeclaratorOptions,
-    sortUnionTypeAnnotation?: null | SortUnionTypeAnnotationOptions,
-    sortExpression?: null | SortExpressionOptions,
-    sortSwitchCase?: null | SortSwitchCaseOptions,
+    sortImportDeclarations?: "source" | "first-specifier",
+    sortTypeAnnotations?: ("null" | "undefined" | "*" | "function" | "object")[]
     isHelpMode?: boolean,
+    isTestRun?: boolean,
     parser?: "flow" | "typescript"
 }
 
@@ -36,7 +33,9 @@ export class Reprinter {
 
         let fileContents = reprinter.getRewrittenFileContents();
 
-        reprinter.writeFileContents(fileContents);
+        if (options.isTestRun == null || !options.isTestRun) {
+            reprinter.writeFileContents(fileContents);
+        }
     }
 
     private _filename: string;
@@ -73,27 +72,115 @@ export class Reprinter {
             // TODO ObjectExpression
             // TODO ObjectPattern
             // TODO JSXOpeningElement
-            // TODO ObjectTypeAnnotation
-            // TODO SwitchStatement
 
             // Now go through and push any bodies in the current context to the stack
             try {
                 switch (node.type) {
                     // From estree.d.ts
-                    case "Program": {
-                        fileContents = this.rewriteNodes(node.body, comments, fileContents);
+                    case "ArrayExpression": {
+                        fileContents = this.rewriteNodes(node.elements, comments, fileContents);
+                        break
+                    }
+                    case "ArrowFunctionExpression": {
+                        nodes.push(node.body);
                         break;
                     }
-                    case "Function": {
-                        nodes.push(node.body);
+                    case "AssignmentExpression": {
+                        // TODO ?
+                        // nodes.push(node.left);
+                        nodes.push(node.right);
+                        break;
+                    }
+                    case "BinaryExpression": {
+                        fileContents = sortExpression(node, comments, fileContents, this._options.sortTypeAnnotations && {
+                            groups: this._options.sortTypeAnnotations,
+                        });
                         break;
                     }
                     case "BlockStatement": {
                         fileContents = this.rewriteNodes(node.body, comments, fileContents);
                         break;
                     }
+                    case "CallExpression":
+                    case "NewExpression": {
+                        fileContents = this.rewriteNodes(node.arguments, comments, fileContents);
+                        break;
+                    }
+                    case "CatchClause": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "Class": {
+                        // Fairly sure there is more in a class than just this
+                        debugger;
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "ClassBody": {
+                        // Fairly sure there is more in a class than just this
+                        fileContents = this.rewriteNodes(node.body, comments, fileContents);
+                        break;
+                    }
+                    case "ClassDeclaration":
+                    case "ClassExpression": {
+                        if (node.body != null) {
+                            nodes.push(node.body);
+                        } else if (node.declaration) {
+                            // TODO this is either node.declaration or node.declaration.body
+                            debugger;
+                            nodes.push(node.declaration);
+                        } else {
+                            this.printHelpModeInfo(node, fileContents);
+                        }
+                        break;
+                    }
+                    case "ConditionalExpression": {
+                        nodes.push(node.test);
+                        nodes.push(node.alternate);
+                        nodes.push(node.consequent);
+                        break;
+                    }
+                    case "ExportNamedDeclaration": {
+                        nodes.push(node.declaration);
+                        if (node.specifiers.length !== 0) {
+                            this.printHelpModeInfo(node, fileContents);
+                        }
+                        break;
+                    }
                     case "ExpressionStatement": {
                         nodes.push(node.expression);
+                        break;
+                    }
+                    case "ForInStatement":
+                    case "ForOfStatement": {
+                        nodes.push(node.left);
+                        nodes.push(node.right);
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "ForStatement": {
+                        if (node.init != null) {
+                            nodes.push(node.init);
+                        }
+                        if (node.test != null) {
+                            nodes.push(node.test);
+                        }
+                        if (node.update != null) {
+                            nodes.push(node.update);
+                        }
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "Function": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "FunctionDeclaration": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "FunctionExpression": {
+                        nodes.push(node.body);
                         break;
                     }
                     case "IfStatement": {
@@ -104,34 +191,80 @@ export class Reprinter {
                         }
                         break;
                     }
+                    case "ImportDeclaration": {
+                        fileContents = sortImportDeclarationSpecifiers(node.specifiers, fileContents);
+                        break;
+                    }
                     case "LabeledStatement": {
                         nodes.push(node.body);
                         break;
                     }
-                    case "WithStatement": {
-                        nodes.push(node.object);
-                        nodes.push(node.body);
+                    case "LogicalExpression": {
+                        nodes.push(node.left);
+                        nodes.push(node.right);
                         break;
                     }
-                    case "SwitchStatement": {
-                        // TODO possibly sortExpression on node.discriminant (Type is Expression)
-                        if (node.body != null) {
-                            // See if we get in here... based on estree.d.ts we shouldn't
-                            debugger;
-                            nodes.push(node.body);
-                        }
-                        // Sort the contents of the cases
-                        fileContents = this.rewriteNodes(node.cases, comments, fileContents);
-                        if (this._options.sortSwitchCase !== null) {
-                            // sorting the cases
-                            fileContents = sortSwitchCase(node.cases, comments, fileContents, this._options.sortSwitchCase);
-                        }
+                    case "MemberExpression": {
+                        nodes.push(node.property);
+                        break;
+                    }
+                    case "MethodDefinition": {
+                        nodes.push(node.value);
+                        break;
+                    }
+                    case "ObjectExpression": {
+                        // TODO sort the properties
+                        fileContents = this.rewriteNodes(node.properties, comments, fileContents);
+                        break;
+                    }
+                    case "Program": {
+                        fileContents = this.rewriteNodes(node.body, comments, fileContents);
+                        break;
+                    }
+                    case "Property": {
+                        nodes.push(node.key);
+                        nodes.push(node.value);
                         break;
                     }
                     case "ReturnStatement": {
                         if (node.argument) {
                             nodes.push(node.argument);
                         }
+                        break;
+                    }
+                    case "SequenceExpression": {
+                        this.printHelpModeInfo(node, fileContents);
+                        fileContents = this.rewriteNodes(node.expressions, comments, fileContents);
+                        break;
+                    }
+                    case "SwitchCase": {
+                        fileContents = this.rewriteNodes(node.consequent, comments, fileContents);
+                        break;
+                    }
+                    case "SwitchStatement": {
+                        nodes.push(node.discriminant);
+                        if (node.body != null) {
+                            // See if we get in here... based on estree.d.ts we shouldn't
+                            this.printHelpModeInfo(node, fileContents);
+                            nodes.push(node.body);
+                        }
+                        // Sort the contents of the cases
+                        fileContents = this.rewriteNodes(node.cases, comments, fileContents);
+                        // Sort the cases
+                        fileContents = sortSwitchCases(node.cases, comments, fileContents);
+                        break;
+                    }
+                    case "SpreadElement":
+                    case "TemplateLiteral":
+                    case "ThisExpression":
+                    case "UnaryExpression":
+                    case "ContinueStatement":
+                    case "EmptyStatement":
+                    case "DebuggerStatement":
+                    case "Literal":
+                    case "Identifier":
+                    case "BreakStatement": {
+                        // Skip since there isn't anything for us to sort
                         break;
                     }
                     case "ThrowStatement": {
@@ -150,32 +283,8 @@ export class Reprinter {
                         }
                         break;
                     }
-                    case "WhileStatement":
-                    case "DoWhileStatement": {
-                        nodes.push(node.test);
-                        nodes.push(node.body);
-                        break;
-                    }
-                    case "ForStatement": {
-                        // TODO possibly sortExpression or sortVariableDeclaration on node.init? (Type is Expression | VariableDeclaration)
-                        if (node.test != null) {
-                            nodes.push(node.test);
-                        }
-                        if (node.update != null) {
-                            nodes.push(node.update);
-                        }
-                        nodes.push(node.body);
-                        break;
-                    }
-                    case "ForInStatement":
-                    case "ForOfStatement": {
-                        nodes.push(node.left);
-                        nodes.push(node.right);
-                        nodes.push(node.body);
-                        break;
-                    }
-                    case "FunctionDeclaration": {
-                        nodes.push(node.body);
+                    case "UpdateExpression": {
+                        nodes.push(node.argument);
                         break;
                     }
                     case "VariableDeclaration": {
@@ -184,184 +293,59 @@ export class Reprinter {
                         break;
                     }
                     case "VariableDeclarator": {
-                        if (this._options.sortVariableDeclarator !== null) {
-                            fileContents = sortVariableDeclarator(node, comments, fileContents, this._options.sortVariableDeclarator);
+                        if (node.init != null) {
+                            nodes.push(node.init);
                         }
                         break;
                     }
-                    case "ArrayExpression": {
-                        fileContents = this.rewriteNodes(node.elements, comments, fileContents);
-                        break
-                    }
-                    case "ObjectExpression": {
-                        // TODO sort the properties
-                        fileContents = this.rewriteNodes(node.properties, comments, fileContents);
-                        break;
-                    }
-                    case "Property": {
-                        // TODO possibly sortExpression on node.key (Type is Expression)
-                        // TODO possibly sortExpression on node.value (Type is Expression)
-                        break;
-                    }
-                    case "FunctionExpression": {
-                        nodes.push(node.body);
-                        break;
-                    }
-                    case "SequenceExpression": {
-                        // TODO verify
-                        debugger;
-                        fileContents = this.rewriteNodes(node.expressions, comments, fileContents);
-                        break;
-                    }
-                    case "BinaryExpression": {
-                        // TODO rewrite this so that we call binary directly
-                        if (node.argument != null && this._options.sortExpression !== null) {
-                            fileContents = sortExpression(node.argument, comments, fileContents, this._options.sortExpression);
-                        }
-                        break;
-                    }
-                    case "AssignmentExpression": {
-                        // TODO ?
-                        // nodes.push(node.left);
-                        nodes.push(node.right);
-                        break;
-                    }
-                    case "UpdateExpression": {
-                        nodes.push(node.argument);
-                        break;
-                    }
-                    case "LogicalExpression": {
-                        nodes.push(node.left);
-                        nodes.push(node.right);
-                        break;
-                    }
-                    case "ConditionalExpression": {
+                    case "WhileStatement":
+                    case "DoWhileStatement": {
                         nodes.push(node.test);
-                        nodes.push(node.alternate);
-                        nodes.push(node.consequent);
-                        break;
-                    }
-                    case "CallExpression":
-                    case "NewExpression": {
-                        fileContents = this.rewriteNodes(node.arguments, comments, fileContents);
-                        break;
-                    }
-                    case "MemberExpression": {
-                        nodes.push(node.property);
-                        break;
-                    }
-                    case "SwitchCase": {
-                        fileContents = this.rewriteNodes(node.consequent, comments, fileContents);
-                        break;
-                    }
-                    case "CatchClause": {
                         nodes.push(node.body);
                         break;
                     }
-                    case "ArrowFunctionExpression": {
+                    case "WithStatement": {
+                        nodes.push(node.object);
                         nodes.push(node.body);
                         break;
                     }
-                    case "Class": {
-                        // Fairly sure there is more in a class than just this
-                        debugger;
-                        nodes.push(node.body);
+
+                    // JSX
+                    case "JSXOpeningElement": {
+                        fileContents = sortJsxElement(node, comments, fileContents);
                         break;
                     }
-                    case "ClassBody": {
-                        // Fairly sure there is more in a class than just this
-                        fileContents = this.rewriteNodes(node.body, comments, fileContents);
+
+                    // Typescript
+                    case "TSArrayType":
+                    case "TSBooleanKeyword":
+                    case "TSLastTypeNode":
+                    case "TSStringKeyword":
+                    case "TSNumberKeyword":
+                    case "TSTypeReference":
+                    case "TSTupleType": {
                         break;
                     }
-                    case "MethodDefinition": {
-                        nodes.push(node.value);
+                    case "TSTypeLiteral": {
+                        fileContents = this.rewriteNodes(node.members, comments, fileContents);
+                        // TODO sort the members
                         break;
                     }
-                    case "ClassDeclaration":
-                    case "ClassExpression": {
-                        if (node.body != null) {
-                            nodes.push(node.body);
-                        } else if (node.declaration) {
-                            // TODO this is either node.declaration or node.declaration.body
-                            debugger;
-                            nodes.push(node.declaration);
-                        } else {
-                            this.printHelpModeInfo(node, fileContents);
-                        }
+                    case "TSTypeAnnotation": {
+                        nodes.push(node.typeAnnotation);
                         break;
                     }
-                    case "ImportDeclaration": {
-                        if (this._options.sortImportDeclarationSpecifiers !== null) {
-                            fileContents = sortImportDeclarationSpecifiers(node.specifiers, fileContents, this._options.sortImportDeclarationSpecifiers);
-                        }
-                        break;
-                    }
-                    case "ExportNamedDeclaration": {
-                        nodes.push(node.declaration);
-                        if (this._options.sortImportDeclarationSpecifiers !== null) {
-                            fileContents = sortImportDeclarationSpecifiers(node.specifiers, fileContents, this._options.sortImportDeclarationSpecifiers);
-                        }
-                        break;
-                    }
-                    case "ThisExpression":
-                    case "UnaryExpression ":
-                    case "ContinueStatement":
-                    case "EmptyStatement":
-                    case "DebuggerStatement":
-                    case "Literal":
-                    case "Identifier":
-                    case "BreakStatement": {
-                        // Skip since there isn't anything for us to sort
+                    case "TSUnionType": {
+                        fileContents = sortExpression(node, comments, fileContents, this._options.sortTypeAnnotations && {
+                            groups: this._options.sortTypeAnnotations,
+                        });
                         break;
                     }
 
                     // From typescript or flow - TODO need to split these
-                    case "TSPropertySignature": {
-                        if (this._options.sortUnionTypeAnnotation !== null) {
-                            fileContents = sortTSUnionTypeAnnotation(node.typeAnnotation, comments, fileContents, this._options.sortUnionTypeAnnotation);
-                        }
-                        break;
-                    }
-                    case "InterfaceDeclaration": {
-                        nodes.push(node.body);
-                        break;
-                    }
-                    case "ObjectTypeAnnotation": {
-                        fileContents = this.rewriteNodes(node.properties, comments, fileContents);
-                        break;
-                    }
-                    case "ObjectTypeProperty": {
-                        if (this._options.sortUnionTypeAnnotation !== null) {
-                            fileContents = sortUnionTypeAnnotation(node.value, comments, fileContents, this._options.sortUnionTypeAnnotation);
-                        }
-                        break;
-                    }
-                    case "TSInterfaceDeclaration": {
-                        nodes.push(node.body);
-                        break;
-                    }
-                    case "TSInterfaceBody": {
-                        fileContents = this.rewriteNodes(node.body, comments, fileContents);
-                        break;
-                    }
-                    case "TypeAlias": {
-                        nodes.push(node.right);
-                        break;
-                    }
-                    case "UnionTypeAnnotation": {
-                        if (this._options.sortUnionTypeAnnotation !== null) {
-                            fileContents = sortUnionTypeAnnotation(node, comments, fileContents, this._options.sortUnionTypeAnnotation);
-                        }
-                        break;
-                    }
                     case "ClassProperty": {
-                        if (node.typeAnnotation && node.typeAnnotation.type === "TypeAnnotation" && node.typeAnnotation.typeAnnotation.type === "UnionTypeAnnotation") {
-                            if (this._options.sortUnionTypeAnnotation !== null) {
-                                fileContents = sortUnionTypeAnnotation(node.typeAnnotation.typeAnnotation, comments, fileContents, this._options.sortUnionTypeAnnotation);
-                            }
-                            else {
-                                this.printHelpModeInfo(node, fileContents);
-                            }
+                        if (node.typeAnnotation != null) {
+                            nodes.push(node.typeAnnotation);
                         } else if (node.value == null) {
                             // No value to sort...
                         }
@@ -371,6 +355,48 @@ export class Reprinter {
                         else {
                             this.printHelpModeInfo(node, fileContents);
                         }
+                        break;
+                    }
+                    case "InterfaceDeclaration": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "ObjectTypeAnnotation": {
+                        fileContents = this.rewriteNodes(node.properties, comments, fileContents);
+                        fileContents = sortObjectTypeAnnotation(node, comments, fileContents, this._options.sortTypeAnnotations && {
+                            groups: this._options.sortTypeAnnotations
+                        });
+                        break;
+                    }
+                    case "ObjectTypeProperty": {
+                        nodes.push(node.value);
+                        break;
+                    }
+                    case "TSInterfaceBody": {
+                        fileContents = this.rewriteNodes(node.body, comments, fileContents);
+                        break;
+                    }
+                    case "TSInterfaceDeclaration": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "TSPropertySignature": {
+                        nodes.push(node.typeAnnotation);
+                        break;
+                    }
+                    case "TypeAlias": {
+                        nodes.push(node.right);
+                        break;
+                    }
+                    case "TypeAnnotation": {
+                        nodes.push(node.typeAnnotation);
+                        break;
+                    }
+                    case "UnionTypeAnnotation": {
+                        fileContents = this.rewriteNodes(node.types, comments, fileContents);
+                        fileContents = sortUnionTypeAnnotation(node, comments, fileContents, this._options.sortTypeAnnotations && {
+                            groups: this._options.sortTypeAnnotations
+                        });
                         break;
                     }
                     default:
@@ -386,7 +412,9 @@ export class Reprinter {
 
         // Sorts that depend on other things sorting first
         if (this._options.sortImportDeclarations !== null) {
-            fileContents = sortImportDeclarations(originalNodes, fileContents, this._options.sortImportDeclarations);
+            fileContents = sortImportDeclarations(originalNodes, fileContents, this._options.sortImportDeclarations && {
+                orderBy: this._options.sortImportDeclarations
+            });
         }
         // TODO Function sort - https://github.com/bryanrsmith/eslint-plugin-sort-class-members
 

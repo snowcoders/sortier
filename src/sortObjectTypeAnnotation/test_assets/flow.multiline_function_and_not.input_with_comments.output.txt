@@ -1,0 +1,19 @@
+export type Hello = {
+  /**
+ * b
+ */
+  b: string,
+  /**
+ * d
+ * 
+ */
+  d: string,
+  /**
+ * a
+ */
+  a(): string,
+  /**
+ * c is a function
+ */
+  c: () => void,
+}  

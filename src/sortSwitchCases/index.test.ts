@@ -8,7 +8,7 @@ import { parse as flowParse } from '../parsers/flow';
 import { parse as typescriptParse } from '../parsers/typescript';
 
 // The methods being tested here
-import { sortTSUnionTypeAnnotation } from './index';
+import { sortSwitchCases } from './index';
 
 // Utilities
 import { sentenceCase } from "../common/string-utils";
@@ -20,7 +20,7 @@ interface TestInfo {
   outputFilePath: string;
 }
 
-describe('sortTSUnionTypeAnnotation', () => {
+describe('sortSwitchCases', () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 
@@ -60,13 +60,14 @@ describe('sortTSUnionTypeAnnotation', () => {
           throw new Error("Unknown parser passed - " + fileType + ". Expected 'flow', 'typescript' or 'es6'.");
       }
 
+
       testInfos.forEach(testInfo => {
         if (testInfo.parserType == fileType) {
           it(testInfo.testName, () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);
-            let actual = sortTSUnionTypeAnnotation(parsed.body[0].body.body[0].typeAnnotation, parsed.comments, input);
+            let actual = sortSwitchCases(parsed.body[0].cases, parsed.comments, input);
 
             expect(actual).to.equal(expected);
           });

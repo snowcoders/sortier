@@ -20,7 +20,7 @@ interface TestInfo {
   outputFilePath: string;
 }
 
-describe('sortSwitchCase', () => {
+describe('sortSwitchCases', () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 
@@ -67,7 +67,7 @@ describe('sortSwitchCase', () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);
-            let actual = sortSwitchCase(parsed.body[0].cases, parsed.comments, input);
+            let actual = sortSwitchCases(parsed.body[0].cases, parsed.comments, input);
 
             expect(actual).to.equal(expected);
           });

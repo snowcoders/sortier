@@ -363,7 +363,9 @@ export class Reprinter {
                     }
                     case "ObjectTypeAnnotation": {
                         fileContents = this.rewriteNodes(node.properties, comments, fileContents);
-                        fileContents = sortObjectTypeAnnotation(node, comments, fileContents);
+                        fileContents = sortObjectTypeAnnotation(node, comments, fileContents, this._options.sortTypeAnnotations && {
+                            groups: this._options.sortTypeAnnotations
+                        });
                         break;
                     }
                     case "ObjectTypeProperty": {
@@ -391,6 +393,7 @@ export class Reprinter {
                         break;
                     }
                     case "UnionTypeAnnotation": {
+                        fileContents = this.rewriteNodes(node.types, comments, fileContents);
                         fileContents = sortUnionTypeAnnotation(node, comments, fileContents, this._options.sortTypeAnnotations && {
                             groups: this._options.sortTypeAnnotations
                         });

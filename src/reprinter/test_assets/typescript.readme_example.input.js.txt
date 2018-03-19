@@ -48,6 +48,6 @@ export interface ReprinterOptions {
       d: () => void,
       b: () => void,
       c: string,
-      a: string
+      a: string,
     } | "typescript",
 }

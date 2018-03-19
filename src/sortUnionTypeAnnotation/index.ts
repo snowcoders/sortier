@@ -20,7 +20,7 @@ export function sortUnionTypeAnnotation(unionTypeAnnotation, comments, fileConte
 function ensureOptions(options?: SortUnionTypeAnnotationOptions | null): SortUnionTypeAnnotationOptions {
   if (options == null) {
     return {
-      groups: ["undefined", "null", "*"],
+      groups: ["undefined", "null", "*", "object", "function"],
     };
   }
 
@@ -29,7 +29,7 @@ function ensureOptions(options?: SortUnionTypeAnnotationOptions | null): SortUni
   }
 
   return {
-    groups: options.groups || ["undefined", "null", "*"],
+    groups: options.groups || ["undefined", "null", "*", "object", "function"],
   };
 }
 
@@ -68,6 +68,14 @@ class UnionTypeAnnotationSorter {
     if (undefinedRank === -1) {
       undefinedRank = everythingRank;
     }
+    let functionRank = this.options.groups.indexOf("function");
+    if (functionRank === -1) {
+      functionRank = everythingRank;
+    }
+    let objectRank = this.options.groups.indexOf("object");
+    if (objectRank === -1) {
+      objectRank = everythingRank;
+    }
 
     let getRank = (annotationType) => {
       let aRank = everythingRank;
@@ -76,6 +84,12 @@ class UnionTypeAnnotationSorter {
       }
       else if (annotationType.type === "GenericTypeAnnotation" && annotationType.id.name === "undefined") {
         aRank = undefinedRank;
+      }
+      else if (annotationType.type === "ObjectTypeAnnotation") {
+        aRank = objectRank;
+      }
+      else if (annotationType.type === "FunctionTypeAnnotation") {
+        aRank = functionRank;
       }
 
       return aRank;

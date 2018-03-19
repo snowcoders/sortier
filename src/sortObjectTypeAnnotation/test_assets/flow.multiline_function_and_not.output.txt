@@ -1,6 +1,6 @@
 export type Hello = {
-  a(): string,
-  c: () => void,
   b: string,
   d: string,
+  a(): string,
+  c: () => void,
 }  

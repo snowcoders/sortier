@@ -44,7 +44,7 @@ describe('reprinter', () => {
       testInfos.forEach(testInfo => {
         if (testInfo.parserType === parserType) {
           // Useful if you need to test a single file
-          // if (testInfo.testName.includes("Jsx"))
+          // if (testInfo.testName.includes("Readme example"))
           it(testInfo.testName, () => {
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let actual = new Reprinter(testInfo.inputFilePath, {}).getRewrittenFileContents();

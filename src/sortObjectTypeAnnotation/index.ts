@@ -3,7 +3,7 @@ import { Comment } from "estree";
 import { getContextGroups, reorderValues } from "../common/sort-utils";
 
 export interface SortObjectTypeAnnotationOptions {
-  groups: ["functions", "*"],
+  groups: ("null" | "undefined" | "*" | "function" | "object")[],
 }
 
 export function sortObjectTypeAnnotation(objectTypeAnnotation: any, comments: Comment[], fileContents: string, options?: SortObjectTypeAnnotationOptions) {
@@ -34,7 +34,7 @@ export function sortObjectTypeAnnotation(objectTypeAnnotation: any, comments: Co
 function ensureOptions(options?: SortObjectTypeAnnotationOptions | null): SortObjectTypeAnnotationOptions {
   if (options == null) {
     return {
-      groups: ["functions", "*"]
+      groups: ["undefined", "null", "*", "object", "function"],
     };
   }
 
@@ -43,17 +43,46 @@ function ensureOptions(options?: SortObjectTypeAnnotationOptions | null): SortOb
   }
 
   return {
-    groups: options.groups || ["functions", "*"],
+    groups: options.groups || ["undefined", "null", "*", "object", "function"],
   };
 }
 
 function getSortGroupIndex(property, options: SortObjectTypeAnnotationOptions): number {
-  let functionIndex = options.groups.indexOf("functions");
-  let everythingIndex = options.groups.indexOf("*");
-
-  if (property.value.type === "FunctionTypeAnnotation") {
-    return functionIndex;
-  } else {
-    return everythingIndex;
+  // Sort them by name
+  let everythingRank = options.groups.indexOf("*");
+  if (everythingRank === -1) {
+    everythingRank = 0;
   }
+  let nullRank = options.groups.indexOf("null");
+  if (nullRank === -1) {
+    nullRank = everythingRank;
+  }
+  let undefinedRank = options.groups.indexOf("undefined");
+  if (undefinedRank === -1) {
+    undefinedRank = everythingRank;
+  }
+  let functionRank = options.groups.indexOf("function");
+  if (functionRank === -1) {
+    functionRank = everythingRank;
+  }
+  let objectRank = options.groups.indexOf("object");
+  if (objectRank === -1) {
+    objectRank = everythingRank;
+  }
+
+  let aRank = everythingRank;
+  if (property.value.type === "NullLiteralTypeAnnotation") {
+    aRank = nullRank;
+  }
+  else if (property.value.type === "GenericTypeAnnotation" && property.value.id.name === "undefined") {
+    aRank = undefinedRank;
+  }
+  else if (property.value.type === "ObjectTypeAnnotation") {
+    aRank = objectRank;
+  }
+  else if (property.value.type === "FunctionTypeAnnotation") {
+    aRank = functionRank;
+  }
+
+  return aRank;
 }

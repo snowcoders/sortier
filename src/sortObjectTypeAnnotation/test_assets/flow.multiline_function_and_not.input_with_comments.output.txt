@@ -1,13 +1,5 @@
 export type Hello = {
   /**
- * a
- */
-  a(): string,
-  /**
- * c is a function
- */
-  c: () => void,
-  /**
  * b
  */
   b: string,
@@ -16,4 +8,12 @@ export type Hello = {
  * 
  */
   d: string,
+  /**
+ * a
+ */
+  a(): string,
+  /**
+ * c is a function
+ */
+  c: () => void,
 }  

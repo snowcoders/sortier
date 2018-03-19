@@ -13,7 +13,7 @@ export function sortExpression(expression, comments, fileContents: string, optio
 function ensureOptions(options?: SortExpressionOptions | null): SortExpressionOptions {
   if (options == null) {
     return {
-      groups: ["null", "undefined", "*", "function", "object"],
+      groups: ["undefined", "null", "*", "object", "function"],
     };
   }
 
@@ -22,7 +22,7 @@ function ensureOptions(options?: SortExpressionOptions | null): SortExpressionOp
   }
 
   return {
-    groups: options.groups || ["null", "undefined", "*", "function", "object"],
+    groups: options.groups || ["undefined", "null", "*", "object", "function"],
   };
 }
 

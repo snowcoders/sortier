@@ -1,8 +1,0 @@
-interface Definition {
-  property: 
-    /* When the request call is pending */
-    | undefined
-    | null
-    | string
-    | "hello"
-}

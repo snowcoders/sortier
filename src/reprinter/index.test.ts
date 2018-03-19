@@ -44,26 +44,10 @@ describe('reprinter', () => {
       testInfos.forEach(testInfo => {
         if (testInfo.parserType === parserType) {
           // Useful if you need to test a single file
-          //if (testInfo.inputFilePath.includes("flow"))
+          // if (testInfo.testName.includes("Jsx"))
           it(testInfo.testName, () => {
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let actual = new Reprinter(testInfo.inputFilePath, {}).getRewrittenFileContents();
-
-            expect(actual).to.equal(expected);
-          });
-
-          it("All options off - " + testInfo.testName, () => {
-            let input = readFileSync(testInfo.inputFilePath, "utf8");
-            let expected = input.slice();
-            let actual = new Reprinter(testInfo.inputFilePath, {
-              sortExpression: null,
-              sortImportDeclarations: null,
-              sortImportDeclarationSpecifiers: null,
-              sortSwitchCase: null,
-              sortUnionTypeAnnotation: null,
-              sortVariableDeclarator: null,
-              sortObjectTypeAnnotation: null,
-            }).getRewrittenFileContents();
 
             expect(actual).to.equal(expected);
           });

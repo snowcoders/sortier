@@ -8,7 +8,7 @@ import { parse as flowParse } from '../parsers/flow';
 import { parse as typescriptParse } from '../parsers/typescript';
 
 // The methods being tested here
-import { sortSwitchCase } from './index';
+import { sortSwitchCases } from './index';
 
 // Utilities
 import { sentenceCase } from "../common/string-utils";

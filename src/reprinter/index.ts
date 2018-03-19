@@ -7,19 +7,17 @@ import { parse as parseFlow } from "../parsers/flow";
 import { parse as parseTypescript } from "../parsers/typescript";
 
 // Types of sorts
-import { sortExpression, SortExpressionOptions } from "../sortExpression";
-import { sortImportDeclarations, SortImportDeclarationsOptions } from "../sortImportDeclarations";
-import { sortImportDeclarationSpecifiers, SortImportDeclarationSpecifiersOptions } from "../sortImportDeclarationSpecifiers";
-import { sortObjectTypeAnnotation, SortObjectTypeAnnotationOptions } from "../sortObjectTypeAnnotation";
-import { sortSwitchCase, SortSwitchCaseOptions } from "../sortSwitchCase";
-import { sortTSUnionTypeAnnotation } from "../sortTSUnionTypeAnnotation";
-import { sortUnionTypeAnnotation, SortUnionTypeAnnotationOptions } from "../sortUnionTypeAnnotation";
-import { sortVariableDeclarator, SortVariableDeclaratorOptions } from "../sortVariableDeclarator";
+import { sortExpression } from "../sortExpression";
+import { sortImportDeclarations } from "../sortImportDeclarations";
+import { sortImportDeclarationSpecifiers } from "../sortImportDeclarationSpecifiers";
+import { sortJsxElement } from "../sortJsxElement";
+import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation";
+import { sortSwitchCases } from "../sortSwitchCases";
+import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation";
 
 // Utils
 import { endsWith } from "../common/string-utils";
 import { isArray } from "util";
-import { sortJsxElement } from "../sortJsxElement";
 
 export interface ReprinterOptions {
     sortImportDeclarations?: "source" | "first-specifier",
@@ -122,7 +120,7 @@ export class Reprinter {
                         // Sort the contents of the cases
                         fileContents = this.rewriteNodes(node.cases, comments, fileContents);
                         // Sort the cases
-                        fileContents = sortSwitchCase(node.cases, comments, fileContents);
+                        fileContents = sortSwitchCases(node.cases, comments, fileContents);
                         break;
                     }
                     case "ReturnStatement": {
@@ -183,7 +181,9 @@ export class Reprinter {
                         break;
                     }
                     case "VariableDeclarator": {
-                        nodes.push(node.init);
+                        if (node.init != null) {
+                            nodes.push(node.init);
+                        }
                         break;
                     }
                     case "ArrayExpression": {
@@ -210,7 +210,9 @@ export class Reprinter {
                         break;
                     }
                     case "BinaryExpression": {
-                        nodes.push(node.argument);
+                        fileContents = sortExpression(node, comments, fileContents, this._options.sortTypeAnnotations && {
+                            groups: this._options.sortTypeAnnotations,
+                        });
                         break;
                     }
                     case "AssignmentExpression": {
@@ -317,12 +319,15 @@ export class Reprinter {
                         nodes.push(node.typeAnnotation);
                         break;
                     }
+                    case "TypeAnnotation": {
+                        nodes.push(node.typeAnnotation);
+                        break;
+                    }
                     case "InterfaceDeclaration": {
                         nodes.push(node.body);
                         break;
                     }
                     case "ObjectTypeAnnotation": {
-                        debugger;
                         fileContents = this.rewriteNodes(node.properties, comments, fileContents);
                         fileContents = sortObjectTypeAnnotation(node, comments, fileContents);
                         break;

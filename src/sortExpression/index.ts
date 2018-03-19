@@ -4,7 +4,6 @@ export type SortExpressionOptionsGroups = "null" | "undefined" | "*" | "function
 
 export interface SortExpressionOptions {
   groups: SortExpressionOptionsGroups[],
-  orderBy: "alpha"
 }
 
 export function sortExpression(expression, comments, fileContents: string, options?: SortExpressionOptions) {
@@ -15,7 +14,6 @@ function ensureOptions(options?: SortExpressionOptions | null): SortExpressionOp
   if (options == null) {
     return {
       groups: ["null", "undefined", "*", "function", "object"],
-      orderBy: "alpha"
     };
   }
 
@@ -25,7 +23,6 @@ function ensureOptions(options?: SortExpressionOptions | null): SortExpressionOp
 
   return {
     groups: options.groups || ["null", "undefined", "*", "function", "object"],
-    orderBy: options.orderBy || "alpha"
   };
 }
 

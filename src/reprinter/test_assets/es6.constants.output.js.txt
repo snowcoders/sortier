@@ -1,0 +1,12 @@
+const networkState = {
+  ERROR: "ERROR",
+  NOT_STARTED: "NOT_STARTED",
+  PENDING: "PENDING",
+  SUCCESS: "SUCCESS",
+};
+
+const errorValues = {
+  NOT_FOUND: 404
+};
+
+export { errorValues, networkState };

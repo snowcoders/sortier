@@ -347,12 +347,15 @@ export class Reprinter {
                     }
 
                     // Flow
-                    case "StringLiteralTypeAnnotation":
-                    case "StringTypeAnnotation":
-                    case "NumberTypeAnnotation":
+                    case "ArrayTypeAnnotation":
+                    case "BooleanLiteralTypeAnnotation":
                     case "BooleanTypeAnnotation":
                     case "GenericTypeAnnotation":
                     case "NullLiteralTypeAnnotation":
+                    case "NumberLiteralTypeAnnotation":
+                    case "NumberTypeAnnotation":
+                    case "StringLiteralTypeAnnotation":
+                    case "StringTypeAnnotation":
                         break;
 
                     // From typescript or flow - TODO need to split these

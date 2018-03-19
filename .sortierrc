@@ -1,15 +1,3 @@
 {
-  sortImportDeclarationSpecifiers: {
-    groups: ["*", "types", "interfaces"]
-  },
-  sortImportDeclarations: {
-    orderBy: "source"
-  },
-  sortUnionTypeAnnotation: {
-    groups: ["undefined", "null", "*"]
-  },
-  sortExpression: {
-    groups: ["undefined", "null", "*"]
-  },
   isHelpMode: true
 }

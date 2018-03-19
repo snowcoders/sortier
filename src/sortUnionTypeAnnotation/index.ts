@@ -1,10 +1,10 @@
 import { reorderValues } from "../common/sort-utils";
 
-export type SortUnionTypeAnnotationOptionsGroups = "*" | "undefined" | "null";
+// TODO add ObjectTypeAnnotation to the end of this
+export type SortUnionTypeAnnotationOptionsGroups = "null" | "undefined" | "*" | "function" | "object";
 
 export interface SortUnionTypeAnnotationOptions {
   groups: SortUnionTypeAnnotationOptionsGroups[],
-  orderBy: "alpha"
 }
 
 export function sortUnionTypeAnnotation(unionTypeAnnotation, comments, fileContents: string, options?: SortUnionTypeAnnotationOptions) {
@@ -21,7 +21,6 @@ function ensureOptions(options?: SortUnionTypeAnnotationOptions | null): SortUni
   if (options == null) {
     return {
       groups: ["undefined", "null", "*"],
-      orderBy: "alpha"
     };
   }
 
@@ -31,7 +30,6 @@ function ensureOptions(options?: SortUnionTypeAnnotationOptions | null): SortUni
 
   return {
     groups: options.groups || ["undefined", "null", "*"],
-    orderBy: options.orderBy || "alpha"
   };
 }
 

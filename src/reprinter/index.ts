@@ -19,16 +19,13 @@ import { sortVariableDeclarator, SortVariableDeclaratorOptions } from "../sortVa
 // Utils
 import { endsWith } from "../common/string-utils";
 import { isArray } from "util";
+import { sortJsxElement } from "../sortJsxElement";
 
 export interface ReprinterOptions {
-    sortImportDeclarationSpecifiers?: null | SortImportDeclarationSpecifiersOptions,
-    sortImportDeclarations?: null | SortImportDeclarationsOptions,
-    sortVariableDeclarator?: null | SortVariableDeclaratorOptions,
-    sortUnionTypeAnnotation?: null | SortUnionTypeAnnotationOptions,
-    sortExpression?: null | SortExpressionOptions,
-    sortSwitchCase?: null | SortSwitchCaseOptions,
-    sortObjectTypeAnnotation?: null | SortObjectTypeAnnotationOptions,
+    sortImportDeclarations?: "source" | "first-specifier",
+    sortTypeAnnotations?: ("null" | "undefined" | "*" | "function" | "object")[]
     isHelpMode?: boolean,
+    isTestRun?: boolean,
     parser?: "flow" | "typescript"
 }
 
@@ -38,7 +35,9 @@ export class Reprinter {
 
         let fileContents = reprinter.getRewrittenFileContents();
 
-        reprinter.writeFileContents(fileContents);
+        if (options.isTestRun == null || !options.isTestRun) {
+            reprinter.writeFileContents(fileContents);
+        }
     }
 
     private _filename: string;
@@ -75,8 +74,6 @@ export class Reprinter {
             // TODO ObjectExpression
             // TODO ObjectPattern
             // TODO JSXOpeningElement
-            // TODO ObjectTypeAnnotation
-            // TODO SwitchStatement
 
             // Now go through and push any bodies in the current context to the stack
             try {
@@ -116,18 +113,16 @@ export class Reprinter {
                         break;
                     }
                     case "SwitchStatement": {
-                        // TODO possibly sortExpression on node.discriminant (Type is Expression)
+                        nodes.push(node.discriminant);
                         if (node.body != null) {
                             // See if we get in here... based on estree.d.ts we shouldn't
-                            debugger;
+                            this.printHelpModeInfo(node, fileContents);
                             nodes.push(node.body);
                         }
                         // Sort the contents of the cases
                         fileContents = this.rewriteNodes(node.cases, comments, fileContents);
-                        if (this._options.sortSwitchCase !== null) {
-                            // sorting the cases
-                            fileContents = sortSwitchCase(node.cases, comments, fileContents, this._options.sortSwitchCase);
-                        }
+                        // Sort the cases
+                        fileContents = sortSwitchCase(node.cases, comments, fileContents);
                         break;
                     }
                     case "ReturnStatement": {
@@ -159,7 +154,9 @@ export class Reprinter {
                         break;
                     }
                     case "ForStatement": {
-                        // TODO possibly sortExpression or sortVariableDeclaration on node.init? (Type is Expression | VariableDeclaration)
+                        if (node.init != null) {
+                            nodes.push(node.init);
+                        }
                         if (node.test != null) {
                             nodes.push(node.test);
                         }
@@ -186,9 +183,7 @@ export class Reprinter {
                         break;
                     }
                     case "VariableDeclarator": {
-                        if (this._options.sortVariableDeclarator !== null) {
-                            fileContents = sortVariableDeclarator(node, comments, fileContents, this._options.sortVariableDeclarator);
-                        }
+                        nodes.push(node.init);
                         break;
                     }
                     case "ArrayExpression": {
@@ -201,8 +196,8 @@ export class Reprinter {
                         break;
                     }
                     case "Property": {
-                        // TODO possibly sortExpression on node.key (Type is Expression)
-                        // TODO possibly sortExpression on node.value (Type is Expression)
+                        nodes.push(node.key);
+                        nodes.push(node.value);
                         break;
                     }
                     case "FunctionExpression": {
@@ -210,16 +205,12 @@ export class Reprinter {
                         break;
                     }
                     case "SequenceExpression": {
-                        // TODO verify
-                        debugger;
+                        this.printHelpModeInfo(node, fileContents);
                         fileContents = this.rewriteNodes(node.expressions, comments, fileContents);
                         break;
                     }
                     case "BinaryExpression": {
-                        // TODO rewrite this so that we call binary directly
-                        if (node.argument != null && this._options.sortExpression !== null) {
-                            fileContents = sortExpression(node.argument, comments, fileContents, this._options.sortExpression);
-                        }
+                        nodes.push(node.argument);
                         break;
                     }
                     case "AssignmentExpression": {
@@ -293,15 +284,13 @@ export class Reprinter {
                         break;
                     }
                     case "ImportDeclaration": {
-                        if (this._options.sortImportDeclarationSpecifiers !== null) {
-                            fileContents = sortImportDeclarationSpecifiers(node.specifiers, fileContents, this._options.sortImportDeclarationSpecifiers);
-                        }
+                        fileContents = sortImportDeclarationSpecifiers(node.specifiers, fileContents);
                         break;
                     }
                     case "ExportNamedDeclaration": {
                         nodes.push(node.declaration);
-                        if (this._options.sortImportDeclarationSpecifiers !== null) {
-                            fileContents = sortImportDeclarationSpecifiers(node.specifiers, fileContents, this._options.sortImportDeclarationSpecifiers);
+                        if (node.specifiers.length !== 0) {
+                            this.printHelpModeInfo(node, fileContents);
                         }
                         break;
                     }
@@ -317,11 +306,15 @@ export class Reprinter {
                         break;
                     }
 
+                    // JSX
+                    case "JSXOpeningElement": {
+                        fileContents = sortJsxElement(node, comments, fileContents);
+                        break;
+                    }
+
                     // From typescript or flow - TODO need to split these
                     case "TSPropertySignature": {
-                        if (this._options.sortUnionTypeAnnotation !== null) {
-                            fileContents = sortTSUnionTypeAnnotation(node.typeAnnotation, comments, fileContents, this._options.sortUnionTypeAnnotation);
-                        }
+                        nodes.push(node.typeAnnotation);
                         break;
                     }
                     case "InterfaceDeclaration": {
@@ -329,16 +322,13 @@ export class Reprinter {
                         break;
                     }
                     case "ObjectTypeAnnotation": {
+                        debugger;
                         fileContents = this.rewriteNodes(node.properties, comments, fileContents);
-                        if (this._options.sortObjectTypeAnnotation !== null) {
-                            fileContents = sortObjectTypeAnnotation(node, comments, fileContents, this._options.sortObjectTypeAnnotation);
-                        }
+                        fileContents = sortObjectTypeAnnotation(node, comments, fileContents);
                         break;
                     }
                     case "ObjectTypeProperty": {
-                        if (this._options.sortUnionTypeAnnotation !== null) {
-                            fileContents = sortUnionTypeAnnotation(node.value, comments, fileContents, this._options.sortUnionTypeAnnotation);
-                        }
+                        nodes.push(node.value);
                         break;
                     }
                     case "TSInterfaceDeclaration": {
@@ -354,19 +344,14 @@ export class Reprinter {
                         break;
                     }
                     case "UnionTypeAnnotation": {
-                        if (this._options.sortUnionTypeAnnotation !== null) {
-                            fileContents = sortUnionTypeAnnotation(node, comments, fileContents, this._options.sortUnionTypeAnnotation);
-                        }
+                        fileContents = sortUnionTypeAnnotation(node, comments, fileContents, this._options.sortTypeAnnotations && {
+                            groups: this._options.sortTypeAnnotations
+                        });
                         break;
                     }
                     case "ClassProperty": {
-                        if (node.typeAnnotation && node.typeAnnotation.type === "TypeAnnotation" && node.typeAnnotation.typeAnnotation.type === "UnionTypeAnnotation") {
-                            if (this._options.sortUnionTypeAnnotation !== null) {
-                                fileContents = sortUnionTypeAnnotation(node.typeAnnotation.typeAnnotation, comments, fileContents, this._options.sortUnionTypeAnnotation);
-                            }
-                            else {
-                                this.printHelpModeInfo(node, fileContents);
-                            }
+                        if (node.typeAnnotation != null) {
+                            nodes.push(node.typeAnnotation);
                         } else if (node.value == null) {
                             // No value to sort...
                         }
@@ -391,7 +376,9 @@ export class Reprinter {
 
         // Sorts that depend on other things sorting first
         if (this._options.sortImportDeclarations !== null) {
-            fileContents = sortImportDeclarations(originalNodes, fileContents, this._options.sortImportDeclarations);
+            fileContents = sortImportDeclarations(originalNodes, fileContents, this._options.sortImportDeclarations && {
+                orderBy: this._options.sortImportDeclarations
+            });
         }
         // TODO Function sort - https://github.com/bryanrsmith/eslint-plugin-sort-class-members
 

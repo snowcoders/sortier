@@ -2,7 +2,7 @@
 import { nthIndexOf } from "../common/string-utils";
 
 export interface SortImportDeclarationsOptions {
-    orderBy?: "first_specifier" | "source"
+    orderBy: "first-specifier" | "source"
 }
 
 interface SingleImportSource {
@@ -67,7 +67,7 @@ export function sortImportDeclarations(body: any, fileContents: string, options?
 
         // Sort them by name
         sortedImportSources.sort((a: SingleImportSource, b: SingleImportSource) => {
-            if (ensuredOptions.orderBy === "first_specifier") {
+            if (ensuredOptions.orderBy === "first-specifier") {
                 let result = a.firstSpecifier.localeCompare(b.firstSpecifier);
                 if (result !== 0) {
                     return result;

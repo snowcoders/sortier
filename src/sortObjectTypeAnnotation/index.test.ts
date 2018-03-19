@@ -20,7 +20,7 @@ interface TestInfo {
   outputFilePath: string;
 }
 
-describe.only('sortObjectTypeAnnotation', () => {
+describe('sortObjectTypeAnnotation', () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 

@@ -347,6 +347,7 @@ export class Reprinter {
                     }
 
                     // Flow
+                    case "AnyTypeAnnotation":
                     case "ArrayTypeAnnotation":
                     case "BooleanLiteralTypeAnnotation":
                     case "BooleanTypeAnnotation":

@@ -1,3 +1,4 @@
 {
+  isTestRun: true,
   isHelpMode: true
 }

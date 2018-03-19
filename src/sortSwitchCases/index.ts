@@ -1,6 +1,6 @@
 import { Comment, SwitchCase } from "estree";
 
-import { reorderValues, getContextGroups } from "../common/sort-utils";
+import { getContextGroups, reorderValues } from "../common/sort-utils";
 
 export interface SortSwitchCaseOptions {
 }

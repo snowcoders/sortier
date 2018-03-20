@@ -319,6 +319,7 @@ export class Reprinter {
                     }
 
                     // JSX
+                    case "JSXElement":
                     case "JSXOpeningElement": {
                         fileContents = sortJsxElement(node, comments, fileContents);
                         break;

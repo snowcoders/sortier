@@ -70,11 +70,11 @@ function ensureOptions(options?: SortObjectTypeAnnotationOptions | null): SortOb
 }
 
 function getString(property) {
-  let aString = property.key.raw;
-  if (aString == null) {
-    aString = property.key.name;
+  let text = property.key.raw;
+  if (text == null) {
+    text = property.key.name;
   }
-  return aString;
+  return text;
 }
 
 function getSortGroupIndex(property, options: SortObjectTypeAnnotationOptions): number {

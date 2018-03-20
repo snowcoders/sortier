@@ -12,8 +12,8 @@ import { sortImportDeclarations } from "../sortImportDeclarations";
 import { sortImportDeclarationSpecifiers } from "../sortImportDeclarationSpecifiers";
 import { sortJsxElement } from "../sortJsxElement";
 import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation";
-import { sortTSPropertySignatures } from "../sortTSPropertySignatures";
 import { sortSwitchCases } from "../sortSwitchCases";
+import { sortTSPropertySignatures } from "../sortTSPropertySignatures";
 import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation";
 
 // Utils
@@ -21,11 +21,11 @@ import { endsWith } from "../common/string-utils";
 import { isArray } from "util";
 
 export interface ReprinterOptions {
-    sortImportDeclarations?: "source" | "first-specifier",
-    sortTypeAnnotations?: ("null" | "undefined" | "*" | "function" | "object")[]
     isHelpMode?: boolean,
     isTestRun?: boolean,
     parser?: "flow" | "typescript"
+    sortImportDeclarations?: "first-specifier" | "source",
+    sortTypeAnnotations?: ("null" | "undefined" | "*" | "function" | "object")[]
 }
 
 export class Reprinter {
@@ -137,11 +137,11 @@ export class Reprinter {
                         nodes.push(node.consequent);
                         break;
                     }
-                    case "ExportDefaultDeclaration": {
-                        nodes.push(node.declaration);
+                    case "ExportAllDeclaration": {
                         break;
                     }
-                    case "ExportAllDeclaration": {
+                    case "ExportDefaultDeclaration": {
+                        nodes.push(node.declaration);
                         break;
                     }
                     case "ExportNamedDeclaration": {
@@ -244,20 +244,6 @@ export class Reprinter {
                         fileContents = this.rewriteNodes(node.expressions, comments, fileContents);
                         break;
                     }
-                    case "TaggedTemplateExpression":
-                    case "SpreadElement":
-                    case "TemplateLiteral":
-                    case "ThisExpression":
-                    case "UnaryExpression":
-                    case "ContinueStatement":
-                    case "EmptyStatement":
-                    case "DebuggerStatement":
-                    case "Literal":
-                    case "Identifier":
-                    case "BreakStatement": {
-                        // Skip since there isn't anything for us to sort
-                        break;
-                    }
                     case "SwitchCase": {
                         fileContents = this.rewriteNodes(node.consequent, comments, fileContents);
                         break;
@@ -273,6 +259,20 @@ export class Reprinter {
                         fileContents = this.rewriteNodes(node.cases, comments, fileContents);
                         // Sort the cases
                         fileContents = sortSwitchCases(node.cases, comments, fileContents);
+                        break;
+                    }
+                    case "TaggedTemplateExpression":
+                    case "SpreadElement":
+                    case "TemplateLiteral":
+                    case "ThisExpression":
+                    case "UnaryExpression":
+                    case "ContinueStatement":
+                    case "EmptyStatement":
+                    case "DebuggerStatement":
+                    case "Literal":
+                    case "Identifier":
+                    case "BreakStatement": {
+                        // Skip since there isn't anything for us to sort
                         break;
                     }
                     case "ThrowStatement": {
@@ -347,12 +347,12 @@ export class Reprinter {
                     case "TSUndefinedKeyword": {
                         break;
                     }
-                    case "TSModuleDeclaration": {
-                        nodes.push(node.body);
-                        break;
-                    }
                     case "TSModuleBlock": {
                         fileContents = this.rewriteNodes(node.body, comments, fileContents);
+                        break;
+                    }
+                    case "TSModuleDeclaration": {
+                        nodes.push(node.body);
                         break;
                     }
                     case "TSTypeAnnotation": {

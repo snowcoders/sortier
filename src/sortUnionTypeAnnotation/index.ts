@@ -1,7 +1,7 @@
 import { reorderValues } from "../common/sort-utils";
 
 // TODO add ObjectTypeAnnotation to the end of this
-export type SortUnionTypeAnnotationOptionsGroups = "null" | "undefined" | "*" | "function" | "object";
+export type SortUnionTypeAnnotationOptionsGroups = "*" | "function" | "null" | "object" | "undefined";
 
 export interface SortUnionTypeAnnotationOptions {
   groups: SortUnionTypeAnnotationOptionsGroups[],

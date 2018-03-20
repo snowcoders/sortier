@@ -21,7 +21,7 @@ export function parse(text: string /*, parsers, opts*/) {
         }
 
         throw createError(e.message, {
-            start: { line: e.lineNumber, column: e.column + 1 }
+            start: { column: e.column + 1, line: e.lineNumber }
         });
     }
 
@@ -32,15 +32,15 @@ export function parse(text: string /*, parsers, opts*/) {
 
 function tryParseTypeScript(text: string, jsx: boolean) {
     return parser.parse(text, {
-        loc: true,
-        range: true,
-        tokens: true,
         comment: true,
-        useJSXTextNode: true,
         ecmaFeatures: { jsx },
+        loc: true,
         // Override logger function with noop,
         // to avoid unsupported version errors being logged
-        loggerFn: () => { }
+        loggerFn: () => { },
+        range: true,
+        tokens: true,
+        useJSXTextNode: true
     });
 }
 

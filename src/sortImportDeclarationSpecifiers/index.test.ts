@@ -14,10 +14,10 @@ import { sortImportDeclarationSpecifiers } from './index';
 import { sentenceCase } from "../common/string-utils";
 
 interface TestInfo {
-  parserType: string;
-  testName: string;
   inputFilePath: string;
   outputFilePath: string;
+  parserType: string;
+  testName: string;
 }
 
 describe('sortImportDeclarationSpecifiers', () => {
@@ -37,10 +37,10 @@ describe('sortImportDeclarationSpecifiers', () => {
     let cleanedTestName = sentenceCase(segments[1].replace(/_/g, " "));
 
     return {
-      parserType: segments[0],
-      testName: cleanedTestName,
       inputFilePath: filePath,
-      outputFilePath: filePath.replace(".input.txt", ".output.txt")
+      outputFilePath: filePath.replace(".input.txt", ".output.txt"),
+      parserType: segments[0],
+      testName: cleanedTestName
     };
   });
 
@@ -87,8 +87,8 @@ describe('sortImportDeclarationSpecifiers', () => {
       let expected = "import { Something, type Hi, IInterface } from \"module\";";
 
       let output = getSortedOverBody(flowParse(input).body, input, {
-        orderBy: "alpha",
-        groups: ["*", "types", "interfaces"]
+        groups: ["*", "types", "interfaces"],
+        orderBy: "alpha"
       });
       expect(output).to.equal(expected);
     });
@@ -98,8 +98,8 @@ describe('sortImportDeclarationSpecifiers', () => {
       let expected = "import { IInterface, Something, type Hi } from \"module\";";
 
       let output = getSortedOverBody(flowParse(input).body, input, {
-        orderBy: "alpha",
-        groups: ["*", "types"]
+        groups: ["*", "types"],
+        orderBy: "alpha"
       });
       expect(output).to.equal(expected);
     });
@@ -109,8 +109,8 @@ describe('sortImportDeclarationSpecifiers', () => {
       let expected = "import { type Hi, Something, IInterface } from \"module\";";
 
       let output = getSortedOverBody(flowParse(input).body, input, {
-        orderBy: "alpha",
-        groups: ["*", "interfaces"]
+        groups: ["*", "interfaces"],
+        orderBy: "alpha"
       });
       expect(output).to.equal(expected);
     });
@@ -120,8 +120,8 @@ describe('sortImportDeclarationSpecifiers', () => {
       let expected = "import { IInterface, type Hi, Something } from \"module\";";
 
       let output = getSortedOverBody(flowParse(input).body, input, {
-        orderBy: "alpha",
-        groups: ["interfaces", "*"]
+        groups: ["interfaces", "*"],
+        orderBy: "alpha"
       });
       expect(output).to.equal(expected);
     });
@@ -133,8 +133,8 @@ describe('sortImportDeclarationSpecifiers', () => {
       let expected = "import { IInterface, Hi, Something } from \"module\";";
 
       let output = getSortedOverBody(typescriptParse(input).body, input, {
-        orderBy: "alpha",
-        groups: ["interfaces", "*"]
+        groups: ["interfaces", "*"],
+        orderBy: "alpha"
       });
       expect(output).to.equal(expected);
     });

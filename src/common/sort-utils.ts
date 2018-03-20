@@ -5,8 +5,8 @@ export interface MinimumTypeInformation {
 };
 
 export interface ContextGroup {
-  nodes: any[];
   comments: Comment[]
+  nodes: any[];
 };
 
 // Blank lines between cases are considered Context breakers... we don't sort through them.
@@ -19,8 +19,8 @@ export function getContextGroups(nodes: MinimumTypeInformation[], comments: Comm
 
   if (nodes.length === 0) {
     return [{
-      nodes: nodes,
-      comments: comments
+      comments: comments,
+      nodes: nodes
     }];
   }
 
@@ -89,8 +89,8 @@ export function getContextGroups(nodes: MinimumTypeInformation[], comments: Comm
     }
 
     groupings.push({
-      nodes: partialNodes,
-      comments: partialComments
+      comments: partialComments,
+      nodes: partialNodes
     })
   }
 
@@ -113,8 +113,8 @@ export function getContextGroups(nodes: MinimumTypeInformation[], comments: Comm
 
   if (commentIndex < comments.length || nodeIndex < nodes.length) {
     groupings.push({
-      nodes: nodes.slice(nodeIndex),
-      comments: partialComments
+      comments: partialComments,
+      nodes: nodes.slice(nodeIndex)
     });
   }
   return groupings;

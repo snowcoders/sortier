@@ -8,10 +8,10 @@ import { basename, join } from "path";
 import { Reprinter } from './index';
 
 interface TestInfo {
-  parserType: string;
-  testName: string;
   inputFilePath: string;
   outputFilePath: string;
+  parserType: string;
+  testName: string;
 }
 
 describe('reprinter', () => {
@@ -28,10 +28,10 @@ describe('reprinter', () => {
     cleanedTestName = sentenceCase(cleanedTestName);
 
     return {
-      parserType: parserType,
-      testName: cleanedTestName,
       inputFilePath: filePath,
-      outputFilePath: filePath.replace(".input.", ".output.")
+      outputFilePath: filePath.replace(".input.", ".output."),
+      parserType: parserType,
+      testName: cleanedTestName
     };
   });
 

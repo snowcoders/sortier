@@ -9,80 +9,54 @@ Sortier is an opinionated code sorter similar to how Prettier is a opinionated c
 
 It should work with ES6, Flow and Typescript but if you find a piece of code that doesn't sort the way you expect it to, feel free to open an issue in Github!
 
+## General things to keep in mind
+ - Blank lines are treated as context breaks... Sortier will not sort through them
+ - Inline comments to the right of the code may not be sorted. We suggest putting comments above or infront of code.
+ - Comments will stay with the line they comment (see Props example below)
 ### Input
 ```
-/* Import example */
 import { 
         a2, 
         a1 } 
         from "./a";
 import { 
         c2, 
-        c1 } from "c"; // Inline comments will move with the import
+        /* c1's comment */ c1 } from "c";
 import { b2, b1 } from "./b";
 
-// Line comments and blank lines act like syntax barriers and will divide sorting blocks
+// Blank lines act like context barriers and will divide sorting blocks
 import { b1 } from "b1";
 
-/* Union type example */
-export type ButtonType = "small" | "big" | undefined | null | "medium";
-
-/* Switch case example */
-switch (1) {
-  // This is the first context group
-  case 4:
-    break;
-  case 3: {
-    alert(3);
-    // Leads into 2
-  }
-  case 2:
-    break;
-    
-  // This is the second context group
-  case 7:
-    break;
-  case 4:
-  case 5:
-    break;
+export type Props = {
+  // Prop3 comment
+  prop3: string,
+  callback2: () => void,
+  // Prop1 comment
+  prop1: number,
+  callback1(): void,
 }
 ```
 ### Output
 ```
-/* Import example */
 import { 
         a1, 
         a2 } 
         from "./a";
-import { b1, b2 } from "./b";
+import { b } from "./b";
 import { 
         c1, 
-        c2 } from "c"; // Inline comments will move with the import
+        c2 } from "c";
 
 // Line comments and blank lines act like syntax barriers and will divide sorting blocks
 import { b1 } from "b1";
 
-/* Union type example */
-export type ButtonType = undefined | null | "big" | "medium" | "small";
-
-/* Switch case example */
-switch (1) {
-  // This is the first context group
-  case 3: {
-    alert(3);
-    // Leads into 2
-  }
-  case 2:
-    break;
-  case 4:
-    break;
-    
-  // This is the second context group
-  case 4:
-  case 5:
-    break;
-  case 7:
-    break;
+export type Props = {
+  callback1(): void,
+  callback2: () => void,
+  // Prop1 comment
+  prop1: number,
+  // Prop3 comment
+  prop3: string,
 }
 ```
 
@@ -98,16 +72,20 @@ Configuring your options
  - All sorts can be turned off by setting their options to null
 ```
 {
-  isHelpMode: false | true,                             // Default "false". If true, prints out lines that sortier doesn't know how to handle so you can open Github issues about them
-  sortExpression: undefined | null,
-  sortImportDeclarations: undefined | null | {
-    orderBy: "source" | "first_specifier",              // Default "source". Source is the module path the import is from, first specifier is the first imported item name
-  },
-  sortImportDeclarationSpecifiers: undefined | null,
-  sortSwitchCase: undefined | null,
-  sortUnionTypeAnnotation: undefined | null,
-  sortVariableDeclarator: undefined | null,
-  parser?: "flow" | "typescript"                        // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
+  // Default "false". If true, prints out very verbose lines that sortier doesn't know how to handle so you can open Github issues about them
+  isHelpMode?: false | true,
+
+  // Default "false". If true, sortier will run but not rewrite any files. Great for testing to make sure your code base doesn't have any weird issues before rewriting code.
+  isTestRun?: false | true,
+
+  // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
+  parser?: "flow" | "typescript",
+
+  // Default "source". The order you wish to sort import statements. Source is the path the import comes from. First specifier is the first item imported.
+  sortImportDeclarations?: "first-specifier" | "source",
+
+  // Default ["undefined", "null", "*", "object", "function"]. The order to sort object types when encountered.
+  sortTypeAnnotations?: ("null" | "undefined" | "*" | "function" | "object")[]
 }
 ```
 And more to come!

@@ -1,35 +1,20 @@
-/* Import example */
 import { 
         a2, 
         a1 } 
         from "./a";
 import { 
-        c2, 
-        c1 } from "c"; // Inline comments will move with the import
-import { b2, b1 } from "./b";
+        c2
+} from "c";
+import { b3, b1 } from "./b";
 
-// Line comments and blank lines act like syntax barriers and will divide sorting blocks
-import { b1 } from "b1";
+// Blank lines act like context barriers and will divide sorting blocks
+import { b2 } from "b1";
 
-/* Union type example */
-export type ButtonType = "small" | "big" | undefined | null | "medium";
-
-/* Switch case example */
-switch (1) {
-  // This is the first context group
-  case 4:
-    break;
-  case 3: {
-    alert(3);
-    // Leads into 2
-  }
-  case 2:
-    break;
-    
-  // This is the second context group
-  case 7:
-    break;
-  case 4:
-  case 5:
-    break;
+export type Props = {
+  // Prop3 comment
+  prop3: string,
+  callback2: () => void,
+  // Prop1 comment
+  prop1: number,
+  callback1(): void,
 }

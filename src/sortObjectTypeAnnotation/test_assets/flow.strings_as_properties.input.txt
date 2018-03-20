@@ -1,0 +1,7 @@
+export type htmlEscapes = {
+  '&': '&amp',
+  '<': '&lt',
+  '>': '&gt',
+  '"': '&quot',
+  "'": '&#39'
+}

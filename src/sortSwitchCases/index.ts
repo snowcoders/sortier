@@ -34,10 +34,10 @@ export function sortSwitchCases(cases: SwitchCase[], comments: Comment[], fileCo
             let breakStatement = cases[switchCaseEnd].consequent.filter((value: any) => {
                 if (value.type === "BlockStatement") {
                     return value.body.filter((value: any) => {
-                        return value.type === "BreakStatement";
+                        return value.type === "BreakStatement" || value.type === "ReturnStatement";
                     }).length !== 0;
                 }
-                return value.type === "BreakStatement";
+                return value.type === "BreakStatement" || value.type === "ReturnStatement";
             });
             if (breakStatement.length === 0) {
                 continue;

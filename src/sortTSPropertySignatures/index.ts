@@ -2,14 +2,14 @@ import { Comment } from "estree";
 
 import { getContextGroups, reorderValues } from "../common/sort-utils";
 
-export interface SortObjectTypeAnnotationOptions {
+export interface SortTSPropertySignaturesOptions {
   groups: ("null" | "undefined" | "*" | "function" | "object")[],
 }
 
-export function sortObjectTypeAnnotation(objectTypeAnnotation: any, comments: Comment[], fileContents: string, options?: SortObjectTypeAnnotationOptions) {
+export function sortTSPropertySignatures(properties: any, comments: Comment[], fileContents: string, options?: SortTSPropertySignaturesOptions) {
   let ensuredOptions = ensureOptions(options);
   let newFileContents = fileContents.slice();
-  let allNodes: any[] = objectTypeAnnotation.properties;
+  let allNodes: any[] = properties;
 
   // Any time there is a spread operator, we need to sort around it... moving it could cause functionality changes
   let spreadGroups: any[] = [];
@@ -53,7 +53,7 @@ export function sortObjectTypeAnnotation(objectTypeAnnotation: any, comments: Co
   return newFileContents;
 }
 
-function ensureOptions(options?: SortObjectTypeAnnotationOptions | null): SortObjectTypeAnnotationOptions {
+function ensureOptions(options?: SortTSPropertySignaturesOptions | null): SortTSPropertySignaturesOptions {
   if (options == null) {
     return {
       groups: ["undefined", "null", "*", "object", "function"],
@@ -73,7 +73,7 @@ function getString(property, fileContents: string) {
   return fileContents.substring(property.range[0], property.range[1]);
 }
 
-function getSortGroupIndex(property, options: SortObjectTypeAnnotationOptions): number {
+function getSortGroupIndex(property, options: SortTSPropertySignaturesOptions): number {
   // Sort them by name
   let everythingRank = options.groups.indexOf("*");
   if (everythingRank === -1) {
@@ -97,19 +97,10 @@ function getSortGroupIndex(property, options: SortObjectTypeAnnotationOptions): 
   }
 
   let aRank = everythingRank;
-  if (property.value != null) {
-    if (property.value.type === "NullLiteralTypeAnnotation") {
-      aRank = nullRank;
-    }
-    else if (property.value.type === "GenericTypeAnnotation" && property.value.id.name === "undefined") {
-      aRank = undefinedRank;
-    }
-    else if (property.value.type === "ObjectTypeAnnotation") {
-      aRank = objectRank;
-    }
-    else if (property.value.type === "FunctionTypeAnnotation") {
-      aRank = functionRank;
-    }
+  if (property.type === "TSMethodSignature" || property.typeAnnotation.typeAnnotation.type === "TSFunctionType") {
+    aRank = functionRank;
+  } else if (property.typeAnnotation.typeAnnotation.type === "TSTypeLiteral") {
+    aRank = objectRank;
   }
 
   return aRank;

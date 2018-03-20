@@ -1,0 +1,19 @@
+export interface Hello {
+  /**
+ * d
+ * 
+ */
+  d: string,
+  /**
+ * b
+ */
+  b: string,
+  /**
+ * c is a function
+ */
+  c: () => void,
+  /**
+ * a
+ */
+  a(): string,
+}  

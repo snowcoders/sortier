@@ -12,6 +12,7 @@ import { sortImportDeclarations } from "../sortImportDeclarations";
 import { sortImportDeclarationSpecifiers } from "../sortImportDeclarationSpecifiers";
 import { sortJsxElement } from "../sortJsxElement";
 import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation";
+import { sortTSPropertySignatures } from "../sortTSPropertySignatures";
 import { sortSwitchCases } from "../sortSwitchCases";
 import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation";
 
@@ -140,6 +141,9 @@ export class Reprinter {
                         nodes.push(node.declaration);
                         break;
                     }
+                    case "ExportAllDeclaration": {
+                        break;
+                    }
                     case "ExportNamedDeclaration": {
                         if (node.declaration != null) {
                             nodes.push(node.declaration);
@@ -240,6 +244,7 @@ export class Reprinter {
                         fileContents = this.rewriteNodes(node.expressions, comments, fileContents);
                         break;
                     }
+                    case "TaggedTemplateExpression":
                     case "SpreadElement":
                     case "TemplateLiteral":
                     case "ThisExpression":
@@ -320,13 +325,33 @@ export class Reprinter {
                     }
 
                     // Typescript
+                    case "ExperimentalSpreadProperty":
+                    case "TSParenthesizedType":
+                    case "TSTypeOperator":
                     case "TSArrayType":
+                    case "TSAnyKeyword":
+                    case "TSAsExpression":
                     case "TSBooleanKeyword":
+                    case "TSEnumDeclaration":
+                    case "TSFunctionType":
+                    case "TSIndexSignature":
                     case "TSLastTypeNode":
-                    case "TSStringKeyword":
+                    case "TSMethodSignature":
+                    case "TSNonNullExpression":
+                    case "TSNullKeyword":
                     case "TSNumberKeyword":
+                    case "TSStringKeyword":
                     case "TSTypeReference":
-                    case "TSTupleType": {
+                    case "TSTupleType":
+                    case "TSUndefinedKeyword": {
+                        break;
+                    }
+                    case "TSModuleDeclaration": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "TSModuleBlock": {
+                        fileContents = this.rewriteNodes(node.body, comments, fileContents);
                         break;
                     }
                     case "TSTypeAnnotation": {
@@ -335,11 +360,14 @@ export class Reprinter {
                     }
                     case "TSTypeLiteral": {
                         fileContents = this.rewriteNodes(node.members, comments, fileContents);
-                        // TODO sort the members
+                        fileContents = sortTSPropertySignatures(node.members, comments, fileContents, this._options.sortTypeAnnotations && {
+                            groups: this._options.sortTypeAnnotations
+                        });
                         break;
                     }
                     case "TSUnionType": {
-                        fileContents = sortExpression(node, comments, fileContents, this._options.sortTypeAnnotations && {
+                        fileContents = this.rewriteNodes(node.types, comments, fileContents);
+                        fileContents = sortUnionTypeAnnotation(node, comments, fileContents, this._options.sortTypeAnnotations && {
                             groups: this._options.sortTypeAnnotations,
                         });
                         break;
@@ -390,6 +418,9 @@ export class Reprinter {
                     }
                     case "TSInterfaceBody": {
                         fileContents = this.rewriteNodes(node.body, comments, fileContents);
+                        fileContents = sortTSPropertySignatures(node.body, comments, fileContents, this._options.sortTypeAnnotations && {
+                            groups: this._options.sortTypeAnnotations
+                        });
                         break;
                     }
                     case "TSInterfaceDeclaration": {

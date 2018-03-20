@@ -9,23 +9,25 @@ export interface SortObjectTypeAnnotationOptions {
 export function sortObjectTypeAnnotation(objectTypeAnnotation: any, comments: Comment[], fileContents: string, options?: SortObjectTypeAnnotationOptions) {
   let ensuredOptions = ensureOptions(options);
   let newFileContents = fileContents.slice();
+  let allNodes: any[] = objectTypeAnnotation.properties;
 
   // Any time there is a spread operator, we need to sort around it... moving it could cause functionality changes
   let spreadGroups: any[] = [];
   let currentStart = 0;
-  for (let x = 0; x < objectTypeAnnotation.length; x++) {
-    if (objectTypeAnnotation[x].type === "ObjectTypeSpreadProperty") {
+  for (let x = 0; x < allNodes.length; x++) {
+    if (allNodes[x].type === "ObjectTypeSpreadProperty") {
       if (currentStart !== x) {
-        spreadGroups.push(objectTypeAnnotation.slice(currentStart, x));
+        spreadGroups.push(allNodes.slice(currentStart, x));
       }
       x++;
       currentStart = x;
     }
   }
-  if (currentStart !== objectTypeAnnotation.length) {
-    spreadGroups.push(objectTypeAnnotation.slice(currentStart));
+  if (currentStart !== allNodes.length) {
+    spreadGroups.push(allNodes.slice(currentStart));
   }
 
+  console.log();
   for (let nodes of spreadGroups) {
     let contextGroups = getContextGroups(nodes, comments, fileContents);
 

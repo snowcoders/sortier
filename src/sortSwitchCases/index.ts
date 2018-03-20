@@ -17,6 +17,13 @@ export function sortSwitchCases(cases: SwitchCase[], comments: Comment[], fileCo
         cases = cases.slice(0, cases.length - 1);
     }
 
+    if (cases.findIndex((value) => {
+        return value.test == null;
+    }) !== -1) {
+        // If there is a default statement in the middle of the case statements, that is something we do not handle currently
+        return fileContents;
+    }
+
     let contextGroups = getContextGroups(cases, comments, fileContents);
 
     for (let x = 0; x < contextGroups.length; x++) {

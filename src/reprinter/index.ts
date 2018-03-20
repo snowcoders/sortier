@@ -12,6 +12,7 @@ import { sortImportDeclarations } from "../sortImportDeclarations";
 import { sortImportDeclarationSpecifiers } from "../sortImportDeclarationSpecifiers";
 import { sortJsxElement } from "../sortJsxElement";
 import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation";
+import { sortTSPropertySignatures } from "../sortTSPropertySignatures";
 import { sortSwitchCases } from "../sortSwitchCases";
 import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation";
 
@@ -337,10 +338,12 @@ export class Reprinter {
                     case "TSLastTypeNode":
                     case "TSMethodSignature":
                     case "TSNonNullExpression":
+                    case "TSNullKeyword":
                     case "TSNumberKeyword":
                     case "TSStringKeyword":
                     case "TSTypeReference":
-                    case "TSTupleType": {
+                    case "TSTupleType":
+                    case "TSUndefinedKeyword": {
                         break;
                     }
                     case "TSModuleDeclaration": {
@@ -357,11 +360,14 @@ export class Reprinter {
                     }
                     case "TSTypeLiteral": {
                         fileContents = this.rewriteNodes(node.members, comments, fileContents);
-                        // TODO sort the members
+                        fileContents = sortTSPropertySignatures(node.members, comments, fileContents, this._options.sortTypeAnnotations && {
+                            groups: this._options.sortTypeAnnotations
+                        });
                         break;
                     }
                     case "TSUnionType": {
-                        fileContents = sortExpression(node, comments, fileContents, this._options.sortTypeAnnotations && {
+                        fileContents = this.rewriteNodes(node.types, comments, fileContents);
+                        fileContents = sortUnionTypeAnnotation(node, comments, fileContents, this._options.sortTypeAnnotations && {
                             groups: this._options.sortTypeAnnotations,
                         });
                         break;
@@ -412,6 +418,9 @@ export class Reprinter {
                     }
                     case "TSInterfaceBody": {
                         fileContents = this.rewriteNodes(node.body, comments, fileContents);
+                        fileContents = sortTSPropertySignatures(node.body, comments, fileContents, this._options.sortTypeAnnotations && {
+                            groups: this._options.sortTypeAnnotations
+                        });
                         break;
                     }
                     case "TSInterfaceDeclaration": {

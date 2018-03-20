@@ -1,0 +1,6 @@
+export interface Hello {
+  d: string;
+  b: string;
+  c: string;
+  a: string;
+}  

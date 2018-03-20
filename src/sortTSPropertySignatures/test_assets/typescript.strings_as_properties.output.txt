@@ -1,0 +1,7 @@
+export interface htmlEscapes {
+  '"': '&quot',
+  '&': '&amp',
+  '<': '&lt',
+  '>': '&gt',
+  "'": '&#39'
+}

@@ -10,7 +10,8 @@ export interface SortUnionTypeAnnotationOptions {
 export function sortUnionTypeAnnotation(unionTypeAnnotation, comments, fileContents: string, options?: SortUnionTypeAnnotationOptions) {
   let ensuredOptions = ensureOptions(options);
 
-  if (unionTypeAnnotation.type === "UnionTypeAnnotation") {
+  if (unionTypeAnnotation.type === "UnionTypeAnnotation" ||
+    unionTypeAnnotation.type === "TSUnionType") {
     fileContents = new UnionTypeAnnotationSorter(unionTypeAnnotation, comments, fileContents, ensuredOptions).sort();
   }
 
@@ -79,10 +80,10 @@ class UnionTypeAnnotationSorter {
 
     let getRank = (annotationType) => {
       let aRank = everythingRank;
-      if (annotationType.type === "NullLiteralTypeAnnotation") {
+      if (annotationType.type === "NullLiteralTypeAnnotation" || annotationType.type === "TSNullKeyword") {
         aRank = nullRank;
       }
-      else if (annotationType.type === "GenericTypeAnnotation" && annotationType.id.name === "undefined") {
+      else if (annotationType.type === "GenericTypeAnnotation" && annotationType.id.name === "undefined" || annotationType.type === "TSUndefinedKeyword") {
         aRank = undefinedRank;
       }
       else if (annotationType.type === "ObjectTypeAnnotation") {
@@ -106,8 +107,8 @@ class UnionTypeAnnotationSorter {
         return aRank - bRank;
       }
 
-      let isALiteral = a.type.indexOf("Literal") !== -1;
-      let isBLiteral = b.type.indexOf("Literal") !== -1;
+      let isALiteral = a.type.indexOf("Literal") !== -1 || a.type.indexOf("TSLastTypeNode") !== -1;
+      let isBLiteral = b.type.indexOf("Literal") !== -1 || b.type.indexOf("TSLastTypeNode") !== -1;
 
       if (isALiteral && isBLiteral) {
         if (a.type !== b.type) {
@@ -133,6 +134,9 @@ class UnionTypeAnnotationSorter {
     }
     else if (a.type === "GenericTypeAnnotation") {
       return a.id.name;
+    }
+    else if (a.type === "TSLastTypeNode") {
+      return a.literal.raw;
     } else {
       return a.type;
     }

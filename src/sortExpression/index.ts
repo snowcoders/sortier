@@ -1,6 +1,6 @@
 import { reorderValues } from "../common/sort-utils";
 
-export type SortExpressionOptionsGroups = "null" | "undefined" | "*" | "function" | "object";
+export type SortExpressionOptionsGroups = "*" | "function" | "null" | "object" | "undefined";
 
 export interface SortExpressionOptions {
   groups: SortExpressionOptionsGroups[],
@@ -27,8 +27,8 @@ function ensureOptions(options?: SortExpressionOptions | null): SortExpressionOp
 }
 
 interface OperandValue {
-  value: string,
   range: [number, number]
+  value: string,
 }
 
 interface OperatorInfo {
@@ -92,8 +92,8 @@ class ExpressionSorter {
       return {
         accumulatedOperator: null,
         values: [{
-          value: operand.raw,
-          range: operand.range
+          range: operand.range,
+          value: operand.raw
         }]
       };
     }
@@ -101,8 +101,8 @@ class ExpressionSorter {
       return {
         accumulatedOperator: null,
         values: [{
-          value: operand.name,
-          range: operand.range
+          range: operand.range,
+          value: operand.name
         }]
       };
     }
@@ -162,8 +162,8 @@ class ExpressionSorter {
     return {
       accumulatedOperator: operand.accumulatedOperator,
       values: [{
-        value: newFileContents,
-        range: [rangeMin, rangeMax]
+        range: [rangeMin, rangeMax],
+        value: newFileContents
       }]
     };
   }

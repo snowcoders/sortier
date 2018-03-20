@@ -1,4 +1,4 @@
-export type SortByExportOptionsGroups = "*" | "types" | "interfaces";
+export type SortByExportOptionsGroups = "*" | "interfaces" | "types";
 
 export interface SortImportDeclarationSpecifiersOptions {
     groups: SortByExportOptionsGroups[],
@@ -6,13 +6,13 @@ export interface SortImportDeclarationSpecifiersOptions {
 }
 
 interface SingleSpecifier {
-    originalIndex: number,
     importedName: string,
-    importKind: string | null,
+    importKind: null | string,
     isInterface: boolean,
+    originalIndex: number,
     originalLocation: {
-        start: number,
         end: number
+        start: number,
     }
 };
 
@@ -37,13 +37,13 @@ function sortSingleSpecifier(specifiers: any, fileContents: string, options: Sor
 
         let importedName = specifier.imported != null ? specifier.imported.name : specifier.local.name;
         sortedSpecifiers.push({
-            originalIndex: x,
             importedName: importedName,
             importKind: specifier.importKind,
             isInterface: nameIsLikelyInterface(importedName),
+            originalIndex: x,
             originalLocation: {
-                start: specifier.start || specifier.range[0],
-                end: specifier.end || specifier.range[1]
+                end: specifier.end || specifier.range[1],
+                start: specifier.start || specifier.range[0]
             }
         });
     }

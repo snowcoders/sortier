@@ -14,10 +14,10 @@ import { sortSwitchCases } from './index';
 import { sentenceCase } from "../common/string-utils";
 
 interface TestInfo {
-  parserType: string;
-  testName: string;
   inputFilePath: string;
   outputFilePath: string;
+  parserType: string;
+  testName: string;
 }
 
 describe('sortSwitchCases', () => {
@@ -37,10 +37,10 @@ describe('sortSwitchCases', () => {
     let cleanedTestName = sentenceCase(segments[1].replace(/_/g, " "));
 
     return {
-      parserType: segments[0],
-      testName: cleanedTestName,
       inputFilePath: filePath,
-      outputFilePath: filePath.replace(".input.txt", ".output.txt")
+      outputFilePath: filePath.replace(".input.txt", ".output.txt"),
+      parserType: segments[0],
+      testName: cleanedTestName
     };
   });
 

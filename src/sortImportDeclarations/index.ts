@@ -6,20 +6,20 @@ export interface SortImportDeclarationsOptions {
 }
 
 interface SingleImportSource {
+    firstSpecifier: string,
     originalIndex: number,
     source: string,
-    firstSpecifier: string,
     originalLocation: {
-        start: {
-            index: number,
-            line: number,
-            column: number
-        },
         end: {
+            column: number
             index: number,
             line: number,
-            column: number
         }
+        start: {
+            column: number
+            index: number,
+            line: number,
+        },
     }
 };
 
@@ -47,21 +47,21 @@ export function sortImportDeclarations(body: any, fileContents: string, options?
                 break;
             }
             sortedImportSources.push({
-                originalIndex: overallIndex,
                 firstSpecifier: importSource.specifiers[0] && importSource.specifiers[0].local.name || "",
-                source: importSource.source.value,
+                originalIndex: overallIndex,
                 originalLocation: {
-                    start: {
-                        index: importSource.start,
-                        line: importSource.loc.start.line,
-                        column: importSource.loc.start.column
-                    },
                     end: {
+                        column: importSource.loc.end.column,
                         index: importSource.end,
-                        line: importSource.loc.end.line,
-                        column: importSource.loc.end.column
+                        line: importSource.loc.end.line
+                    },
+                    start: {
+                        column: importSource.loc.start.column,
+                        index: importSource.start,
+                        line: importSource.loc.start.line
                     }
-                }
+                },
+                source: importSource.source.value
             });
         }
 

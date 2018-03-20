@@ -13,8 +13,8 @@ export function parse(text: string /*, parsers, opts*/) {
     if (ast.errors.length > 0) {
         const loc = ast.errors[0].loc;
         throw createError(ast.errors[0].message, {
-            start: { line: loc.start.line, column: loc.start.column + 1 },
-            end: { line: loc.end.line, column: loc.end.column + 1 }
+            end: { column: loc.end.column + 1, line: loc.end.line },
+            start: { column: loc.start.column + 1, line: loc.start.line }
         });
     }
 

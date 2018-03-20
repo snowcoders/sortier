@@ -27,7 +27,6 @@ export function sortObjectTypeAnnotation(objectTypeAnnotation: any, comments: Co
     spreadGroups.push(allNodes.slice(currentStart));
   }
 
-  console.log();
   for (let nodes of spreadGroups) {
     let contextGroups = getContextGroups(nodes, comments, fileContents);
 
@@ -41,7 +40,10 @@ export function sortObjectTypeAnnotation(objectTypeAnnotation: any, comments: Co
           return aGroup - bGroup;
         }
 
-        return a.key.name.localeCompare(b.key.name);
+        let aString = getString(a);
+        let bString = getString(b);
+
+        return aString.localeCompare(bString);
       });
 
       newFileContents = reorderValues(newFileContents, comments, unsorted, sorted);
@@ -65,6 +67,14 @@ function ensureOptions(options?: SortObjectTypeAnnotationOptions | null): SortOb
   return {
     groups: options.groups || ["undefined", "null", "*", "object", "function"],
   };
+}
+
+function getString(property) {
+  let aString = property.key.raw;
+  if (aString == null) {
+    aString = property.key.name;
+  }
+  return aString;
 }
 
 function getSortGroupIndex(property, options: SortObjectTypeAnnotationOptions): number {

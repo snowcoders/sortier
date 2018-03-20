@@ -9,25 +9,44 @@ export interface SortObjectTypeAnnotationOptions {
 export function sortObjectTypeAnnotation(objectTypeAnnotation: any, comments: Comment[], fileContents: string, options?: SortObjectTypeAnnotationOptions) {
   let ensuredOptions = ensureOptions(options);
   let newFileContents = fileContents.slice();
+  let allNodes: any[] = objectTypeAnnotation.properties.slice();
 
-  // TODO need to include spread properties in contextBreaks
-  let groupings = getContextGroups(objectTypeAnnotation.properties, comments, fileContents);
-
-  groupings.forEach(element => {
-    let unsorted: any[] = element.nodes;
-    let sorted: any[] = element.nodes.slice().sort((a, b) => {
-      let aGroup = getSortGroupIndex(a, ensuredOptions);
-      let bGroup = getSortGroupIndex(b, ensuredOptions);
-
-      if (aGroup != bGroup) {
-        return aGroup - bGroup;
+  // Any time there is a spread operator, we need to sort around it... moving it could cause functionality changes
+  let spreadGroups: any[] = [];
+  let currentStart = 0;
+  for (let x = 0; x < allNodes.length; x++) {
+    if (allNodes[x].type === "ObjectTypeSpreadProperty") {
+      if (currentStart !== x) {
+        spreadGroups.push(allNodes.slice(currentStart, x));
       }
+      x++;
+      currentStart = x;
+    }
+  }
+  if (currentStart !== allNodes.length) {
+    spreadGroups.push(allNodes.slice(currentStart));
+  }
 
-      return a.key.name.localeCompare(b.key.name);
+  console.log();
+  for (let nodes of spreadGroups) {
+    let contextGroups = getContextGroups(nodes, comments, fileContents);
+
+    contextGroups.forEach(element => {
+      let unsorted: any[] = element.nodes;
+      let sorted: any[] = element.nodes.slice().sort((a, b) => {
+        let aGroup = getSortGroupIndex(a, ensuredOptions);
+        let bGroup = getSortGroupIndex(b, ensuredOptions);
+
+        if (aGroup != bGroup) {
+          return aGroup - bGroup;
+        }
+
+        return a.key.name.localeCompare(b.key.name);
+      });
+
+      newFileContents = reorderValues(newFileContents, comments, unsorted, sorted);
     });
-
-    newFileContents = reorderValues(newFileContents, comments, unsorted, sorted);
-  });
+  }
 
   return newFileContents;
 }

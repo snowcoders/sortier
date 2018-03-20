@@ -64,6 +64,7 @@ describe('sortObjectTypeAnnotation', () => {
       testInfos.forEach(testInfo => {
         if (testInfo.parserType == fileType) {
           it(testInfo.testName, () => {
+            debugger;
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);

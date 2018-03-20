@@ -1,6 +1,6 @@
 import { Comment, SwitchCase } from "estree";
 
-import { getContextGroups, reorderValues } from "../common/sort-utils";
+import { getContextGroups, reorderValues, MinimumTypeInformation } from "../common/sort-utils";
 
 export interface SortSwitchCaseOptions {
 }
@@ -48,7 +48,8 @@ export function sortSwitchCases(cases: SwitchCase[], comments: Comment[], fileCo
             switchCaseStart = switchCaseEnd + 1;
         }
 
-        switchGroupsWithBreaks.sort((a: any, b: any) => {
+        let switchGroupsWithBreaksSorted = switchGroupsWithBreaks.slice();
+        switchGroupsWithBreaksSorted.sort((a: any, b: any) => {
             let aFirst = a[0];
             let bFirst = b[0];
             if (aFirst == null) {
@@ -78,10 +79,26 @@ export function sortSwitchCases(cases: SwitchCase[], comments: Comment[], fileCo
             return aValue.localeCompare(bValue);
         });
 
-        let newOrder = [].concat.apply([], switchGroupsWithBreaks);
-
-        newFileContents = reorderValues(newFileContents, comments, cases, newOrder);
+        newFileContents = reorderValues(
+            newFileContents,
+            comments,
+            caseGroupsToMinimumTypeinformations(switchGroupsWithBreaks),
+            caseGroupsToMinimumTypeinformations(switchGroupsWithBreaksSorted));
     }
 
     return newFileContents;
+}
+
+function caseGroupsToMinimumTypeinformations(switchGroupsWithBreaks: SwitchCase[][]) {
+    return switchGroupsWithBreaks.map((value) => {
+        let firstRange = value[0].range;
+        let lastRange = value[value.length - 1].range;
+        if (firstRange == null || lastRange == null) {
+            throw new Error("Range is null");
+        }
+        let result: MinimumTypeInformation = {
+            range: [firstRange[0], lastRange[1]]
+        };
+        return result;
+    })
 }

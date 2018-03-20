@@ -1,0 +1,7 @@
+export type Hello = {
+  c: "c",
+  a: "a",
+  ...ab,
+  d: "d",
+  b: "b",
+}

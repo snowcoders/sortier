@@ -10,6 +10,7 @@ export function sortObjectTypeAnnotation(objectTypeAnnotation: any, comments: Co
   let ensuredOptions = ensureOptions(options);
   let newFileContents = fileContents.slice();
 
+  // TODO need to include spread properties in contextBreaks
   let groupings = getContextGroups(objectTypeAnnotation.properties, comments, fileContents);
 
   groupings.forEach(element => {

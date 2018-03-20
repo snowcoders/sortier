@@ -1,8 +1,7 @@
-import { Comment, SourceLocation } from "estree";
+import { Comment } from "estree";
 
 export interface MinimumTypeInformation {
   range?: [number, number];
-  loc?: SourceLocation | null | undefined;
 };
 
 export interface ContextGroup {

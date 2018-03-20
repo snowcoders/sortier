@@ -1,0 +1,23 @@
+  switch (logLevel) {
+    case "silent":
+      console.log(false);
+    default:
+      console.log(true);
+    case "debug":
+      if (loggerName === "debug") {
+        console.log(true);
+      }
+    // fall through
+    case "log":
+      if (loggerName === "log") {
+        console.log(true);
+      }
+    // fall through
+    case "warn":
+      if (loggerName === "warn") {
+        console.log(true);
+      }
+    // fall through
+    case "error":
+      console.log(loggerName === "error");
+  }

@@ -15,7 +15,7 @@ export function sortObjectTypeAnnotation(objectTypeAnnotation: any, comments: Co
   let spreadGroups: any[] = [];
   let currentStart = 0;
   for (let x = 0; x < allNodes.length; x++) {
-    if (allNodes[x].type === "ObjectTypeSpreadProperty") {
+    if (allNodes[x].type.includes("SpreadProperty")) {
       if (currentStart !== x) {
         spreadGroups.push(allNodes.slice(currentStart, x));
       }
@@ -40,8 +40,8 @@ export function sortObjectTypeAnnotation(objectTypeAnnotation: any, comments: Co
           return aGroup - bGroup;
         }
 
-        let aString = getString(a);
-        let bString = getString(b);
+        let aString = getString(a, fileContents);
+        let bString = getString(b, fileContents);
 
         return aString.localeCompare(bString);
       });
@@ -69,12 +69,8 @@ function ensureOptions(options?: SortObjectTypeAnnotationOptions | null): SortOb
   };
 }
 
-function getString(property) {
-  let text = property.key.raw;
-  if (text == null) {
-    text = property.key.name;
-  }
-  return text;
+function getString(property, fileContents: string) {
+  return fileContents.substring(property.range[0], property.range[1]);
 }
 
 function getSortGroupIndex(property, options: SortObjectTypeAnnotationOptions): number {

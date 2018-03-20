@@ -140,6 +140,9 @@ export class Reprinter {
                         nodes.push(node.declaration);
                         break;
                     }
+                    case "ExportAllDeclaration": {
+                        break;
+                    }
                     case "ExportNamedDeclaration": {
                         if (node.declaration != null) {
                             nodes.push(node.declaration);
@@ -240,6 +243,7 @@ export class Reprinter {
                         fileContents = this.rewriteNodes(node.expressions, comments, fileContents);
                         break;
                     }
+                    case "TaggedTemplateExpression":
                     case "SpreadElement":
                     case "TemplateLiteral":
                     case "ThisExpression":
@@ -320,13 +324,31 @@ export class Reprinter {
                     }
 
                     // Typescript
+                    case "ExperimentalSpreadProperty":
+                    case "TSParenthesizedType":
+                    case "TSTypeOperator":
                     case "TSArrayType":
+                    case "TSAnyKeyword":
+                    case "TSAsExpression":
                     case "TSBooleanKeyword":
+                    case "TSEnumDeclaration":
+                    case "TSFunctionType":
+                    case "TSIndexSignature":
                     case "TSLastTypeNode":
-                    case "TSStringKeyword":
+                    case "TSMethodSignature":
+                    case "TSNonNullExpression":
                     case "TSNumberKeyword":
+                    case "TSStringKeyword":
                     case "TSTypeReference":
                     case "TSTupleType": {
+                        break;
+                    }
+                    case "TSModuleDeclaration": {
+                        nodes.push(node.body);
+                        break;
+                    }
+                    case "TSModuleBlock": {
+                        fileContents = this.rewriteNodes(node.body, comments, fileContents);
                         break;
                     }
                     case "TSTypeAnnotation": {

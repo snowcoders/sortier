@@ -237,7 +237,6 @@ export class Reprinter {
                         break;
                     }
                     case "SequenceExpression": {
-                        this.printHelpModeInfo(node, fileContents);
                         fileContents = this.rewriteNodes(node.expressions, comments, fileContents);
                         break;
                     }

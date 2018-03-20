@@ -287,7 +287,7 @@ export class Reprinter {
                             nodes.push(node.handler.body);
                         }
                         if (node.finalizer != null) {
-                            nodes.push(node.finalizer.body);
+                            nodes.push(node.finalizer);
                         }
                         break;
                     }

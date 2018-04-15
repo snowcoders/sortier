@@ -3,7 +3,7 @@ import {
         a1 } 
         from "./a";
 import { 
-        c2
+       /*Absolute imports move to the top*/ c2
 } from "c";
 import { b3, b1 } from "./b";
 

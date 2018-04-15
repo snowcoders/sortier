@@ -2,12 +2,12 @@
 import * as React from "react"; // Needed to make react work
 import * as ReactDOM from "react-dom";
 
-import "./a";
-import {local_b} from "./b";
-import * as local_c from "./c";
 import "a";
 import {b} from "b";
 import * as c from "c";
+import "./a";
+import {local_b} from "./b";
+import * as local_c from "./c";
 
 export type Props = {
     foo: number,

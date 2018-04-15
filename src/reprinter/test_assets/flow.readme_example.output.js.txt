@@ -1,11 +1,11 @@
 import { 
+       /*Absolute imports move to the top*/ c2
+} from "c";
+import { 
         a1, 
         a2 } 
         from "./a";
 import { b1, b3 } from "./b";
-import { 
-        c2
-} from "c";
 
 // Blank lines act like context barriers and will divide sorting blocks
 import { b2 } from "b1";

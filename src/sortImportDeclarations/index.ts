@@ -65,20 +65,32 @@ export function sortImportDeclarations(body: any, fileContents: string, options?
             });
         }
 
-        // Sort them by name
+        let sortBySpecifier = (a: SingleImportSource, b: SingleImportSource) => {
+            return a.firstSpecifier.localeCompare(b.firstSpecifier);
+        };
+        let sortByPath = (a: SingleImportSource, b: SingleImportSource) => {
+            let aIsRelative = a.source.startsWith(".");
+            let bIsRelative = b.source.startsWith(".");
+            if (aIsRelative === bIsRelative) {
+                return a.source.localeCompare(b.source);
+            }
+            else {
+                return Number(aIsRelative) - Number(bIsRelative);
+            }
+        };
         sortedImportSources.sort((a: SingleImportSource, b: SingleImportSource) => {
             if (ensuredOptions.orderBy === "first-specifier") {
-                let result = a.firstSpecifier.localeCompare(b.firstSpecifier);
+                let result = sortBySpecifier(a, b);
                 if (result !== 0) {
                     return result;
                 }
-                return a.source.localeCompare(b.source);
+                return sortByPath(a, b);
             } else {
-                let result = a.source.localeCompare(b.source);
+                let result = sortByPath(a, b);
                 if (result !== 0) {
                     return result;
                 }
-                return a.firstSpecifier.localeCompare(b.firstSpecifier);
+                return sortBySpecifier(a, b);
             }
         });
 

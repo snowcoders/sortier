@@ -20,12 +20,12 @@ import {
         a1 } 
         from "./a";
 import { 
-        c2, 
-        /* c1's comment */ c1 } from "c";
-import { b2, b1 } from "./b";
+       /*Absolute imports move to the top*/ c2
+} from "c";
+import { b3, b1 } from "./b";
 
 // Blank lines act like context barriers and will divide sorting blocks
-import { b1 } from "b1";
+import { b2 } from "b1";
 
 export type Props = {
   // Prop3 comment
@@ -39,24 +39,24 @@ export type Props = {
 ### Output
 ```
 import { 
+       /*Absolute imports move to the top*/ c2
+} from "c";
+import { 
         a1, 
         a2 } 
         from "./a";
-import { b } from "./b";
-import { 
-        c1, 
-        c2 } from "c";
+import { b1, b3 } from "./b";
 
-// Line comments and blank lines act like syntax barriers and will divide sorting blocks
-import { b1 } from "b1";
+// Blank lines act like context barriers and will divide sorting blocks
+import { b2 } from "b1";
 
 export type Props = {
-  callback1(): void,
-  callback2: () => void,
   // Prop1 comment
   prop1: number,
   // Prop3 comment
   prop3: string,
+  callback1(): void,
+  callback2: () => void,
 }
 ```
 

@@ -1,0 +1,11 @@
+interface Definition {
+  property: 
+    | $ReadOnly<{| +latter: string, +former: boolean|}>
+    | $ReadOnly<{| 
+        +differ: string, +former: boolean|}>
+    | $ReadOnly<{| +alternative: {
+      c: boolean,
+      b: boolean,
+      a: boolean,
+    }, +former: string|}>
+}

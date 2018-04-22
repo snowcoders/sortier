@@ -17,8 +17,8 @@ import { sortTSPropertySignatures } from "../sortTSPropertySignatures";
 import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation";
 
 // Utils
-import { endsWith } from "../common/string-utils";
 import { isArray } from "util";
+import { endsWith } from "../common/string-utils";
 
 export interface ReprinterOptions {
     isHelpMode?: boolean,
@@ -384,8 +384,12 @@ export class Reprinter {
                     case "NumberLiteralTypeAnnotation":
                     case "NumberTypeAnnotation":
                     case "StringLiteralTypeAnnotation":
-                    case "StringTypeAnnotation":
+                    case "StringTypeAnnotation": {
+                        if (node.typeParameters && node.typeParameters.params) {
+                            fileContents = this.rewriteNodes(node.typeParameters.params, comments, fileContents);
+                        }
                         break;
+                    }
 
                     // From typescript or flow - TODO need to split these
                     case "ClassProperty": {

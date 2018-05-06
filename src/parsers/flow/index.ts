@@ -1,7 +1,7 @@
 // Mostly taken from Prettier.io - Credit where credit is due!
 
-import { createError, includeShebang } from "../../common/parser-utils";
 import * as flowParser from "flow-parser";
+import { createError, includeShebang } from "../../common/parser-utils";
 
 export function parse(text: string /*, parsers, opts*/) {
     const ast = flowParser.parse(text, {

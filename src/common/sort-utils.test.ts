@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
-import { getContextGroups, MinimumTypeInformation } from "./sort-utils";
 import { Comment, SourceLocation } from "estree";
+import { getContextGroups, MinimumTypeInformation } from "./sort-utils";
 
 import { parse as flowParse } from '../parsers/flow';
 

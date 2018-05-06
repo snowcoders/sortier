@@ -1,7 +1,7 @@
 // Mostly taken from Prettier.io - Credit where credit is due!
 
-import { createError, includeShebang } from "../../common/parser-utils";
 import * as parser from "typescript-eslint-parser";
+import { createError, includeShebang } from "../../common/parser-utils";
 
 export function parse(text: string /*, parsers, opts*/) {
     const jsx = isProbablyJsx(text);

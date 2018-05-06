@@ -9,7 +9,7 @@ export interface SortTSPropertySignaturesOptions {
 export function sortTSPropertySignatures(properties: any, comments: Comment[], fileContents: string, options?: SortTSPropertySignaturesOptions) {
   let ensuredOptions = ensureOptions(options);
   let newFileContents = fileContents.slice();
-  let allNodes: any[] = properties;
+  let allNodes: any[] = cleanProperties(fileContents, properties);
 
   // Any time there is a spread operator, we need to sort around it... moving it could cause functionality changes
   let spreadGroups: any[] = [];
@@ -67,6 +67,24 @@ function ensureOptions(options?: SortTSPropertySignaturesOptions | null): SortTS
   return {
     groups: options.groups || ["undefined", "null", "*", "object", "function"],
   };
+}
+
+function cleanProperties(fileContents: string, properties: any[]) {
+  // Interface properties are read in as "property: number," where we don't want to move the commas
+  return properties.map((property: any) => {
+    let lastIndex = property.range[1];
+    if (0 < lastIndex &&
+      fileContents[lastIndex - 1] === ',') {
+      lastIndex--;
+    }
+
+    return {
+      ...property,
+      range: [
+        property.range[0], lastIndex
+      ]
+    }
+  });
 }
 
 function getString(property, fileContents: string) {

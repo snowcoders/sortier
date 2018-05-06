@@ -133,6 +133,9 @@ class UnionTypeAnnotationSorter {
       return a.raw;
     }
     else if (a.type === "GenericTypeAnnotation") {
+      if (a.id.name === "$ReadOnly") {
+        return a.typeParameters.params[0].properties[0].key.name;
+      }
       return a.id.name;
     }
     else if (a.type === "TSLastTypeNode") {

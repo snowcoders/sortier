@@ -6,6 +6,6 @@ interface Definition {
     | $ReadOnly<{| +alternative: {
       c: boolean,
       b: boolean,
-      a: boolean,
+      a: boolean
     }, +former: string|}>
 }

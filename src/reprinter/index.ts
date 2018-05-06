@@ -385,7 +385,7 @@ export class Reprinter {
                     case "NumberTypeAnnotation":
                     case "StringLiteralTypeAnnotation":
                     case "StringTypeAnnotation": {
-                        if (node.typeParameters && node.typeParameters.params) {
+                        if (node.typeParameters != null && node.typeParameters.params != null) {
                             fileContents = this.rewriteNodes(node.typeParameters.params, comments, fileContents);
                         }
                         break;

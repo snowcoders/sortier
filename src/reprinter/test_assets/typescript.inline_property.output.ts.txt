@@ -1,0 +1,26 @@
+export interface IExample {
+  level_1_1: {
+    level_2_1: {
+      level_3_1: number,
+      level_3_2: number,
+      level_3_3: number
+    },
+    level_2_2: {
+      level_3_1: number,
+      level_3_2: number,
+      level_3_3: number
+    }
+  },
+  level_1_2: {
+    level_2_1: {
+      level_3_1: number,
+      level_3_2: number,
+      level_3_3: number,
+    },
+    level_2_2: {
+      level_3_1: number,
+      level_3_2: number,
+      level_3_3: number,
+    }
+  }
+}

@@ -8,16 +8,36 @@ export interface SortJsxElementOptions {
 export function sortJsxElement(jsxElement: any, comments: Comment[], fileContents: string, options?: SortJsxElementOptions) {
   let newFileContents = fileContents.slice();
 
-  let groupings = getContextGroups(jsxElement.openingElement.attributes, comments, fileContents);
+  let allNodes = jsxElement.openingElement.attributes;
 
-  groupings.forEach(element => {
-    let unsorted: any[] = element.nodes;
-    let sorted: any[] = element.nodes.slice().sort((a, b) => {
-      return a.name.name.localeCompare(b.name.name);
+  // Any time there is a spread operator, we need to sort around it... moving it could cause functionality changes
+  let spreadGroups: any[] = [];
+  let currentStart = 0;
+  for (let x = 0; x < allNodes.length; x++) {
+    if (allNodes[x].type.includes("SpreadAttribute")) {
+      if (currentStart !== x) {
+        spreadGroups.push(allNodes.slice(currentStart, x));
+      }
+      x++;
+      currentStart = x;
+    }
+  }
+  if (currentStart !== allNodes.length) {
+    spreadGroups.push(allNodes.slice(currentStart));
+  }
+
+  for (let nodes of spreadGroups) {
+    let groupings = getContextGroups(nodes, comments, fileContents);
+
+    groupings.forEach(element => {
+      let unsorted: any[] = element.nodes;
+      let sorted: any[] = element.nodes.slice().sort((a, b) => {
+        return a.name.name.localeCompare(b.name.name);
+      });
+
+      newFileContents = reorderValues(newFileContents, comments, unsorted, sorted);
     });
-
-    newFileContents = reorderValues(newFileContents, comments, unsorted, sorted);
-  });
+  }
 
   return newFileContents;
 }

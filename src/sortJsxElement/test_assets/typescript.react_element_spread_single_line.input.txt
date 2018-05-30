@@ -1,0 +1,1 @@
+return <input prop2={2} prop1={1} {...{}}  prop4={4} prop3={3} />;

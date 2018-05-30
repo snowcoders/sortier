@@ -14,7 +14,7 @@ export function getSpreadGroups(allNodes: (MinimumTypeInformation & { type: stri
   let spreadGroups: any[] = [];
   let currentStart = 0;
   for (let x = 0; x < allNodes.length; x++) {
-    if (allNodes[x].type.includes("SpreadAttribute")) {
+    if (allNodes[x].type.includes("Spread")) {
       if (currentStart !== x) {
         spreadGroups.push(allNodes.slice(currentStart, x));
       }

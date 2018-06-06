@@ -94,7 +94,7 @@ function getSortGroupIndex(property, options: SortObjectTypeAnnotationOptions): 
     else if (property.value.type === "ObjectTypeAnnotation") {
       aRank = objectRank;
     }
-    else if (property.value.type === "FunctionTypeAnnotation") {
+    else if (property.value.type === "FunctionTypeAnnotation" || property.value.type === "ArrowFunctionExpression") {
       aRank = functionRank;
     }
   }

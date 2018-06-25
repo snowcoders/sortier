@@ -396,7 +396,9 @@ export class Reprinter {
                         break;
                     }
                     case "FunctionTypeAnnotation": {
-                        nodes.push(node.returnType);
+                        if (node.returnType != null) {
+                            nodes.push(node.returnType);
+                        }
                         break;
                     }
                     case "IntersectionTypeAnnotation": {

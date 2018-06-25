@@ -390,6 +390,13 @@ export class Reprinter {
                         }
                         break;
                     }
+                    case "IntersectionTypeAnnotation": {
+                        fileContents = this.rewriteNodes(node.types, comments, fileContents);
+                        fileContents = sortUnionTypeAnnotation(node, comments, fileContents, this._options.sortTypeAnnotations && {
+                            groups: this._options.sortTypeAnnotations
+                        });
+                        break;
+                    }
 
                     // From typescript or flow - TODO need to split these
                     case "ClassProperty": {

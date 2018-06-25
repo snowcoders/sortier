@@ -1,0 +1,5 @@
+export type Props = {
+  callback1(): "A" | "B",
+  callback2: () => "A" | "B",
+  callback3(),
+}

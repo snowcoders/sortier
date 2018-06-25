@@ -1,0 +1,10 @@
+interface Definition {
+  property: {
+      Other: "C"
+  } & A,
+  property2: A & {
+      Other: "C"
+  },
+}
+
+type A = "B" | "A";

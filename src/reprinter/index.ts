@@ -218,6 +218,7 @@ export class Reprinter {
                         nodes.push(node.value);
                         break;
                     }
+                    case "ObjectPattern":
                     case "ObjectExpression": {
                         fileContents = this.rewriteNodes(node.properties, comments, fileContents);
                         fileContents = sortObjectTypeAnnotation(node, comments, fileContents, this._options.sortTypeAnnotations && {
@@ -301,6 +302,9 @@ export class Reprinter {
                         break;
                     }
                     case "VariableDeclarator": {
+                        if (node.id != null) {
+                            nodes.push(node.id);
+                        }
                         if (node.init != null) {
                             nodes.push(node.init);
                         }

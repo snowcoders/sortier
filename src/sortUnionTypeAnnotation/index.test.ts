@@ -66,7 +66,12 @@ describe('sortUnionTypeAnnotation', () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);
-            let actual = sortUnionTypeAnnotation(parser(input).body[0].body.properties[0].value, parsed.comments, input);
+            let actual = "";
+            if (testInfo.parserType === 'typescript') {
+              actual = sortUnionTypeAnnotation(parsed.body[0].body.body[0].typeAnnotation.typeAnnotation, parsed.comments, input);
+            } else {
+              actual = sortUnionTypeAnnotation(parsed.body[0].body.properties[0].value, parsed.comments, input);
+            }
 
             expect(actual).to.equal(expected);
           });

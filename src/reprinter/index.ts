@@ -338,10 +338,8 @@ export class Reprinter {
                     case "TSAsExpression":
                     case "TSBooleanKeyword":
                     case "TSEnumDeclaration":
-                    case "TSFunctionType":
                     case "TSIndexSignature":
                     case "TSLastTypeNode":
-                    case "TSMethodSignature":
                     case "TSNonNullExpression":
                     case "TSNullKeyword":
                     case "TSNumberKeyword":
@@ -349,6 +347,13 @@ export class Reprinter {
                     case "TSTypeReference":
                     case "TSTupleType":
                     case "TSUndefinedKeyword": {
+                        break;
+                    }
+                    case "TSFunctionType":
+                    case "TSMethodSignature": {
+                        if (node.typeAnnotation != null) {
+                            nodes.push(node.typeAnnotation);
+                        }
                         break;
                     }
                     case "TSModuleBlock": {
@@ -391,6 +396,12 @@ export class Reprinter {
                     case "StringTypeAnnotation": {
                         if (node.typeParameters != null && node.typeParameters.params != null) {
                             fileContents = this.rewriteNodes(node.typeParameters.params, comments, fileContents);
+                        }
+                        break;
+                    }
+                    case "FunctionTypeAnnotation": {
+                        if (node.returnType != null) {
+                            nodes.push(node.returnType);
                         }
                         break;
                     }

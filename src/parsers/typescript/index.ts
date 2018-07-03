@@ -35,12 +35,12 @@ function tryParseTypeScript(text: string, jsx: boolean) {
         comment: true,
         ecmaFeatures: { jsx },
         loc: true,
-        // Override logger function with noop,
-        // to avoid unsupported version errors being logged
-        loggerFn: () => { },
         range: true,
         tokens: true,
-        useJSXTextNode: true
+        useJSXTextNode: true,
+        // Override logger function with noop,
+        // to avoid unsupported version errors being logged
+        loggerFn: () => { }
     });
 }
 

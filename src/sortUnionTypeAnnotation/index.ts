@@ -139,7 +139,7 @@ class UnionTypeAnnotationSorter {
       }
       return a.id.name;
     }
-    else if (a.type === "TSLastTypeNode") {
+    else if (a.literal != null && a.literal.raw != null) {
       return a.literal.raw;
     } else {
       return a.type;

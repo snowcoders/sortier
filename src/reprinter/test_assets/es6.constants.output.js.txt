@@ -9,4 +9,6 @@ const errorValues = {
   NOT_FOUND: 404
 };
 
+let {NOT_FOUND, PENDING} = networkState;
+
 export { errorValues, networkState };

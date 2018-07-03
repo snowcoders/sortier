@@ -9,6 +9,26 @@ export interface ContextGroup {
   nodes: any[];
 };
 
+export function getSpreadGroups(allNodes: (MinimumTypeInformation & { type: string })[]) {
+  // Any time there is a spread operator, we need to sort around it... moving it could cause functionality changes
+  let spreadGroups: any[] = [];
+  let currentStart = 0;
+  for (let x = 0; x < allNodes.length; x++) {
+    if (allNodes[x].type.includes("Spread")) {
+      if (currentStart !== x) {
+        spreadGroups.push(allNodes.slice(currentStart, x));
+      }
+      x++;
+      currentStart = x;
+    }
+  }
+  if (currentStart !== allNodes.length) {
+    spreadGroups.push(allNodes.slice(currentStart));
+  }
+
+  return spreadGroups;
+}
+
 // Blank lines between cases are considered Context breakers... we don't sort through them.
 export function getContextGroups(nodes: MinimumTypeInformation[], comments: Comment[], fileContents: string): ContextGroup[] {
   comments = comments.filter((comment) => {

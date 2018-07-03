@@ -11,6 +11,7 @@ export function sortUnionTypeAnnotation(unionTypeAnnotation, comments, fileConte
   let ensuredOptions = ensureOptions(options);
 
   if (unionTypeAnnotation.type === "UnionTypeAnnotation" ||
+    unionTypeAnnotation.type === "IntersectionTypeAnnotation" ||
     unionTypeAnnotation.type === "TSUnionType") {
     fileContents = new UnionTypeAnnotationSorter(unionTypeAnnotation, comments, fileContents, ensuredOptions).sort();
   }
@@ -89,7 +90,7 @@ class UnionTypeAnnotationSorter {
       else if (annotationType.type === "ObjectTypeAnnotation") {
         aRank = objectRank;
       }
-      else if (annotationType.type === "FunctionTypeAnnotation") {
+      else if (annotationType.type === "FunctionTypeAnnotation" || annotationType.type === "ArrowFunctionExpression") {
         aRank = functionRank;
       }
 

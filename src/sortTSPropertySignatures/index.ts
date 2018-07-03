@@ -1,6 +1,6 @@
 import { Comment } from "estree";
 
-import { getContextGroups, reorderValues } from "../common/sort-utils";
+import { getContextGroups, getSpreadGroups, reorderValues } from "../common/sort-utils";
 
 export interface SortTSPropertySignaturesOptions {
   groups: ("null" | "undefined" | "*" | "function" | "object")[],
@@ -12,20 +12,7 @@ export function sortTSPropertySignatures(properties: any, comments: Comment[], f
   let allNodes: any[] = cleanProperties(fileContents, properties);
 
   // Any time there is a spread operator, we need to sort around it... moving it could cause functionality changes
-  let spreadGroups: any[] = [];
-  let currentStart = 0;
-  for (let x = 0; x < allNodes.length; x++) {
-    if (allNodes[x].type.includes("SpreadProperty")) {
-      if (currentStart !== x) {
-        spreadGroups.push(allNodes.slice(currentStart, x));
-      }
-      x++;
-      currentStart = x;
-    }
-  }
-  if (currentStart !== allNodes.length) {
-    spreadGroups.push(allNodes.slice(currentStart));
-  }
+  let spreadGroups: any[] = getSpreadGroups(allNodes);
 
   for (let nodes of spreadGroups) {
     let contextGroups = getContextGroups(nodes, comments, fileContents);

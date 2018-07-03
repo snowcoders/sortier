@@ -14,7 +14,7 @@
     "prepare": "npm run clean && npm run build",
     "start": "npm run build && node bin/index.js",
     "test": "npm run mocha",
-    "mocha": "mocha --require ts-node/register --require source-map-support/register --full-trace --bail src/**/*.test.ts"
+    "mocha": "mocha --require ts-node/register --require source-map-support/register --full-trace src/**/*.test.ts"
   },
   "lint-staged": {
     "**/*.ts": [

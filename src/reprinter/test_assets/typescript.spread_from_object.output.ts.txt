@@ -1,1 +1,1 @@
-let {NOT_FOUND, PENDING} = networkState;
+let {NOT_FOUND, PENDING, ...others} = networkState;

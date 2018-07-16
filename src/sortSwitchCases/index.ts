@@ -33,6 +33,8 @@ export function sortSwitchCases(cases: SwitchCase[], comments: Comment[], fileCo
             continue;
         }
 
+        // Determine where the "break" statements are so we dont' sort through them
+        // which would change the logic of the code
         let switchGroupsWithBreaks: Array<SwitchCase[]> = [];
         let switchCaseStart = 0;
         let switchCaseEnd = 0;
@@ -97,6 +99,7 @@ export function sortSwitchCases(cases: SwitchCase[], comments: Comment[], fileCo
             }            
         }
 
+        // Now sort the actual switch groups
         let switchGroupsWithBreaksSorted = switchGroupsWithBreaks.slice();
         switchGroupsWithBreaksSorted.sort((a: any, b: any) => {
             let aFirst = a[0];

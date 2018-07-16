@@ -1,0 +1,9 @@
+  switch (logLevel) {
+    case "warn":
+    case "error":
+      console.log("Show to user");
+    case "debug":
+      console.log("Send to server");
+    default:
+      console.log("Don't care");
+  }

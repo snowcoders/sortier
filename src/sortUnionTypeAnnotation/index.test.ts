@@ -49,8 +49,8 @@ describe('sortUnionTypeAnnotation', () => {
 
       let parser;
       switch (fileType) {
-        case "flow":
         case "es6":
+        case "flow":
           parser = flowParse;
           break;
         case "typescript":

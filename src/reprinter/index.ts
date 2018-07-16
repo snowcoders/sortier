@@ -98,6 +98,20 @@ export class Reprinter {
                         fileContents = this.rewriteNodes(node.body, comments, fileContents);
                         break;
                     }
+                    case "BreakStatement":
+                    case "ContinueStatement":
+                    case "DebuggerStatement":
+                    case "EmptyStatement":
+                    case "Identifier":
+                    case "Literal":
+                    case "SpreadElement":
+                    case "TaggedTemplateExpression":
+                    case "TemplateLiteral":
+                    case "ThisExpression":
+                    case "UnaryExpression": {
+                        // Skip since there isn't anything for us to sort
+                        break;
+                    }
                     case "CallExpression":
                     case "NewExpression": {
                         fileContents = this.rewriteNodes(node.arguments, comments, fileContents);
@@ -135,6 +149,12 @@ export class Reprinter {
                         nodes.push(node.test);
                         nodes.push(node.alternate);
                         nodes.push(node.consequent);
+                        break;
+                    }
+                    case "DoWhileStatement":
+                    case "WhileStatement": {
+                        nodes.push(node.test);
+                        nodes.push(node.body);
                         break;
                     }
                     case "ExportAllDeclaration": {
@@ -218,8 +238,8 @@ export class Reprinter {
                         nodes.push(node.value);
                         break;
                     }
-                    case "ObjectPattern":
-                    case "ObjectExpression": {
+                    case "ObjectExpression":
+                    case "ObjectPattern": {
                         fileContents = this.rewriteNodes(node.properties, comments, fileContents);
                         fileContents = sortObjectTypeAnnotation(node, comments, fileContents, this._options.sortTypeAnnotations && {
                             groups: this._options.sortTypeAnnotations
@@ -262,20 +282,6 @@ export class Reprinter {
                         fileContents = sortSwitchCases(node.cases, comments, fileContents);
                         break;
                     }
-                    case "TaggedTemplateExpression":
-                    case "SpreadElement":
-                    case "TemplateLiteral":
-                    case "ThisExpression":
-                    case "UnaryExpression":
-                    case "ContinueStatement":
-                    case "EmptyStatement":
-                    case "DebuggerStatement":
-                    case "Literal":
-                    case "Identifier":
-                    case "BreakStatement": {
-                        // Skip since there isn't anything for us to sort
-                        break;
-                    }
                     case "ThrowStatement": {
                         if (node.argument) {
                             nodes.push(node.argument);
@@ -310,12 +316,6 @@ export class Reprinter {
                         }
                         break;
                     }
-                    case "WhileStatement":
-                    case "DoWhileStatement": {
-                        nodes.push(node.test);
-                        nodes.push(node.body);
-                        break;
-                    }
                     case "WithStatement": {
                         nodes.push(node.object);
                         nodes.push(node.body);
@@ -331,10 +331,8 @@ export class Reprinter {
 
                     // Typescript
                     case "ExperimentalSpreadProperty":
-                    case "TSParenthesizedType":
-                    case "TSTypeOperator":
-                    case "TSArrayType":
                     case "TSAnyKeyword":
+                    case "TSArrayType":
                     case "TSAsExpression":
                     case "TSBooleanKeyword":
                     case "TSEnumDeclaration":
@@ -343,9 +341,11 @@ export class Reprinter {
                     case "TSNonNullExpression":
                     case "TSNullKeyword":
                     case "TSNumberKeyword":
+                    case "TSParenthesizedType":
                     case "TSStringKeyword":
-                    case "TSTypeReference":
                     case "TSTupleType":
+                    case "TSTypeOperator":
+                    case "TSTypeReference":
                     case "TSUndefinedKeyword": {
                         break;
                     }

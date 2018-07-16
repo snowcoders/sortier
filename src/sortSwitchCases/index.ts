@@ -1,4 +1,4 @@
-import { Comment, SwitchCase } from "estree";
+import { BaseExpression, Comment, SwitchCase } from "estree";
 
 import { getContextGroups, MinimumTypeInformation, reorderValues } from "../common/sort-utils";
 
@@ -33,6 +33,8 @@ export function sortSwitchCases(cases: SwitchCase[], comments: Comment[], fileCo
             continue;
         }
 
+        // Determine where the "break" statements are so we dont' sort through them
+        // which would change the logic of the code
         let switchGroupsWithBreaks: Array<SwitchCase[]> = [];
         let switchCaseStart = 0;
         let switchCaseEnd = 0;
@@ -54,7 +56,50 @@ export function sortSwitchCases(cases: SwitchCase[], comments: Comment[], fileCo
 
             switchCaseStart = switchCaseEnd + 1;
         }
+        if (switchCaseStart < switchCaseEnd) {
+            switchGroupsWithBreaks.push(cases.slice(switchCaseStart, switchCaseEnd + 1));
+        }
 
+        // Within each case group with a break, if there are any case statements that share the same
+        // execution block, they need to be sorted
+        for (let x=0;x<switchGroupsWithBreaks.length;x++) {
+            let cases = switchGroupsWithBreaks[x];
+            switchCaseStart = 0;
+            switchCaseEnd = 0;
+            for (let casesIndex=0;casesIndex < cases.length;casesIndex++) {
+                let caseStatement = cases[casesIndex];
+                if (caseStatement.consequent == null || caseStatement.consequent.length === 0) {
+                    switchCaseEnd++;
+                }
+                else if (switchCaseStart < switchCaseEnd) {
+                    switchCaseEnd++;
+                    let unsorted = cases.slice(switchCaseStart, switchCaseEnd).map((value: SwitchCase) => {
+                        return value.test;
+                    }).filter((value) => value != null) as BaseExpression[];
+                    let sorted = unsorted.slice().sort((a: any, b: any) => {
+                        if (a === b) {
+                            return 0;
+                        }
+                        if (a == null || a.raw == null ){ 
+                            return 1;
+                        }
+                        if (b == null || b.raw == null ){ 
+                            return -1;
+                        }
+                        return a.raw.localeCompare(b.raw);
+                    });
+
+                    newFileContents = reorderValues(
+                        newFileContents,
+                        comments,
+                        unsorted,
+                        sorted);
+                    switchCaseStart = switchCaseEnd;
+                }
+            }            
+        }
+
+        // Now sort the actual switch groups
         let switchGroupsWithBreaksSorted = switchGroupsWithBreaks.slice();
         switchGroupsWithBreaksSorted.sort((a: any, b: any) => {
             let aFirst = a[0];

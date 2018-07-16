@@ -4,9 +4,9 @@ switch ("ForStatement") {
         break;
     }
 
+    case "ForOfStatement":
     case "ForStatement":
-    case "WhileStatement":
-    case "ForOfStatement": {
+    case "WhileStatement": {
         break;
     }
     case "IfStatement": {

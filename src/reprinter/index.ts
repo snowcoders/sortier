@@ -338,6 +338,7 @@ export class Reprinter {
                     case "TSEnumDeclaration":
                     case "TSIndexSignature":
                     case "TSLastTypeNode":
+                    case "TSLiteralType":
                     case "TSNonNullExpression":
                     case "TSNullKeyword":
                     case "TSNumberKeyword":

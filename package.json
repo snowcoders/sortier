@@ -66,6 +66,6 @@
     "globby": "^8.0.1",
     "rimraf": "^2.6.2",
     "typescript": "^2.9.2",
-    "typescript-eslint-parser": "^15.0.1"
+    "typescript-eslint-parser": "^16.0.0"
   }
 }

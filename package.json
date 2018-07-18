@@ -8,11 +8,12 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
+    "build-production": "npm run build -- -p ./tsconfig.production.json",
     "clean": "rimraf .nyc_output coverage dist",
     "cover": "nyc npm run mocha",
     "precommit": "lint-staged",
     "prettier": "prettier",
-    "prepare": "npm run clean && npm run build",
+    "prepare": "npm run clean && npm run build-production",
     "start": "npm run build && node bin/index.js",
     "test": "npm run mocha",
     "mocha": "mocha --require ts-node/register --require source-map-support/register --full-trace src/**/*.test.ts"

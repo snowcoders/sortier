@@ -11,6 +11,7 @@
     "clean": "rimraf .nyc_output coverage dist",
     "cover": "nyc npm run mocha",
     "precommit": "lint-staged",
+    "prettier": "prettier",
     "prepare": "npm run clean && npm run build",
     "start": "npm run build && node bin/index.js",
     "test": "npm run mocha",
@@ -18,6 +19,7 @@
   },
   "lint-staged": {
     "**/*.ts": [
+      "prettier --write",
       "node bin/index.js",
       "git add"
     ]
@@ -56,6 +58,7 @@
     "mocha": "5.2.0",
     "mocha-typescript": "1.1.17",
     "nyc": "12.0.2",
+    "prettier": "^1.13.7",
     "source-map-support": "0.5.6",
     "ts-node": "4.1.0"
   },

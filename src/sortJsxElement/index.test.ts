@@ -1,14 +1,14 @@
-import { expect } from 'chai';
+import { expect } from "chai";
 import { readFileSync } from "fs";
 import { sync } from "globby";
 import { basename, join } from "path";
 
 // Parsers
-import { parse as flowParse } from '../parsers/flow';
-import { parse as typescriptParse } from '../parsers/typescript';
+import { parse as flowParse } from "../parsers/flow";
+import { parse as typescriptParse } from "../parsers/typescript";
 
 // The methods being tested here
-import { sortJsxElement } from './index';
+import { sortJsxElement } from "./index";
 
 // Utilities
 import { sentenceCase } from "../common/string-utils";
@@ -20,7 +20,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe('sortJsxElement', () => {
+describe("sortJsxElement", () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 
@@ -46,7 +46,6 @@ describe('sortJsxElement', () => {
 
   parserTypes.forEach(fileType => {
     describe(fileType, () => {
-
       let parser;
       switch (fileType) {
         case "es6":
@@ -57,9 +56,12 @@ describe('sortJsxElement', () => {
           parser = typescriptParse;
           break;
         default:
-          throw new Error("Unknown parser passed - " + fileType + ". Expected 'flow', 'typescript' or 'es6'.");
+          throw new Error(
+            "Unknown parser passed - " +
+              fileType +
+              ". Expected 'flow', 'typescript' or 'es6'."
+          );
       }
-
 
       testInfos.forEach(testInfo => {
         if (testInfo.parserType == fileType) {
@@ -67,7 +69,11 @@ describe('sortJsxElement', () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);
-            let actual = sortJsxElement(parsed.body[0].argument, parsed.comments, input);
+            let actual = sortJsxElement(
+              parsed.body[0].argument,
+              parsed.comments,
+              input
+            );
 
             expect(actual).to.equal(expected);
           });

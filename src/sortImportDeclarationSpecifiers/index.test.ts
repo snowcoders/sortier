@@ -1,14 +1,14 @@
-import { expect } from 'chai';
+import { expect } from "chai";
 import { readFileSync } from "fs";
 import { sync } from "globby";
 import { basename, join } from "path";
 
 // Parsers
-import { parse as flowParse } from '../parsers/flow';
-import { parse as typescriptParse } from '../parsers/typescript';
+import { parse as flowParse } from "../parsers/flow";
+import { parse as typescriptParse } from "../parsers/typescript";
 
 // The methods being tested here
-import { sortImportDeclarationSpecifiers } from './index';
+import { sortImportDeclarationSpecifiers } from "./index";
 
 // Utilities
 import { sentenceCase } from "../common/string-utils";
@@ -20,7 +20,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe('sortImportDeclarationSpecifiers', () => {
+describe("sortImportDeclarationSpecifiers", () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 
@@ -47,14 +47,17 @@ describe('sortImportDeclarationSpecifiers', () => {
   let getSortedOverBody = (body, input, options?) => {
     let actual = input;
     body.forEach(item => {
-      actual = sortImportDeclarationSpecifiers(item.specifiers, actual, options);
+      actual = sortImportDeclarationSpecifiers(
+        item.specifiers,
+        actual,
+        options
+      );
     });
     return actual;
   };
 
   parserTypes.forEach(fileType => {
     describe(fileType, () => {
-
       let parser;
       switch (fileType) {
         case "es6":
@@ -65,7 +68,11 @@ describe('sortImportDeclarationSpecifiers', () => {
           parser = typescriptParse;
           break;
         default:
-          throw new Error("Unknown parser passed - " + fileType + ". Expected 'flow', 'typescript' or 'es6'.");
+          throw new Error(
+            "Unknown parser passed - " +
+              fileType +
+              ". Expected 'flow', 'typescript' or 'es6'."
+          );
       }
 
       testInfos.forEach(testInfo => {
@@ -83,8 +90,8 @@ describe('sortImportDeclarationSpecifiers', () => {
 
   describe("Flow - custom order", () => {
     it("Group by everything then types then interfaces", () => {
-      let input = "import { type Hi, Something, IInterface } from \"module\";";;
-      let expected = "import { Something, type Hi, IInterface } from \"module\";";
+      let input = 'import { type Hi, Something, IInterface } from "module";';
+      let expected = 'import { Something, type Hi, IInterface } from "module";';
 
       let output = getSortedOverBody(flowParse(input).body, input, {
         groups: ["*", "types", "interfaces"],
@@ -94,8 +101,8 @@ describe('sortImportDeclarationSpecifiers', () => {
     });
 
     it("Group by everything then types", () => {
-      let input = "import { type Hi, Something, IInterface } from \"module\";";;
-      let expected = "import { IInterface, Something, type Hi } from \"module\";";
+      let input = 'import { type Hi, Something, IInterface } from "module";';
+      let expected = 'import { IInterface, Something, type Hi } from "module";';
 
       let output = getSortedOverBody(flowParse(input).body, input, {
         groups: ["*", "types"],
@@ -105,8 +112,8 @@ describe('sortImportDeclarationSpecifiers', () => {
     });
 
     it("Group by everything then interfaces", () => {
-      let input = "import { type Hi, Something, IInterface } from \"module\";";;
-      let expected = "import { type Hi, Something, IInterface } from \"module\";";
+      let input = 'import { type Hi, Something, IInterface } from "module";';
+      let expected = 'import { type Hi, Something, IInterface } from "module";';
 
       let output = getSortedOverBody(flowParse(input).body, input, {
         groups: ["*", "interfaces"],
@@ -116,8 +123,8 @@ describe('sortImportDeclarationSpecifiers', () => {
     });
 
     it("Group by interfaces then everything", () => {
-      let input = "import { type Hi, Something, IInterface } from \"module\";";;
-      let expected = "import { IInterface, type Hi, Something } from \"module\";";
+      let input = 'import { type Hi, Something, IInterface } from "module";';
+      let expected = 'import { IInterface, type Hi, Something } from "module";';
 
       let output = getSortedOverBody(flowParse(input).body, input, {
         groups: ["interfaces", "*"],
@@ -129,8 +136,8 @@ describe('sortImportDeclarationSpecifiers', () => {
 
   describe("Typescript - custom order", () => {
     it("Group by interfaces then everything", () => {
-      let input = "import { Hi, Something, IInterface } from \"module\";";;
-      let expected = "import { IInterface, Hi, Something } from \"module\";";
+      let input = 'import { Hi, Something, IInterface } from "module";';
+      let expected = 'import { IInterface, Hi, Something } from "module";';
 
       let output = getSortedOverBody(typescriptParse(input).body, input, {
         groups: ["interfaces", "*"],

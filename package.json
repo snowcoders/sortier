@@ -34,7 +34,7 @@
   "devDependencies": {
     "@types/chai": "4.1.4",
     "@types/estree": "0.0.39",
-    "@types/globby": "6.1.0",
+    "@types/globby": "8.0.0",
     "@types/mocha": "5.2.5",
     "@types/node": "10.5.2",
     "chai": "4.1.2",
@@ -55,7 +55,7 @@
     "lint-staged": "7.2.0",
     "mocha": "5.2.0",
     "mocha-typescript": "1.1.17",
-    "nyc": "11.9.0",
+    "nyc": "12.0.2",
     "source-map-support": "0.5.6",
     "ts-node": "4.1.0"
   },
@@ -66,6 +66,6 @@
     "globby": "^8.0.1",
     "rimraf": "^2.6.2",
     "typescript": "^2.9.2",
-    "typescript-eslint-parser": "^15.0.1"
+    "typescript-eslint-parser": "^16.0.0"
   }
 }

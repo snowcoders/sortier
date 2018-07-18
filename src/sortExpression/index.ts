@@ -1,19 +1,36 @@
 import { reorderValues } from "../common/sort-utils";
 
-export type SortExpressionOptionsGroups = "*" | "function" | "null" | "object" | "undefined";
+export type SortExpressionOptionsGroups =
+  | "*"
+  | "function"
+  | "null"
+  | "object"
+  | "undefined";
 
 export interface SortExpressionOptions {
-  groups: SortExpressionOptionsGroups[],
+  groups: SortExpressionOptionsGroups[];
 }
 
-export function sortExpression(expression, comments, fileContents: string, options?: SortExpressionOptions) {
-  return new ExpressionSorter(expression, comments, fileContents, ensureOptions(options)).sort();
+export function sortExpression(
+  expression,
+  comments,
+  fileContents: string,
+  options?: SortExpressionOptions
+) {
+  return new ExpressionSorter(
+    expression,
+    comments,
+    fileContents,
+    ensureOptions(options)
+  ).sort();
 }
 
-function ensureOptions(options?: SortExpressionOptions | null): SortExpressionOptions {
+function ensureOptions(
+  options?: SortExpressionOptions | null
+): SortExpressionOptions {
   if (options == null) {
     return {
-      groups: ["undefined", "null", "*", "object", "function"],
+      groups: ["undefined", "null", "*", "object", "function"]
     };
   }
 
@@ -22,18 +39,18 @@ function ensureOptions(options?: SortExpressionOptions | null): SortExpressionOp
   }
 
   return {
-    groups: options.groups || ["undefined", "null", "*", "object", "function"],
+    groups: options.groups || ["undefined", "null", "*", "object", "function"]
   };
 }
 
 interface OperandValue {
-  range: [number, number]
-  value: string,
+  range: [number, number];
+  value: string;
 }
 
 interface OperatorInfo {
-  accumulatedOperator: null | string,
-  values: OperandValue[]
+  accumulatedOperator: null | string;
+  values: OperandValue[];
 }
 
 class ExpressionSorter {
@@ -46,7 +63,12 @@ class ExpressionSorter {
   private fileContents: string;
   private options: SortExpressionOptions;
 
-  constructor(expression, comments, fileContents: string, options: SortExpressionOptions) {
+  constructor(
+    expression,
+    comments,
+    fileContents: string,
+    options: SortExpressionOptions
+  ) {
     this.expression = expression;
     this.comments = comments;
     this.fileContents = fileContents;
@@ -66,7 +88,9 @@ class ExpressionSorter {
       if (operand.type === "Literal" || operand.type === "Identifier") {
         continue;
       } else if (operand.type === "BinaryExpression") {
-        if (ExpressionSorter.commutativeOperators.indexOf(operand.operator) === -1) {
+        if (
+          ExpressionSorter.commutativeOperators.indexOf(operand.operator) === -1
+        ) {
           // TODO - Should be able to sort items with a mix of commutative and non-commutative operands
           return this.fileContents;
         }
@@ -78,10 +102,17 @@ class ExpressionSorter {
       }
     }
 
-    let rebuiltString = this.sortAndFlattenOperandTree(this.rebuildVariableDeclarator(this.expression));
+    let rebuiltString = this.sortAndFlattenOperandTree(
+      this.rebuildVariableDeclarator(this.expression)
+    );
 
-    let untouchedBeginning = this.fileContents.slice(0, rebuiltString.values[0].range[0]);
-    let untouchedEnd = this.fileContents.slice(rebuiltString.values[0].range[1]);
+    let untouchedBeginning = this.fileContents.slice(
+      0,
+      rebuiltString.values[0].range[0]
+    );
+    let untouchedEnd = this.fileContents.slice(
+      rebuiltString.values[0].range[1]
+    );
 
     return untouchedBeginning + rebuiltString.values[0].value + untouchedEnd;
   }
@@ -91,19 +122,23 @@ class ExpressionSorter {
     if (operand.type === "Literal") {
       return {
         accumulatedOperator: null,
-        values: [{
-          range: operand.range,
-          value: operand.raw
-        }]
+        values: [
+          {
+            range: operand.range,
+            value: operand.raw
+          }
+        ]
       };
     }
     if (operand.type === "Identifier") {
       return {
         accumulatedOperator: null,
-        values: [{
-          range: operand.range,
-          value: operand.name
-        }]
+        values: [
+          {
+            range: operand.range,
+            value: operand.name
+          }
+        ]
       };
     }
     if (operand.type !== "BinaryExpression") {
@@ -113,12 +148,18 @@ class ExpressionSorter {
     let accumulatedOperator = operand.operator;
     let left = this.rebuildVariableDeclarator(operand.left);
     let right = this.rebuildVariableDeclarator(operand.right);
-    if (left.accumulatedOperator != null && left.accumulatedOperator != operand.operator) {
-      accumulatedOperator = "Mixed"
+    if (
+      left.accumulatedOperator != null &&
+      left.accumulatedOperator != operand.operator
+    ) {
+      accumulatedOperator = "Mixed";
       left = this.sortAndFlattenOperandTree(left);
     }
-    if (right.accumulatedOperator != null && right.accumulatedOperator != operand.operator) {
-      accumulatedOperator = "Mixed"
+    if (
+      right.accumulatedOperator != null &&
+      right.accumulatedOperator != operand.operator
+    ) {
+      accumulatedOperator = "Mixed";
       right = this.sortAndFlattenOperandTree(right);
     }
 
@@ -156,15 +197,22 @@ class ExpressionSorter {
       sortedValues = this.getSortedValues(operand.values);
     }
 
-    let newFileContents = reorderValues(this.fileContents, this.comments, operand.values, sortedValues);
+    let newFileContents = reorderValues(
+      this.fileContents,
+      this.comments,
+      operand.values,
+      sortedValues
+    );
     newFileContents = newFileContents.slice(rangeMin, rangeMax);
 
     return {
       accumulatedOperator: operand.accumulatedOperator,
-      values: [{
-        range: [rangeMin, rangeMax],
-        value: newFileContents
-      }]
+      values: [
+        {
+          range: [rangeMin, rangeMax],
+          value: newFileContents
+        }
+      ]
     };
   }
 

@@ -1,12 +1,21 @@
 import { Comment } from "estree";
 
-import { getContextGroups, getSpreadGroups, reorderValues } from "../common/sort-utils";
+import {
+  getContextGroups,
+  getSpreadGroups,
+  reorderValues
+} from "../common/sort-utils";
 
 export interface SortObjectTypeAnnotationOptions {
-  groups: ("null" | "undefined" | "*" | "function" | "object")[],
+  groups: ("null" | "undefined" | "*" | "function" | "object")[];
 }
 
-export function sortObjectTypeAnnotation(objectTypeAnnotation: any, comments: Comment[], fileContents: string, options?: SortObjectTypeAnnotationOptions) {
+export function sortObjectTypeAnnotation(
+  objectTypeAnnotation: any,
+  comments: Comment[],
+  fileContents: string,
+  options?: SortObjectTypeAnnotationOptions
+) {
   let ensuredOptions = ensureOptions(options);
   let newFileContents = fileContents.slice();
   let allNodes: any[] = objectTypeAnnotation.properties;
@@ -33,17 +42,24 @@ export function sortObjectTypeAnnotation(objectTypeAnnotation: any, comments: Co
         return aString.localeCompare(bString);
       });
 
-      newFileContents = reorderValues(newFileContents, comments, unsorted, sorted);
+      newFileContents = reorderValues(
+        newFileContents,
+        comments,
+        unsorted,
+        sorted
+      );
     });
   }
 
   return newFileContents;
 }
 
-function ensureOptions(options?: SortObjectTypeAnnotationOptions | null): SortObjectTypeAnnotationOptions {
+function ensureOptions(
+  options?: SortObjectTypeAnnotationOptions | null
+): SortObjectTypeAnnotationOptions {
   if (options == null) {
     return {
-      groups: ["undefined", "null", "*", "object", "function"],
+      groups: ["undefined", "null", "*", "object", "function"]
     };
   }
 
@@ -52,7 +68,7 @@ function ensureOptions(options?: SortObjectTypeAnnotationOptions | null): SortOb
   }
 
   return {
-    groups: options.groups || ["undefined", "null", "*", "object", "function"],
+    groups: options.groups || ["undefined", "null", "*", "object", "function"]
   };
 }
 
@@ -60,7 +76,10 @@ function getString(property, fileContents: string) {
   return fileContents.substring(property.range[0], property.range[1]);
 }
 
-function getSortGroupIndex(property, options: SortObjectTypeAnnotationOptions): number {
+function getSortGroupIndex(
+  property,
+  options: SortObjectTypeAnnotationOptions
+): number {
   // Sort them by name
   let everythingRank = options.groups.indexOf("*");
   if (everythingRank === -1) {
@@ -87,14 +106,17 @@ function getSortGroupIndex(property, options: SortObjectTypeAnnotationOptions): 
   if (property.value != null) {
     if (property.value.type === "NullLiteralTypeAnnotation") {
       aRank = nullRank;
-    }
-    else if (property.value.type === "GenericTypeAnnotation" && property.value.id.name === "undefined") {
+    } else if (
+      property.value.type === "GenericTypeAnnotation" &&
+      property.value.id.name === "undefined"
+    ) {
       aRank = undefinedRank;
-    }
-    else if (property.value.type === "ObjectTypeAnnotation") {
+    } else if (property.value.type === "ObjectTypeAnnotation") {
       aRank = objectRank;
-    }
-    else if (property.value.type === "FunctionTypeAnnotation" || property.value.type === "ArrowFunctionExpression") {
+    } else if (
+      property.value.type === "FunctionTypeAnnotation" ||
+      property.value.type === "ArrowFunctionExpression"
+    ) {
       aRank = functionRank;
     }
   }

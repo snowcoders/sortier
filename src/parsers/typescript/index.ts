@@ -4,56 +4,56 @@ import * as parser from "typescript-eslint-parser";
 import { createError, includeShebang } from "../../common/parser-utils";
 
 export function parse(text: string /*, parsers, opts*/) {
-    const jsx = isProbablyJsx(text);
-    let ast;
+  const jsx = isProbablyJsx(text);
+  let ast;
+  try {
     try {
-        try {
-            // Try passing with our best guess first.
-            ast = tryParseTypeScript(text, jsx);
-        } catch (e) {
-            // But if we get it wrong, try the opposite.
-            /* istanbul ignore next */
-            ast = tryParseTypeScript(text, !jsx);
-        }
-    } catch (e) /* istanbul ignore next */ {
-        if (typeof e.lineNumber === "undefined") {
-            throw e;
-        }
-
-        throw createError(e.message, {
-            start: { column: e.column + 1, line: e.lineNumber }
-        });
+      // Try passing with our best guess first.
+      ast = tryParseTypeScript(text, jsx);
+    } catch (e) {
+      // But if we get it wrong, try the opposite.
+      /* istanbul ignore next */
+      ast = tryParseTypeScript(text, !jsx);
+    }
+  } catch (e) /* istanbul ignore next */ {
+    if (typeof e.lineNumber === "undefined") {
+      throw e;
     }
 
-    delete ast.tokens;
-    includeShebang(text, ast);
-    return ast;
+    throw createError(e.message, {
+      start: { column: e.column + 1, line: e.lineNumber }
+    });
+  }
+
+  delete ast.tokens;
+  includeShebang(text, ast);
+  return ast;
 }
 
 function tryParseTypeScript(text: string, jsx: boolean) {
-    return parser.parse(text, {
-        comment: true,
-        ecmaFeatures: { jsx },
-        loc: true,
-        range: true,
-        tokens: true,
-        useJSXTextNode: true,
-        // Override logger function with noop,
-        // to avoid unsupported version errors being logged
-        loggerFn: () => { }
-    });
+  return parser.parse(text, {
+    comment: true,
+    ecmaFeatures: { jsx },
+    loc: true,
+    range: true,
+    tokens: true,
+    useJSXTextNode: true,
+    // Override logger function with noop,
+    // to avoid unsupported version errors being logged
+    loggerFn: () => {}
+  });
 }
 
 /**
  * Use a naive regular expression to detect JSX
  */
 function isProbablyJsx(text: string) {
-    return new RegExp(
-        [
-            "(^[^\"'`]*</)", // Contains "</" when probably not in a string
-            "|",
-            "(^[^/]{2}.*/>)" // Contains "/>" on line not starting with "//"
-        ].join(""),
-        "m"
-    ).test(text);
+  return new RegExp(
+    [
+      "(^[^\"'`]*</)", // Contains "</" when probably not in a string
+      "|",
+      "(^[^/]{2}.*/>)" // Contains "/>" on line not starting with "//"
+    ].join(""),
+    "m"
+  ).test(text);
 }

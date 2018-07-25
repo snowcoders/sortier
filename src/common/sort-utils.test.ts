@@ -1,11 +1,11 @@
-import { expect } from 'chai';
+import { expect } from "chai";
 
 import { Comment, SourceLocation } from "estree";
 import { getContextGroups, MinimumTypeInformation } from "./sort-utils";
 
-import { parse as flowParse } from '../parsers/flow';
+import { parse as flowParse } from "../parsers/flow";
 
-describe('common/sort-utils', () => {
+describe("common/sort-utils", () => {
   it("Empty arrays", () => {
     let nodes = [];
     let comments = [];

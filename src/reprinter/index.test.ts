@@ -1,11 +1,11 @@
-import { expect } from 'chai';
+import { expect } from "chai";
 import { readFileSync } from "fs";
 import { sync } from "globby";
 import { basename, join } from "path";
 import { sentenceCase } from "../common/string-utils";
 
 // The methods being tested here
-import { Reprinter } from './index';
+import { Reprinter } from "./index";
 
 interface TestInfo {
   inputFilePath: string;
@@ -14,7 +14,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe('reprinter', () => {
+describe("reprinter", () => {
   let testInfos: TestInfo[];
   let parserTypes: Set<string> = new Set<string>();
 
@@ -36,10 +36,13 @@ describe('reprinter', () => {
   });
 
   it("Setup succeeds", () => {
-    expect(testInfos.length).to.not.equal(0, "Expected to find at least one test");
+    expect(testInfos.length).to.not.equal(
+      0,
+      "Expected to find at least one test"
+    );
   });
 
-  parserTypes.forEach((parserType) => {
+  parserTypes.forEach(parserType => {
     describe(parserType, () => {
       testInfos.forEach(testInfo => {
         if (testInfo.parserType === parserType) {
@@ -47,7 +50,10 @@ describe('reprinter', () => {
           // if (testInfo.testName.includes("Inline property"))
           it(testInfo.testName, () => {
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
-            let actual = new Reprinter(testInfo.inputFilePath, {}).getRewrittenFileContents();
+            let actual = new Reprinter(
+              testInfo.inputFilePath,
+              {}
+            ).getRewrittenFileContents();
 
             expect(actual).to.equal(expected);
           });

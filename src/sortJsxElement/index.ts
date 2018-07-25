@@ -1,11 +1,19 @@
 import { Comment } from "estree";
 
-import { getContextGroups, getSpreadGroups, reorderValues } from "../common/sort-utils";
+import {
+  getContextGroups,
+  getSpreadGroups,
+  reorderValues
+} from "../common/sort-utils";
 
-export interface SortJsxElementOptions {
-}
+export interface SortJsxElementOptions {}
 
-export function sortJsxElement(jsxElement: any, comments: Comment[], fileContents: string, options?: SortJsxElementOptions) {
+export function sortJsxElement(
+  jsxElement: any,
+  comments: Comment[],
+  fileContents: string,
+  options?: SortJsxElementOptions
+) {
   let newFileContents = fileContents.slice();
 
   let allNodes = jsxElement.openingElement.attributes;
@@ -22,7 +30,12 @@ export function sortJsxElement(jsxElement: any, comments: Comment[], fileContent
         return a.name.name.localeCompare(b.name.name);
       });
 
-      newFileContents = reorderValues(newFileContents, comments, unsorted, sorted);
+      newFileContents = reorderValues(
+        newFileContents,
+        comments,
+        unsorted,
+        sorted
+      );
     });
   }
 

@@ -1,28 +1,47 @@
 import { reorderValues } from "../common/sort-utils";
 
 // TODO add ObjectTypeAnnotation to the end of this
-export type SortUnionTypeAnnotationOptionsGroups = "*" | "function" | "null" | "object" | "undefined";
+export type SortUnionTypeAnnotationOptionsGroups =
+  | "*"
+  | "function"
+  | "null"
+  | "object"
+  | "undefined";
 
 export interface SortUnionTypeAnnotationOptions {
-  groups: SortUnionTypeAnnotationOptionsGroups[],
+  groups: SortUnionTypeAnnotationOptionsGroups[];
 }
 
-export function sortUnionTypeAnnotation(unionTypeAnnotation, comments, fileContents: string, options?: SortUnionTypeAnnotationOptions) {
+export function sortUnionTypeAnnotation(
+  unionTypeAnnotation,
+  comments,
+  fileContents: string,
+  options?: SortUnionTypeAnnotationOptions
+) {
   let ensuredOptions = ensureOptions(options);
 
-  if (unionTypeAnnotation.type === "UnionTypeAnnotation" ||
+  if (
+    unionTypeAnnotation.type === "UnionTypeAnnotation" ||
     unionTypeAnnotation.type === "IntersectionTypeAnnotation" ||
-    unionTypeAnnotation.type === "TSUnionType") {
-    fileContents = new UnionTypeAnnotationSorter(unionTypeAnnotation, comments, fileContents, ensuredOptions).sort();
+    unionTypeAnnotation.type === "TSUnionType"
+  ) {
+    fileContents = new UnionTypeAnnotationSorter(
+      unionTypeAnnotation,
+      comments,
+      fileContents,
+      ensuredOptions
+    ).sort();
   }
 
   return fileContents;
 }
 
-function ensureOptions(options?: SortUnionTypeAnnotationOptions | null): SortUnionTypeAnnotationOptions {
+function ensureOptions(
+  options?: SortUnionTypeAnnotationOptions | null
+): SortUnionTypeAnnotationOptions {
   if (options == null) {
     return {
-      groups: ["undefined", "null", "*", "object", "function"],
+      groups: ["undefined", "null", "*", "object", "function"]
     };
   }
 
@@ -31,7 +50,7 @@ function ensureOptions(options?: SortUnionTypeAnnotationOptions | null): SortUni
   }
 
   return {
-    groups: options.groups || ["undefined", "null", "*", "object", "function"],
+    groups: options.groups || ["undefined", "null", "*", "object", "function"]
   };
 }
 
@@ -41,7 +60,12 @@ class UnionTypeAnnotationSorter {
   private fileContents: string;
   private options: SortUnionTypeAnnotationOptions;
 
-  constructor(unionTypeAnnotation, comments, fileContents: string, options: SortUnionTypeAnnotationOptions) {
+  constructor(
+    unionTypeAnnotation,
+    comments,
+    fileContents: string,
+    options: SortUnionTypeAnnotationOptions
+  ) {
     this.unionTypeAnnotation = unionTypeAnnotation;
     this.comments = comments;
     this.fileContents = fileContents;
@@ -51,7 +75,12 @@ class UnionTypeAnnotationSorter {
   public sort() {
     let sortedTypes = this.getSortOrderOfTypes();
 
-    let newFileContents = reorderValues(this.fileContents, this.comments, this.unionTypeAnnotation.types, sortedTypes);
+    let newFileContents = reorderValues(
+      this.fileContents,
+      this.comments,
+      this.unionTypeAnnotation.types,
+      sortedTypes
+    );
 
     return newFileContents;
   }
@@ -79,18 +108,25 @@ class UnionTypeAnnotationSorter {
       objectRank = everythingRank;
     }
 
-    let getRank = (annotationType) => {
+    let getRank = annotationType => {
       let aRank = everythingRank;
-      if (annotationType.type === "NullLiteralTypeAnnotation" || annotationType.type === "TSNullKeyword") {
+      if (
+        annotationType.type === "NullLiteralTypeAnnotation" ||
+        annotationType.type === "TSNullKeyword"
+      ) {
         aRank = nullRank;
-      }
-      else if (annotationType.type === "GenericTypeAnnotation" && annotationType.id.name === "undefined" || annotationType.type === "TSUndefinedKeyword") {
+      } else if (
+        (annotationType.type === "GenericTypeAnnotation" &&
+          annotationType.id.name === "undefined") ||
+        annotationType.type === "TSUndefinedKeyword"
+      ) {
         aRank = undefinedRank;
-      }
-      else if (annotationType.type === "ObjectTypeAnnotation") {
+      } else if (annotationType.type === "ObjectTypeAnnotation") {
         aRank = objectRank;
-      }
-      else if (annotationType.type === "FunctionTypeAnnotation" || annotationType.type === "ArrowFunctionExpression") {
+      } else if (
+        annotationType.type === "FunctionTypeAnnotation" ||
+        annotationType.type === "ArrowFunctionExpression"
+      ) {
         aRank = functionRank;
       }
 
@@ -108,8 +144,12 @@ class UnionTypeAnnotationSorter {
         return aRank - bRank;
       }
 
-      let isALiteral = a.type.indexOf("Literal") !== -1 || a.type.indexOf("TSLastTypeNode") !== -1;
-      let isBLiteral = b.type.indexOf("Literal") !== -1 || b.type.indexOf("TSLastTypeNode") !== -1;
+      let isALiteral =
+        a.type.indexOf("Literal") !== -1 ||
+        a.type.indexOf("TSLastTypeNode") !== -1;
+      let isBLiteral =
+        b.type.indexOf("Literal") !== -1 ||
+        b.type.indexOf("TSLastTypeNode") !== -1;
 
       if (isALiteral && isBLiteral) {
         if (a.type !== b.type) {
@@ -132,14 +172,12 @@ class UnionTypeAnnotationSorter {
   private getStringToCompare(a) {
     if (a.raw != null) {
       return a.raw;
-    }
-    else if (a.type === "GenericTypeAnnotation") {
+    } else if (a.type === "GenericTypeAnnotation") {
       if (a.id.name === "$ReadOnly") {
         return a.typeParameters.params[0].properties[0].key.name;
       }
       return a.id.name;
-    }
-    else if (a.literal != null && a.literal.raw != null) {
+    } else if (a.literal != null && a.literal.raw != null) {
       return a.literal.raw;
     } else {
       return a.type;

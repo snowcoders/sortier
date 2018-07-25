@@ -8,16 +8,19 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
+    "build-production": "npm run build -- -p ./tsconfig.production.json",
     "clean": "rimraf .nyc_output coverage dist",
     "cover": "nyc npm run mocha",
     "precommit": "lint-staged",
-    "prepare": "npm run clean && npm run build",
+    "prettier": "prettier",
+    "prepare": "npm run clean && npm run build-production",
     "start": "npm run build && node bin/index.js",
     "test": "npm run mocha",
     "mocha": "mocha --require ts-node/register --require source-map-support/register --full-trace src/**/*.test.ts"
   },
   "lint-staged": {
     "**/*.ts": [
+      "prettier --write",
       "node bin/index.js",
       "git add"
     ]
@@ -40,7 +43,7 @@
     "chai": "4.1.2",
     "husky": "0.14.3",
     "jsdom": "11.11.0",
-    "karma": "2.0.4",
+    "karma": "2.0.5",
     "karma-chai": "0.1.0",
     "karma-coverage": "1.1.2",
     "karma-jsdom-launcher": "6.1.3",
@@ -56,6 +59,7 @@
     "mocha": "5.2.0",
     "mocha-typescript": "1.1.17",
     "nyc": "12.0.2",
+    "prettier": "1.13.7",
     "source-map-support": "0.5.6",
     "ts-node": "4.1.0"
   },

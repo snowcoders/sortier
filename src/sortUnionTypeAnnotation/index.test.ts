@@ -1,14 +1,14 @@
-import { expect } from 'chai';
+import { expect } from "chai";
 import { readFileSync } from "fs";
 import { sync } from "globby";
 import { basename, join } from "path";
 
 // Parsers
-import { parse as flowParse } from '../parsers/flow';
-import { parse as typescriptParse } from '../parsers/typescript';
+import { parse as flowParse } from "../parsers/flow";
+import { parse as typescriptParse } from "../parsers/typescript";
 
 // The methods being tested here
-import { sortUnionTypeAnnotation } from './index';
+import { sortUnionTypeAnnotation } from "./index";
 
 // Utilities
 import { sentenceCase } from "../common/string-utils";
@@ -20,7 +20,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe('sortUnionTypeAnnotation', () => {
+describe("sortUnionTypeAnnotation", () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 
@@ -46,7 +46,6 @@ describe('sortUnionTypeAnnotation', () => {
 
   parserTypes.forEach(fileType => {
     describe(fileType, () => {
-
       let parser;
       switch (fileType) {
         case "es6":
@@ -57,7 +56,11 @@ describe('sortUnionTypeAnnotation', () => {
           parser = typescriptParse;
           break;
         default:
-          throw new Error("Unknown parser passed - " + fileType + ". Expected 'flow', 'typescript' or 'es6'.");
+          throw new Error(
+            "Unknown parser passed - " +
+              fileType +
+              ". Expected 'flow', 'typescript' or 'es6'."
+          );
       }
 
       testInfos.forEach(testInfo => {
@@ -67,10 +70,18 @@ describe('sortUnionTypeAnnotation', () => {
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);
             let actual = "";
-            if (testInfo.parserType === 'typescript') {
-              actual = sortUnionTypeAnnotation(parsed.body[0].body.body[0].typeAnnotation.typeAnnotation, parsed.comments, input);
+            if (testInfo.parserType === "typescript") {
+              actual = sortUnionTypeAnnotation(
+                parsed.body[0].body.body[0].typeAnnotation.typeAnnotation,
+                parsed.comments,
+                input
+              );
             } else {
-              actual = sortUnionTypeAnnotation(parsed.body[0].body.properties[0].value, parsed.comments, input);
+              actual = sortUnionTypeAnnotation(
+                parsed.body[0].body.properties[0].value,
+                parsed.comments,
+                input
+              );
             }
 
             expect(actual).to.equal(expected);

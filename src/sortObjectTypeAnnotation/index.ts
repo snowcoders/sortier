@@ -44,7 +44,7 @@ export function sortObjectTypeAnnotation(
 
       newFileContents = reorderValues(
         newFileContents,
-        comments,
+        element.comments,
         unsorted,
         sorted
       );

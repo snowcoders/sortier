@@ -1,0 +1,9 @@
+// https://github.com/snowcoders/sortier/issues/71
+export type StoreData = {
+  // Old store
+  campaign?: any,
+
+  // New store
+  bedrock: string,
+  error?: null | string,
+};

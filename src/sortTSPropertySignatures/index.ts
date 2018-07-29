@@ -44,7 +44,7 @@ export function sortTSPropertySignatures(
 
       newFileContents = reorderValues(
         newFileContents,
-        comments,
+        element.comments,
         unsorted,
         sorted
       );

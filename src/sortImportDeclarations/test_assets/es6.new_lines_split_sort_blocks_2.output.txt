@@ -1,3 +1,4 @@
+// https://github.com/snowcoders/sci-sort-import-groups/issues/1
 import * as React from 'react';
 
 import { HashRouter, Link, Switch, Route } from 'react-router-dom'

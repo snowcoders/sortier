@@ -32,7 +32,7 @@ export function sortJsxElement(
 
       newFileContents = reorderValues(
         newFileContents,
-        comments,
+        element.comments,
         unsorted,
         sorted
       );

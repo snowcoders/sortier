@@ -61,7 +61,7 @@
     "nyc": "12.0.2",
     "prettier": "1.14.0",
     "source-map-support": "0.5.6",
-    "ts-node": "4.1.0"
+    "ts-node": "7.0.0"
   },
   "dependencies": {
     "cosmiconfig": "^5.0.5",

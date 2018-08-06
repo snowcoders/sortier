@@ -1,4 +1,4 @@
 export type Props = {
-  callback1(): "A" | "B",
+  callback1(d: Object = { a: string, b: string}): "A" | "B",
   callback2: () => "A" | "B",
 }

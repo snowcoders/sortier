@@ -118,6 +118,7 @@ export class Reprinter {
           case "DebuggerStatement":
           case "EmptyStatement":
           case "Literal":
+          case "RestProperty":
           case "SpreadElement":
           case "TaggedTemplateExpression":
           case "TemplateLiteral":
@@ -398,21 +399,34 @@ export class Reprinter {
           }
 
           // Typescript
+          case "AssignmentPattern": {
+            if (node.left) {
+              nodes.push(node.left);
+            }
+            if (node.right) {
+              nodes.push(node.right);
+            }
+            break;
+          }
           case "ExperimentalSpreadProperty":
           case "TSAnyKeyword":
           case "TSArrayType":
           case "TSAsExpression":
           case "TSBooleanKeyword":
+          case "TSConstructorType":
           case "TSEnumDeclaration":
+          case "TSIndexedAccessType":
           case "TSIndexSignature":
           case "TSLastTypeNode":
           case "TSLiteralType":
+          case "TSMappedType":
           case "TSNonNullExpression":
           case "TSNullKeyword":
           case "TSNumberKeyword":
           case "TSParenthesizedType":
           case "TSStringKeyword":
           case "TSTypeOperator":
+          case "TSTypeQuery":
           case "TSTypeReference":
           case "TSUndefinedKeyword":
           case "TSVoidKeyword": {
@@ -426,6 +440,13 @@ export class Reprinter {
           }
           case "TSFunctionType":
           case "TSMethodSignature": {
+            if (node.params != null && node.params.length !== 0) {
+              fileContents = this.rewriteNodes(
+                node.params,
+                comments,
+                fileContents
+              );
+            }
             if (node.typeAnnotation != null) {
               nodes.push(node.typeAnnotation);
             }

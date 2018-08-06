@@ -117,13 +117,13 @@ export class Reprinter {
           case "ContinueStatement":
           case "DebuggerStatement":
           case "EmptyStatement":
-          case "Identifier":
           case "Literal":
           case "SpreadElement":
           case "TaggedTemplateExpression":
           case "TemplateLiteral":
           case "ThisExpression":
-          case "UnaryExpression": {
+          case "UnaryExpression":
+          case "VoidTypeAnnotation": {
             // Skip since there isn't anything for us to sort
             break;
           }
@@ -224,11 +224,29 @@ export class Reprinter {
             break;
           }
           case "FunctionDeclaration": {
-            nodes.push(node.body);
+            if (node.params != null && node.params.length !== 0) {
+              fileContents = this.rewriteNodes(
+                node.params,
+                comments,
+                fileContents
+              );
+            }
+            if (node.body != null) {
+              nodes.push(node.body);
+            }
+            if (node.returnType != null) {
+              nodes.push(node.returnType);
+            }
             break;
           }
           case "FunctionExpression": {
             nodes.push(node.body);
+            break;
+          }
+          case "Identifier": {
+            if (node.typeAnnotation != null) {
+              nodes.push(node.typeAnnotation);
+            }
             break;
           }
           case "IfStatement": {
@@ -394,10 +412,16 @@ export class Reprinter {
           case "TSNumberKeyword":
           case "TSParenthesizedType":
           case "TSStringKeyword":
-          case "TSTupleType":
           case "TSTypeOperator":
           case "TSTypeReference":
-          case "TSUndefinedKeyword": {
+          case "TSUndefinedKeyword":
+          case "TSVoidKeyword": {
+            break;
+          }
+          case "RestElement": {
+            if (node.argument) {
+              nodes.push(node.argument);
+            }
             break;
           }
           case "TSFunctionType":
@@ -413,6 +437,16 @@ export class Reprinter {
           }
           case "TSModuleDeclaration": {
             nodes.push(node.body);
+            break;
+          }
+          case "TSTupleType": {
+            if (node.elementTypes != null) {
+              fileContents = this.rewriteNodes(
+                node.elementTypes,
+                comments,
+                fileContents
+              );
+            }
             break;
           }
           case "TSTypeAnnotation": {
@@ -651,7 +685,12 @@ export class Reprinter {
     }
   }
 
+  private foo(...args: [boolean, number, string]) {
+    // something
+  }
+
   private printHelpModeInfo(item, fileContents: string) {
+    this.foo(1, false, "");
     if (this._options.isHelpMode === true) {
       if (!this._helpModeHasPrintedFilename) {
         console.log("");

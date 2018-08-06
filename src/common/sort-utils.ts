@@ -23,8 +23,7 @@ export function getSpreadGroups(
       if (currentStart !== x) {
         spreadGroups.push(allNodes.slice(currentStart, x));
       }
-      x++;
-      currentStart = x;
+      currentStart = x + 1;
     }
   }
   if (currentStart !== allNodes.length) {

@@ -685,12 +685,7 @@ export class Reprinter {
     }
   }
 
-  private foo(...args: [boolean, number, string]) {
-    // something
-  }
-
   private printHelpModeInfo(item, fileContents: string) {
-    this.foo(1, false, "");
     if (this._options.isHelpMode === true) {
       if (!this._helpModeHasPrintedFilename) {
         console.log("");

@@ -1,1 +1,2 @@
-function foo(...args: [number, string, boolean]): void;
+// Spread types should never be sorted but their contents should be
+function foo(...args: [number, string, boolean, { b: string, a: string }]): void;

@@ -59,7 +59,7 @@
     "mocha": "5.2.0",
     "mocha-typescript": "1.1.17",
     "nyc": "13.0.1",
-    "prettier": "1.14.2",
+    "prettier": "1.14.3",
     "source-map-support": "0.5.9",
     "ts-node": "7.0.1"
   },

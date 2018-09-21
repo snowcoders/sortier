@@ -1,5 +1,5 @@
-<h1 align="center">Sortier</h1>
-<h2 align="center">An opinionated Code Sorter</h2>
+<h1><center>Sortier</center></h1>
+<h2><center>An opinionated Code Sorter</center></h2>
 
 [![npm (scoped)](https://img.shields.io/npm/v/@snowcoders/sortier.svg)](https://www.npmjs.com/package/@snowcoders/sortier) 
 [![CircleCI branch](https://img.shields.io/circleci/project/github/snowcoders/sortier/master.svg)](https://circleci.com/gh/snowcoders/sortier)

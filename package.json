@@ -39,7 +39,7 @@
     "@types/estree": "0.0.39",
     "@types/globby": "8.0.0",
     "@types/mocha": "5.2.5",
-    "@types/node": "10.10.1",
+    "@types/node": "10.10.2",
     "chai": "4.1.2",
     "husky": "0.14.3",
     "jsdom": "12.0.0",

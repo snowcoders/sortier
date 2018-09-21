@@ -5,9 +5,16 @@
 [![CircleCI branch](https://img.shields.io/circleci/project/github/snowcoders/sortier/master.svg)](https://circleci.com/gh/snowcoders/sortier)
 
 ## Introduction
-Sortier is an opinionated code sorter similar to how Prettier is a opinionated code formatter. Given a file, it parses it and figures out how to rearrange items in a consistent way.
+Sortier is an opinionated code sorter similar to how Prettier is a opinionated code formatter. Given a file, it parses then figures out how to sort and rearrange source code in a consistent way.
 
-It should work with ES6, Flow and Typescript but if you find a piece of code that doesn't sort the way you expect it to, feel free to open an issue in Github!
+Examples of what sortier will sort:
+ - Import statements
+ - Import specifiers
+ - Union types
+ - Keys and properties within objects and types
+ - And more!
+
+It should work with JavaScript ES6, Flow and Typescript but if you find a piece of code that doesn't sort the way you expect it to, feel free to open an issue in Github!
 
 ## General things to keep in mind
  - Blank lines are treated as context breaks... Sortier will not sort through them

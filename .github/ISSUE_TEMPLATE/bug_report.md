@@ -4,6 +4,9 @@ about: Create a report to help us improve
 
 ---
 
+# Language
+<Typescript/Flow/JavaScript>
+
 # Sample input source code
 <Insert input code>
 

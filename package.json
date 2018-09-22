@@ -64,7 +64,7 @@
     "ts-node": "7.0.1"
   },
   "dependencies": {
-    "cosmiconfig": "^5.0.5",
+    "cosmiconfig": "^5.0.6",
     "flow-parser": "^0.81.0",
     "fs": "0.0.2",
     "globby": "^8.0.1",

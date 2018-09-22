@@ -1,10 +1,9 @@
-<h1><center>Sortier</center></h1>
-<h2><center>An opinionated Code Sorter</center></h2>
+# Sortier
+An opinionated Code Sorter
 
 [![npm (scoped)](https://img.shields.io/npm/v/@snowcoders/sortier.svg)](https://www.npmjs.com/package/@snowcoders/sortier) 
 [![CircleCI branch](https://img.shields.io/circleci/project/github/snowcoders/sortier/master.svg)](https://circleci.com/gh/snowcoders/sortier)
 
-## Introduction
 Sortier is an opinionated code sorter similar to how Prettier is a opinionated code formatter. Given a file, it parses then figures out how to sort and rearrange source code in a consistent way.
 
 Examples of what sortier will sort:

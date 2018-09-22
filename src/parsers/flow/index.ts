@@ -7,7 +7,10 @@ export function parse(text: string /*, parsers, opts*/) {
   const ast = flowParser.parse(text, {
     esproposal_class_instance_fields: true,
     esproposal_class_static_fields: true,
-    esproposal_export_star_as: true
+    esproposal_decorators: true,
+    esproposal_export_star_as: true,
+    esproposal_nullish_coalescing: true,
+    esproposal_optional_chaining: true
   });
 
   if (ast.errors.length > 0) {

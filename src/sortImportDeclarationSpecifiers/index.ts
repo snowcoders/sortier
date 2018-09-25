@@ -8,6 +8,7 @@ export interface SortImportDeclarationSpecifiersOptions {
 interface SingleSpecifier {
   importedName: string;
   importKind: null | string;
+  isDefaultImportType: boolean;
   isInterface: boolean;
   originalIndex: number;
   originalLocation: {
@@ -50,6 +51,7 @@ function sortSingleSpecifier(
     sortedSpecifiers.push({
       importedName: importedName,
       importKind: specifier.importKind,
+      isDefaultImportType: specifier.type.indexOf("Default") !== -1,
       isInterface: nameIsLikelyInterface(importedName),
       originalIndex: x,
       originalLocation: {
@@ -73,7 +75,11 @@ function sortSingleSpecifier(
     typeRanking = everythingRank;
   }
   sortedSpecifiers.sort((a: SingleSpecifier, b: SingleSpecifier) => {
-    if (a.isInterface === b.isInterface && a.importKind === b.importKind) {
+    if (
+      a.isInterface === b.isInterface &&
+      a.importKind === b.importKind &&
+      a.isDefaultImportType === b.isDefaultImportType
+    ) {
       return a.importedName.localeCompare(b.importedName);
     }
 
@@ -84,6 +90,9 @@ function sortSingleSpecifier(
     if (a.importKind != null) {
       aRank = typeRanking;
     }
+    if (a.isDefaultImportType) {
+      aRank = aRank - options.groups.length;
+    }
 
     let bRank = everythingRank;
     if (b.isInterface) {
@@ -92,6 +101,10 @@ function sortSingleSpecifier(
     if (b.importKind != null) {
       bRank = typeRanking;
     }
+    if (b.isDefaultImportType) {
+      bRank = bRank - options.groups.length;
+    }
+
     if (aRank == bRank) {
       return a.importedName.localeCompare(b.importedName);
     }
@@ -155,7 +168,7 @@ function nameIsLikelyInterface(name: string) {
 }
 
 function ensureOptions(
-  options?: SortImportDeclarationSpecifiersOptions | null
+  options?: null | SortImportDeclarationSpecifiersOptions
 ): SortImportDeclarationSpecifiersOptions {
   if (options == null) {
     return {

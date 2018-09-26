@@ -108,8 +108,10 @@ We went with a system similar to [prettier](https://prettier.io/docs/en/precommi
 2. Add the following to your package.json
 ```
 {
-  "scripts": {
-    "precommit": "lint-staged"
+  "husky": {
+    "hooks": {  
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "**/*.js": [

@@ -1,6 +1,6 @@
 // Mostly taken from Prettier.io - Credit where credit is due!
 
-import * as parser from "typescript-eslint-parser";
+import * as parser from "typescript-estree";
 import { createError, includeShebang } from "../../common/parser-utils";
 
 export function parse(text: string /*, parsers, opts*/) {

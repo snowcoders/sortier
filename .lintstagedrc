@@ -1,0 +1,7 @@
+{
+  "**/*.ts": [
+    "prettier --write",
+    "node bin/index.js",
+    "git add"
+  ]
+}

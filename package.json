@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "cosmiconfig": "^5.0.6",
-    "flow-parser": "^0.81.0",
+    "flow-parser": "^0.82.0",
     "fs": "0.0.2",
     "globby": "^8.0.1",
     "rimraf": "^2.6.2",

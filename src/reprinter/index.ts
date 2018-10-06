@@ -89,6 +89,11 @@ export class Reprinter {
             break;
           }
           case "ArrowFunctionExpression": {
+            fileContents = this.rewriteNodes(
+              node.params,
+              comments,
+              fileContents
+            );
             nodes.push(node.body);
             break;
           }
@@ -135,6 +140,7 @@ export class Reprinter {
               comments,
               fileContents
             );
+            nodes.push(node.callee);
             break;
           }
           case "CatchClause": {
@@ -275,6 +281,7 @@ export class Reprinter {
             break;
           }
           case "MemberExpression": {
+            nodes.push(node.object);
             nodes.push(node.property);
             break;
           }

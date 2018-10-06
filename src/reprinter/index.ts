@@ -142,6 +142,7 @@ export class Reprinter {
               comments,
               fileContents
             );
+            nodes.push(node.callee);
             break;
           }
           case "CatchClause": {
@@ -282,6 +283,7 @@ export class Reprinter {
             break;
           }
           case "MemberExpression": {
+            nodes.push(node.object);
             nodes.push(node.property);
             break;
           }

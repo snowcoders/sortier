@@ -1,9 +1,23 @@
-response.data.map(
-  (value: { created_time: Date; link?: string; message: string }) => {
-    return {
-      contents: value.message,
-      link: value.link,
-      publishDateTime: moment(value.created_time)
-    };
-  }
-);
+// https://github.com/snowcoders/sortier/issues/134
+
+fetch(
+  "fromUrl"
+)
+  .then(response => response.json())
+  .then(response => {
+    let result: IPost[] = response.data.map(
+      (value: { created_time: Date; link?: string; message: string }) => {
+        return {
+          contents: value.message,
+          link: value.link,
+          publishDateTime: moment(value.created_time)
+        };
+      }
+    );
+    this.setState({
+      posts: result
+    });
+  })
+  .catch(reason => {
+    this.setState({ posts: null });
+  });

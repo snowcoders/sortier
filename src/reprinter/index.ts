@@ -89,6 +89,13 @@ export class Reprinter {
             break;
           }
           case "ArrowFunctionExpression": {
+            if (node.params != null) {
+              fileContents = this.rewriteNodes(
+                node.params,
+                comments,
+                fileContents
+              );
+            }
             nodes.push(node.body);
             break;
           }

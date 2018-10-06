@@ -1,0 +1,9 @@
+response.data.map(
+  (value: { link?: string; created_time: Date; message: string }) => {
+    return {
+      link: value.link,
+      contents: value.message,
+      publishDateTime: moment(value.created_time)
+    };
+  }
+);

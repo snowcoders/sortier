@@ -18,6 +18,6 @@ fetch(
       posts: result
     });
   })
-  .catch(reason => {
+  .catch(() => {
     this.setState({ posts: null });
   });

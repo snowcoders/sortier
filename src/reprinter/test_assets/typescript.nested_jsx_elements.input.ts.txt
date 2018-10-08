@@ -9,19 +9,19 @@ return <div className={className}>
         this.props["aria-checked"] || checked || this.state.isChecked
       }
       {...otherButtonProps}
-      type={undefined}
       value={undefined}
+      type={undefined}
     >
       {checkboxContent}
     </UnstyledButton>
     <input
-      checked={checked}
       className="data"
+      checked={checked}
       disabled={disabled}
       defaultChecked={defaultChecked}
       onChange={this.onInputChange}
-      ref={this.setInputRef}
       type="checkbox"
+      ref={this.setInputRef}
     />
     {labelText != null && <span className="text">{labelText}</span>}
   </label>

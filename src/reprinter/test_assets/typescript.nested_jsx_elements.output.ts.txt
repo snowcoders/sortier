@@ -1,0 +1,28 @@
+return <div className={className}>
+  <label className="content">
+    <UnstyledButton
+      aria-checked={
+        this.props["aria-checked"] || checked || this.state.isChecked
+      }
+      className="visual"
+      disabled={disabled}
+      onClick={this.onButtonClick}
+      role={role || "checkbox"}
+      {...otherButtonProps}
+      type={undefined}
+      value={undefined}
+    >
+      {checkboxContent}
+    </UnstyledButton>
+    <input
+      checked={checked}
+      className="data"
+      defaultChecked={defaultChecked}
+      disabled={disabled}
+      onChange={this.onInputChange}
+      ref={this.setInputRef}
+      type="checkbox"
+    />
+    {labelText != null && <span className="text">{labelText}</span>}
+  </label>
+</div>;

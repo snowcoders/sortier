@@ -401,6 +401,11 @@ export class Reprinter {
           // JSX
           case "JSXElement":
           case "JSXOpeningElement": {
+            fileContents = this.rewriteNodes(
+              node.children,
+              comments,
+              fileContents
+            );
             fileContents = sortJsxElement(node, comments, fileContents);
             break;
           }

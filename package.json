@@ -34,7 +34,7 @@
     "chai": "4.2.0",
     "husky": "1.1.2",
     "jsdom": "12.2.0",
-    "karma": "3.1.0",
+    "karma": "3.1.1",
     "karma-chai": "0.1.0",
     "karma-coverage": "1.1.2",
     "karma-jsdom-launcher": "6.1.4",

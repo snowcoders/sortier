@@ -33,11 +33,11 @@ export function parse(text: string /*, parsers, opts*/) {
 function tryParseTypeScript(text: string, jsx: boolean) {
   return parser.parse(text, {
     comment: true,
-    ecmaFeatures: { jsx },
+    jsx: true,
     loc: true,
     range: true,
     tokens: true,
-    useJSXTextNode: true,
+    useJSXTextNode: false,
     // Override logger function with noop,
     // to avoid unsupported version errors being logged
     loggerFn: () => {}

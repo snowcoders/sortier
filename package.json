@@ -1,6 +1,6 @@
 {
   "name": "@snowcoders/sortier",
-  "version": "2.1.13",
+  "version": "2.1.14",
   "description": "An opionated code sorter",
   "bin": {
     "sortier": "./bin/index.js"

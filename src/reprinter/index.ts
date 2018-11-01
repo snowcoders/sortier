@@ -202,7 +202,8 @@ export class Reprinter {
             }
             break;
           }
-          case "ExpressionStatement": {
+          case "ExpressionStatement":
+          case "JSXExpressionContainer": {
             nodes.push(node.expression);
             break;
           }

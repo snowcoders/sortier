@@ -23,6 +23,6 @@ return <div className={className}>
       ref={this.setInputRef}
       type="checkbox"
     />
-    {labelText != null && <span className="text">{labelText}</span>}
+    {labelText != null && <span className="text" title={labelText}>{labelText}</span>}
   </label>
 </div>;

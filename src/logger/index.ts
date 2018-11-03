@@ -21,6 +21,7 @@ export class Logger {
       return;
     }
     if (verbosity <= Logger.verbosity) {
+      // tslint:disable-next-line:no-console
       console.log(...args);
     }
   }

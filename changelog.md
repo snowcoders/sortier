@@ -1,5 +1,7 @@
 ### Unreleased
 
+- Fixed sorting case statements that contain expressions
+
 ### 2.1.14
 
 - Implemented sorting of JSXExpressionContainers

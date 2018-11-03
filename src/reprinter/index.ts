@@ -19,6 +19,7 @@ import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation";
 // Utils
 import { isArray } from "util";
 import { endsWith } from "../common/string-utils";
+import { Logger, LoggerVerboseOption } from "../logger";
 
 export interface ReprinterOptions {
   isHelpMode?: boolean;
@@ -722,19 +723,20 @@ export class Reprinter {
   private printHelpModeInfo(item, fileContents: string) {
     if (this._options.isHelpMode === true) {
       if (!this._helpModeHasPrintedFilename) {
-        console.log("");
-        console.log(this._filename);
+        Logger.log(LoggerVerboseOption.Diagnostic, "");
+        Logger.log(LoggerVerboseOption.Diagnostic, this._filename);
       }
 
-      console.log(
-        " - " +
-          item.type +
-          " - " +
-          JSON.stringify(item.loc.start) +
-          " - " +
-          JSON.stringify(item.loc.end)
+      Logger.log(
+        LoggerVerboseOption.Diagnostic,
+        ` - ${item.type} - ${JSON.stringify(item.loc.start)} - ${JSON.stringify(
+          item.loc.end
+        )}`
       );
-      console.log(fileContents.substring(item.range[0], item.range[1]));
+      Logger.log(
+        LoggerVerboseOption.Diagnostic,
+        fileContents.substring(item.range[0], item.range[1])
+      );
     }
   }
 }

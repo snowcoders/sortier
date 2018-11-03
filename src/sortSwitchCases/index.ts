@@ -5,6 +5,7 @@ import {
   MinimumTypeInformation,
   reorderValues
 } from "../common/sort-utils";
+import { Logger, LoggerVerboseOption } from "../logger";
 
 export interface SortSwitchCaseOptions {}
 
@@ -105,16 +106,9 @@ export function sortSwitchCases(
             })
             .filter(value => value != null) as BaseExpression[];
           let sorted = unsorted.slice().sort((a: any, b: any) => {
-            if (a === b) {
-              return 0;
-            }
-            if (a == null || a.raw == null) {
-              return 1;
-            }
-            if (b == null || b.raw == null) {
-              return -1;
-            }
-            return a.raw.localeCompare(b.raw);
+            let aText = getSortableText(a);
+            let bText = getSortableText(b);
+            return aText.localeCompare(bText);
           });
 
           newFileContents = reorderValues(
@@ -169,6 +163,26 @@ export function sortSwitchCases(
   }
 
   return newFileContents;
+}
+
+function getSortableText(a: any) {
+  if (a == null) {
+    return null;
+  }
+
+  if (a.raw != null) {
+    return a.raw;
+  }
+
+  if (a.expression != null) {
+    return a.expression.raw;
+  }
+
+  Logger.log(
+    LoggerVerboseOption.Diagnostic,
+    `Unknown case statement type: ${a.type}`
+  );
+  return null;
 }
 
 function caseGroupsToMinimumTypeinformations(

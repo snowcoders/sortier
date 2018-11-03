@@ -1,0 +1,10 @@
+// https://github.com/snowcoders/sortier/issues/165
+switch ("BLOCEMAIL") {
+  case ("BLOCEMAIL": NodeActionType):
+  case ("SEND_EMAIL": NodeActionType): {
+    console.log("hi");
+    break;
+  }
+}
+
+export type NodeActionType = "BLOCEMAIL" | "SEND_EMAIL" | "INCOMING";

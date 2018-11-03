@@ -175,7 +175,7 @@ export function sortImportDeclarations(
 }
 
 function ensureOptions(
-  options: SortImportDeclarationsOptions | null | undefined
+  options: undefined | null | SortImportDeclarationsOptions
 ): SortImportDeclarationsOptions {
   return {
     orderBy: (options && options.orderBy) || "source"

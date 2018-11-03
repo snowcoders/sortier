@@ -1,4 +1,4 @@
 {
   isTestRun: false,
-  isHelpMode: true
+  logLevel: "diagnostic"
 }

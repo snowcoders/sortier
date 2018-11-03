@@ -27,7 +27,7 @@ describe("common/sort-utils", () => {
 
     it("node", () => {
       let input = `
-      console.log("First");
+      log("First");
       `;
       let parsed = flowParse(input);
       let result = getContextGroups(parsed.body, parsed.comments, input);
@@ -40,7 +40,7 @@ describe("common/sort-utils", () => {
     it("comment, node", () => {
       let input = `
       // First
-      console.log("First");
+      log("First");
       `;
       let parsed = flowParse(input);
       let result = getContextGroups(parsed.body, parsed.comments, input);
@@ -54,7 +54,7 @@ describe("common/sort-utils", () => {
       let input = `
       // First
       // First - 2
-      console.log("First");
+      log("First");
       `;
       let parsed = flowParse(input);
       let result = getContextGroups(parsed.body, parsed.comments, input);
@@ -67,9 +67,9 @@ describe("common/sort-utils", () => {
     it("comment, node, comment, node", () => {
       let input = `
       // First
-      console.log("First");
+      log("First");
       // Second
-      console.log("Second");
+      log("Second");
       `;
       let parsed = flowParse(input);
       let result = getContextGroups(parsed.body, parsed.comments, input);
@@ -82,8 +82,8 @@ describe("common/sort-utils", () => {
     it("comment, node, node", () => {
       let input = `
       // First
-      console.log("First");
-      console.log("Second");
+      log("First");
+      log("Second");
       `;
       let parsed = flowParse(input);
       let result = getContextGroups(parsed.body, parsed.comments, input);
@@ -95,7 +95,7 @@ describe("common/sort-utils", () => {
 
     it("node, comment", () => {
       let input = `
-      console.log("First");
+      log("First");
       // Second
       `;
       let parsed = flowParse(input);
@@ -108,9 +108,9 @@ describe("common/sort-utils", () => {
 
     it("node, comment, node", () => {
       let input = `
-      console.log("First");
+      log("First");
       // Second
-      console.log("Second");
+      log("Second");
       `;
       let parsed = flowParse(input);
       let result = getContextGroups(parsed.body, parsed.comments, input);
@@ -125,10 +125,10 @@ describe("common/sort-utils", () => {
     it("comment, node, break, comment, node", () => {
       let input = `
       // First
-      console.log("First");
+      log("First");
 
       // Second
-      console.log("Second");
+      log("Second");
       `;
       let parsed = flowParse(input);
       let result = getContextGroups(parsed.body, parsed.comments, input);
@@ -144,9 +144,9 @@ describe("common/sort-utils", () => {
       let input = `
       // First
 
-      console.log("First");
+      log("First");
       // Second
-      console.log("Second");
+      log("Second");
       `;
       let parsed = flowParse(input);
       let result = getContextGroups(parsed.body, parsed.comments, input);
@@ -162,10 +162,10 @@ describe("common/sort-utils", () => {
     it("comment, node, comment, break, node", () => {
       let input = `
       // First
-      console.log("First");
+      log("First");
       // Second
 
-      console.log("Second");
+      log("Second");
       `;
       let parsed = flowParse(input);
       let result = getContextGroups(parsed.body, parsed.comments, input);

@@ -55,7 +55,7 @@ export function sortObjectTypeAnnotation(
 }
 
 function ensureOptions(
-  options?: SortObjectTypeAnnotationOptions | null
+  options?: null | SortObjectTypeAnnotationOptions
 ): SortObjectTypeAnnotationOptions {
   if (options == null) {
     return {

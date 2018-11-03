@@ -1,6 +1,9 @@
 ### Unreleased
 
 - Fixed sorting case statements that contain expressions
+- Added verbosity logger for easier logging management
+  - Moved missing config message to Diagnostic level
+  - Added a `logLevel` option to the config to allow for a quiet mode. Setting this to `diagnostic` is the same as setting `isHelpMode` to true.
 
 ### 2.1.14
 

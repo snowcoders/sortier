@@ -76,7 +76,7 @@ export function getContextGroups(
 
   // Now figure out all the indexes of any whitespace surrounded by two new lines (e.g. context separator)
   let regex = /\n\s*\n/gim;
-  let result: RegExpExecArray | null;
+  let result: null | RegExpExecArray;
   let contextBarrierIndices: number[] = [];
   while ((result = regex.exec(fileContents))) {
     if (rangeStart < result.index && result.index < rangeEnd) {

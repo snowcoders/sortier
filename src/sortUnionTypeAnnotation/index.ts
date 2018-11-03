@@ -37,7 +37,7 @@ export function sortUnionTypeAnnotation(
 }
 
 function ensureOptions(
-  options?: SortUnionTypeAnnotationOptions | null
+  options?: null | SortUnionTypeAnnotationOptions
 ): SortUnionTypeAnnotationOptions {
   if (options == null) {
     return {

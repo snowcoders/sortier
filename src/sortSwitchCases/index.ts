@@ -5,6 +5,7 @@ import {
   MinimumTypeInformation,
   reorderValues
 } from "../common/sort-utils";
+import { Logger, LoggerVerboseOption } from "../logger";
 
 export interface SortSwitchCaseOptions {}
 
@@ -177,7 +178,10 @@ function getSortableText(a: any) {
     return a.expression.raw;
   }
 
-  console.log(`Unknown case statement type: ${a.type}`);
+  Logger.log(
+    LoggerVerboseOption.Diagnostic,
+    `Unknown case statement type: ${a.type}`
+  );
   return null;
 }
 

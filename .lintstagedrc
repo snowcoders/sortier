@@ -1,5 +1,6 @@
 {
   "**/*.ts": [
+    "tslint -c tslint.json",
     "prettier --write",
     "node bin/index.js",
     "git add"

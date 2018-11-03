@@ -26,7 +26,7 @@ export function sortExpression(
 }
 
 function ensureOptions(
-  options?: SortExpressionOptions | null
+  options?: null | SortExpressionOptions
 ): SortExpressionOptions {
   if (options == null) {
     return {

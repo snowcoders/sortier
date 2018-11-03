@@ -55,7 +55,7 @@ export function sortTSPropertySignatures(
 }
 
 function ensureOptions(
-  options?: SortTSPropertySignaturesOptions | null
+  options?: null | SortTSPropertySignaturesOptions
 ): SortTSPropertySignaturesOptions {
   if (options == null) {
     return {

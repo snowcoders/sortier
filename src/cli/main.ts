@@ -16,15 +16,31 @@ export class Main {
 
     const explorer = cosmiconfig("sortier");
     const result = explorer.searchSync();
-    if (result == null) {
-      Logger.log(
-        LoggerVerboseOption.Normal,
-        "No valid sortier config file found. Using defaults..."
-      );
-    }
     let options = result == null ? {} : (result.config as ReprinterOptions);
+
+    // Set the Logger verbosity based on options
     if (options.isHelpMode) {
       Logger.setVerbosity(LoggerVerboseOption.Diagnostic);
+    }
+    if (options.logLevel != null) {
+      switch (options.logLevel) {
+        case "diagnostic":
+          Logger.setVerbosity(LoggerVerboseOption.Diagnostic);
+          break;
+        case "quiet":
+          Logger.setVerbosity(LoggerVerboseOption.Quiet);
+          break;
+        default:
+          Logger.setVerbosity(LoggerVerboseOption.Normal);
+          break;
+      }
+    }
+
+    if (result == null) {
+      Logger.log(
+        LoggerVerboseOption.Diagnostic,
+        "No valid sortier config file found. Using defaults..."
+      );
     }
 
     sync(args).map(filePath => {

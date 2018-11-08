@@ -6,6 +6,5 @@
 .sortierrc
 .vscode/**
 coverage/**
-package-lock.json
 src/**
 tsconfig.json

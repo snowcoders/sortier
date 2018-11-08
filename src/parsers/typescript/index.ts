@@ -33,6 +33,7 @@ export function parse(text: string /*, parsers, opts*/) {
 function tryParseTypeScript(text: string, jsx: boolean) {
   return parser.parse(text, {
     comment: true,
+    errorOnUnknownASTType: false,
     jsx: true,
     loc: true,
     range: true,

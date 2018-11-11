@@ -2,7 +2,8 @@ import * as cosmiconfig from "cosmiconfig";
 import { sync } from "globby";
 
 import { Logger, LoggerVerboseOption } from "../logger";
-import { Reprinter, ReprinterOptions } from "../reprinter";
+import { Reprinter } from "../reprinter";
+import { ReprinterOptions } from "../reprinter-options";
 
 export class Main {
   public run(args: string[]) {

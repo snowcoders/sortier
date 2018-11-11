@@ -8,10 +8,10 @@ import { parse as flowParse } from "../parsers/flow";
 import { parse as typescriptParse } from "../parsers/typescript";
 
 // The methods being tested here
-import { sortObjectTypeAnnotation } from "./index";
+import { sortUnionTypeAnnotation } from "./index";
 
 // Utilities
-import { sentenceCase } from "../common/string-utils";
+import { sentenceCase } from "../../common/string-utils";
 
 interface TestInfo {
   inputFilePath: string;
@@ -20,7 +20,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe("sortObjectTypeAnnotation", () => {
+describe("sortUnionTypeAnnotation", () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 
@@ -69,11 +69,20 @@ describe("sortObjectTypeAnnotation", () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);
-            let actual = sortObjectTypeAnnotation(
-              parsed.body[0].declaration.right,
-              parsed.comments,
-              input
-            );
+            let actual = "";
+            if (testInfo.parserType === "typescript") {
+              actual = sortUnionTypeAnnotation(
+                parsed.body[0].body.body[0].typeAnnotation.typeAnnotation,
+                parsed.comments,
+                input
+              );
+            } else {
+              actual = sortUnionTypeAnnotation(
+                parsed.body[0].body.properties[0].value,
+                parsed.comments,
+                input
+              );
+            }
 
             expect(actual).to.equal(expected);
           });

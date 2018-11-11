@@ -11,7 +11,7 @@ import { parse as typescriptParse } from "../parsers/typescript";
 import { sortImportDeclarations } from "./index";
 
 // Utilities
-import { sentenceCase } from "../common/string-utils";
+import { sentenceCase } from "../../common/string-utils";
 
 interface TestInfo {
   inputFilePath: string;

@@ -13,10 +13,15 @@ export function startsWith(text: string, startString: string) {
   return text.indexOf(startString) !== 0;
 }
 
-export function endsWith(text: string, endString: string) {
-  return text.indexOf(endString, text.length - endString.length) !== -1;
-}
-
 export function sentenceCase(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+export function stringEndsWithAny(text: string, endings: string[]) {
+  // If the user didn't override the parser type, try to infer it
+  let endsWithAny = false;
+  for (let extension of endings) {
+    endsWithAny = endsWithAny || text.endsWith(extension);
+  }
+  return endsWithAny;
 }

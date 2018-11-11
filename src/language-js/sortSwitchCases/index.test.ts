@@ -8,10 +8,10 @@ import { parse as flowParse } from "../parsers/flow";
 import { parse as typescriptParse } from "../parsers/typescript";
 
 // The methods being tested here
-import { sortTSPropertySignatures } from "./index";
+import { sortSwitchCases } from "./index";
 
 // Utilities
-import { sentenceCase } from "../common/string-utils";
+import { sentenceCase } from "../../common/string-utils";
 
 interface TestInfo {
   inputFilePath: string;
@@ -20,7 +20,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe("sortTSPropertySignatures", () => {
+describe("sortSwitchCases", () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 
@@ -69,8 +69,8 @@ describe("sortTSPropertySignatures", () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);
-            let actual = sortTSPropertySignatures(
-              parsed.body[0].declaration.body.body,
+            let actual = sortSwitchCases(
+              parsed.body[0].cases,
               parsed.comments,
               input
             );

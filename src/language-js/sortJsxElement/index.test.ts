@@ -8,10 +8,10 @@ import { parse as flowParse } from "../parsers/flow";
 import { parse as typescriptParse } from "../parsers/typescript";
 
 // The methods being tested here
-import { sortSwitchCases } from "./index";
+import { sortJsxElement } from "./index";
 
 // Utilities
-import { sentenceCase } from "../common/string-utils";
+import { sentenceCase } from "../../common/string-utils";
 
 interface TestInfo {
   inputFilePath: string;
@@ -20,7 +20,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe("sortSwitchCases", () => {
+describe("sortJsxElement", () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 
@@ -69,8 +69,8 @@ describe("sortSwitchCases", () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);
-            let actual = sortSwitchCases(
-              parsed.body[0].cases,
+            let actual = sortJsxElement(
+              parsed.body[0].argument,
               parsed.comments,
               input
             );

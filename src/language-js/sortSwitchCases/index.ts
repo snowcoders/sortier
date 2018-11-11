@@ -1,11 +1,11 @@
 import { BaseExpression, Comment, SwitchCase } from "estree";
 
+import { Logger, LoggerVerboseOption } from "../../logger";
 import {
   getContextGroups,
   MinimumTypeInformation,
   reorderValues
 } from "../common/sort-utils";
-import { Logger, LoggerVerboseOption } from "../logger";
 
 export interface SortSwitchCaseOptions {}
 

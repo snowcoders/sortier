@@ -1,4 +1,4 @@
-import { startsWith } from "./string-utils";
+import { startsWith } from "../../common/string-utils";
 
 export function createError(message: string, loc: any) {
   // Construct an error similar to the ones thrown by Babylon.

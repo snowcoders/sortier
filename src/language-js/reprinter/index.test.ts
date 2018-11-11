@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { readFileSync } from "fs";
 import { sync } from "globby";
 import { basename, join } from "path";
-import { sentenceCase } from "../common/string-utils";
+import { readFileContents } from "../../common/file-utils";
+import { sentenceCase } from "../../common/string-utils";
 
 // The methods being tested here
 import { Reprinter } from "./index";
@@ -49,11 +49,12 @@ describe("reprinter", () => {
           // Useful if you need to test a single file
           // if (testInfo.testName.includes("Inline property"))
           it(testInfo.testName, () => {
-            let expected = readFileSync(testInfo.outputFilePath, "utf8");
-            let actual = new Reprinter(
+            let expected = readFileContents(testInfo.outputFilePath);
+            let actual = new Reprinter().getRewrittenContents(
               testInfo.inputFilePath,
+              readFileContents(testInfo.inputFilePath),
               {}
-            ).getRewrittenFileContents();
+            );
 
             expect(actual).to.equal(expected);
           });

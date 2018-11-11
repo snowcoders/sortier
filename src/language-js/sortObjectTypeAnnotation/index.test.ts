@@ -11,7 +11,7 @@ import { parse as typescriptParse } from "../parsers/typescript";
 import { sortObjectTypeAnnotation } from "./index";
 
 // Utilities
-import { sentenceCase } from "../../utilities/string-utils";
+import { StringUtils } from "../../utilities/string-utils";
 
 interface TestInfo {
   inputFilePath: string;
@@ -34,7 +34,9 @@ describe("sortObjectTypeAnnotation", () => {
       parserTypes.push(segments[0]);
     }
 
-    let cleanedTestName = sentenceCase(segments[1].replace(/_/g, " "));
+    let cleanedTestName = StringUtils.sentenceCase(
+      segments[1].replace(/_/g, " ")
+    );
 
     return {
       inputFilePath: filePath,

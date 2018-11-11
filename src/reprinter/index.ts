@@ -1,9 +1,7 @@
-import * as fs from "fs";
-
-// Reprinters
 import { ILanguage } from "../language";
 import { JavascriptReprinter } from "../language-js";
 import { ReprinterOptions } from "../reprinter-options";
+import { FileUtils } from "../utilities/file-utils";
 
 export class Reprinter {
   private static reprinters: ILanguage[] = [new JavascriptReprinter()];
@@ -21,7 +19,7 @@ export class Reprinter {
       throw new Error("Could not find language support for file - " + filename);
     }
 
-    let originalFileContents = this.readFileContents(filename);
+    let originalFileContents = FileUtils.readFileContents(filename);
     let newFileContents = language.getRewrittenContents(
       filename,
       originalFileContents,
@@ -29,23 +27,7 @@ export class Reprinter {
     );
 
     if (options.isTestRun == null || !options.isTestRun) {
-      this.writeFileContents(filename, newFileContents);
-    }
-  }
-
-  private static readFileContents(filename: string) {
-    try {
-      return fs.readFileSync(filename, "utf8");
-    } catch (error) {
-      throw new Error(`Could not read file: ${filename}\n${error.message}`);
-    }
-  }
-
-  private static writeFileContents(filename: string, fileContents: string) {
-    try {
-      fs.writeFileSync(filename, fileContents, "utf8");
-    } catch (error) {
-      throw new Error(`Could not write file: ${filename}\n${error.message}`);
+      FileUtils.writeFileContents(filename, newFileContents);
     }
   }
 }

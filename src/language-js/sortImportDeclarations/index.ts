@@ -1,5 +1,5 @@
 // Utils
-import { nthIndexOf } from "../../utilities/string-utils";
+import { StringUtils } from "../../utilities/string-utils";
 
 export interface SortImportDeclarationsOptions {
   orderBy: "first-specifier" | "source";
@@ -110,7 +110,7 @@ export function sortImportDeclarations(
     for (let x = 0; x < sortedImportSources.length; x++) {
       let oldSpecifier = body[overallIndex - sortedImportSources.length + x];
 
-      let spliceRemoveIndexStart = nthIndexOf(
+      let spliceRemoveIndexStart = StringUtils.nthIndexOf(
         fileContents,
         "\n",
         oldSpecifier.loc.start.line - 1
@@ -120,7 +120,7 @@ export function sortImportDeclarations(
       } else {
         spliceRemoveIndexStart++;
       }
-      let spliceRemoveIndexEnd = nthIndexOf(
+      let spliceRemoveIndexEnd = StringUtils.nthIndexOf(
         fileContents,
         "\n",
         oldSpecifier.loc.end.line
@@ -139,7 +139,7 @@ export function sortImportDeclarations(
         spliceRemoveIndexEnd + newFileContentIndexCorrection
       );
 
-      let spliceAddIndexStart = nthIndexOf(
+      let spliceAddIndexStart = StringUtils.nthIndexOf(
         fileContents,
         "\n",
         sortedImportSources[x].originalLocation.start.line - 1
@@ -149,7 +149,7 @@ export function sortImportDeclarations(
       } else {
         spliceAddIndexStart++;
       }
-      let spliceAddIndexEnd = nthIndexOf(
+      let spliceAddIndexEnd = StringUtils.nthIndexOf(
         fileContents,
         "\n",
         sortedImportSources[x].originalLocation.end.line

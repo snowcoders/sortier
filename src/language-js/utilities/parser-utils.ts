@@ -1,4 +1,4 @@
-import { startsWith } from "../../utilities/string-utils";
+import { StringUtils } from "../../utilities/string-utils";
 
 export function createError(message: string, loc: any) {
   // Construct an error similar to the ones thrown by Babylon.
@@ -9,7 +9,7 @@ export function createError(message: string, loc: any) {
 }
 
 export function includeShebang(text: string, ast: any) {
-  if (!startsWith(text, "#!")) {
+  if (!StringUtils.startsWith(text, "#!")) {
     return;
   }
 

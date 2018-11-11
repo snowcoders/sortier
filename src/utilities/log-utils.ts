@@ -6,11 +6,11 @@ export enum LoggerVerboseOption {
   Diagnostic
 }
 
-export class Logger {
+export class LogUtils {
   private static verbosity: LoggerVerboseOption = LoggerVerboseOption.Normal;
 
   public static setVerbosity(newVerbosity: LoggerVerboseOption) {
-    Logger.verbosity = newVerbosity;
+    LogUtils.verbosity = newVerbosity;
   }
 
   public static log(
@@ -20,7 +20,7 @@ export class Logger {
     if (verbosity === LoggerVerboseOption.Quiet) {
       return;
     }
-    if (verbosity <= Logger.verbosity) {
+    if (verbosity <= LogUtils.verbosity) {
       // tslint:disable-next-line:no-console
       console.log(...args);
     }

@@ -1,6 +1,6 @@
 import { BaseExpression, Comment, SwitchCase } from "estree";
 
-import { Logger, LoggerVerboseOption } from "../../utilities/log-utils";
+import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils";
 import {
   getContextGroups,
   MinimumTypeInformation,
@@ -178,7 +178,7 @@ function getSortableText(a: any) {
     return a.expression.raw;
   }
 
-  Logger.log(
+  LogUtils.log(
     LoggerVerboseOption.Diagnostic,
     `Unknown case statement type: ${a.type}`
   );

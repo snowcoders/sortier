@@ -3,12 +3,12 @@ import { sync } from "globby";
 
 import { Reprinter } from "../reprinter";
 import { ReprinterOptions } from "../reprinter-options";
-import { Logger, LoggerVerboseOption } from "../utilities/log-utils";
+import { LoggerVerboseOption, LogUtils } from "../utilities/log-utils";
 
 export class Main {
   public run(args: string[]) {
     if (args.length === 0) {
-      Logger.log(
+      LogUtils.log(
         LoggerVerboseOption.Normal,
         "Must provide a file pattern to run sortier over"
       );
@@ -19,26 +19,26 @@ export class Main {
     const result = explorer.searchSync();
     let options = result == null ? {} : (result.config as ReprinterOptions);
 
-    // Set the Logger verbosity based on options
+    // Set the LogUtils verbosity based on options
     if (options.isHelpMode) {
-      Logger.setVerbosity(LoggerVerboseOption.Diagnostic);
+      LogUtils.setVerbosity(LoggerVerboseOption.Diagnostic);
     }
     if (options.logLevel != null) {
       switch (options.logLevel) {
         case "diagnostic":
-          Logger.setVerbosity(LoggerVerboseOption.Diagnostic);
+          LogUtils.setVerbosity(LoggerVerboseOption.Diagnostic);
           break;
         case "quiet":
-          Logger.setVerbosity(LoggerVerboseOption.Quiet);
+          LogUtils.setVerbosity(LoggerVerboseOption.Quiet);
           break;
         default:
-          Logger.setVerbosity(LoggerVerboseOption.Normal);
+          LogUtils.setVerbosity(LoggerVerboseOption.Normal);
           break;
       }
     }
 
     if (result == null) {
-      Logger.log(
+      LogUtils.log(
         LoggerVerboseOption.Diagnostic,
         "No valid sortier config file found. Using defaults..."
       );
@@ -48,8 +48,8 @@ export class Main {
       try {
         Reprinter.rewrite(filePath, options);
       } catch (e) {
-        Logger.log(LoggerVerboseOption.Normal, "");
-        Logger.log(
+        LogUtils.log(LoggerVerboseOption.Normal, "");
+        LogUtils.log(
           LoggerVerboseOption.Normal,
           `Sorting ${filePath} has failed!
 If this is an issue with sortier please provide an issue in Github with minimal source code to reproduce the issue

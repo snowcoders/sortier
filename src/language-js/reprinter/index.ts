@@ -18,8 +18,8 @@ import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation";
 import { isArray } from "util";
 import { ILanguage } from "../../language";
 import { ReprinterOptions } from "../../reprinter-options";
-import { Logger, LoggerVerboseOption } from "../../utilities/log-utils";
-import { stringEndsWithAny } from "../../utilities/string-utils";
+import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils";
+import { StringUtils } from "../../utilities/string-utils";
 
 export class Reprinter implements ILanguage {
   public static readonly TYPESCRIPT_EXTENSIONS = [".ts", ".tsx", ".ts.txt"];
@@ -30,7 +30,7 @@ export class Reprinter implements ILanguage {
   private _helpModeHasPrintedFilename: boolean;
 
   public isFileSupported(filename: string) {
-    return stringEndsWithAny(filename, [
+    return StringUtils.stringEndsWithAny(filename, [
       ...Reprinter.JAVASCRIPT_EXTENSIONS,
       ...Reprinter.TYPESCRIPT_EXTENSIONS
     ]);
@@ -675,7 +675,7 @@ export class Reprinter implements ILanguage {
     }
 
     // If the user didn't override the parser type, try to infer it
-    let isTypescript = stringEndsWithAny(
+    let isTypescript = StringUtils.stringEndsWithAny(
       this._filename,
       Reprinter.TYPESCRIPT_EXTENSIONS
     );
@@ -683,7 +683,7 @@ export class Reprinter implements ILanguage {
       return parseTypescript;
     }
 
-    let isJavascript = stringEndsWithAny(
+    let isJavascript = StringUtils.stringEndsWithAny(
       this._filename,
       Reprinter.JAVASCRIPT_EXTENSIONS
     );
@@ -697,17 +697,17 @@ export class Reprinter implements ILanguage {
   private printHelpModeInfo(item, fileContents: string) {
     if (this._options.isHelpMode === true) {
       if (!this._helpModeHasPrintedFilename) {
-        Logger.log(LoggerVerboseOption.Diagnostic, "");
-        Logger.log(LoggerVerboseOption.Diagnostic, this._filename);
+        LogUtils.log(LoggerVerboseOption.Diagnostic, "");
+        LogUtils.log(LoggerVerboseOption.Diagnostic, this._filename);
       }
 
-      Logger.log(
+      LogUtils.log(
         LoggerVerboseOption.Diagnostic,
         ` - ${item.type} - ${JSON.stringify(item.loc.start)} - ${JSON.stringify(
           item.loc.end
         )}`
       );
-      Logger.log(
+      LogUtils.log(
         LoggerVerboseOption.Diagnostic,
         fileContents.substring(item.range[0], item.range[1])
       );

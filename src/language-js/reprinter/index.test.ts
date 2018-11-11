@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import { sync } from "globby";
 import { basename, join } from "path";
-import { readFileContents } from "../../utilities/file-utils";
-import { sentenceCase } from "../../utilities/string-utils";
+import { FileUtils } from "../../utilities/file-utils";
+import { StringUtils } from "../../utilities/string-utils";
 
 // The methods being tested here
 import { Reprinter } from "./index";
@@ -22,10 +22,10 @@ describe("reprinter", () => {
   testInfos = sync(assetsFolderPath).map(filePath => {
     let segments = basename(filePath).split(".");
 
-    let parserType = sentenceCase(segments[0]);
+    let parserType = StringUtils.sentenceCase(segments[0]);
     parserTypes.add(parserType);
     let cleanedTestName = segments[1].replace(/_/g, " ").toLowerCase();
-    cleanedTestName = sentenceCase(cleanedTestName);
+    cleanedTestName = StringUtils.sentenceCase(cleanedTestName);
 
     return {
       inputFilePath: filePath,
@@ -49,10 +49,10 @@ describe("reprinter", () => {
           // Useful if you need to test a single file
           // if (testInfo.testName.includes("Inline property"))
           it(testInfo.testName, () => {
-            let expected = readFileContents(testInfo.outputFilePath);
+            let expected = FileUtils.readFileContents(testInfo.outputFilePath);
             let actual = new Reprinter().getRewrittenContents(
               testInfo.inputFilePath,
-              readFileContents(testInfo.inputFilePath),
+              FileUtils.readFileContents(testInfo.inputFilePath),
               {}
             );
 

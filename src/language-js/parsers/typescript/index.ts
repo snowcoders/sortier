@@ -1,7 +1,7 @@
 // Mostly taken from Prettier.io - Credit where credit is due!
 
 import * as parser from "typescript-estree";
-import { createError, includeShebang } from "../../common/parser-utils";
+import { createError, includeShebang } from "../../utilities/parser-utils";
 
 export function parse(text: string /*, parsers, opts*/) {
   const jsx = isProbablyJsx(text);

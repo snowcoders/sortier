@@ -1,4 +1,4 @@
-import { reorderValues } from "../common/sort-utils";
+import { reorderValues } from "../utilities/sort-utils";
 
 export type SortExpressionOptionsGroups =
   | "*"

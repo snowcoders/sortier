@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import { sync } from "globby";
 import { basename, join } from "path";
-import { readFileContents } from "../../common/file-utils";
-import { sentenceCase } from "../../common/string-utils";
+import { readFileContents } from "../../utilities/file-utils";
+import { sentenceCase } from "../../utilities/string-utils";
 
 // The methods being tested here
 import { Reprinter } from "./index";

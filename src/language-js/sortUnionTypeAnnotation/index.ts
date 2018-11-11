@@ -1,4 +1,4 @@
-import { reorderValues } from "../common/sort-utils";
+import { reorderValues } from "../utilities/sort-utils";
 
 // TODO add ObjectTypeAnnotation to the end of this
 export type SortUnionTypeAnnotationOptionsGroups =

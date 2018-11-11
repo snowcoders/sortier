@@ -16,10 +16,10 @@ import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation";
 
 // Utils
 import { isArray } from "util";
-import { stringEndsWithAny } from "../../common/string-utils";
 import { ILanguage } from "../../language";
-import { Logger, LoggerVerboseOption } from "../../logger";
 import { ReprinterOptions } from "../../reprinter-options";
+import { Logger, LoggerVerboseOption } from "../../utilities/log-utils";
+import { stringEndsWithAny } from "../../utilities/string-utils";
 
 export class Reprinter implements ILanguage {
   public static readonly TYPESCRIPT_EXTENSIONS = [".ts", ".tsx", ".ts.txt"];

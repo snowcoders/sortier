@@ -4,7 +4,7 @@ import {
   getContextGroups,
   getSpreadGroups,
   reorderValues
-} from "../common/sort-utils";
+} from "../utilities/sort-utils";
 
 export interface SortObjectTypeAnnotationOptions {
   groups: ("null" | "undefined" | "*" | "function" | "object")[];

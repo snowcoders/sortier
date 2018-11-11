@@ -1,5 +1,5 @@
 // Utils
-import { nthIndexOf } from "../../common/string-utils";
+import { nthIndexOf } from "../../utilities/string-utils";
 
 export interface SortImportDeclarationsOptions {
   orderBy: "first-specifier" | "source";

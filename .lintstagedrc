@@ -4,5 +4,10 @@
     "prettier --write",
     "node bin/index.js",
     "git add"
+  ],
+  "**/*.{js,json,html,md}": [
+    "prettier --write",
+    "node bin/index.js",
+    "git add"
   ]
 }

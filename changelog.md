@@ -1,5 +1,6 @@
 ### Unreleased
 
+- Added HTML attribute sorting
 - Fixed sorting case statements that contain expressions
 - Added verbosity logger for easier logging management
   - Moved missing config message to Diagnostic level

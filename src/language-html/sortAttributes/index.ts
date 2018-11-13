@@ -1,3 +1,5 @@
+import { StringUtils } from "../../utilities/string-utils";
+
 interface AttrInfo {
   endOffset: number;
   key: string;
@@ -15,8 +17,13 @@ export function sortAttributes(node: any, fileContents: string) {
     return fileContents;
   }
 
-  // Actual sorting
-  let originalOrder: AttrInfo[] = attrs.map(value => {
+  // Split attributes into context blocks
+  let contextBarrierIndices = StringUtils.getBlankLineLocations(
+    fileContents,
+    node.sourceSpan.start.offset,
+    node.sourceSpan.end.offset
+  );
+  let attributeInfos: AttrInfo[] = attrs.map(value => {
     let startOffset = value.sourceSpan.start.offset;
     let endOffset = value.sourceSpan.end.offset;
     let result: AttrInfo = {
@@ -27,13 +34,45 @@ export function sortAttributes(node: any, fileContents: string) {
     };
     return result;
   });
+  let groupedAttributes: AttrInfo[][] = [];
+  let currentGroup: AttrInfo[] = [];
+  while (0 < contextBarrierIndices.length) {
+    let barrierIndex = contextBarrierIndices.shift();
+    if (barrierIndex == null) {
+      break;
+    }
+    while (0 < attributeInfos.length) {
+      let attributeInfo = attributeInfos.shift();
+      if (attributeInfo == null) {
+        break;
+      }
+      if (attributeInfo.startOffset > barrierIndex) {
+        if (currentGroup.length !== 0) {
+          groupedAttributes.push(currentGroup);
+          currentGroup = [];
+        }
+      }
+      currentGroup.push(attributeInfo);
+    }
+  }
+  if (currentGroup.length !== 0) {
+    groupedAttributes.push(currentGroup);
+  }
+  if (attributeInfos.length !== 0) {
+    groupedAttributes.push(attributeInfos);
+  }
 
-  let newOrder = originalOrder.slice();
-  newOrder.sort((a, b) => {
-    return a.key.localeCompare(b.key);
-  });
+  // Actual sorting
+  let newFileContents = fileContents;
+  for (let group of groupedAttributes) {
+    let newOrder = group.slice();
+    newOrder.sort((a, b) => {
+      return a.key.localeCompare(b.key);
+    });
 
-  return reorderValues(fileContents, originalOrder, newOrder);
+    newFileContents = reorderValues(newFileContents, group, newOrder);
+  }
+  return newFileContents;
 }
 
 function reorderValues(

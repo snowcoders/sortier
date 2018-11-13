@@ -2,7 +2,7 @@
   "defaultSeverity": "error",
   "jsRules": {},
   "rules": {
-    // All console logs should go through the Logger class
+    // All console logs should go through the LogUtils class
     "no-console": true
   },
   "rulesDirectory": []

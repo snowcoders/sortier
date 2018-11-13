@@ -26,4 +26,20 @@ export class StringUtils {
     }
     return endsWithAny;
   }
+
+  public static getBlankLineLocations(
+    string: string,
+    rangeStart: number = 0,
+    rangeEnd: number = string.length
+  ) {
+    let regex = /\n\s*\n/gim;
+    let result: null | RegExpExecArray;
+    let contextBarrierIndices: number[] = [];
+    while ((result = regex.exec(string))) {
+      if (rangeStart < result.index && result.index < rangeEnd) {
+        contextBarrierIndices.push(result.index);
+      }
+    }
+    return contextBarrierIndices;
+  }
 }

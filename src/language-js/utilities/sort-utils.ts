@@ -1,4 +1,5 @@
 import { Comment } from "estree";
+import { StringUtils } from "../../utilities/string-utils";
 
 export interface MinimumTypeInformation {
   range?: [number, number];
@@ -75,14 +76,11 @@ export function getContextGroups(
   }
 
   // Now figure out all the indexes of any whitespace surrounded by two new lines (e.g. context separator)
-  let regex = /\n\s*\n/gim;
-  let result: null | RegExpExecArray;
-  let contextBarrierIndices: number[] = [];
-  while ((result = regex.exec(fileContents))) {
-    if (rangeStart < result.index && result.index < rangeEnd) {
-      contextBarrierIndices.push(result.index);
-    }
-  }
+  let contextBarrierIndices = StringUtils.getBlankLineLocations(
+    fileContents,
+    rangeStart,
+    rangeEnd
+  );
 
   // Now that we have the indices of all context breaks, anything that is between those breaks will be a single context
   let groupings: ContextGroup[] = [];

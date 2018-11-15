@@ -2,7 +2,6 @@ import { StringUtils } from "../../utilities/string-utils";
 
 interface AttrInfo {
   endOffset: number;
-  key: string;
   source: string;
   startOffset: number;
 }
@@ -13,7 +12,7 @@ export function sortAttributes(node: any, fileContents: string) {
     return fileContents;
   }
   let attrs: any[] = node.attrs;
-  if (attrs.length === 0) {
+  if (attrs.length <= 1) {
     return fileContents;
   }
 
@@ -28,7 +27,6 @@ export function sortAttributes(node: any, fileContents: string) {
     let endOffset = value.sourceSpan.end.offset;
     let result: AttrInfo = {
       endOffset,
-      key: value.name,
       source: fileContents.substring(startOffset, endOffset),
       startOffset
     };
@@ -67,7 +65,7 @@ export function sortAttributes(node: any, fileContents: string) {
   for (let group of groupedAttributes) {
     let newOrder = group.slice();
     newOrder.sort((a, b) => {
-      return a.key.localeCompare(b.key);
+      return a.source.localeCompare(b.source);
     });
 
     newFileContents = reorderValues(newFileContents, group, newOrder);

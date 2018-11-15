@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 2.2.0
+
 - Added HTML attribute sorting
 - Fixed sorting case statements that contain expressions
 - Added verbosity logger for easier logging management

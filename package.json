@@ -36,7 +36,7 @@
     "angular-html-parser": "1.0.0",
     "chai": "4.2.0",
     "husky": "1.1.4",
-    "lint-staged": "8.0.4",
+    "lint-staged": "8.0.5",
     "mocha": "5.2.0",
     "nyc": "13.1.0",
     "parse5": "5.1.0",

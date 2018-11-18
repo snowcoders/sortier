@@ -7,7 +7,7 @@ import { run } from "./index";
 import { Reprinter } from "../reprinter";
 import { LoggerVerboseOption, LogUtils } from "../utilities/log-utils";
 
-describe.only("cli", () => {
+describe("cli", () => {
   let logMock: sinon.SinonStub;
   let reprinterMock: sinon.SinonStub;
 

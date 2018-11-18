@@ -11,7 +11,7 @@
     "build": "tsc",
     "clean": "rimraf .nyc_output coverage dist",
     "cover": "nyc report --reporter=text-lcov | coveralls",
-    "mocha": "mocha --require ts-node/register --require source-map-support/register --full-trace src/**/*.test.ts",
+    "mocha": "mocha --require ts-node/register --require source-map-support/register --full-trace ./src/**/*.test.ts",
     "prepare": "npm run clean && npm run build-production",
     "start": "npm run build && node bin/index.js",
     "test": "nyc npm run mocha"

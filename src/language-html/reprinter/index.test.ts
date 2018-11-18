@@ -15,7 +15,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe("reprinter", () => {
+describe("language-html/reprinter", () => {
   let testInfos: TestInfo[];
 
   let assetsFolderPath = join(__dirname, "test_assets/*.input.html.txt");

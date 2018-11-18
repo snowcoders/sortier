@@ -20,7 +20,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe("sortImportDeclarationSpecifiers", () => {
+describe("language-js/sortImportDeclarationSpecifiers", () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 

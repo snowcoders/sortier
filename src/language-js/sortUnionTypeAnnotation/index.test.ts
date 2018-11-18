@@ -20,7 +20,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe("sortUnionTypeAnnotation", () => {
+describe("language-js/sortUnionTypeAnnotation", () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 

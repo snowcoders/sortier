@@ -1,11 +1,11 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 
-import { run } from "./index";
+import { run } from "../index";
 
 // Mocks
-import { Reprinter } from "../reprinter";
-import { LoggerVerboseOption, LogUtils } from "../utilities/log-utils";
+import { Reprinter } from "../../reprinter";
+import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils";
 
 describe("cli", () => {
   let logMock: sinon.SinonStub;

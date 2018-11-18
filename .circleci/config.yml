@@ -9,13 +9,15 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
-          name: npm-install
+          name: Install npm dependencies
           command: npm install
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
       - run:
-          name: cover
+          name: Test
+          command: npm run test
+      - run:
+          name: Report coverage
           command: npm run cover
-          

@@ -20,7 +20,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe("sortSwitchCases", () => {
+describe("language-js/sortSwitchCases", () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 

@@ -20,7 +20,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe("sortObjectTypeAnnotation", () => {
+describe("language-js/sortObjectTypeAnnotation", () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 

@@ -18,7 +18,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe("sortAttributes", () => {
+describe("language-html/sortAttributes", () => {
   let testInfos: TestInfo[];
 
   let assetsFolderPath = join(__dirname, "test_assets/*.input.html.txt");

@@ -20,7 +20,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe("sortTSPropertySignatures", () => {
+describe("language-js/sortTSPropertySignatures", () => {
   let parserTypes: string[];
   let testInfos: TestInfo[];
 

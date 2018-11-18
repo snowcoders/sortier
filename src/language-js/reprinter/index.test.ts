@@ -14,7 +14,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe("reprinter", () => {
+describe("language-js/reprinter", () => {
   let testInfos: TestInfo[];
   let parserTypes: Set<string> = new Set<string>();
 

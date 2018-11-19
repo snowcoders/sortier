@@ -1,0 +1,12 @@
+for (let index in [{c: 'c', a: 'a'}]) {
+      console.log(index);
+}
+
+for (let index of [{c: 'c', a: 'a'}]) {
+      console.log(index);
+}
+
+
+for (let index = 0; x < [2, 1].length; index++) {
+      console.log(index);
+}

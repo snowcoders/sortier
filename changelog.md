@@ -1,5 +1,7 @@
 ### Unreleased
 
+- Added JSON sorting
+
 ### 2.2.0
 
 - Added HTML attribute sorting

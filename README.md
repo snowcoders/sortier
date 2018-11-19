@@ -10,7 +10,7 @@ An opinionated Code Sorter
 
 Sortier is an opinionated code sorter similar to how Prettier is a opinionated code formatter. Given a file, it parses then figures out how to sort and rearrange source code in a consistent way.
 
-Examples of what sortier will sort:
+Examples of what sortier will sort in JavaScript:
 
 - Import statements
 - Import specifiers
@@ -18,7 +18,7 @@ Examples of what sortier will sort:
 - Keys and properties within objects and types
 - And more!
 
-It should work with JavaScript ES6, Flow and Typescript but if you find a piece of code that doesn't sort the way you expect it to, feel free to open an issue in Github!
+It should work with JavaScript ES6, Flow, Typescript, HTML and Json but if you find a piece of code that doesn't sort the way you expect it to, feel free to open an issue in Github!
 
 ## How to run it
 

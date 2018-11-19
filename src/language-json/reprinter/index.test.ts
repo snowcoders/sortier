@@ -15,7 +15,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe.only("language-json/reprinter", () => {
+describe("language-json/reprinter", () => {
   let testInfos: TestInfo[];
 
   let assetsFolderPath = join(__dirname, "test_assets/*.input.json.txt");
@@ -46,5 +46,13 @@ describe.only("language-json/reprinter", () => {
 
       expect(actual).to.equal(expected);
     });
+  });
+
+  it("Supports json files", () => {
+    expect(new Reprinter().isFileSupported("test.json")).to.equal(true);
+  });
+
+  it("Does not support typescript files", () => {
+    expect(new Reprinter().isFileSupported("test.ts")).to.equal(false);
   });
 });

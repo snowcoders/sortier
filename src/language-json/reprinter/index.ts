@@ -1,5 +1,5 @@
-import * as parse from "json-to-ast";
 import { ILanguage } from "../../language";
+import { JavascriptReprinter } from "../../language-js";
 import { ReprinterOptions } from "../../reprinter-options";
 import { StringUtils } from "../../utilities/string-utils";
 
@@ -15,17 +15,13 @@ export class Reprinter implements ILanguage {
     fileContents: string,
     options: ReprinterOptions
   ) {
-    let ast = parse(fileContents);
-
-    return this.sortAst(ast, fileContents);
-  }
-
-  private sortAst(node: /* Document */ any, fileContents: string): string {
-    if (node.children != null) {
-      for (let child of node.children) {
-        fileContents = this.sortAst(child, fileContents);
-      }
-    }
-    return fileContents;
+    let prefix = "return ";
+    let temporaryFileContents = prefix + fileContents;
+    let rewritten = new JavascriptReprinter().getRewrittenContents(
+      filename,
+      temporaryFileContents,
+      { ...options, parser: "typescript" }
+    );
+    return rewritten.substring(prefix.length);
   }
 }

@@ -25,7 +25,6 @@
     "chai": "4.2.0",
     "coveralls": "^3.0.2",
     "husky": "1.1.4",
-    "json-to-ast": "^2.0.5",
     "lint-staged": "8.0.5",
     "mocha": "5.2.0",
     "nyc": "13.1.0",

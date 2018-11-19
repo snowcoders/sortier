@@ -140,12 +140,6 @@ export class Reprinter implements ILanguage {
             nodes.push(node.body);
             break;
           }
-          case "Class": {
-            // Fairly sure there is more in a class than just this
-            debugger;
-            nodes.push(node.body);
-            break;
-          }
           case "ClassBody": {
             // Fairly sure there is more in a class than just this
             fileContents = this.rewriteNodes(node.body, comments, fileContents);
@@ -155,10 +149,6 @@ export class Reprinter implements ILanguage {
           case "ClassExpression": {
             if (node.body != null) {
               nodes.push(node.body);
-            } else if (node.declaration) {
-              // TODO this is either node.declaration or node.declaration.body
-              debugger;
-              nodes.push(node.declaration);
             } else {
               this.printHelpModeInfo(node, fileContents);
             }
@@ -333,11 +323,6 @@ export class Reprinter implements ILanguage {
           }
           case "SwitchStatement": {
             nodes.push(node.discriminant);
-            if (node.body != null) {
-              // See if we get in here... based on estree.d.ts we shouldn't
-              this.printHelpModeInfo(node, fileContents);
-              nodes.push(node.body);
-            }
             // Sort the contents of the cases
             fileContents = this.rewriteNodes(
               node.cases,
@@ -357,7 +342,7 @@ export class Reprinter implements ILanguage {
           case "TryStatement": {
             nodes.push(node.block);
             if (node.handler != null) {
-              nodes.push(node.handler.body);
+              nodes.push(node.handler);
             }
             if (node.finalizer != null) {
               nodes.push(node.finalizer);

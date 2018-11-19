@@ -1,0 +1,12 @@
+switch ("a") {
+      case "a":
+      case "b":
+            console.log("a");
+            break;
+      case "c":
+      case "d":
+            console.log("c");
+            break;
+      default:
+            break;
+}

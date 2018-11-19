@@ -50,9 +50,12 @@ describe("language-js/reprinter", () => {
           // if (testInfo.testName.includes("Inline property"))
           it(testInfo.testName, () => {
             let expected = FileUtils.readFileContents(testInfo.outputFilePath);
+            let inputContents = FileUtils.readFileContents(
+              testInfo.inputFilePath
+            );
             let actual = new Reprinter().getRewrittenContents(
               testInfo.inputFilePath,
-              FileUtils.readFileContents(testInfo.inputFilePath),
+              inputContents,
               {}
             );
 

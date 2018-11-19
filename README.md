@@ -6,7 +6,7 @@ An opinionated Code Sorter
 
 [![CircleCI branch](https://img.shields.io/circleci/project/github/snowcoders/sortier/master.svg)](https://circleci.com/gh/snowcoders/sortier)
 
-[![Coverage Status](https://coveralls.io/repos/github/snowcoders/sortier/badge.svg)](https://coveralls.io/github/snowcoders/sortier)
+[![Coverage Status](https://coveralls.io/repos/github/snowcoders/sortier/badge.svg?branch=master)](https://coveralls.io/github/snowcoders/sortier?branch=master)
 
 Sortier is an opinionated code sorter similar to how Prettier is a opinionated code formatter. Given a file, it parses then figures out how to sort and rearrange source code in a consistent way.
 

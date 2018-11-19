@@ -1,0 +1,16 @@
+let result = null;
+try {
+      result = JSON.parse({
+            c: 'c',
+            a: 'a',
+      });
+} catch (e) {
+      const { message, error } = e;
+} finally {
+      if (result == null) {
+            result = {
+                  c: 'c',
+                  a: 'a',
+            }
+      }
+}

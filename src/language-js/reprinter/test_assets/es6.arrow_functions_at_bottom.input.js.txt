@@ -1,7 +1,12 @@
 // See https://github.com/snowcoders/sortier/issues/39
 defaultProps = {
       a1: 'Workflow',
-      a2: () => {},
+      a2: () => {
+            return {
+                  c:"c",
+                  a: "a",
+            }
+      },
       a3: () => {},
       a4: false,
    }

@@ -19,7 +19,7 @@
     "@types/estree": "0.0.39",
     "@types/globby": "6.1.0",
     "@types/mocha": "5.2.5",
-    "@types/node": "10.12.9",
+    "@types/node": "10.12.10",
     "@types/sinon": "5.0.7",
     "angular-html-parser": "1.0.0",
     "chai": "4.2.0",

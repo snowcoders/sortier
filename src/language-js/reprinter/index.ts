@@ -20,6 +20,7 @@ import { ILanguage } from "../../language";
 import { ReprinterOptions } from "../../reprinter-options";
 import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils";
 import { StringUtils } from "../../utilities/string-utils";
+import { sortClassContents } from "../sortClassContents";
 
 export class Reprinter implements ILanguage {
   public static readonly TYPESCRIPT_EXTENSIONS = [".ts", ".tsx", ".ts.txt"];
@@ -141,8 +142,22 @@ export class Reprinter implements ILanguage {
             break;
           }
           case "ClassBody": {
-            // Fairly sure there is more in a class than just this
-            fileContents = this.rewriteNodes(node.body, comments, fileContents);
+            let sortClassContentsOptions = this._options.sortClassContents;
+            if (sortClassContentsOptions != null) {
+              // Fairly sure there is more in a class than just this
+              fileContents = this.rewriteNodes(
+                node.body,
+                comments,
+                fileContents
+              );
+
+              fileContents = sortClassContents(
+                node.body,
+                comments,
+                fileContents,
+                sortClassContentsOptions
+              );
+            }
             break;
           }
           case "ClassDeclaration":

@@ -24,8 +24,22 @@ type SortInformation = {
   key: string;
 };
 
+enum AccessibilityOption {
+  Public,
+  Protected,
+  Private
+}
+enum KindOption {
+  Property,
+  Constructor,
+  Method
+}
+
 interface MinimumSortInformation extends MinimumTypeInformation {
+  accessModifier: AccessibilityOption;
+  isStatic: boolean;
   key: string;
+  kind: KindOption;
 }
 
 export function sortClassContents(
@@ -37,19 +51,52 @@ export function sortClassContents(
   let allOptions = getValidatedOptions(options);
 
   let sortableItems: Array<MinimumSortInformation | null> = classItems.map(
-    value => {
+    (value): MinimumSortInformation | null => {
       switch (value.type) {
-        case "FunctionDeclaration":
-        case "FunctionExpression": {
-          if (value.id != null && value.id.name != null) {
-            return { key: value.id.name, range: value.range };
+        case "ClassProperty": {
+          if (value.key != null && value.key.name != null) {
+            return {
+              accessModifier: getAccessModifier(value.accessibility),
+              isStatic: value.static || false,
+              key: value.key.name,
+              kind:
+                value.kind === "constructor"
+                  ? KindOption.Constructor
+                  : KindOption.Property,
+              range: value.range
+            };
           }
+          return null;
+        }
+        case "FunctionDeclaration": {
+          if (value.id != null && value.id.name != null) {
+            return {
+              accessModifier: getAccessModifier(value.accessibility),
+              isStatic: value.static || false,
+              key: value.id.name,
+              kind:
+                value.kind === "constructor"
+                  ? KindOption.Constructor
+                  : KindOption.Method,
+              range: value.range
+            };
+          }
+          return null;
         }
         case "MethodDefinition": {
-          // Typescript
           if (value.key != null && value.key.name != null) {
-            return { key: value.key.name, range: value.range };
+            return {
+              accessModifier: getAccessModifier(value.accessibility),
+              isStatic: value.static || false,
+              key: value.key.name,
+              kind:
+                value.kind === "constructor"
+                  ? KindOption.Constructor
+                  : KindOption.Method,
+              range: value.range
+            };
           }
+          return null;
         }
         default:
           return null;
@@ -67,6 +114,19 @@ export function sortClassContents(
   return newFileContents;
 }
 
+function getAccessModifier(accessibility: string) {
+  switch (accessibility) {
+    case "private":
+      return AccessibilityOption.Private;
+    case "protected":
+      return AccessibilityOption.Protected;
+    case "public":
+      return AccessibilityOption.Public;
+    default:
+      return AccessibilityOption.Public;
+  }
+}
+
 function sortAlpha(
   classItems: MinimumSortInformation[],
   comments: any,
@@ -74,10 +134,40 @@ function sortAlpha(
 ) {
   let sortedTypes = classItems.slice();
   sortedTypes.sort((a, b) => {
+    let groupComparison = compareGroups(a, b);
+    if (groupComparison !== 0) {
+      return groupComparison;
+    }
     return a.key.localeCompare(b.key);
   });
 
   return reorderValues(fileContents, comments, classItems, sortedTypes);
+}
+
+function compareGroups(
+  a: MinimumSortInformation,
+  b: MinimumSortInformation
+): number {
+  // Static methods
+  if (a.isStatic !== b.isStatic) {
+    if (a.isStatic) {
+      return -1;
+    } else {
+      return 1;
+    }
+  }
+
+  // Kinds
+  if (a.kind !== b.kind) {
+    return a.kind - b.kind;
+  }
+
+  // Access modifiers
+  if (a.accessModifier !== b.accessModifier) {
+    return a.accessModifier - b.accessModifier;
+  }
+
+  return 0;
 }
 
 function getValidatedOptions(

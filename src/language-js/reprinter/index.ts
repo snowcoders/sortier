@@ -144,7 +144,7 @@ export class Reprinter implements ILanguage {
           case "ClassBody": {
             let sortClassContentsOptions = this._options.sortClassContents;
             if (sortClassContentsOptions != null) {
-              // Fairly sure there is more in a class than just this
+              // TODO Fairly sure there is more in a class than just this
               fileContents = this.rewriteNodes(
                 node.body,
                 comments,

@@ -59,10 +59,7 @@ export function sortClassContents(
               accessModifier: getAccessModifier(value.accessibility),
               isStatic: value.static || false,
               key: value.key.name,
-              kind:
-                value.kind === "constructor"
-                  ? KindOption.Constructor
-                  : KindOption.Property,
+              kind: getKindOption(value),
               range: value.range
             };
           }
@@ -74,10 +71,7 @@ export function sortClassContents(
               accessModifier: getAccessModifier(value.accessibility),
               isStatic: value.static || false,
               key: value.id.name,
-              kind:
-                value.kind === "constructor"
-                  ? KindOption.Constructor
-                  : KindOption.Method,
+              kind: getKindOption(value),
               range: value.range
             };
           }
@@ -89,10 +83,7 @@ export function sortClassContents(
               accessModifier: getAccessModifier(value.accessibility),
               isStatic: value.static || false,
               key: value.key.name,
-              kind:
-                value.kind === "constructor"
-                  ? KindOption.Constructor
-                  : KindOption.Method,
+              kind: getKindOption(value),
               range: value.range
             };
           }
@@ -125,6 +116,20 @@ function getAccessModifier(accessibility: string) {
     default:
       return AccessibilityOption.Public;
   }
+}
+
+function getKindOption(node: any) {
+  if (node.kind === "constructor") {
+    return KindOption.Constructor;
+  }
+  if (node.type === "ClassProperty") {
+    if (node.value != null && node.value.type === "ArrowFunctionExpression") {
+      return KindOption.Method;
+    } else {
+      return KindOption.Property;
+    }
+  }
+  return KindOption.Method;
 }
 
 function sortAlpha(

@@ -48,139 +48,170 @@ export function sortClassContents(
   fileContents: string,
   options: SortClassContentsOptions
 ): string {
-  let allOptions = getValidatedOptions(options);
+  return new ClassContentsSorter(
+    classItems,
+    comments,
+    fileContents,
+    options
+  ).sort();
+}
 
-  let sortableItems: Array<MinimumSortInformation | null> = classItems.map(
-    (value): MinimumSortInformation | null => {
-      switch (value.type) {
-        case "ClassProperty": {
-          if (value.key != null && value.key.name != null) {
-            return {
-              accessModifier: getAccessModifier(value.accessibility),
-              isStatic: value.static || false,
-              key: value.key.name,
-              kind: getKindOption(value),
-              range: value.range
-            };
+class ClassContentsSorter {
+  private options: SortClassContentsOptionsRequired;
+
+  constructor(
+    private classItems: any[],
+    private comments: any,
+    private fileContents: string,
+    options: SortClassContentsOptions
+  ) {
+    this.options = this.getValidatedOptions(options);
+  }
+
+  public sort() {
+    let possibleSortableItems: Array<MinimumSortInformation | null> = this.classItems.map(
+      (value): MinimumSortInformation | null => {
+        switch (value.type) {
+          case "ClassProperty": {
+            if (value.key != null && value.key.name != null) {
+              return {
+                accessModifier: this.getAccessModifier(value.accessibility),
+                isStatic: value.static || false,
+                key: value.key.name,
+                kind: this.getKindOption(value),
+                range: value.range
+              };
+            }
+            return null;
           }
-          return null;
-        }
-        case "FunctionDeclaration": {
-          if (value.id != null && value.id.name != null) {
-            return {
-              accessModifier: getAccessModifier(value.accessibility),
-              isStatic: value.static || false,
-              key: value.id.name,
-              kind: getKindOption(value),
-              range: value.range
-            };
+          case "FunctionDeclaration": {
+            if (value.id != null && value.id.name != null) {
+              return {
+                accessModifier: this.getAccessModifier(value.accessibility),
+                isStatic: value.static || false,
+                key: value.id.name,
+                kind: this.getKindOption(value),
+                range: value.range
+              };
+            }
+            return null;
           }
-          return null;
-        }
-        case "MethodDefinition": {
-          if (value.key != null && value.key.name != null) {
-            return {
-              accessModifier: getAccessModifier(value.accessibility),
-              isStatic: value.static || false,
-              key: value.key.name,
-              kind: getKindOption(value),
-              range: value.range
-            };
+          case "MethodDefinition": {
+            if (value.key != null && value.key.name != null) {
+              return {
+                accessModifier: this.getAccessModifier(value.accessibility),
+                isStatic: value.static || false,
+                key: value.key.name,
+                kind: this.getKindOption(value),
+                range: value.range
+              };
+            }
+            return null;
           }
-          return null;
+          default:
+            return null;
         }
-        default:
-          return null;
+      }
+    );
+    let sortableItems: Array<
+      MinimumSortInformation
+    > = possibleSortableItems.filter(value => {
+      return value != null;
+    }) as any;
+
+    let newFileContents = this.sortAlpha(
+      sortableItems,
+      this.comments,
+      this.fileContents
+    );
+
+    return newFileContents;
+  }
+
+  private getAccessModifier(accessibility: string) {
+    switch (accessibility) {
+      case "private":
+        return AccessibilityOption.Private;
+      case "protected":
+        return AccessibilityOption.Protected;
+      case "public":
+        return AccessibilityOption.Public;
+      default:
+        return AccessibilityOption.Public;
+    }
+  }
+
+  private getKindOption(node: any) {
+    if (node.kind === "constructor") {
+      return KindOption.Constructor;
+    }
+    if (node.type === "ClassProperty") {
+      if (node.value != null && node.value.type === "ArrowFunctionExpression") {
+        return KindOption.Method;
+      } else {
+        return KindOption.Property;
       }
     }
-  );
-  let sortableItems2: Array<MinimumSortInformation> = sortableItems.filter(
-    value => {
-      return value != null;
+    return KindOption.Method;
+  }
+
+  private sortAlpha(
+    classItems: MinimumSortInformation[],
+    comments: any,
+    fileContents: string
+  ) {
+    let sortedTypes = classItems.slice();
+    sortedTypes.sort((a, b) => {
+      let groupComparison = this.compareGroups(a, b);
+      if (groupComparison !== 0) {
+        return groupComparison;
+      }
+
+      let comparison = a.key.localeCompare(b.key);
+      if (this.options.isAscending) {
+        return comparison;
+      } else {
+        return comparison * -1;
+      }
+    });
+
+    return reorderValues(fileContents, comments, classItems, sortedTypes);
+  }
+
+  private compareGroups(
+    a: MinimumSortInformation,
+    b: MinimumSortInformation
+  ): number {
+    // Static methods
+    if (a.isStatic !== b.isStatic) {
+      if (a.isStatic) {
+        return -1;
+      } else {
+        return 1;
+      }
     }
-  ) as any;
 
-  let newFileContents = sortAlpha(sortableItems2, comments, fileContents);
-
-  return newFileContents;
-}
-
-function getAccessModifier(accessibility: string) {
-  switch (accessibility) {
-    case "private":
-      return AccessibilityOption.Private;
-    case "protected":
-      return AccessibilityOption.Protected;
-    case "public":
-      return AccessibilityOption.Public;
-    default:
-      return AccessibilityOption.Public;
-  }
-}
-
-function getKindOption(node: any) {
-  if (node.kind === "constructor") {
-    return KindOption.Constructor;
-  }
-  if (node.type === "ClassProperty") {
-    if (node.value != null && node.value.type === "ArrowFunctionExpression") {
-      return KindOption.Method;
-    } else {
-      return KindOption.Property;
+    // Kinds
+    if (a.kind !== b.kind) {
+      return a.kind - b.kind;
     }
-  }
-  return KindOption.Method;
-}
 
-function sortAlpha(
-  classItems: MinimumSortInformation[],
-  comments: any,
-  fileContents: string
-) {
-  let sortedTypes = classItems.slice();
-  sortedTypes.sort((a, b) => {
-    let groupComparison = compareGroups(a, b);
-    if (groupComparison !== 0) {
-      return groupComparison;
+    // Access modifiers
+    if (a.accessModifier !== b.accessModifier) {
+      return a.accessModifier - b.accessModifier;
     }
-    return a.key.localeCompare(b.key);
-  });
 
-  return reorderValues(fileContents, comments, classItems, sortedTypes);
-}
-
-function compareGroups(
-  a: MinimumSortInformation,
-  b: MinimumSortInformation
-): number {
-  // Static methods
-  if (a.isStatic !== b.isStatic) {
-    if (a.isStatic) {
-      return -1;
-    } else {
-      return 1;
-    }
+    return 0;
   }
 
-  // Kinds
-  if (a.kind !== b.kind) {
-    return a.kind - b.kind;
+  private getValidatedOptions(
+    partialOptions: SortClassContentsOptions
+  ): SortClassContentsOptionsRequired {
+    return {
+      isAscending:
+        partialOptions.isAscending == null ? true : partialOptions.isAscending,
+      order: partialOptions.order || "alpha",
+      overrides: partialOptions.overrides || ["*"]
+    };
   }
-
-  // Access modifiers
-  if (a.accessModifier !== b.accessModifier) {
-    return a.accessModifier - b.accessModifier;
-  }
-
-  return 0;
-}
-
-function getValidatedOptions(
-  partialOptions: SortClassContentsOptions
-): SortClassContentsOptionsRequired {
-  return {
-    isAscending: partialOptions.isAscending || true,
-    order: partialOptions.order || "alpha",
-    overrides: partialOptions.overrides || ["*"]
-  };
 }

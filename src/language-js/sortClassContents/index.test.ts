@@ -67,7 +67,7 @@ describe("language-js/sortClassContents", () => {
 
       testInfos.forEach(testInfo => {
         if (testInfo.parserType == fileType) {
-          it.only(testInfo.testName, () => {
+          it(testInfo.testName, () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);
@@ -83,5 +83,37 @@ describe("language-js/sortClassContents", () => {
         }
       });
     });
+  });
+
+  it("Reverse alphabetical", () => {
+    let input = `
+    export class Example {
+      a = () => {
+        console.log('a');
+      }
+      b = () => {
+    
+      }
+    }`;
+    let expected = `
+    export class Example {
+      b = () => {
+    
+      }
+      a = () => {
+        console.log('a');
+      }
+    }`;
+    let parsed = typescriptParse(input);
+    let actual = sortClassContents(
+      parsed.body[0].declaration.body.body,
+      parsed.comments,
+      input,
+      {
+        isAscending: false
+      }
+    );
+
+    expect(actual).to.equal(expected);
   });
 });

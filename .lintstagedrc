@@ -1,13 +1,16 @@
 {
-  "**/*.ts": [
-    "tslint -c tslint.json",
-    "prettier --write",
-    "node bin/index.js",
-    "git add"
-  ],
-  "**/*.{js,json,html,md}": [
-    "prettier --write",
-    "node bin/index.js",
-    "git add"
-  ]
+  "linters": {
+    "**/*.ts": [
+      "tslint -c tslint.json",
+      "prettier --write",
+      "node bin/index.js",
+      "git add"
+    ],
+    "**/*.{js,json,html,md}": [
+      "prettier --write",
+      "node bin/index.js",
+      "git add"
+    ]
+  },
+  "ignore": ["**/package-lock.json"]
 }

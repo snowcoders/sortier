@@ -1,14 +1,4 @@
-import {
-  FunctionDeclaration,
-  FunctionExpression,
-  MethodDefinition,
-  Node
-} from "estree";
-import {
-  getContextGroups,
-  MinimumTypeInformation,
-  reorderValues
-} from "../utilities/sort-utils";
+import { MinimumTypeInformation, reorderValues } from "../utilities/sort-utils";
 
 export type SortClassContentsOptions = Partial<
   SortClassContentsOptionsRequired
@@ -18,10 +8,6 @@ type SortClassContentsOptionsRequired = {
   isAscending: boolean;
   order: "alpha" | "usage";
   overrides: Array<string>;
-};
-
-type SortInformation = {
-  key: string;
 };
 
 enum AccessibilityOption {

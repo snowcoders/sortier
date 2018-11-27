@@ -142,15 +142,11 @@ export class Reprinter implements ILanguage {
             break;
           }
           case "ClassBody": {
+            fileContents = this.rewriteNodes(node.body, comments, fileContents);
+
             let sortClassContentsOptions = this._options.sortClassContents;
             if (sortClassContentsOptions != null) {
               // TODO Fairly sure there is more in a class than just this
-              fileContents = this.rewriteNodes(
-                node.body,
-                comments,
-                fileContents
-              );
-
               fileContents = sortClassContents(
                 node.body,
                 comments,

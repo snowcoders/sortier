@@ -1,0 +1,2 @@
+// Since order matters, we should not sort these types of expressions
+let example = null && undefined && 100;

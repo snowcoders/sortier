@@ -1,0 +1,2 @@
+// Mixed scenarios don't get sorted because we haven't fully tested all scenarios
+let example = 4 | "5" & null | undefined;

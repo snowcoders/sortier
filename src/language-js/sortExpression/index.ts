@@ -7,7 +7,9 @@ export type SortExpressionOptionsGroups =
   | "object"
   | "undefined";
 
-export interface SortExpressionOptions {
+export type SortExpressionOptions = Partial<SortExpressionOptionsRequired>;
+
+export interface SortExpressionOptionsRequired {
   groups: SortExpressionOptionsGroups[];
 }
 
@@ -27,15 +29,11 @@ export function sortExpression(
 
 function ensureOptions(
   options?: null | SortExpressionOptions
-): SortExpressionOptions {
+): SortExpressionOptionsRequired {
   if (options == null) {
     return {
       groups: ["undefined", "null", "*", "object", "function"]
     };
-  }
-
-  if (options.groups != null && options.groups.indexOf("*") === -1) {
-    options.groups.push("*");
   }
 
   return {
@@ -44,6 +42,7 @@ function ensureOptions(
 }
 
 interface OperandValue {
+  groupIndex: number;
   range: [number, number];
   value: string;
 }
@@ -53,6 +52,14 @@ interface OperatorInfo {
   values: OperandValue[];
 }
 
+type RankMap = {
+  everything: number;
+  function: number;
+  null: number;
+  object: number;
+  undefined: number;
+};
+
 class ExpressionSorter {
   // The list of operators we can flip around without actually causing logical differences
   // https://caligari.dartmouth.edu/doc/ibmcxx/en_US/doc/language/ref/ruclxbin.htm
@@ -61,18 +68,20 @@ class ExpressionSorter {
   private expression;
   private comments;
   private fileContents: string;
-  private options: SortExpressionOptions;
+  private options: SortExpressionOptionsRequired;
+  private groupRanks: RankMap;
 
   constructor(
     expression,
     comments,
     fileContents: string,
-    options: SortExpressionOptions
+    options: SortExpressionOptionsRequired
   ) {
     this.expression = expression;
     this.comments = comments;
     this.fileContents = fileContents;
     this.options = options;
+    this.groupRanks = this.getAllRanks();
   }
 
   public sort() {
@@ -85,9 +94,7 @@ class ExpressionSorter {
     while (operandStack.length !== 0) {
       let operand = operandStack.pop();
 
-      if (operand.type === "Literal" || operand.type === "Identifier") {
-        continue;
-      } else if (operand.type === "BinaryExpression") {
+      if (operand.type === "BinaryExpression") {
         if (
           ExpressionSorter.commutativeOperators.indexOf(operand.operator) === -1
         ) {
@@ -97,8 +104,7 @@ class ExpressionSorter {
         operandStack.push(operand.left);
         operandStack.push(operand.right);
       } else {
-        // TODO - Currently only support sorting BinaryExpressions (We need examples of these sorts)
-        return this.fileContents;
+        continue;
       }
     }
 
@@ -119,30 +125,21 @@ class ExpressionSorter {
 
   // Recursive depth first search to rebuild the string
   public rebuildVariableDeclarator(operand: any): OperatorInfo {
-    if (operand.type === "Literal") {
-      return {
-        accumulatedOperator: null,
-        values: [
-          {
-            range: operand.range,
-            value: operand.raw
-          }
-        ]
-      };
-    }
-    if (operand.type === "Identifier") {
-      return {
-        accumulatedOperator: null,
-        values: [
-          {
-            range: operand.range,
-            value: operand.name
-          }
-        ]
-      };
-    }
     if (operand.type !== "BinaryExpression") {
-      throw new Error("Should never recurse into literal types");
+      let group = this.getGroupIndex(operand);
+      return {
+        accumulatedOperator: null,
+        values: [
+          {
+            range: operand.range,
+            groupIndex: group,
+            value: this.fileContents.substring(
+              operand.range[0],
+              operand.range[1]
+            )
+          }
+        ]
+      };
     }
 
     let accumulatedOperator = operand.operator;
@@ -210,6 +207,7 @@ class ExpressionSorter {
       values: [
         {
           range: [rangeMin, rangeMax],
+          groupIndex: this.groupRanks.everything,
           value: newFileContents
         }
       ]
@@ -219,36 +217,10 @@ class ExpressionSorter {
   public getSortedValues(values: OperandValue[]) {
     let sortedValues = values.slice(0);
 
-    // Sort them by name
-    let everythingRank = this.options.groups.indexOf("*");
-    if (everythingRank === -1) {
-      everythingRank = 0;
-    }
-    let interfaceRank = this.options.groups.indexOf("null");
-    if (interfaceRank === -1) {
-      interfaceRank = everythingRank;
-    }
-    let typeRanking = this.options.groups.indexOf("undefined");
-    if (typeRanking === -1) {
-      typeRanking = everythingRank;
-    }
     // TODO Can these operand values be functions or objects?
     sortedValues.sort((a: OperandValue, b: OperandValue) => {
-      let aRank = everythingRank;
-      if (a.value == "null") {
-        aRank = interfaceRank;
-      }
-      if (a.value == "undefined") {
-        aRank = typeRanking;
-      }
-
-      let bRank = everythingRank;
-      if (b.value == "null") {
-        bRank = interfaceRank;
-      }
-      if (b.value == "undefined") {
-        bRank = typeRanking;
-      }
+      let aRank = a.groupIndex;
+      let bRank = b.groupIndex;
 
       if (aRank == bRank) {
         return a.value.localeCompare(b.value);
@@ -257,5 +229,53 @@ class ExpressionSorter {
     });
 
     return sortedValues;
+  }
+
+  private getAllRanks(): RankMap {
+    // Sort them by name
+    let everythingRank = this.options.groups.indexOf("*");
+    if (everythingRank === -1) {
+      everythingRank = this.options.groups.length;
+    }
+    let nullRank = this.options.groups.indexOf("null");
+    if (nullRank === -1) {
+      nullRank = everythingRank;
+    }
+    let undefinedRank = this.options.groups.indexOf("undefined");
+    if (undefinedRank === -1) {
+      undefinedRank = everythingRank;
+    }
+    let objectRank = this.options.groups.indexOf("object");
+    if (objectRank === -1) {
+      objectRank = everythingRank;
+    }
+    let functionRank = this.options.groups.indexOf("function");
+    if (functionRank === -1) {
+      functionRank = everythingRank;
+    }
+
+    return {
+      everything: everythingRank,
+      null: nullRank,
+      undefined: undefinedRank,
+      object: objectRank,
+      function: functionRank
+    };
+  }
+
+  private getGroupIndex(a: any): number {
+    if (a.type.indexOf("Function") !== -1) {
+      return this.groupRanks.function;
+    }
+    if (a.type.indexOf("Object") !== -1) {
+      return this.groupRanks.object;
+    }
+    if (a.raw === "null") {
+      return this.groupRanks.null;
+    }
+    if (a.name === "undefined") {
+      return this.groupRanks.undefined;
+    }
+    return this.groupRanks.everything;
   }
 }

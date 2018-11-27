@@ -1,0 +1,1 @@
+let example = (() => { let a = "a" }) | ({ a: "a"}) | (() => { let a = "a" });

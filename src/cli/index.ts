@@ -1,4 +1,4 @@
-import * as cosmiconfig from "cosmiconfig";
+import cosmiconfig from "cosmiconfig";
 import { sync } from "globby";
 
 import { Reprinter } from "../reprinter";

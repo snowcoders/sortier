@@ -1,0 +1,8 @@
+{
+  // Comment for A
+  "a": "A",
+  // Comment for B
+  "b": "B",
+  // Comment for C
+  "c": "C"
+}

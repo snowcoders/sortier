@@ -1,10 +1,16 @@
 import { ILanguage } from "../language";
+import { HtmlReprinter } from "../language-html";
 import { JavascriptReprinter } from "../language-js";
+import { JsonReprinter } from "../language-json";
 import { ReprinterOptions } from "../reprinter-options";
 import { FileUtils } from "../utilities/file-utils";
 
 export class Reprinter {
-  private static reprinters: ILanguage[] = [new JavascriptReprinter()];
+  private static reprinters: ILanguage[] = [
+    new HtmlReprinter(),
+    new JavascriptReprinter(),
+    new JsonReprinter()
+  ];
   public static rewrite(filename: string, options: ReprinterOptions) {
     let language: null | ILanguage = null;
     for (let reprinter of Reprinter.reprinters) {

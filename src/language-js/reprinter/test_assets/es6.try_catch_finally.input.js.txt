@@ -7,10 +7,4 @@ try {
 } catch (e) {
       const { message, error } = e;
 } finally {
-      if (result == null) {
-            result = {
-                  c: 'c',
-                  a: 'a',
-            }
-      }
 }

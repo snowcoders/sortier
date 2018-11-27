@@ -1,6 +1,7 @@
 let a = "a";
 let b = "b";
 
+export * from "a";
 export { a, b };
 export { a as c, b as d };
 export default function getA() {

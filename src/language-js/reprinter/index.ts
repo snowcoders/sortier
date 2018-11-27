@@ -221,10 +221,6 @@ export class Reprinter implements ILanguage {
             nodes.push(node.body);
             break;
           }
-          case "Function": {
-            nodes.push(node.body);
-            break;
-          }
           case "FunctionDeclaration": {
             if (node.params != null && node.params.length !== 0) {
               fileContents = this.rewriteNodes(
@@ -691,22 +687,24 @@ export class Reprinter implements ILanguage {
   }
 
   private printHelpModeInfo(item, fileContents: string) {
-    if (this._options.isHelpMode === true) {
-      if (!this._helpModeHasPrintedFilename) {
-        LogUtils.log(LoggerVerboseOption.Diagnostic, "");
-        LogUtils.log(LoggerVerboseOption.Diagnostic, this._filename);
-      }
-
-      LogUtils.log(
-        LoggerVerboseOption.Diagnostic,
-        ` - ${item.type} - ${JSON.stringify(item.loc.start)} - ${JSON.stringify(
-          item.loc.end
-        )}`
-      );
-      LogUtils.log(
-        LoggerVerboseOption.Diagnostic,
-        fileContents.substring(item.range[0], item.range[1])
-      );
+    if (this._options.isHelpMode !== true) {
+      return;
     }
+
+    if (!this._helpModeHasPrintedFilename) {
+      LogUtils.log(LoggerVerboseOption.Diagnostic, "");
+      LogUtils.log(LoggerVerboseOption.Diagnostic, this._filename);
+    }
+
+    LogUtils.log(
+      LoggerVerboseOption.Diagnostic,
+      ` - ${item.type} - ${JSON.stringify(item.loc.start)} - ${JSON.stringify(
+        item.loc.end
+      )}`
+    );
+    LogUtils.log(
+      LoggerVerboseOption.Diagnostic,
+      fileContents.substring(item.range[0], item.range[1])
+    );
   }
 }

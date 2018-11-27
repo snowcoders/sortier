@@ -65,4 +65,10 @@ describe("language-js/reprinter", () => {
       });
     });
   });
+
+  it("Throws error if file is not supported", () => {
+    expect(() => {
+      new Reprinter().getRewrittenContents("./readme.md", "", {});
+    }).to.throw();
+  });
 });

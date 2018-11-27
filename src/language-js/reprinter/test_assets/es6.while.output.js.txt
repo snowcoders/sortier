@@ -1,0 +1,10 @@
+let x = 0;
+while (x < 100) {
+  let value = null | "1";
+  x++;
+}
+
+do {
+  let value = null | "1";
+  x++;
+} while (x < 100);

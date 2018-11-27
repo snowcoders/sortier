@@ -1,0 +1,18 @@
+if (result == null) {
+      result = {
+            c: 'c',
+            a: 'a',
+      }
+} else {
+      result = {
+            c: 'c',
+            a: 'a',
+      }
+}
+
+if (result == null) {
+      result = {
+            c: 'c',
+            a: 'a',
+      }
+}

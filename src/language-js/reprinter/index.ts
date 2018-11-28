@@ -544,12 +544,9 @@ export class Reprinter implements ILanguage {
           case "ClassProperty": {
             if (node.typeAnnotation != null) {
               nodes.push(node.typeAnnotation);
-            } else if (node.value == null) {
-              // No value to sort...
-            } else if (node.value != null) {
+            }
+            if (node.value != null) {
               nodes.push(node.value);
-            } else {
-              this.printHelpModeInfo(node, fileContents);
             }
             break;
           }

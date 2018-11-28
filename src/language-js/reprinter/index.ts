@@ -154,6 +154,15 @@ export class Reprinter implements ILanguage {
             }
             break;
           }
+          case "ClassProperty": {
+            if (node.typeAnnotation != null) {
+              nodes.push(node.typeAnnotation);
+            }
+            if (node.value != null) {
+              nodes.push(node.value);
+            }
+            break;
+          }
           case "ConditionalExpression": {
             nodes.push(node.test);
             nodes.push(node.alternate);
@@ -541,15 +550,6 @@ export class Reprinter implements ILanguage {
           }
 
           // From typescript or flow - TODO need to split these
-          case "ClassProperty": {
-            if (node.typeAnnotation != null) {
-              nodes.push(node.typeAnnotation);
-            }
-            if (node.value != null) {
-              nodes.push(node.value);
-            }
-            break;
-          }
           case "InterfaceDeclaration": {
             nodes.push(node.body);
             break;

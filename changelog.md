@@ -1,6 +1,7 @@
 ### Unreleased
 
 - Added JSON sorting
+- Fixed sorting values within array expressions
 
 ### 2.2.0
 

@@ -14,7 +14,7 @@
   },
   "description": "An opionated code sorter",
   "devDependencies": {
-    "@angular/compiler": "7.1.0",
+    "@angular/compiler": "7.1.1",
     "@types/chai": "4.1.7",
     "@types/estree": "0.0.39",
     "@types/globby": "6.1.0",

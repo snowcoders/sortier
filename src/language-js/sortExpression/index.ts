@@ -168,6 +168,23 @@ class ExpressionSorter {
     };
   }
 
+  public getSortedValues(values: OperandValue[]) {
+    let sortedValues = values.slice(0);
+
+    // TODO Can these operand values be functions or objects?
+    sortedValues.sort((a: OperandValue, b: OperandValue) => {
+      let aRank = a.groupIndex;
+      let bRank = b.groupIndex;
+
+      if (aRank == bRank) {
+        return a.value.localeCompare(b.value);
+      }
+      return aRank - bRank;
+    });
+
+    return sortedValues;
+  }
+
   // Recursive depth first search to rebuild the string
   public rebuildVariableDeclarator(operand: any): OperatorInfo {
     if (operand.type !== "BinaryExpression") {
@@ -212,23 +229,6 @@ class ExpressionSorter {
       accumulatedOperator: accumulatedOperator,
       values: values
     };
-  }
-
-  public getSortedValues(values: OperandValue[]) {
-    let sortedValues = values.slice(0);
-
-    // TODO Can these operand values be functions or objects?
-    sortedValues.sort((a: OperandValue, b: OperandValue) => {
-      let aRank = a.groupIndex;
-      let bRank = b.groupIndex;
-
-      if (aRank == bRank) {
-        return a.value.localeCompare(b.value);
-      }
-      return aRank - bRank;
-    });
-
-    return sortedValues;
   }
 
   private getAllRanks(): RankMap {

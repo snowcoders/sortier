@@ -20,4 +20,8 @@ export class Greeter {
     Greeter.nextGreeterId++;
     this.greeting = message || "Hi there!";
   }
+
+  get greetMessage() {
+    return this.greet();
+  }
 }

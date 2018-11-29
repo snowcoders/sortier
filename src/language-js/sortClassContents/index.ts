@@ -1,3 +1,4 @@
+import { isArray } from "util";
 import { MinimumTypeInformation, reorderValues } from "../utilities/sort-utils";
 
 export type SortClassContentsOptions = Partial<
@@ -7,6 +8,7 @@ export type SortClassContentsOptions = Partial<
 type SortClassContentsOptionsRequired = {
   isAscending: boolean;
   order: "alpha" | "usage";
+  // Overrides for the order within each group of static methods, properties, methods and access modifiers
   overrides: Array<string>;
 };
 
@@ -26,6 +28,7 @@ interface MinimumSortInformation extends MinimumTypeInformation {
   isStatic: boolean;
   key: string;
   kind: KindOption;
+  overrideIndex: number;
 }
 
 export function sortClassContents(
@@ -65,18 +68,7 @@ class ClassContentsSorter {
                 isStatic: value.static || false,
                 key: value.key.name,
                 kind: this.getKindOption(value),
-                range: value.range
-              };
-            }
-            return null;
-          }
-          case "FunctionDeclaration": {
-            if (value.id != null && value.id.name != null) {
-              return {
-                accessModifier: this.getAccessModifier(value.accessibility),
-                isStatic: value.static || false,
-                key: value.id.name,
-                kind: this.getKindOption(value),
+                overrideIndex: this.getOverrideIndex(value),
                 range: value.range
               };
             }
@@ -89,6 +81,7 @@ class ClassContentsSorter {
                 isStatic: value.static || false,
                 key: value.key.name,
                 kind: this.getKindOption(value),
+                overrideIndex: this.getOverrideIndex(value),
                 range: value.range
               };
             }
@@ -105,7 +98,7 @@ class ClassContentsSorter {
       return value != null;
     }) as any;
 
-    let newFileContents = this.sortAlpha(
+    let newFileContents = this.sortItems(
       sortableItems,
       this.comments,
       this.fileContents
@@ -141,11 +134,39 @@ class ClassContentsSorter {
     return KindOption.Method;
   }
 
-  private sortAlpha(
+  private getOverrideIndex(node: any) {
+    let itemsToSearch = [node.key.name];
+
+    let index = -1;
+    for (let item of itemsToSearch) {
+      index = this.options.overrides.indexOf(item);
+      if (index !== -1) {
+        return index;
+      }
+    }
+
+    return this.options.overrides.indexOf("*");
+  }
+
+  private sortItems(
     classItems: MinimumSortInformation[],
     comments: any,
     fileContents: string
   ) {
+    let callOrder: null | string[] = null;
+    if (this.options.order === "usage") {
+      callOrder = this.generateCallOrder();
+
+      //dedupe the callorder array
+      for (var i = 0; i < callOrder.length; i++) {
+        for (var j = i + 1; j < callOrder.length; j++) {
+          if (callOrder[i] == callOrder[j]) {
+            callOrder.splice(j, 1);
+          }
+        }
+      }
+    }
+
     let sortedTypes = classItems.slice();
     sortedTypes.sort((a, b) => {
       let groupComparison = this.compareGroups(a, b);
@@ -153,15 +174,59 @@ class ClassContentsSorter {
         return groupComparison;
       }
 
-      let comparison = a.key.localeCompare(b.key);
+      let overrideComparison = this.compareOverrides(a, b);
+      if (overrideComparison !== 0) {
+        return overrideComparison;
+      }
+
+      let comparison = 0;
+      if (callOrder != null) {
+        comparison = this.compareMethodCallers(a, b, callOrder);
+      }
+      if (comparison === 0) {
+        comparison = a.key.localeCompare(b.key);
+      }
       if (this.options.isAscending) {
         return comparison;
       } else {
-        return comparison * -1;
+        return -1 * comparison;
       }
     });
 
     return reorderValues(fileContents, comments, classItems, sortedTypes);
+  }
+
+  private generateCallOrder(itemsToIterate: any = this.classItems) {
+    let memberExpressionOrder: string[] = [];
+    for (let classItem of itemsToIterate) {
+      if (classItem == null) {
+        continue;
+      }
+      for (let property in classItem) {
+        let value = classItem[property];
+        if (value == null) {
+          continue;
+        }
+        if (value.type != null) {
+          memberExpressionOrder.push(...this.generateCallOrder([value]));
+        }
+        if (isArray(value)) {
+          memberExpressionOrder.push(...this.generateCallOrder(value));
+        }
+      }
+      if (
+        classItem.expression != null &&
+        classItem.expression.callee != null &&
+        classItem.expression.callee.object != null &&
+        classItem.expression.callee.object.type === "ThisExpression" &&
+        classItem.expression.callee.type === "MemberExpression" &&
+        classItem.expression.callee.property.name != null
+      ) {
+        memberExpressionOrder.push(classItem.expression.callee.property.name);
+      }
+    }
+
+    return memberExpressionOrder;
   }
 
   private compareGroups(
@@ -190,14 +255,38 @@ class ClassContentsSorter {
     return 0;
   }
 
+  private compareOverrides(
+    a: MinimumSortInformation,
+    b: MinimumSortInformation
+  ): number {
+    return a.overrideIndex - b.overrideIndex;
+  }
+
+  private compareMethodCallers(
+    a: MinimumSortInformation,
+    b: MinimumSortInformation,
+    methodToCallers: string[]
+  ) {
+    return methodToCallers.indexOf(a.key) - methodToCallers.indexOf(b.key);
+  }
+
   private getValidatedOptions(
     partialOptions: SortClassContentsOptions
   ): SortClassContentsOptionsRequired {
+    let overrides = ["*"];
+    if (partialOptions.overrides != null) {
+      overrides = partialOptions.overrides;
+      if (overrides.indexOf("*") === -1) {
+        overrides = overrides.slice();
+        overrides.push("*");
+      }
+    }
+
     return {
       isAscending:
         partialOptions.isAscending == null ? true : partialOptions.isAscending,
       order: partialOptions.order || "alpha",
-      overrides: partialOptions.overrides || ["*"]
+      overrides: overrides
     };
   }
 }

@@ -91,13 +91,13 @@ describe("language-js/sortClassContents", () => {
       a = () => {
         console.log('a');
       }
-      b = () => {
+      ba = () => {
     
       }
     }`;
     let expected = `
     export class Example {
-      b = () => {
+      ba = () => {
     
       }
       a = () => {
@@ -111,6 +111,153 @@ describe("language-js/sortClassContents", () => {
       input,
       {
         isAscending: false
+      }
+    );
+
+    expect(actual).to.equal(expected);
+  });
+
+  it("Usage", () => {
+    let input = `
+    export class Example {
+      run() {
+        try {
+          this.try();
+        } catch(e) {
+          this.catch();
+        } finally {
+          this.finally();
+        }
+      }
+
+      try = () => {
+        console.log("try");
+      }
+
+      catch = () => {
+        console.log("catch");
+      }
+
+      finally() {
+        console.log("finally");
+      }
+    }`;
+    let expected = input;
+    let parsed = typescriptParse(input);
+    let actual = sortClassContents(
+      parsed.body[0].declaration.body.body,
+      parsed.comments,
+      input,
+      {
+        order: "usage"
+      }
+    );
+
+    expect(actual).to.equal(expected);
+  });
+
+  it("Usage reverse", () => {
+    let input = `
+    export class Example {
+      finally() {
+        console.log("finally");
+      }
+
+      catch = () => {
+        console.log("catch");
+      }
+
+      try = () => {
+        console.log("try");
+      }
+
+      run() {
+        try {
+          this.try();
+        } catch(e) {
+          this.catch();
+        } finally {
+          this.finally();
+        }
+      }
+    }`;
+    let expected = input;
+    let parsed = typescriptParse(input);
+    let actual = sortClassContents(
+      parsed.body[0].declaration.body.body,
+      parsed.comments,
+      input,
+      {
+        isAscending: false,
+        order: "usage"
+      }
+    );
+
+    expect(actual).to.equal(expected);
+  });
+
+  it("Overrides", () => {
+    let input = `
+    export class Clock {
+      constructor(props) {
+        super(props);
+        this.state = {date: new Date()};
+      }
+    
+      componentWillUnmount() {
+    
+      }
+    
+      componentDidUnmount() {
+    
+      }
+    
+      render() {
+        return (
+          <div>
+            <h1>Hello, world!</h1>
+            <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+          </div>
+        );
+      }
+    }`;
+    let expected = `
+    export class Clock {
+      constructor(props) {
+        super(props);
+        this.state = {date: new Date()};
+      }
+    
+      componentWillUnmount() {
+    
+      }
+    
+      componentDidUnmount() {
+    
+      }
+    
+      render() {
+        return (
+          <div>
+            <h1>Hello, world!</h1>
+            <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+          </div>
+        );
+      }
+    }`;
+    let parsed = typescriptParse(input);
+    let actual = sortClassContents(
+      parsed.body[0].declaration.body.body,
+      parsed.comments,
+      input,
+      {
+        isAscending: true,
+        overrides: [
+          "constructor",
+          "componentWillUnmount",
+          "componentDidUnmount",
+          "render"
+        ]
       }
     );
 

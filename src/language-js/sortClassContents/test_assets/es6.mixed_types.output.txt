@@ -17,6 +17,10 @@ export class Greeter {
     return "Hello, " + this.greeting;
   }
 
+  get greetMessage() {
+    return this.greet();
+  }
+
   murmour() {
     return "Hello, " + this.greeting;
   }

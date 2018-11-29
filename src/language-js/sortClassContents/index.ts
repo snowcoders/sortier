@@ -206,23 +206,20 @@ class ClassContentsSorter {
         let value = classItem[property];
         if (value == null) {
           continue;
-        }
-        if (value.type != null) {
+        } else if (
+          value != null &&
+          value.callee != null &&
+          value.callee.object != null &&
+          value.callee.object.type === "ThisExpression" &&
+          value.callee.type === "MemberExpression" &&
+          value.callee.property.name != null
+        ) {
+          memberExpressionOrder.push(value.callee.property.name);
+        } else if (value.type != null) {
           memberExpressionOrder.push(...this.generateCallOrder([value]));
-        }
-        if (isArray(value)) {
+        } else if (isArray(value)) {
           memberExpressionOrder.push(...this.generateCallOrder(value));
         }
-      }
-      if (
-        classItem.expression != null &&
-        classItem.expression.callee != null &&
-        classItem.expression.callee.object != null &&
-        classItem.expression.callee.object.type === "ThisExpression" &&
-        classItem.expression.callee.type === "MemberExpression" &&
-        classItem.expression.callee.property.name != null
-      ) {
-        memberExpressionOrder.push(classItem.expression.callee.property.name);
       }
     }
 

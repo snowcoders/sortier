@@ -23,19 +23,12 @@ import { StringUtils } from "../../utilities/string-utils";
 import { sortClassContents } from "../sortClassContents";
 
 export class Reprinter implements ILanguage {
-  public static readonly TYPESCRIPT_EXTENSIONS = [".ts", ".tsx", ".ts.txt"];
   public static readonly JAVASCRIPT_EXTENSIONS = [".js", ".jsx", ".js.txt"];
+  public static readonly TYPESCRIPT_EXTENSIONS = [".ts", ".tsx", ".ts.txt"];
 
   private _filename: string;
-  private _options: ReprinterOptions;
   private _helpModeHasPrintedFilename: boolean;
-
-  public isFileSupported(filename: string) {
-    return StringUtils.stringEndsWithAny(filename, [
-      ...Reprinter.JAVASCRIPT_EXTENSIONS,
-      ...Reprinter.TYPESCRIPT_EXTENSIONS
-    ]);
-  }
+  private _options: ReprinterOptions;
 
   public getRewrittenContents(
     filename: string,
@@ -51,6 +44,42 @@ export class Reprinter implements ILanguage {
     let comments: Comment[] = ast.comments;
 
     return this.rewriteNodes([ast], comments, fileContents);
+  }
+
+  public isFileSupported(filename: string) {
+    return StringUtils.stringEndsWithAny(filename, [
+      ...Reprinter.JAVASCRIPT_EXTENSIONS,
+      ...Reprinter.TYPESCRIPT_EXTENSIONS
+    ]);
+  }
+
+  private getParser() {
+    // If the options overide the parser type
+    if (this._options.parser === "typescript") {
+      return parseTypescript;
+    }
+    if (this._options.parser === "flow") {
+      return parseFlow;
+    }
+
+    // If the user didn't override the parser type, try to infer it
+    let isTypescript = StringUtils.stringEndsWithAny(
+      this._filename,
+      Reprinter.TYPESCRIPT_EXTENSIONS
+    );
+    if (isTypescript) {
+      return parseTypescript;
+    }
+
+    let isJavascript = StringUtils.stringEndsWithAny(
+      this._filename,
+      Reprinter.JAVASCRIPT_EXTENSIONS
+    );
+    if (isJavascript) {
+      return parseFlow;
+    }
+
+    throw new Error("File not supported");
   }
 
   private rewriteNodes(
@@ -652,35 +681,6 @@ export class Reprinter implements ILanguage {
     // TODO Function sort - https://github.com/bryanrsmith/eslint-plugin-sort-class-members
 
     return fileContents;
-  }
-
-  private getParser() {
-    // If the options overide the parser type
-    if (this._options.parser === "typescript") {
-      return parseTypescript;
-    }
-    if (this._options.parser === "flow") {
-      return parseFlow;
-    }
-
-    // If the user didn't override the parser type, try to infer it
-    let isTypescript = StringUtils.stringEndsWithAny(
-      this._filename,
-      Reprinter.TYPESCRIPT_EXTENSIONS
-    );
-    if (isTypescript) {
-      return parseTypescript;
-    }
-
-    let isJavascript = StringUtils.stringEndsWithAny(
-      this._filename,
-      Reprinter.JAVASCRIPT_EXTENSIONS
-    );
-    if (isJavascript) {
-      return parseFlow;
-    }
-
-    throw new Error("File not supported");
   }
 
   private printHelpModeInfo(item, fileContents: string) {

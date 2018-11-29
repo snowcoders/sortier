@@ -55,10 +55,10 @@ function ensureOptions(
 }
 
 class UnionTypeAnnotationSorter {
-  private unionTypeAnnotation;
   private comments;
   private fileContents: string;
   private options: SortUnionTypeAnnotationOptions;
+  private unionTypeAnnotation;
 
   constructor(
     unionTypeAnnotation,

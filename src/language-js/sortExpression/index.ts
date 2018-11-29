@@ -65,11 +65,11 @@ class ExpressionSorter {
   // https://caligari.dartmouth.edu/doc/ibmcxx/en_US/doc/language/ref/ruclxbin.htm
   static commutativeOperators = ["*", "&", "|", "^"];
 
-  private expression;
   private comments;
+  private expression;
   private fileContents: string;
-  private options: SortExpressionOptionsRequired;
   private groupRanks: RankMap;
+  private options: SortExpressionOptionsRequired;
 
   constructor(
     expression,
@@ -123,6 +123,51 @@ class ExpressionSorter {
     return untouchedBeginning + rebuiltString.values[0].value + untouchedEnd;
   }
 
+  public sortAndFlattenOperandTree(operand: OperatorInfo): OperatorInfo {
+    if (operand.accumulatedOperator == null) {
+      return operand;
+    }
+
+    // Determine range we are working on in the file
+    let rangeMin = operand.values[0].range[0];
+    let rangeMax = operand.values[0].range[1];
+    operand.values.forEach(element => {
+      if (rangeMin > element.range[0]) {
+        rangeMin = element.range[0];
+      }
+      if (rangeMax < element.range[1]) {
+        rangeMax = element.range[1];
+      }
+    });
+
+    let sortedValues;
+    // If we are in a mixed scenario, we can't order because we may change the resulting value
+    if (operand.accumulatedOperator === "Mixed") {
+      sortedValues = operand.values;
+    } else {
+      sortedValues = this.getSortedValues(operand.values);
+    }
+
+    let newFileContents = reorderValues(
+      this.fileContents,
+      this.comments,
+      operand.values,
+      sortedValues
+    );
+    newFileContents = newFileContents.slice(rangeMin, rangeMax);
+
+    return {
+      accumulatedOperator: operand.accumulatedOperator,
+      values: [
+        {
+          groupIndex: this.groupRanks.everything,
+          range: [rangeMin, rangeMax],
+          value: newFileContents
+        }
+      ]
+    };
+  }
+
   // Recursive depth first search to rebuild the string
   public rebuildVariableDeclarator(operand: any): OperatorInfo {
     if (operand.type !== "BinaryExpression") {
@@ -166,51 +211,6 @@ class ExpressionSorter {
     return {
       accumulatedOperator: accumulatedOperator,
       values: values
-    };
-  }
-
-  public sortAndFlattenOperandTree(operand: OperatorInfo): OperatorInfo {
-    if (operand.accumulatedOperator == null) {
-      return operand;
-    }
-
-    // Determine range we are working on in the file
-    let rangeMin = operand.values[0].range[0];
-    let rangeMax = operand.values[0].range[1];
-    operand.values.forEach(element => {
-      if (rangeMin > element.range[0]) {
-        rangeMin = element.range[0];
-      }
-      if (rangeMax < element.range[1]) {
-        rangeMax = element.range[1];
-      }
-    });
-
-    let sortedValues;
-    // If we are in a mixed scenario, we can't order because we may change the resulting value
-    if (operand.accumulatedOperator === "Mixed") {
-      sortedValues = operand.values;
-    } else {
-      sortedValues = this.getSortedValues(operand.values);
-    }
-
-    let newFileContents = reorderValues(
-      this.fileContents,
-      this.comments,
-      operand.values,
-      sortedValues
-    );
-    newFileContents = newFileContents.slice(rangeMin, rangeMax);
-
-    return {
-      accumulatedOperator: operand.accumulatedOperator,
-      values: [
-        {
-          groupIndex: this.groupRanks.everything,
-          range: [rangeMin, rangeMax],
-          value: newFileContents
-        }
-      ]
     };
   }
 

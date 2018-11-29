@@ -7,10 +7,6 @@ import { sortAttributes } from "../sortAttributes";
 export class Reprinter implements ILanguage {
   public static readonly EXTENSIONS = [".html", ".html.txt"];
 
-  public isFileSupported(filename: string) {
-    return StringUtils.stringEndsWithAny(filename, Reprinter.EXTENSIONS);
-  }
-
   public getRewrittenContents(
     filename: string,
     fileContents: string,
@@ -24,6 +20,10 @@ export class Reprinter implements ILanguage {
       },
       fileContents
     );
+  }
+
+  public isFileSupported(filename: string) {
+    return StringUtils.stringEndsWithAny(filename, Reprinter.EXTENSIONS);
   }
 
   private sortNode(node: /* Document */ any, fileContents: string): string {

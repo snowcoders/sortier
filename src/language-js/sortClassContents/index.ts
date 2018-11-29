@@ -107,6 +107,26 @@ class ClassContentsSorter {
     return newFileContents;
   }
 
+  private getValidatedOptions(
+    partialOptions: SortClassContentsOptions
+  ): SortClassContentsOptionsRequired {
+    let overrides = ["*"];
+    if (partialOptions.overrides != null) {
+      overrides = partialOptions.overrides;
+      if (overrides.indexOf("*") === -1) {
+        overrides = overrides.slice();
+        overrides.push("*");
+      }
+    }
+
+    return {
+      isAscending:
+        partialOptions.isAscending == null ? true : partialOptions.isAscending,
+      order: partialOptions.order || "alpha",
+      overrides: overrides
+    };
+  }
+
   private getAccessModifier(accessibility: string) {
     switch (accessibility) {
       case "private":
@@ -265,25 +285,5 @@ class ClassContentsSorter {
     methodToCallers: string[]
   ) {
     return methodToCallers.indexOf(a.key) - methodToCallers.indexOf(b.key);
-  }
-
-  private getValidatedOptions(
-    partialOptions: SortClassContentsOptions
-  ): SortClassContentsOptionsRequired {
-    let overrides = ["*"];
-    if (partialOptions.overrides != null) {
-      overrides = partialOptions.overrides;
-      if (overrides.indexOf("*") === -1) {
-        overrides = overrides.slice();
-        overrides.push("*");
-      }
-    }
-
-    return {
-      isAscending:
-        partialOptions.isAscending == null ? true : partialOptions.isAscending,
-      order: partialOptions.order || "alpha",
-      overrides: overrides
-    };
   }
 }

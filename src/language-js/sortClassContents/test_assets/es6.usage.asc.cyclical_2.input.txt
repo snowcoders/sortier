@@ -1,0 +1,13 @@
+export class Example {
+  c() {
+    this.a();
+  }
+
+  b() {
+    this.c();
+  }
+
+  a() {
+    this.b();
+  }
+}

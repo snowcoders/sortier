@@ -1,0 +1,27 @@
+export class Example {
+  c(isSwitched) {
+    if (isSwitched) {
+      this.b();
+    }
+    else {
+      this.a();
+    }
+  }
+
+  d(isSwitched) {
+    if (isSwitched) {
+      this.b();
+    }
+    else {
+      this.a();
+    }
+  }
+
+  a() {
+    
+  }
+
+  b() {
+    
+  }
+}

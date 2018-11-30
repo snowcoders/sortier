@@ -15,6 +15,8 @@ import { StringUtils } from "../../utilities/string-utils";
 
 interface TestInfo {
   inputFilePath: string;
+  isAscending: string;
+  order: string;
   outputFilePath: string;
   parserType: string;
   testName: string;
@@ -34,12 +36,18 @@ describe("language-js/sortClassContents", () => {
       parserTypes.push(segments[0]);
     }
 
+    let order = segments[1];
+
+    let isAscending = segments[2];
+
     let cleanedTestName = StringUtils.sentenceCase(
-      segments[1].replace(/_/g, " ")
+      segments[3].replace(/_/g, " ")
     );
 
     return {
       inputFilePath: filePath,
+      isAscending: isAscending,
+      order: order,
       outputFilePath: filePath.replace(".input.txt", ".output.txt"),
       parserType: segments[0],
       testName: cleanedTestName
@@ -67,7 +75,9 @@ describe("language-js/sortClassContents", () => {
 
       testInfos.forEach(testInfo => {
         if (testInfo.parserType == fileType) {
-          it(testInfo.testName, () => {
+          it(`${testInfo.testName} - ${testInfo.order} - ${
+            testInfo.isAscending
+          }`, () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);
@@ -75,7 +85,10 @@ describe("language-js/sortClassContents", () => {
               parsed.body[0].declaration.body.body,
               parsed.comments,
               input,
-              {}
+              {
+                isAscending: testInfo.isAscending === "asc",
+                order: testInfo.order === "usage" ? "usage" : "alpha"
+              }
             );
 
             expect(actual).to.equal(expected);
@@ -83,117 +96,6 @@ describe("language-js/sortClassContents", () => {
         }
       });
     });
-  });
-
-  it("Reverse alphabetical", () => {
-    let input = `
-    export class Example {
-      a = () => {
-        console.log('a');
-      }
-      ba = () => {
-    
-      }
-    }`;
-    let expected = `
-    export class Example {
-      ba = () => {
-    
-      }
-      a = () => {
-        console.log('a');
-      }
-    }`;
-    let parsed = typescriptParse(input);
-    let actual = sortClassContents(
-      parsed.body[0].declaration.body.body,
-      parsed.comments,
-      input,
-      {
-        isAscending: false
-      }
-    );
-
-    expect(actual).to.equal(expected);
-  });
-
-  it("Usage", () => {
-    let input = `
-    export class Example {
-      run() {
-        try {
-          this.try();
-        } catch(e) {
-          this.catch();
-        } finally {
-          this.finally();
-        }
-      }
-
-      try = () => {
-        console.log("try");
-      }
-
-      catch = () => {
-        console.log("catch");
-      }
-
-      finally() {
-        console.log("finally");
-      }
-    }`;
-    let expected = input;
-    let parsed = typescriptParse(input);
-    let actual = sortClassContents(
-      parsed.body[0].declaration.body.body,
-      parsed.comments,
-      input,
-      {
-        order: "usage"
-      }
-    );
-
-    expect(actual).to.equal(expected);
-  });
-
-  it("Usage reverse", () => {
-    let input = `
-    export class Example {
-      finally() {
-        console.log("finally");
-      }
-
-      catch = () => {
-        console.log("catch");
-      }
-
-      try = () => {
-        console.log("try");
-      }
-
-      run() {
-        try {
-          this.try();
-        } catch(e) {
-          this.catch();
-        } finally {
-          this.finally();
-        }
-      }
-    }`;
-    let expected = input;
-    let parsed = typescriptParse(input);
-    let actual = sortClassContents(
-      parsed.body[0].declaration.body.body,
-      parsed.comments,
-      input,
-      {
-        isAscending: false,
-        order: "usage"
-      }
-    );
-
-    expect(actual).to.equal(expected);
   });
 
   it("Overrides", () => {

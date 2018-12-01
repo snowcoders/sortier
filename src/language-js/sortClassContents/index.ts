@@ -12,6 +12,11 @@ type SortClassContentsOptionsRequired = {
   overrides: Array<string>;
 };
 
+type Node = {
+  key: string;
+  parents: Set<string>;
+};
+
 enum AccessibilityOption {
   Public,
   Protected,
@@ -216,34 +221,84 @@ class ClassContentsSorter {
     return reorderValues(fileContents, comments, classItems, sortedTypes);
   }
 
-  private generateCallOrder(itemsToIterate: any = this.classItems) {
-    let memberExpressionOrder: string[] = [];
-    for (let classItem of itemsToIterate) {
-      if (classItem == null) {
-        continue;
-      }
-      for (let property in classItem) {
-        let value = classItem[property];
-        if (value == null) {
+  private generateCallOrder(): string[] {
+    let keyToNode = new Map<string, Node>();
+
+    // Sort the initial list as in the case of ties, we want to go with alphabetical always
+    let sortedClassItems = this.classItems.slice();
+    sortedClassItems.sort((a, b) => {
+      return a.key.name.localeCompare(b.key.name);
+    });
+
+    // Figure out what parents which methods have and break any cycles
+    for (let classItem of sortedClassItems) {
+      let methodName = classItem.key.name;
+      let calls = this.generateCallOrderOld([classItem]);
+      for (let call of calls) {
+        if (call === methodName) {
           continue;
-        } else if (
-          value != null &&
-          value.callee != null &&
-          value.callee.object != null &&
-          value.callee.object.type === "ThisExpression" &&
-          value.callee.type === "MemberExpression" &&
-          value.callee.property.name != null
-        ) {
-          memberExpressionOrder.push(value.callee.property.name);
-        } else if (value.type != null) {
-          memberExpressionOrder.push(...this.generateCallOrder([value]));
-        } else if (isArray(value)) {
-          memberExpressionOrder.push(...this.generateCallOrder(value));
+        }
+        let node = keyToNode.get(call);
+        if (node == null) {
+          keyToNode.set(call, {
+            key: call,
+            parents: new Set([methodName])
+          });
+        } else {
+          let addToParentList = true;
+          let ancestorStack = [methodName];
+          while (addToParentList && ancestorStack.length !== 0) {
+            let node = keyToNode.get(ancestorStack.pop());
+            if (node == null) {
+              continue;
+            }
+
+            for (let a of node.parents) {
+              if (call === a) {
+                addToParentList = false;
+                break;
+              }
+              ancestorStack.push(a);
+            }
+          }
+          if (addToParentList) {
+            node.parents.add(methodName);
+          }
+        }
+      }
+
+      // Create the parent node
+      let parentNode = keyToNode.get(methodName);
+      if (parentNode == null) {
+        keyToNode.set(methodName, {
+          key: methodName,
+          parents: new Set()
+        });
+      }
+    }
+
+    let callOrder: string[] = [];
+
+    while (keyToNode.size !== 0) {
+      let nextGroup: string[] = [];
+      for (let keyNodePair of keyToNode) {
+        if (keyNodePair[1].parents.size === 0) {
+          nextGroup.push(keyNodePair[0]);
+        }
+      }
+
+      callOrder.push(...nextGroup);
+
+      for (let key of nextGroup) {
+        keyToNode.delete(key);
+
+        for (let node of keyToNode.values()) {
+          node.parents.delete(key);
         }
       }
     }
 
-    return memberExpressionOrder;
+    return callOrder;
   }
 
   private compareGroups(
@@ -285,5 +340,35 @@ class ClassContentsSorter {
     methodToCallers: string[]
   ) {
     return methodToCallers.indexOf(a.key) - methodToCallers.indexOf(b.key);
+  }
+
+  private generateCallOrderOld(nodes: any[]) {
+    let memberExpressionOrder: string[] = [];
+    for (let node of nodes) {
+      if (node == null) {
+        continue;
+      }
+      for (let property in node) {
+        let value = node[property];
+        if (value == null) {
+          continue;
+        } else if (
+          value != null &&
+          value.callee != null &&
+          value.callee.object != null &&
+          value.callee.object.type === "ThisExpression" &&
+          value.callee.type === "MemberExpression" &&
+          value.callee.property.name != null
+        ) {
+          memberExpressionOrder.push(value.callee.property.name);
+        } else if (value.type != null) {
+          memberExpressionOrder.push(...this.generateCallOrderOld([value]));
+        } else if (isArray(value)) {
+          memberExpressionOrder.push(...this.generateCallOrderOld(value));
+        }
+      }
+    }
+
+    return memberExpressionOrder;
   }
 }

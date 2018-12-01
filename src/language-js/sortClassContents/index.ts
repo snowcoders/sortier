@@ -190,17 +190,22 @@ class ClassContentsSorter {
         return overrideComparison;
       }
 
-      let comparison = 0;
+      let callComparison = 0;
       if (callOrder != null) {
-        comparison = this.compareMethodCallers(a, b, callOrder);
+        callComparison = this.compareMethodCallers(a, b, callOrder);
+        if (callComparison !== 0) {
+          return callComparison;
+        }
       }
-      if (comparison === 0) {
-        comparison = a.key.localeCompare(b.key);
+
+      let stringComparison = 0;
+      if (stringComparison === 0) {
+        stringComparison = a.key.localeCompare(b.key);
       }
-      if (this.options.isAscending) {
-        return comparison;
+      if (this.options.order !== "alpha" || this.options.isAscending) {
+        return stringComparison;
       } else {
-        return -1 * comparison;
+        return -1 * stringComparison;
       }
     });
 
@@ -288,7 +293,11 @@ class ClassContentsSorter {
         return aIndex - bIndex;
       });
 
-      resultingCallOrder.push(...nextGroup);
+      if (this.options.isAscending) {
+        resultingCallOrder.push(...nextGroup);
+      } else {
+        resultingCallOrder.unshift(...nextGroup);
+      }
 
       for (let key of nextGroup) {
         keyToNode.delete(key);

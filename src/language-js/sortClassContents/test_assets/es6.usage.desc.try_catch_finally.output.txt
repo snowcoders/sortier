@@ -1,14 +1,14 @@
 export class Example {
-  finally() {
-    console.log("finally");
+  try = () => {
+    console.log("try");
   }
 
   catch = () => {
     console.log("catch");
   }
 
-  try = () => {
-    console.log("try");
+  finally() {
+    console.log("finally");
   }
 
   run() {

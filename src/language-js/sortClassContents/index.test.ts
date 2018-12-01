@@ -75,8 +75,8 @@ describe("language-js/sortClassContents", () => {
 
       testInfos.forEach(testInfo => {
         if (testInfo.parserType == fileType) {
-          it(`${testInfo.testName} - ${testInfo.order} - ${
-            testInfo.isAscending
+          it(`${testInfo.order} - ${testInfo.isAscending} - ${
+            testInfo.testName
           }`, () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");

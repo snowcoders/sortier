@@ -123,6 +123,52 @@ class ExpressionSorter {
     return untouchedBeginning + rebuiltString.values[0].value + untouchedEnd;
   }
 
+  // Recursive depth first search to rebuild the string
+  public rebuildVariableDeclarator(operand: any): OperatorInfo {
+    if (operand.type !== "BinaryExpression") {
+      let group = this.getGroupIndex(operand);
+      return {
+        accumulatedOperator: null,
+        values: [
+          {
+            groupIndex: group,
+            range: operand.range,
+            value: this.fileContents.substring(
+              operand.range[0],
+              operand.range[1]
+            )
+          }
+        ]
+      };
+    }
+
+    let accumulatedOperator = operand.operator;
+    let left = this.rebuildVariableDeclarator(operand.left);
+    let right = this.rebuildVariableDeclarator(operand.right);
+    if (
+      left.accumulatedOperator != null &&
+      left.accumulatedOperator != operand.operator
+    ) {
+      accumulatedOperator = "Mixed";
+      left = this.sortAndFlattenOperandTree(left);
+    }
+    if (
+      right.accumulatedOperator != null &&
+      right.accumulatedOperator != operand.operator
+    ) {
+      accumulatedOperator = "Mixed";
+      right = this.sortAndFlattenOperandTree(right);
+    }
+
+    let values = left.values.slice(0);
+    values = values.concat(right.values);
+
+    return {
+      accumulatedOperator: accumulatedOperator,
+      values: values
+    };
+  }
+
   public sortAndFlattenOperandTree(operand: OperatorInfo): OperatorInfo {
     if (operand.accumulatedOperator == null) {
       return operand;
@@ -183,52 +229,6 @@ class ExpressionSorter {
     });
 
     return sortedValues;
-  }
-
-  // Recursive depth first search to rebuild the string
-  public rebuildVariableDeclarator(operand: any): OperatorInfo {
-    if (operand.type !== "BinaryExpression") {
-      let group = this.getGroupIndex(operand);
-      return {
-        accumulatedOperator: null,
-        values: [
-          {
-            groupIndex: group,
-            range: operand.range,
-            value: this.fileContents.substring(
-              operand.range[0],
-              operand.range[1]
-            )
-          }
-        ]
-      };
-    }
-
-    let accumulatedOperator = operand.operator;
-    let left = this.rebuildVariableDeclarator(operand.left);
-    let right = this.rebuildVariableDeclarator(operand.right);
-    if (
-      left.accumulatedOperator != null &&
-      left.accumulatedOperator != operand.operator
-    ) {
-      accumulatedOperator = "Mixed";
-      left = this.sortAndFlattenOperandTree(left);
-    }
-    if (
-      right.accumulatedOperator != null &&
-      right.accumulatedOperator != operand.operator
-    ) {
-      accumulatedOperator = "Mixed";
-      right = this.sortAndFlattenOperandTree(right);
-    }
-
-    let values = left.values.slice(0);
-    values = values.concat(right.values);
-
-    return {
-      accumulatedOperator: accumulatedOperator,
-      values: values
-    };
   }
 
   private getAllRanks(): RankMap {

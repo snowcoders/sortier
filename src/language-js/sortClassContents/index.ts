@@ -181,15 +181,6 @@ class ClassContentsSorter {
     let callOrder: null | string[] = null;
     if (this.options.order === "usage") {
       callOrder = this.generateCallOrder();
-
-      //dedupe the callorder array
-      for (var i = 0; i < callOrder.length; i++) {
-        for (var j = i + 1; j < callOrder.length; j++) {
-          if (callOrder[i] == callOrder[j]) {
-            callOrder.splice(j, 1);
-          }
-        }
-      }
     }
 
     let sortedTypes = classItems.slice();
@@ -230,10 +221,13 @@ class ClassContentsSorter {
       return a.key.name.localeCompare(b.key.name);
     });
 
+    let overallCallOrder: string[] = [];
+
     // Figure out what parents which methods have and break any cycles
     for (let classItem of sortedClassItems) {
       let methodName = classItem.key.name;
       let calls = this.generateCallOrderOld([classItem]);
+      overallCallOrder.push(...calls);
       for (let call of calls) {
         if (call === methodName) {
           continue;
@@ -276,6 +270,14 @@ class ClassContentsSorter {
         });
       }
     }
+    //dedupe the overallCallOrder array
+    for (var i = 0; i < overallCallOrder.length; i++) {
+      for (var j = i + 1; j < overallCallOrder.length; j++) {
+        if (overallCallOrder[i] == overallCallOrder[j]) {
+          overallCallOrder.splice(j, 1);
+        }
+      }
+    }
 
     let callOrder: string[] = [];
 
@@ -286,6 +288,12 @@ class ClassContentsSorter {
           nextGroup.push(keyNodePair[0]);
         }
       }
+
+      nextGroup.sort((a, b) => {
+        let aIndex = overallCallOrder.indexOf(a);
+        let bIndex = overallCallOrder.indexOf(b);
+        return aIndex - bIndex;
+      });
 
       callOrder.push(...nextGroup);
 

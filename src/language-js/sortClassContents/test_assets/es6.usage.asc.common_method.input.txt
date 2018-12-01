@@ -1,0 +1,13 @@
+export class Example {
+  log(message) {
+    console.log(message);
+  }
+
+  b() {
+    this.log("b");
+  }
+
+  a() {
+    this.log("a");
+  }
+}

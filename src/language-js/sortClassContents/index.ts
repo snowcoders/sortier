@@ -12,11 +12,6 @@ type SortClassContentsOptionsRequired = {
   overrides: Array<string>;
 };
 
-type Node = {
-  key: string;
-  parents: Set<string>;
-};
-
 enum AccessibilityOption {
   Public,
   Protected,
@@ -213,15 +208,16 @@ class ClassContentsSorter {
   }
 
   private generateCallOrder(): string[] {
-    let keyToNode = new Map<string, Node>();
-
     // Sort the initial list as in the case of ties, we want to go with alphabetical always
     let sortedClassItems = this.classItems.slice();
     sortedClassItems.sort((a, b) => {
       return a.key.name.localeCompare(b.key.name);
     });
 
+    // Storage of the overall call order as read from top to bottom, left to right
     let overallCallOrder: string[] = [];
+    // Map of method names to parent information
+    let keyToNode = new Map<string, Set<string>>();
 
     // Figure out what parents which methods have and break any cycles
     for (let classItem of sortedClassItems) {
@@ -232,22 +228,19 @@ class ClassContentsSorter {
         if (call === methodName) {
           continue;
         }
-        let node = keyToNode.get(call);
-        if (node == null) {
-          keyToNode.set(call, {
-            key: call,
-            parents: new Set([methodName])
-          });
+        let parents = keyToNode.get(call);
+        if (parents == null) {
+          keyToNode.set(call, new Set([methodName]));
         } else {
           let addToParentList = true;
           let ancestorStack = [methodName];
           while (addToParentList && ancestorStack.length !== 0) {
-            let node = keyToNode.get(ancestorStack.pop());
-            if (node == null) {
+            let parents = keyToNode.get(ancestorStack.pop());
+            if (parents == null) {
               continue;
             }
 
-            for (let a of node.parents) {
+            for (let a of parents) {
               if (call === a) {
                 addToParentList = false;
                 break;
@@ -256,7 +249,7 @@ class ClassContentsSorter {
             }
           }
           if (addToParentList) {
-            node.parents.add(methodName);
+            parents.add(methodName);
           }
         }
       }
@@ -264,12 +257,10 @@ class ClassContentsSorter {
       // Create the parent node
       let parentNode = keyToNode.get(methodName);
       if (parentNode == null) {
-        keyToNode.set(methodName, {
-          key: methodName,
-          parents: new Set()
-        });
+        keyToNode.set(methodName, new Set());
       }
     }
+
     //dedupe the overallCallOrder array
     for (var i = 0; i < overallCallOrder.length; i++) {
       for (var j = i + 1; j < overallCallOrder.length; j++) {
@@ -279,12 +270,14 @@ class ClassContentsSorter {
       }
     }
 
-    let callOrder: string[] = [];
+    // Now go through all nodes, remove the root nodes and push them into the resulting
+    // call order array in order based on overallCallOrder
+    let resultingCallOrder: string[] = [];
 
     while (keyToNode.size !== 0) {
       let nextGroup: string[] = [];
       for (let keyNodePair of keyToNode) {
-        if (keyNodePair[1].parents.size === 0) {
+        if (keyNodePair[1].size === 0) {
           nextGroup.push(keyNodePair[0]);
         }
       }
@@ -295,18 +288,18 @@ class ClassContentsSorter {
         return aIndex - bIndex;
       });
 
-      callOrder.push(...nextGroup);
+      resultingCallOrder.push(...nextGroup);
 
       for (let key of nextGroup) {
         keyToNode.delete(key);
 
-        for (let node of keyToNode.values()) {
-          node.parents.delete(key);
+        for (let parents of keyToNode.values()) {
+          parents.delete(key);
         }
       }
     }
 
-    return callOrder;
+    return resultingCallOrder;
   }
 
   private compareGroups(

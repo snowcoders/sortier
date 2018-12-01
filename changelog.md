@@ -2,7 +2,7 @@
 
 - Added JSON sorting
 - Fixed sorting values within array expressions
-- Added sorting class contents. This is disabled by default due to breaking the original rule of not sorting across blank lines.
+- Added sorting class contents. This is disabled by default due to breaking our original rule of not sorting across blank lines. It can be enabled by setting the `sortClassContents` property via the settings
 
 ### 2.2.0
 

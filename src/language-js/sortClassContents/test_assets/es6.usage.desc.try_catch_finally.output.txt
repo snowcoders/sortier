@@ -1,0 +1,23 @@
+export class Example {
+  try = () => {
+    console.log("try");
+  }
+
+  catch = () => {
+    console.log("catch");
+  }
+
+  finally() {
+    console.log("finally");
+  }
+
+  run() {
+    try {
+      this.try();
+    } catch(e) {
+      this.catch();
+    } finally {
+      this.finally();
+    }
+  }
+}

@@ -1,0 +1,7 @@
+export class Example {
+  a = () => {
+
+  }
+
+  b: string;
+}

@@ -6,10 +6,6 @@ import { StringUtils } from "../../utilities/string-utils";
 export class Reprinter implements ILanguage {
   public static readonly EXTENSIONS = [".json", ".json.txt"];
 
-  public isFileSupported(filename: string) {
-    return StringUtils.stringEndsWithAny(filename, Reprinter.EXTENSIONS);
-  }
-
   public getRewrittenContents(
     filename: string,
     fileContents: string,
@@ -23,5 +19,9 @@ export class Reprinter implements ILanguage {
       { ...options, parser: "typescript" }
     );
     return rewritten.substring(prefix.length);
+  }
+
+  public isFileSupported(filename: string) {
+    return StringUtils.stringEndsWithAny(filename, Reprinter.EXTENSIONS);
   }
 }

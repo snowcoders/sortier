@@ -1,0 +1,14 @@
+// Cyclical 1, 2 and 3 all should have the same output
+export class Example {
+  a() {
+    this.b();
+  }
+
+  b() {
+    this.c();
+  }
+
+  c() {
+    this.a();
+  }
+}

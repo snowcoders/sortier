@@ -1,0 +1,4 @@
+export class Example {
+  a: string;
+  static b: string;
+}

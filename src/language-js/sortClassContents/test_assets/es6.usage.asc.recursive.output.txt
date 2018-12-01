@@ -1,0 +1,6 @@
+// Goal here is just to make sure we don't end up in an infinite loop
+export class Example {
+  a() {
+    this.a();
+  }
+}

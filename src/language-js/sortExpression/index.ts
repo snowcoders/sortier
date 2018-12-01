@@ -65,11 +65,11 @@ class ExpressionSorter {
   // https://caligari.dartmouth.edu/doc/ibmcxx/en_US/doc/language/ref/ruclxbin.htm
   static commutativeOperators = ["*", "&", "|", "^"];
 
-  private expression;
   private comments;
+  private expression;
   private fileContents: string;
-  private options: SortExpressionOptionsRequired;
   private groupRanks: RankMap;
+  private options: SortExpressionOptionsRequired;
 
   constructor(
     expression,
@@ -131,8 +131,8 @@ class ExpressionSorter {
         accumulatedOperator: null,
         values: [
           {
-            range: operand.range,
             groupIndex: group,
+            range: operand.range,
             value: this.fileContents.substring(
               operand.range[0],
               operand.range[1]
@@ -206,8 +206,8 @@ class ExpressionSorter {
       accumulatedOperator: operand.accumulatedOperator,
       values: [
         {
-          range: [rangeMin, rangeMax],
           groupIndex: this.groupRanks.everything,
+          range: [rangeMin, rangeMax],
           value: newFileContents
         }
       ]
@@ -256,10 +256,10 @@ class ExpressionSorter {
 
     return {
       everything: everythingRank,
+      function: functionRank,
       null: nullRank,
-      undefined: undefinedRank,
       object: objectRank,
-      function: functionRank
+      undefined: undefinedRank
     };
   }
 

@@ -1,0 +1,23 @@
+export class Greeter {
+  private static nextGreeterId: number;
+  greeting: string;
+  public name: string;
+  protected title: string;
+  private baseSalary: number;
+  private description: string;
+  private id: number;
+
+  constructor(message?: string) {
+    this.id = Greeter.nextGreeterId;
+    Greeter.nextGreeterId++;
+    this.greeting = message || "Hi there!";
+  }
+
+  public greet() {
+    return "Hello, " + this.greeting;
+  }
+
+  private murmour() {
+    return "Hello, " + this.greeting;
+  }
+}

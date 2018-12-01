@@ -1,3 +1,6 @@
+// TODO export this via the index.js
+import { SortClassContentsOptions } from "./language-js/sortClassContents";
+
 export interface ReprinterOptions {
   // Default "false". If true, prints out very verbose lines that sortier doesn't know how to handle so you can open Github issues about them
   isHelpMode?: boolean;
@@ -19,4 +22,7 @@ export interface ReprinterOptions {
 
   // Default ["undefined", "null", "*", "object", "function"]. The order to sort object types when encountered.
   sortTypeAnnotations?: ("null" | "undefined" | "*" | "function" | "object")[];
+
+  // Default undefined. If defined, class contents will be sorted based on the options provided. Turned off by default because it will sort over blank lines.
+  sortClassContents?: SortClassContentsOptions;
 }

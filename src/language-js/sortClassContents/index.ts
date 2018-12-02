@@ -359,6 +359,9 @@ class ClassContentsSorter {
         continue;
       }
       for (let property in node) {
+        if (property === "type" || property === "loc" || property === "range") {
+          continue;
+        }
         let value = node[property];
         if (value == null) {
           continue;

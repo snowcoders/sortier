@@ -193,6 +193,7 @@ export class Reprinter implements ILanguage {
           case "Literal":
           case "RestProperty":
           case "SpreadElement":
+          case "Super":
           case "TaggedTemplateExpression":
           case "TemplateLiteral":
           case "ThisExpression":
@@ -403,6 +404,10 @@ export class Reprinter implements ILanguage {
             );
             break;
           }
+          case "SpreadProperty": {
+            nodes.push(node.argument);
+            break;
+          }
           case "SwitchCase": {
             fileContents = this.rewriteNodes(
               node.consequent,
@@ -437,6 +442,11 @@ export class Reprinter implements ILanguage {
             if (node.finalizer != null) {
               nodes.push(node.finalizer);
             }
+            break;
+          }
+          case "TypeCastExpression": {
+            nodes.push(node.expression);
+            nodes.push(node.typeAnnotation);
             break;
           }
           case "UpdateExpression": {
@@ -476,6 +486,9 @@ export class Reprinter implements ILanguage {
               fileContents
             );
             fileContents = sortJsxElement(node, comments, fileContents);
+            break;
+          }
+          case "JSXText": {
             break;
           }
 

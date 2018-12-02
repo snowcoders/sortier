@@ -1,0 +1,8 @@
+export class Example {
+      constructor() {
+            super({
+                  b: "B",
+                  a: "a",
+            });
+      }
+}

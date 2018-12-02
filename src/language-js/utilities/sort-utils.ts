@@ -26,51 +26,10 @@ type RankMap = {
   undefined: number;
 };
 
-export function getObjectTypeRank(
-  value: any,
-  options?: TypeAnnotationOption[]
-): number {
-  let rankMap = getObjectTypeRanks(options);
-
-  if (value == null) {
-    return rankMap.everything;
-  }
-  if (
-    value.type === "NullLiteralTypeAnnotation" ||
-    value.type === "TSNullKeyword" ||
-    value.raw === "null"
-  ) {
-    return rankMap.null;
-  } else if (
-    (value.type === "GenericTypeAnnotation" && value.id.name === "undefined") ||
-    value.type === "TSUndefinedKeyword" ||
-    value.name === "undefined"
-  ) {
-    return rankMap.undefined;
-  } else if (
-    (value.type != null && value.type.indexOf("Object") !== -1) ||
-    (value.typeAnnotation != null &&
-      value.typeAnnotation.typeAnnotation.type === "TSTypeLiteral")
-  ) {
-    return rankMap.object;
-  } else if (
-    (value.type != null &&
-      (value.type.indexOf("Function") !== -1 ||
-        value.type.indexOf("Method") !== -1)) ||
-    (value.typeAnnotation != null &&
-      value.typeAnnotation.typeAnnotation.type === "TSFunctionType")
-  ) {
-    return rankMap.function;
-  } else {
-    return rankMap.everything;
-  }
-}
-
 let defaultObjectTypeOrder: TypeAnnotationOption[] = [
   "undefined",
   "null",
   "*",
-  "object",
   "function"
 ];
 let lastCalculatedRankOptions: undefined | TypeAnnotationOption[] = undefined;

@@ -41,7 +41,7 @@ export interface ReprinterOptionsRequired {
   // Default "source". The order you wish to sort import statements. Source is the path the import comes from. First specifier is the first item imported.
   sortImportDeclarations: SortImportDeclarationsOrderOption;
 
-  // Default ["undefined", "null", "*", "object", "function"]. The order to sort object types when encountered.
+  // Default ["undefined", "null", "*", "function"]. The order to sort object types when encountered.
   sortTypeAnnotations?: TypeAnnotationOption[];
 
   // Default undefined. If defined, class contents will be sorted based on the options provided. Turned off by default because it will sort over blank lines.

@@ -1,8 +1,9 @@
 // Utils
 import { StringUtils } from "../../utilities/string-utils";
 
+export type SortImportDeclarationsOrderOption = "first-specifier" | "source";
 export interface SortImportDeclarationsOptions {
-  orderBy: "first-specifier" | "source";
+  orderBy: SortImportDeclarationsOrderOption;
 }
 
 interface SingleImportSource {
@@ -61,6 +62,7 @@ export function sortImportDeclarations(
             importSource.specifiers[0].local.name) ||
           "",
         originalIndex: overallIndex,
+        source: importSource.source.value,
         originalLocation: {
           end: {
             column: importSource.loc.end.column,
@@ -72,8 +74,7 @@ export function sortImportDeclarations(
             index: importSource.start,
             line: importSource.loc.start.line
           }
-        },
-        source: importSource.source.value
+        }
       });
     }
 

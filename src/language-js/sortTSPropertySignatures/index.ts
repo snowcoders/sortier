@@ -2,21 +2,22 @@ import { Comment } from "estree";
 
 import {
   getContextGroups,
+  getObjectTypeRank,
   getSpreadGroups,
-  reorderValues
+  reorderValues,
+  TypeAnnotationOption
 } from "../utilities/sort-utils";
 
 export interface SortTSPropertySignaturesOptions {
-  groups: ("null" | "undefined" | "*" | "function" | "object")[];
+  groups?: TypeAnnotationOption[];
 }
 
 export function sortTSPropertySignatures(
   properties: any,
   comments: Comment[],
   fileContents: string,
-  options?: SortTSPropertySignaturesOptions
+  options: SortTSPropertySignaturesOptions
 ) {
-  let ensuredOptions = ensureOptions(options);
   let newFileContents = fileContents.slice();
   let allNodes: any[] = cleanProperties(fileContents, properties);
 
@@ -29,8 +30,8 @@ export function sortTSPropertySignatures(
     contextGroups.forEach(element => {
       let unsorted: any[] = element.nodes;
       let sorted: any[] = element.nodes.slice().sort((a, b) => {
-        let aGroup = getSortGroupIndex(a, ensuredOptions);
-        let bGroup = getSortGroupIndex(b, ensuredOptions);
+        let aGroup = getSortGroupIndex(a, options);
+        let bGroup = getSortGroupIndex(b, options);
 
         if (aGroup != bGroup) {
           return aGroup - bGroup;
@@ -52,24 +53,6 @@ export function sortTSPropertySignatures(
   }
 
   return newFileContents;
-}
-
-function ensureOptions(
-  options?: null | SortTSPropertySignaturesOptions
-): SortTSPropertySignaturesOptions {
-  if (options == null) {
-    return {
-      groups: ["undefined", "null", "*", "object", "function"]
-    };
-  }
-
-  if (options.groups != null && options.groups.indexOf("*") === -1) {
-    options.groups.push("*");
-  }
-
-  return {
-    groups: options.groups || ["undefined", "null", "*", "object", "function"]
-  };
 }
 
 function cleanProperties(fileContents: string, properties: any[]) {
@@ -95,37 +78,5 @@ function getSortGroupIndex(
   property,
   options: SortTSPropertySignaturesOptions
 ): number {
-  // Sort them by name
-  let everythingRank = options.groups.indexOf("*");
-  if (everythingRank === -1) {
-    everythingRank = 0;
-  }
-  let nullRank = options.groups.indexOf("null");
-  if (nullRank === -1) {
-    nullRank = everythingRank;
-  }
-  let undefinedRank = options.groups.indexOf("undefined");
-  if (undefinedRank === -1) {
-    undefinedRank = everythingRank;
-  }
-  let functionRank = options.groups.indexOf("function");
-  if (functionRank === -1) {
-    functionRank = everythingRank;
-  }
-  let objectRank = options.groups.indexOf("object");
-  if (objectRank === -1) {
-    objectRank = everythingRank;
-  }
-
-  let aRank = everythingRank;
-  if (
-    property.type === "TSMethodSignature" ||
-    property.typeAnnotation.typeAnnotation.type === "TSFunctionType"
-  ) {
-    aRank = functionRank;
-  } else if (property.typeAnnotation.typeAnnotation.type === "TSTypeLiteral") {
-    aRank = objectRank;
-  }
-
-  return aRank;
+  return getObjectTypeRank(property, options.groups);
 }

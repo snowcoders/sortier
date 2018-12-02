@@ -74,7 +74,8 @@ describe("language-js/sortJsxElement", () => {
             let actual = sortExpression(
               parsed.body[0].declarations[0].init,
               parsed.comments,
-              input
+              input,
+              {}
             );
 
             expect(actual).to.equal(expected);

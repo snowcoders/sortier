@@ -76,13 +76,15 @@ describe("language-js/sortUnionTypeAnnotation", () => {
               actual = sortUnionTypeAnnotation(
                 parsed.body[0].body.body[0].typeAnnotation.typeAnnotation,
                 parsed.comments,
-                input
+                input,
+                {}
               );
             } else {
               actual = sortUnionTypeAnnotation(
                 parsed.body[0].body.properties[0].value,
                 parsed.comments,
-                input
+                input,
+                {}
               );
             }
 

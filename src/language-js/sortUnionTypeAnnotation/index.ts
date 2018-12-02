@@ -1,25 +1,19 @@
-import { reorderValues } from "../utilities/sort-utils";
-
-// TODO add ObjectTypeAnnotation to the end of this
-export type SortUnionTypeAnnotationOptionsGroups =
-  | "*"
-  | "function"
-  | "null"
-  | "object"
-  | "undefined";
+import {
+  getObjectTypeRank,
+  reorderValues,
+  TypeAnnotationOption
+} from "../utilities/sort-utils";
 
 export interface SortUnionTypeAnnotationOptions {
-  groups: SortUnionTypeAnnotationOptionsGroups[];
+  groups?: TypeAnnotationOption[];
 }
 
 export function sortUnionTypeAnnotation(
   unionTypeAnnotation,
   comments,
   fileContents: string,
-  options?: SortUnionTypeAnnotationOptions
+  options: SortUnionTypeAnnotationOptions
 ) {
-  let ensuredOptions = ensureOptions(options);
-
   if (
     unionTypeAnnotation.type === "UnionTypeAnnotation" ||
     unionTypeAnnotation.type === "IntersectionTypeAnnotation" ||
@@ -29,29 +23,11 @@ export function sortUnionTypeAnnotation(
       unionTypeAnnotation,
       comments,
       fileContents,
-      ensuredOptions
+      options
     ).sort();
   }
 
   return fileContents;
-}
-
-function ensureOptions(
-  options?: null | SortUnionTypeAnnotationOptions
-): SortUnionTypeAnnotationOptions {
-  if (options == null) {
-    return {
-      groups: ["undefined", "null", "*", "object", "function"]
-    };
-  }
-
-  if (options.groups != null && options.groups.indexOf("*") === -1) {
-    options.groups.push("*");
-  }
-
-  return {
-    groups: options.groups || ["undefined", "null", "*", "object", "function"]
-  };
 }
 
 class UnionTypeAnnotationSorter {
@@ -86,51 +62,8 @@ class UnionTypeAnnotationSorter {
   }
 
   private getSortOrderOfTypes() {
-    // Sort them by name
-    let everythingRank = this.options.groups.indexOf("*");
-    if (everythingRank === -1) {
-      everythingRank = 0;
-    }
-    let nullRank = this.options.groups.indexOf("null");
-    if (nullRank === -1) {
-      nullRank = everythingRank;
-    }
-    let undefinedRank = this.options.groups.indexOf("undefined");
-    if (undefinedRank === -1) {
-      undefinedRank = everythingRank;
-    }
-    let functionRank = this.options.groups.indexOf("function");
-    if (functionRank === -1) {
-      functionRank = everythingRank;
-    }
-    let objectRank = this.options.groups.indexOf("object");
-    if (objectRank === -1) {
-      objectRank = everythingRank;
-    }
-
-    let getRank = annotationType => {
-      let aRank = everythingRank;
-      if (
-        annotationType.type === "NullLiteralTypeAnnotation" ||
-        annotationType.type === "TSNullKeyword"
-      ) {
-        aRank = nullRank;
-      } else if (
-        (annotationType.type === "GenericTypeAnnotation" &&
-          annotationType.id.name === "undefined") ||
-        annotationType.type === "TSUndefinedKeyword"
-      ) {
-        aRank = undefinedRank;
-      } else if (annotationType.type === "ObjectTypeAnnotation") {
-        aRank = objectRank;
-      } else if (
-        annotationType.type === "FunctionTypeAnnotation" ||
-        annotationType.type === "ArrowFunctionExpression"
-      ) {
-        aRank = functionRank;
-      }
-
-      return aRank;
+    let getRank = value => {
+      return getObjectTypeRank(value, this.options.groups);
     };
 
     let newTypes = this.unionTypeAnnotation.types.slice(0);

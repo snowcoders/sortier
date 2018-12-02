@@ -1,4 +1,5 @@
 import { Comment } from "estree";
+import { ArrayUtils } from "../../utilities/array-utils";
 import { StringUtils } from "../../utilities/string-utils";
 
 export interface MinimumTypeInformation {
@@ -8,6 +9,117 @@ export interface MinimumTypeInformation {
 export interface ContextGroup {
   comments: Comment[];
   nodes: any[];
+}
+
+export type TypeAnnotationOption =
+  | "*"
+  | "function"
+  | "null"
+  | "object"
+  | "undefined";
+
+type RankMap = {
+  everything: number;
+  function: number;
+  null: number;
+  object: number;
+  undefined: number;
+};
+
+export function getObjectTypeRank(
+  value: any,
+  options?: TypeAnnotationOption[]
+): number {
+  let rankMap = getObjectTypeRanks(options);
+
+  if (value == null) {
+    return rankMap.everything;
+  }
+  if (
+    value.type === "NullLiteralTypeAnnotation" ||
+    value.type === "TSNullKeyword" ||
+    value.raw === "null"
+  ) {
+    return rankMap.null;
+  } else if (
+    (value.type === "GenericTypeAnnotation" && value.id.name === "undefined") ||
+    value.type === "TSUndefinedKeyword" ||
+    value.name === "undefined"
+  ) {
+    return rankMap.undefined;
+  } else if (
+    (value.type != null && value.type.indexOf("Object") !== -1) ||
+    (value.typeAnnotation != null &&
+      value.typeAnnotation.typeAnnotation.type === "TSTypeLiteral")
+  ) {
+    return rankMap.object;
+  } else if (
+    (value.type != null &&
+      (value.type.indexOf("Function") !== -1 ||
+        value.type.indexOf("Method") !== -1)) ||
+    (value.typeAnnotation != null &&
+      value.typeAnnotation.typeAnnotation.type === "TSFunctionType")
+  ) {
+    return rankMap.function;
+  } else {
+    return rankMap.everything;
+  }
+}
+
+let defaultObjectTypeOrder: TypeAnnotationOption[] = [
+  "undefined",
+  "null",
+  "*",
+  "object",
+  "function"
+];
+let lastCalculatedRankOptions: undefined | TypeAnnotationOption[] = undefined;
+let lastCalculatedRankMap: undefined | RankMap = undefined;
+export function getObjectTypeRanks(options?: TypeAnnotationOption[]): RankMap {
+  // Use defaults if passed undefined
+  options = options || defaultObjectTypeOrder;
+
+  // Figure out if we can use the cache and recache if we can't
+  if (
+    lastCalculatedRankOptions != null &&
+    lastCalculatedRankMap != null &&
+    ArrayUtils.isEqual(lastCalculatedRankOptions, options)
+  ) {
+    return lastCalculatedRankMap;
+  } else {
+    lastCalculatedRankOptions = options;
+  }
+
+  // Determine the map
+  let everythingRank = options.indexOf("*");
+  if (everythingRank === -1) {
+    everythingRank = options.length;
+  }
+  let nullRank = options.indexOf("null");
+  if (nullRank === -1) {
+    nullRank = everythingRank;
+  }
+  let undefinedRank = options.indexOf("undefined");
+  if (undefinedRank === -1) {
+    undefinedRank = everythingRank;
+  }
+  let objectRank = options.indexOf("object");
+  if (objectRank === -1) {
+    objectRank = everythingRank;
+  }
+  let functionRank = options.indexOf("function");
+  if (functionRank === -1) {
+    functionRank = everythingRank;
+  }
+
+  lastCalculatedRankMap = {
+    everything: everythingRank,
+    function: functionRank,
+    null: nullRank,
+    object: objectRank,
+    undefined: undefinedRank
+  };
+  return lastCalculatedRankMap;
 }
 
 export function getSpreadGroups(

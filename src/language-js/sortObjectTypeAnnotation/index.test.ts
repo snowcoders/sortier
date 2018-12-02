@@ -74,7 +74,8 @@ describe("language-js/sortObjectTypeAnnotation", () => {
             let actual = sortObjectTypeAnnotation(
               parsed.body[0].declaration.right,
               parsed.comments,
-              input
+              input,
+              {}
             );
 
             expect(actual).to.equal(expected);

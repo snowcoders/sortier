@@ -1,44 +1,28 @@
-import { reorderValues } from "../utilities/sort-utils";
-
-export type SortExpressionOptionsGroups =
-  | "*"
-  | "function"
-  | "null"
-  | "object"
-  | "undefined";
+import {
+  getObjectTypeRank,
+  getObjectTypeRanks,
+  reorderValues,
+  TypeAnnotationOption
+} from "../utilities/sort-utils";
 
 export type SortExpressionOptions = Partial<SortExpressionOptionsRequired>;
 
 export interface SortExpressionOptionsRequired {
-  groups: SortExpressionOptionsGroups[];
+  groups?: TypeAnnotationOption[];
 }
 
 export function sortExpression(
   expression,
   comments,
   fileContents: string,
-  options?: SortExpressionOptions
+  options: SortExpressionOptions
 ) {
   return new ExpressionSorter(
     expression,
     comments,
     fileContents,
-    ensureOptions(options)
+    options
   ).sort();
-}
-
-function ensureOptions(
-  options?: null | SortExpressionOptions
-): SortExpressionOptionsRequired {
-  if (options == null) {
-    return {
-      groups: ["undefined", "null", "*", "object", "function"]
-    };
-  }
-
-  return {
-    groups: options.groups || ["undefined", "null", "*", "object", "function"]
-  };
 }
 
 interface OperandValue {
@@ -52,14 +36,6 @@ interface OperatorInfo {
   values: OperandValue[];
 }
 
-type RankMap = {
-  everything: number;
-  function: number;
-  null: number;
-  object: number;
-  undefined: number;
-};
-
 class ExpressionSorter {
   // The list of operators we can flip around without actually causing logical differences
   // https://caligari.dartmouth.edu/doc/ibmcxx/en_US/doc/language/ref/ruclxbin.htm
@@ -68,7 +44,6 @@ class ExpressionSorter {
   private comments;
   private expression;
   private fileContents: string;
-  private groupRanks: RankMap;
   private options: SortExpressionOptionsRequired;
 
   constructor(
@@ -81,7 +56,6 @@ class ExpressionSorter {
     this.comments = comments;
     this.fileContents = fileContents;
     this.options = options;
-    this.groupRanks = this.getAllRanks();
   }
 
   public sort() {
@@ -206,7 +180,7 @@ class ExpressionSorter {
       accumulatedOperator: operand.accumulatedOperator,
       values: [
         {
-          groupIndex: this.groupRanks.everything,
+          groupIndex: this.getAllRanks().everything,
           range: [rangeMin, rangeMax],
           value: newFileContents
         }
@@ -231,51 +205,11 @@ class ExpressionSorter {
     return sortedValues;
   }
 
-  private getAllRanks(): RankMap {
-    // Sort them by name
-    let everythingRank = this.options.groups.indexOf("*");
-    if (everythingRank === -1) {
-      everythingRank = this.options.groups.length;
-    }
-    let nullRank = this.options.groups.indexOf("null");
-    if (nullRank === -1) {
-      nullRank = everythingRank;
-    }
-    let undefinedRank = this.options.groups.indexOf("undefined");
-    if (undefinedRank === -1) {
-      undefinedRank = everythingRank;
-    }
-    let objectRank = this.options.groups.indexOf("object");
-    if (objectRank === -1) {
-      objectRank = everythingRank;
-    }
-    let functionRank = this.options.groups.indexOf("function");
-    if (functionRank === -1) {
-      functionRank = everythingRank;
-    }
-
-    return {
-      everything: everythingRank,
-      function: functionRank,
-      null: nullRank,
-      object: objectRank,
-      undefined: undefinedRank
-    };
+  private getGroupIndex(a: any): number {
+    return getObjectTypeRank(a, this.options.groups);
   }
 
-  private getGroupIndex(a: any): number {
-    if (a.type.indexOf("Function") !== -1) {
-      return this.groupRanks.function;
-    }
-    if (a.type.indexOf("Object") !== -1) {
-      return this.groupRanks.object;
-    }
-    if (a.raw === "null") {
-      return this.groupRanks.null;
-    }
-    if (a.name === "undefined") {
-      return this.groupRanks.undefined;
-    }
-    return this.groupRanks.everything;
+  private getAllRanks() {
+    return getObjectTypeRanks(this.options.groups);
   }
 }

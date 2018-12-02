@@ -18,8 +18,7 @@ export class Reprinter implements ILanguage {
       temporaryFileContents,
       {
         isHelpMode: options.isHelpMode,
-        parser: "typescript",
-        sortTypeAnnotations: ["*"]
+        parser: "typescript"
       }
     );
     return rewritten.substring(prefix.length);

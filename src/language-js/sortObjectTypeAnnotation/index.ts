@@ -73,14 +73,15 @@ function getSortGroupIndex(
       property.value.id.name === "undefined"
     ) {
       return ranks.undefined;
-      // } else if (property.value.type === "ObjectTypeAnnotation") {
-      //   return ranks.object;
     } else if (
       property.value.type === "FunctionTypeAnnotation" ||
       property.value.type === "ArrowFunctionExpression"
     ) {
       return ranks.function;
     }
+    // Note: We purposefully skip objects in this situation as sorting them
+    // was found to be confusing
+    // https://github.com/snowcoders/sortier/issues/218
   }
 
   return ranks.everything;

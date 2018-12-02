@@ -15,29 +15,12 @@ export function run(args: string[]) {
       return -1;
     }
 
-    const explorer = cosmiconfig("sortier");
-    const result = explorer.searchSync();
-    let options = result == null ? {} : (result.config as ReprinterOptions);
-
-    // Set the LogUtils verbosity based on options
-    if (options.isHelpMode) {
-      LogUtils.setVerbosity(LoggerVerboseOption.Diagnostic);
-    }
-    if (options.logLevel != null) {
-      switch (options.logLevel) {
-        case "diagnostic":
-          LogUtils.setVerbosity(LoggerVerboseOption.Diagnostic);
-          break;
-        case "quiet":
-          LogUtils.setVerbosity(LoggerVerboseOption.Quiet);
-          break;
-        default:
-          LogUtils.setVerbosity(LoggerVerboseOption.Normal);
-          break;
-      }
-    }
-
+    let options: null | ReprinterOptions = null;
     sync(args).map(filePath => {
+      if (options == null) {
+        options = getConfig(filePath);
+      }
+
       try {
         Reprinter.rewrite(filePath, options);
       } catch (e) {
@@ -53,4 +36,30 @@ ${e}`
 
     return 0;
   }
+}
+
+function getConfig(filename: string): ReprinterOptions {
+  const explorer = cosmiconfig("sortier");
+  const result = explorer.searchSync(filename);
+  let options = result == null ? {} : (result.config as ReprinterOptions);
+
+  // Set the LogUtils verbosity based on options
+  if (options.isHelpMode) {
+    LogUtils.setVerbosity(LoggerVerboseOption.Diagnostic);
+  }
+  if (options.logLevel != null) {
+    switch (options.logLevel) {
+      case "diagnostic":
+        LogUtils.setVerbosity(LoggerVerboseOption.Diagnostic);
+        break;
+      case "quiet":
+        LogUtils.setVerbosity(LoggerVerboseOption.Quiet);
+        break;
+      default:
+        LogUtils.setVerbosity(LoggerVerboseOption.Normal);
+        break;
+    }
+  }
+
+  return options;
 }

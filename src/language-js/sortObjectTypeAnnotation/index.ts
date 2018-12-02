@@ -73,8 +73,8 @@ function getSortGroupIndex(
       property.value.id.name === "undefined"
     ) {
       return ranks.undefined;
-    } else if (property.value.type === "ObjectTypeAnnotation") {
-      return ranks.object;
+      // } else if (property.value.type === "ObjectTypeAnnotation") {
+      //   return ranks.object;
     } else if (
       property.value.type === "FunctionTypeAnnotation" ||
       property.value.type === "ArrowFunctionExpression"

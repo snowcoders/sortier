@@ -2,6 +2,6 @@ export type Hello = {
   view: {
     harbor: "with boats",
     susnet: "with colors",
-  }
-  wonderful: "a",
+  },
+  wonderful: "a"
 }  

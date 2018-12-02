@@ -2,7 +2,7 @@ import { Comment } from "estree";
 
 import {
   getContextGroups,
-  getObjectTypeRank,
+  getObjectTypeRanks,
   getSpreadGroups,
   reorderValues,
   TypeAnnotationOption
@@ -63,5 +63,25 @@ function getSortGroupIndex(
   property,
   options: SortObjectTypeAnnotationOptions
 ): number {
-  return getObjectTypeRank(property.value, options.groups);
+  let ranks = getObjectTypeRanks(options.groups);
+
+  if (property.value != null) {
+    if (property.value.type === "NullLiteralTypeAnnotation") {
+      return ranks.null;
+    } else if (
+      property.value.type === "GenericTypeAnnotation" &&
+      property.value.id.name === "undefined"
+    ) {
+      return ranks.undefined;
+    } else if (property.value.type === "ObjectTypeAnnotation") {
+      return ranks.object;
+    } else if (
+      property.value.type === "FunctionTypeAnnotation" ||
+      property.value.type === "ArrowFunctionExpression"
+    ) {
+      return ranks.function;
+    }
+  }
+
+  return ranks.everything;
 }

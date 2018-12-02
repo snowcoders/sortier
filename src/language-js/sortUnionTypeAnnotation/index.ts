@@ -1,5 +1,5 @@
 import {
-  getObjectTypeRank,
+  getObjectTypeRanks,
   reorderValues,
   TypeAnnotationOption
 } from "../utilities/sort-utils";
@@ -63,7 +63,27 @@ class UnionTypeAnnotationSorter {
 
   private getSortOrderOfTypes() {
     let getRank = value => {
-      return getObjectTypeRank(value, this.options.groups);
+      let ranks = getObjectTypeRanks(this.options.groups);
+      if (
+        value.type === "NullLiteralTypeAnnotation" ||
+        value.type === "TSNullKeyword"
+      ) {
+        return ranks.null;
+      } else if (
+        (value.type === "GenericTypeAnnotation" &&
+          value.id.name === "undefined") ||
+        value.type === "TSUndefinedKeyword"
+      ) {
+        return ranks.undefined;
+      } else if (value.type === "ObjectTypeAnnotation") {
+        return ranks.object;
+      } else if (
+        value.type === "FunctionTypeAnnotation" ||
+        value.type === "ArrowFunctionExpression"
+      ) {
+        return ranks.function;
+      }
+      return ranks.everything;
     };
 
     let newTypes = this.unionTypeAnnotation.types.slice(0);

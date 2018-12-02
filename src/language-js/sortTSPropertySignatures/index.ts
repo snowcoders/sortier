@@ -2,7 +2,7 @@ import { Comment } from "estree";
 
 import {
   getContextGroups,
-  getObjectTypeRank,
+  getObjectTypeRanks,
   getSpreadGroups,
   reorderValues,
   TypeAnnotationOption
@@ -78,5 +78,15 @@ function getSortGroupIndex(
   property,
   options: SortTSPropertySignaturesOptions
 ): number {
-  return getObjectTypeRank(property, options.groups);
+  let ranks = getObjectTypeRanks(options.groups);
+
+  if (
+    property.type === "TSMethodSignature" ||
+    property.typeAnnotation.typeAnnotation.type === "TSFunctionType"
+  ) {
+    return ranks.function;
+  } else if (property.typeAnnotation.typeAnnotation.type === "TSTypeLiteral") {
+    return ranks.object;
+  }
+  return ranks.everything;
 }

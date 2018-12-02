@@ -1,5 +1,4 @@
 import {
-  getObjectTypeRank,
   getObjectTypeRanks,
   reorderValues,
   TypeAnnotationOption
@@ -206,7 +205,20 @@ class ExpressionSorter {
   }
 
   private getGroupIndex(a: any): number {
-    return getObjectTypeRank(a, this.options.groups);
+    let groupRanks = this.getAllRanks();
+    if (a.type.indexOf("Function") !== -1) {
+      return groupRanks.function;
+    }
+    if (a.type.indexOf("Object") !== -1) {
+      return groupRanks.object;
+    }
+    if (a.raw === "null") {
+      return groupRanks.null;
+    }
+    if (a.name === "undefined") {
+      return groupRanks.undefined;
+    }
+    return groupRanks.everything;
   }
 
   private getAllRanks() {

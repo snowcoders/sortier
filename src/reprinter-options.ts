@@ -1,7 +1,7 @@
-// TODO export this via the index.js
-import { SortClassContentsOptions } from "./language-js/sortClassContents";
+import { JavascriptReprinterOptions } from "./language-js";
 
-export interface ReprinterOptions {
+// TODO: v3.0.0 - Remove extends JavascriptReprinterOptions
+export interface ReprinterOptions extends JavascriptReprinterOptions {
   // Default "false". If true, prints out very verbose lines that sortier doesn't know how to handle so you can open Github issues about them
   isHelpMode?: boolean;
 
@@ -14,15 +14,6 @@ export interface ReprinterOptions {
   //  - "diagnostic" - All the above along with type information that sortier was unable to handle (great for opening bugs!)
   logLevel?: "diagnostic" | "normal" | "quiet";
 
-  // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
-  parser?: "flow" | "typescript";
-
-  // Default "source". The order you wish to sort import statements. Source is the path the import comes from. First specifier is the first item imported.
-  sortImportDeclarations?: "first-specifier" | "source";
-
-  // Default ["undefined", "null", "*", "object", "function"]. The order to sort object types when encountered.
-  sortTypeAnnotations?: ("null" | "undefined" | "*" | "function" | "object")[];
-
-  // Default undefined. If defined, class contents will be sorted based on the options provided. Turned off by default because it will sort over blank lines.
-  sortClassContents?: SortClassContentsOptions;
+  // Options for the javascript type languages
+  js?: JavascriptReprinterOptions;
 }

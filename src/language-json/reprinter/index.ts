@@ -16,7 +16,11 @@ export class Reprinter implements ILanguage {
     let rewritten = new JavascriptReprinter().getRewrittenContents(
       filename,
       temporaryFileContents,
-      { ...options, parser: "typescript" }
+      {
+        isHelpMode: options.isHelpMode,
+        parser: "typescript",
+        sortTypeAnnotations: ["*"]
+      }
     );
     return rewritten.substring(prefix.length);
   }

@@ -62,7 +62,6 @@ export function sortImportDeclarations(
             importSource.specifiers[0].local.name) ||
           "",
         originalIndex: overallIndex,
-        source: importSource.source.value,
         originalLocation: {
           end: {
             column: importSource.loc.end.column,
@@ -74,7 +73,8 @@ export function sortImportDeclarations(
             index: importSource.start,
             line: importSource.loc.start.line
           }
-        }
+        },
+        source: importSource.source.value
       });
     }
 

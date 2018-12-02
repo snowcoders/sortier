@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.3.1
+
+- Fixed missing dependency (angular-html-parser)
+
 ### 2.3.0
 
 - Added JSON sorting

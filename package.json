@@ -4,6 +4,7 @@
     "sortier": "./bin/index.js"
   },
   "dependencies": {
+    "angular-html-parser": "1.1.0",
     "cosmiconfig": "5.0.7",
     "flow-parser": "0.87.0",
     "fs": "0.0.1-security",
@@ -21,7 +22,6 @@
     "@types/mocha": "5.2.5",
     "@types/node": "10.12.11",
     "@types/sinon": "5.0.7",
-    "angular-html-parser": "1.1.0",
     "chai": "4.2.0",
     "coveralls": "^3.0.2",
     "husky": "1.2.0",
@@ -58,5 +58,5 @@
     "start": "npm run build && node bin/index.js",
     "test": "nyc npm run mocha"
   },
-  "version": "2.3.0"
+  "version": "2.3.1"
 }

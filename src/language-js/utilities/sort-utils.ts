@@ -1,4 +1,5 @@
 import { Comment } from "estree";
+import { ArrayUtils } from "../../utilities/array-utils";
 import { StringUtils } from "../../utilities/string-utils";
 
 export interface MinimumTypeInformation {
@@ -8,6 +9,77 @@ export interface MinimumTypeInformation {
 export interface ContextGroup {
   comments: Comment[];
   nodes: any[];
+}
+
+export type TypeAnnotationOption =
+  | "*"
+  | "function"
+  | "null"
+  | "object"
+  | "undefined";
+
+type RankMap = {
+  everything: number;
+  function: number;
+  null: number;
+  object: number;
+  undefined: number;
+};
+
+let defaultObjectTypeOrder: TypeAnnotationOption[] = [
+  "undefined",
+  "null",
+  "*",
+  "object",
+  "function"
+];
+let lastCalculatedRankOptions: undefined | TypeAnnotationOption[] = undefined;
+let lastCalculatedRankMap: undefined | RankMap = undefined;
+export function getObjectTypeRanks(options?: TypeAnnotationOption[]): RankMap {
+  // Use defaults if passed undefined
+  options = options || defaultObjectTypeOrder;
+
+  // Figure out if we can use the cache and recache if we can't
+  if (
+    lastCalculatedRankOptions != null &&
+    lastCalculatedRankMap != null &&
+    ArrayUtils.isEqual(lastCalculatedRankOptions, options)
+  ) {
+    return lastCalculatedRankMap;
+  } else {
+    lastCalculatedRankOptions = options;
+  }
+
+  // Determine the map
+  let everythingRank = options.indexOf("*");
+  if (everythingRank === -1) {
+    everythingRank = options.length;
+  }
+  let nullRank = options.indexOf("null");
+  if (nullRank === -1) {
+    nullRank = everythingRank;
+  }
+  let undefinedRank = options.indexOf("undefined");
+  if (undefinedRank === -1) {
+    undefinedRank = everythingRank;
+  }
+  let objectRank = options.indexOf("object");
+  if (objectRank === -1) {
+    objectRank = everythingRank;
+  }
+  let functionRank = options.indexOf("function");
+  if (functionRank === -1) {
+    functionRank = everythingRank;
+  }
+
+  lastCalculatedRankMap = {
+    everything: everythingRank,
+    function: functionRank,
+    null: nullRank,
+    object: objectRank,
+    undefined: undefinedRank
+  };
+  return lastCalculatedRankMap;
 }
 
 export function getSpreadGroups(

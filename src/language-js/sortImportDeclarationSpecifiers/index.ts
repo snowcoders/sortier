@@ -2,7 +2,6 @@ export type SortByExportOptionsGroups = "*" | "interfaces" | "types";
 
 export interface SortImportDeclarationSpecifiersOptions {
   groups: SortByExportOptionsGroups[];
-  orderBy: "name";
 }
 
 interface SingleSpecifier {
@@ -172,13 +171,11 @@ function ensureOptions(
 ): SortImportDeclarationSpecifiersOptions {
   if (options == null) {
     return {
-      groups: ["*", "interfaces", "types"],
-      orderBy: "name"
+      groups: ["*", "interfaces", "types"]
     };
   }
 
   return {
-    groups: options.groups || ["*", "interfaces", "types"],
-    orderBy: options.orderBy || "name"
+    groups: options.groups || ["*", "interfaces", "types"]
   };
 }

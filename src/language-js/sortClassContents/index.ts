@@ -1,4 +1,5 @@
 import { isArray } from "util";
+import { ArrayUtils } from "../../utilities/array-utils";
 import { MinimumTypeInformation, reorderValues } from "../utilities/sort-utils";
 
 export type SortClassContentsOptions = Partial<
@@ -267,13 +268,7 @@ class ClassContentsSorter {
     }
 
     //dedupe the overallCallOrder array
-    for (var i = 0; i < overallCallOrder.length; i++) {
-      for (var j = i + 1; j < overallCallOrder.length; j++) {
-        if (overallCallOrder[i] == overallCallOrder[j]) {
-          overallCallOrder.splice(j, 1);
-        }
-      }
-    }
+    ArrayUtils.dedupe(overallCallOrder);
 
     // Now go through all nodes, remove the root nodes and push them into the resulting
     // call order array in order based on overallCallOrder
@@ -359,6 +354,9 @@ class ClassContentsSorter {
         continue;
       }
       for (let property in node) {
+        if (property === "type" || property === "loc" || property === "range") {
+          continue;
+        }
         let value = node[property];
         if (value == null) {
           continue;

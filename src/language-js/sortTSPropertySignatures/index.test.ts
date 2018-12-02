@@ -74,7 +74,8 @@ describe("language-js/sortTSPropertySignatures", () => {
             let actual = sortTSPropertySignatures(
               parsed.body[0].declaration.body.body,
               parsed.comments,
-              input
+              input,
+              {}
             );
 
             expect(actual).to.equal(expected);

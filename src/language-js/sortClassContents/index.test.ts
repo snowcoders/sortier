@@ -106,6 +106,10 @@ describe("language-js/sortClassContents", () => {
         this.state = {date: new Date()};
       }
     
+      someHelperMethod() {
+        return <h2>It is {this.state.date.toLocaleTimeString()}.</h2>;
+      }
+    
       componentWillUnmount() {
     
       }
@@ -118,7 +122,7 @@ describe("language-js/sortClassContents", () => {
         return (
           <div>
             <h1>Hello, world!</h1>
-            <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+            {this.someHelperMethod()}
           </div>
         );
       }
@@ -142,9 +146,13 @@ describe("language-js/sortClassContents", () => {
         return (
           <div>
             <h1>Hello, world!</h1>
-            <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+            {this.someHelperMethod()}
           </div>
         );
+      }
+    
+      someHelperMethod() {
+        return <h2>It is {this.state.date.toLocaleTimeString()}.</h2>;
       }
     }`;
     let parsed = typescriptParse(input);
@@ -159,6 +167,82 @@ describe("language-js/sortClassContents", () => {
           "componentWillUnmount",
           "componentDidUnmount",
           "render"
+        ]
+      }
+    );
+
+    expect(actual).to.equal(expected);
+  });
+
+  it("Overrides reverse", () => {
+    let input = `
+    export class Clock {
+      constructor(props) {
+        super(props);
+        this.state = {date: new Date()};
+      }
+    
+      someHelperMethod() {
+        return <h2>It is {this.state.date.toLocaleTimeString()}.</h2>;
+      }
+    
+      componentWillUnmount() {
+    
+      }
+    
+      componentDidUnmount() {
+    
+      }
+    
+      render() {
+        return (
+          <div>
+            <h1>Hello, world!</h1>
+            {this.someHelperMethod()}
+          </div>
+        );
+      }
+    }`;
+    let expected = `
+    export class Clock {
+      constructor(props) {
+        super(props);
+        this.state = {date: new Date()};
+      }
+    
+      componentWillUnmount() {
+    
+      }
+    
+      componentDidUnmount() {
+    
+      }
+    
+      someHelperMethod() {
+        return <h2>It is {this.state.date.toLocaleTimeString()}.</h2>;
+      }
+    
+      render() {
+        return (
+          <div>
+            <h1>Hello, world!</h1>
+            {this.someHelperMethod()}
+          </div>
+        );
+      }
+    }`;
+    let parsed = typescriptParse(input);
+    let actual = sortClassContents(
+      parsed.body[0].declaration.body.body,
+      parsed.comments,
+      input,
+      {
+        isAscending: false,
+        overrides: [
+          "constructor",
+          "componentWillUnmount",
+          "componentDidUnmount",
+          "*"
         ]
       }
     );

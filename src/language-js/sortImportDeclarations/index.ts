@@ -1,8 +1,9 @@
 // Utils
 import { StringUtils } from "../../utilities/string-utils";
 
+export type SortImportDeclarationsOrderOption = "first-specifier" | "source";
 export interface SortImportDeclarationsOptions {
-  orderBy: "first-specifier" | "source";
+  orderBy: SortImportDeclarationsOrderOption;
 }
 
 interface SingleImportSource {

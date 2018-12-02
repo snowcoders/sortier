@@ -1,3 +1,4 @@
-import { Reprinter } from "./reprinter";
-
-export { Reprinter as JavascriptReprinter };
+export {
+  Reprinter as JavascriptReprinter,
+  ReprinterOptions as JavascriptReprinterOptions
+} from "./reprinter";

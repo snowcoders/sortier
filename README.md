@@ -2,11 +2,7 @@
 
 An opinionated Code Sorter
 
-[![npm (scoped)](https://img.shields.io/npm/v/@snowcoders/sortier.svg)](https://www.npmjs.com/package/@snowcoders/sortier)
-
-[![CircleCI branch](https://img.shields.io/circleci/project/github/snowcoders/sortier/master.svg)](https://circleci.com/gh/snowcoders/sortier)
-
-[![Coverage Status](https://coveralls.io/repos/github/snowcoders/sortier/badge.svg?branch=master)](https://coveralls.io/github/snowcoders/sortier?branch=master)
+[![npm (scoped)](https://img.shields.io/npm/v/@snowcoders/sortier.svg)](https://www.npmjs.com/package/@snowcoders/sortier) [![CircleCI branch](https://img.shields.io/circleci/project/github/snowcoders/sortier/master.svg)](https://circleci.com/gh/snowcoders/sortier) [![Coverage Status](https://coveralls.io/repos/github/snowcoders/sortier/badge.svg?branch=master)](https://coveralls.io/github/snowcoders/sortier?branch=master)
 
 Sortier is an opinionated code sorter similar to how Prettier is a opinionated code formatter. Given a file, it parses then figures out how to sort and rearrange source code in a consistent way.
 
@@ -16,9 +12,10 @@ Examples of what sortier will sort in JavaScript:
 - Import specifiers
 - Union types
 - Keys and properties within objects and types
+- React JSX properties
 - And more!
 
-It should work with JavaScript ES6, Flow, Typescript, HTML and Json but if you find a piece of code that doesn't sort the way you expect it to, feel free to open an issue in Github!
+It should work with JavaScript ES6, Flow, Typescript, HTML and Json but if you find a piece of code that after sorting doesn't look as expected, feel free to open an issue in Github!
 
 ## How to run it
 
@@ -29,7 +26,7 @@ sortier [glob-file-path]
 ## General things to keep in mind
 
 - Blank lines are treated as context breaks... Sortier will not sort through them
-- Inline comments to the right of the code may not be sorted. We suggest putting comments above or infront of code.
+- Inline comments to the right of the code may not be sorted. We suggest putting comments above or in front of code.
 - Comments will stay with the line they comment (see Props example below)
 
 ### Example Input
@@ -103,20 +100,23 @@ Configuring your options
   // Default "false". If true, sortier will run but not rewrite any files. Great for testing to make sure your code base doesn't have any weird issues before rewriting code.
   isTestRun?: boolean;
 
+  // Configuration for javascript and javascript like languages
+  js: {
+    // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
+    parser?: "flow" | "typescript";
+
+    // Default "source". The order you wish to sort import statements. Source is the path the import comes from. First specifier is the first item imported.
+    sortImportDeclarations?: "first-specifier" | "source";
+
+    // Default ["undefined", "null", "*", "object", "function"]. The order to sort object types when encountered.
+    sortTypeAnnotations?: ("null" | "undefined" | "*" | "function" | "object")[];
+  }
+
   // Default "normal". This overrides `isHelpMode` if set.
   //  - "quiet" - No console logs
   //  - "normal" - General information (e.g. if sortier was unable to parse a file)
   //  - "diagnostic" - All the above along with type information that sortier was unable to handle (great for opening bugs!)
   logLevel?: "diagnostic" | "normal" | "quiet";
-
-  // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
-  parser?: "flow" | "typescript";
-
-  // Default "source". The order you wish to sort import statements. Source is the path the import comes from. First specifier is the first item imported.
-  sortImportDeclarations?: "first-specifier" | "source";
-
-  // Default ["undefined", "null", "*", "object", "function"]. The order to sort object types when encountered.
-  sortTypeAnnotations?: ("null" | "undefined" | "*" | "function" | "object")[];
 }
 ```
 
@@ -141,10 +141,13 @@ We went with a system similar to [prettier](https://prettier.io/docs/en/precommi
 
 ```
 {
-  "**/*.{js,ts,jsx,tsx}": [
-    "prettier --write", // Remove if you don't have prettier installed
-    "sortier",
-    "git add"
-  ]
+  "linters": {
+    "**/*.{ts,tsx,js,jsx,json,html}": [
+      "prettier --write", // Remove if you don't have prettier installed
+      "sortier",
+      "git add"
+    ]
+  },
+  "ignore": ["**/package-lock.json"]
 }
 ```

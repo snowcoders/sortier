@@ -6,7 +6,10 @@ import { parse as parseTypescript } from "../parsers/typescript";
 
 // Types of sorts
 import { sortExpression } from "../sortExpression";
-import { sortImportDeclarations } from "../sortImportDeclarations";
+import {
+  sortImportDeclarations,
+  SortImportDeclarationsOrderOption
+} from "../sortImportDeclarations";
 import { sortImportDeclarationSpecifiers } from "../sortImportDeclarationSpecifiers";
 import { sortJsxElement } from "../sortJsxElement";
 import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation";
@@ -18,9 +21,32 @@ import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation";
 import { isArray } from "util";
 import { ILanguage } from "../../language";
 import { ReprinterOptions } from "../../reprinter-options";
+import { ArrayUtils } from "../../utilities/array-utils";
 import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils";
 import { StringUtils } from "../../utilities/string-utils";
-import { sortClassContents } from "../sortClassContents";
+import {
+  sortClassContents,
+  SortClassContentsOptions
+} from "../sortClassContents";
+import { TypeAnnotationOption } from "../utilities/sort-utils";
+
+export type ReprinterOptions = Partial<ReprinterOptionsRequired>;
+
+export interface ReprinterOptionsRequired {
+  isHelpMode: boolean;
+
+  // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
+  parser?: "flow" | "typescript";
+
+  // Default "source". The order you wish to sort import statements. Source is the path the import comes from. First specifier is the first item imported.
+  sortImportDeclarations: SortImportDeclarationsOrderOption;
+
+  // Default ["undefined", "null", "*", "function"]. The order to sort object types when encountered.
+  sortTypeAnnotations?: TypeAnnotationOption[];
+
+  // Default undefined. If defined, class contents will be sorted based on the options provided. Turned off by default because it will sort over blank lines.
+  sortClassContents?: SortClassContentsOptions;
+}
 
 export class Reprinter implements ILanguage {
   public static readonly JAVASCRIPT_EXTENSIONS = [".js", ".jsx", ".js.txt"];
@@ -28,7 +54,7 @@ export class Reprinter implements ILanguage {
 
   private _filename: string;
   private _helpModeHasPrintedFilename: boolean;
-  private _options: ReprinterOptions;
+  private _options: ReprinterOptionsRequired;
 
   public getRewrittenContents(
     filename: string,
@@ -36,7 +62,7 @@ export class Reprinter implements ILanguage {
     options: ReprinterOptions
   ) {
     this._filename = filename;
-    this._options = options;
+    this._options = this.getValidatedOptions(options);
     this._helpModeHasPrintedFilename = false;
 
     let parser = this.getParser();
@@ -51,6 +77,30 @@ export class Reprinter implements ILanguage {
       ...Reprinter.JAVASCRIPT_EXTENSIONS,
       ...Reprinter.TYPESCRIPT_EXTENSIONS
     ]);
+  }
+
+  private getValidatedOptions(
+    appOptions: ReprinterOptions
+  ): ReprinterOptionsRequired {
+    let partialOptions = {
+      ...appOptions,
+      ...appOptions.js
+    };
+    let sortTypeAnnotations:
+      | undefined
+      | Array<TypeAnnotationOption> = undefined;
+    if (partialOptions.sortTypeAnnotations != null) {
+      sortTypeAnnotations = partialOptions.sortTypeAnnotations.slice();
+      ArrayUtils.dedupe(sortTypeAnnotations);
+    }
+
+    return {
+      isHelpMode: partialOptions.isHelpMode === true,
+      parser: partialOptions.parser,
+      sortClassContents: partialOptions.sortClassContents,
+      sortImportDeclarations: partialOptions.sortImportDeclarations || "source",
+      sortTypeAnnotations: sortTypeAnnotations
+    };
   }
 
   private getParser() {
@@ -127,14 +177,9 @@ export class Reprinter implements ILanguage {
             break;
           }
           case "BinaryExpression": {
-            fileContents = sortExpression(
-              node,
-              comments,
-              fileContents,
-              this._options.sortTypeAnnotations && {
-                groups: this._options.sortTypeAnnotations
-              }
-            );
+            fileContents = sortExpression(node, comments, fileContents, {
+              groups: this._options.sortTypeAnnotations
+            });
             break;
           }
           case "BlockStatement": {
@@ -329,7 +374,7 @@ export class Reprinter implements ILanguage {
               node,
               comments,
               fileContents,
-              this._options.sortTypeAnnotations && {
+              {
                 groups: this._options.sortTypeAnnotations
               }
             );
@@ -520,7 +565,7 @@ export class Reprinter implements ILanguage {
               node.members,
               comments,
               fileContents,
-              this._options.sortTypeAnnotations && {
+              {
                 groups: this._options.sortTypeAnnotations
               }
             );
@@ -536,7 +581,7 @@ export class Reprinter implements ILanguage {
               node,
               comments,
               fileContents,
-              this._options.sortTypeAnnotations && {
+              {
                 groups: this._options.sortTypeAnnotations
               }
             );
@@ -582,7 +627,7 @@ export class Reprinter implements ILanguage {
               node,
               comments,
               fileContents,
-              this._options.sortTypeAnnotations && {
+              {
                 groups: this._options.sortTypeAnnotations
               }
             );
@@ -604,7 +649,7 @@ export class Reprinter implements ILanguage {
               node,
               comments,
               fileContents,
-              this._options.sortTypeAnnotations && {
+              {
                 groups: this._options.sortTypeAnnotations
               }
             );
@@ -620,7 +665,7 @@ export class Reprinter implements ILanguage {
               node.body,
               comments,
               fileContents,
-              this._options.sortTypeAnnotations && {
+              {
                 groups: this._options.sortTypeAnnotations
               }
             );
@@ -652,7 +697,7 @@ export class Reprinter implements ILanguage {
               node,
               comments,
               fileContents,
-              this._options.sortTypeAnnotations && {
+              {
                 groups: this._options.sortTypeAnnotations
               }
             );
@@ -678,7 +723,6 @@ export class Reprinter implements ILanguage {
         }
       );
     }
-    // TODO Function sort - https://github.com/bryanrsmith/eslint-plugin-sort-class-members
 
     return fileContents;
   }

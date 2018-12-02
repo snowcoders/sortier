@@ -186,20 +186,6 @@ export class Reprinter implements ILanguage {
             fileContents = this.rewriteNodes(node.body, comments, fileContents);
             break;
           }
-          case "CallExpression":
-          case "NewExpression": {
-            fileContents = this.rewriteNodes(
-              node.arguments,
-              comments,
-              fileContents
-            );
-            nodes.push(node.callee);
-            break;
-          }
-          case "CatchClause": {
-            nodes.push(node.body);
-            break;
-          }
           case "BreakStatement":
           case "ContinueStatement":
           case "DebuggerStatement":
@@ -214,6 +200,20 @@ export class Reprinter implements ILanguage {
           case "UnaryExpression":
           case "VoidTypeAnnotation": {
             // Skip since there isn't anything for us to sort
+            break;
+          }
+          case "CallExpression":
+          case "NewExpression": {
+            fileContents = this.rewriteNodes(
+              node.arguments,
+              comments,
+              fileContents
+            );
+            nodes.push(node.callee);
+            break;
+          }
+          case "CatchClause": {
+            nodes.push(node.body);
             break;
           }
           case "ClassBody": {

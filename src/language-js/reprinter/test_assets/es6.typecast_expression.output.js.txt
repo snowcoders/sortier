@@ -1,0 +1,7 @@
+let result = ({
+      a: "a",
+      b: "B"
+} : {
+      a: string,
+      b: string
+});

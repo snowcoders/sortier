@@ -186,21 +186,6 @@ export class Reprinter implements ILanguage {
             fileContents = this.rewriteNodes(node.body, comments, fileContents);
             break;
           }
-          case "BreakStatement":
-          case "ContinueStatement":
-          case "DebuggerStatement":
-          case "EmptyStatement":
-          case "Literal":
-          case "RestProperty":
-          case "SpreadElement":
-          case "TaggedTemplateExpression":
-          case "TemplateLiteral":
-          case "ThisExpression":
-          case "UnaryExpression":
-          case "VoidTypeAnnotation": {
-            // Skip since there isn't anything for us to sort
-            break;
-          }
           case "CallExpression":
           case "NewExpression": {
             fileContents = this.rewriteNodes(
@@ -213,6 +198,22 @@ export class Reprinter implements ILanguage {
           }
           case "CatchClause": {
             nodes.push(node.body);
+            break;
+          }
+          case "BreakStatement":
+          case "ContinueStatement":
+          case "DebuggerStatement":
+          case "EmptyStatement":
+          case "Literal":
+          case "RestProperty":
+          case "SpreadElement":
+          case "Super":
+          case "TaggedTemplateExpression":
+          case "TemplateLiteral":
+          case "ThisExpression":
+          case "UnaryExpression":
+          case "VoidTypeAnnotation": {
+            // Skip since there isn't anything for us to sort
             break;
           }
           case "ClassBody": {
@@ -403,6 +404,10 @@ export class Reprinter implements ILanguage {
             );
             break;
           }
+          case "SpreadProperty": {
+            nodes.push(node.argument);
+            break;
+          }
           case "SwitchCase": {
             fileContents = this.rewriteNodes(
               node.consequent,
@@ -437,6 +442,11 @@ export class Reprinter implements ILanguage {
             if (node.finalizer != null) {
               nodes.push(node.finalizer);
             }
+            break;
+          }
+          case "TypeCastExpression": {
+            nodes.push(node.expression);
+            nodes.push(node.typeAnnotation);
             break;
           }
           case "UpdateExpression": {
@@ -476,6 +486,9 @@ export class Reprinter implements ILanguage {
               fileContents
             );
             fileContents = sortJsxElement(node, comments, fileContents);
+            break;
+          }
+          case "JSXText": {
             break;
           }
 

@@ -4,23 +4,23 @@
     "sortier": "./bin/index.js"
   },
   "dependencies": {
-    "angular-html-parser": "1.1.0",
+    "angular-html-parser": "1.2.0",
     "cosmiconfig": "5.0.7",
-    "flow-parser": "0.87.0",
+    "flow-parser": "0.88.0",
     "fs": "0.0.1-security",
     "globby": "8.0.1",
     "rimraf": "2.6.2",
     "typescript-estree": "6.0.0",
-    "typescript": "3.2.1"
+    "typescript": "3.2.2"
   },
   "description": "An opionated code sorter",
   "devDependencies": {
-    "@angular/compiler": "7.1.1",
+    "@angular/compiler": "7.1.2",
     "@types/chai": "4.1.7",
     "@types/estree": "0.0.39",
     "@types/globby": "6.1.0",
     "@types/mocha": "5.2.5",
-    "@types/node": "10.12.11",
+    "@types/node": "10.12.12",
     "@types/sinon": "5.0.7",
     "chai": "4.2.0",
     "coveralls": "^3.0.2",

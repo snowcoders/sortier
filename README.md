@@ -17,10 +17,12 @@ Examples of what sortier will sort in JavaScript:
 
 It should work with JavaScript ES6, Flow, Typescript, HTML and Json but if you find a piece of code that after sorting doesn't look as expected, feel free to open an issue in Github!
 
+[Documentation](http://snowcoders.github.io/sortier)
+
 ## How to run it
 
 ```
-sortier [glob-file-path]
+sortier "[glob-file-path]"
 ```
 
 ## General things to keep in mind

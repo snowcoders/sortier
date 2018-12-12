@@ -124,26 +124,32 @@ export function sortSwitchCases(
 
     // Now sort the actual switch groups
     let switchGroupsWithBreaksSorted = switchGroupsWithBreaks.slice();
-    switchGroupsWithBreaksSorted.sort((a: any, b: any) => {
-      let aFirst = a[0];
-      let bFirst = b[0];
-      if (aFirst == null) {
-        throw new Error("Null value for switch case statement");
-      }
-      if (bFirst == null) {
-        throw new Error("Null value for switch case statement");
-      }
-      let aTest = aFirst.test;
-      let bTest = bFirst.test;
-      if (aTest == null) {
-        throw new Error("Null value for switch case statement");
-      }
-      if (bTest == null) {
-        throw new Error("Null value for switch case statement");
-      }
+    let switchGroupToLowestCase = new Map();
+    for (let switchGroupsWithBreak of switchGroupsWithBreaksSorted) {
+      let lowestText: null | string = null;
+      for (let caseStatement of switchGroupsWithBreak) {
+        let test = caseStatement.test;
+        if (test == null) {
+          continue;
+        }
+        let testRange = test.range;
+        if (testRange == null) {
+          continue;
+        }
 
-      let aValue = fileContents.substring(aTest.range[0], aTest.range[1]);
-      let bValue = fileContents.substring(bTest.range[0], bTest.range[1]);
+        let text = fileContents.substring(testRange[0], testRange[1]);
+
+        if (lowestText == null || lowestText.localeCompare(text) > 0) {
+          lowestText = text;
+        }
+      }
+      if (lowestText != null) {
+        switchGroupToLowestCase.set(switchGroupsWithBreak, lowestText);
+      }
+    }
+    switchGroupsWithBreaksSorted.sort((a: any, b: any) => {
+      let aValue = switchGroupToLowestCase.get(a);
+      let bValue = switchGroupToLowestCase.get(b);
       if (aValue == null) {
         throw new Error("Null value for switch case statement");
       }

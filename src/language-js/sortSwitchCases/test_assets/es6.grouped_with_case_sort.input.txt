@@ -1,0 +1,11 @@
+// TODO: Add Github task number
+switch ('e') {
+  case 'c':
+  case 'a':
+  case 'e':
+    break;
+  case 'b':
+  case 'd':
+  default:
+    break;
+}

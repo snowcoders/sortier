@@ -63,6 +63,7 @@ class ExpressionSorter {
       return this.fileContents;
     }
 
+    // Check to see if we can actually sort this binary expression
     let operandStack = [this.expression];
     while (operandStack.length !== 0) {
       let operand = operandStack.pop();

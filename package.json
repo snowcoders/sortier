@@ -24,7 +24,7 @@
     "@types/sinon": "5.0.7",
     "chai": "4.2.0",
     "coveralls": "^3.0.2",
-    "husky": "1.2.0",
+    "husky": "1.2.1",
     "lint-staged": "8.1.0",
     "mocha": "5.2.0",
     "nyc": "13.1.0",

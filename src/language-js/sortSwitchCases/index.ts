@@ -15,10 +15,8 @@ export function sortSwitchCases(
   fileContents: string,
   options?: SortSwitchCaseOptions
 ) {
-  let newFileContents = fileContents.slice();
-
   if (cases.length <= 1) {
-    return newFileContents;
+    return fileContents;
   }
 
   // Never sort the default portion, it always comes last
@@ -35,6 +33,7 @@ export function sortSwitchCases(
     return fileContents;
   }
 
+  let newFileContents = fileContents.slice();
   let contextGroups = getContextGroups(cases, comments, fileContents);
 
   for (let x = 0; x < contextGroups.length; x++) {

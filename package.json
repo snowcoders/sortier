@@ -21,7 +21,7 @@
     "@types/globby": "6.1.0",
     "@types/mocha": "5.2.5",
     "@types/node": "10.12.15",
-    "@types/sinon": "5.0.7",
+    "@types/sinon": "7.0.0",
     "chai": "4.2.0",
     "coveralls": "^3.0.2",
     "husky": "1.2.1",
@@ -29,7 +29,7 @@
     "mocha": "5.2.0",
     "nyc": "13.1.0",
     "prettier": "1.15.3",
-    "sinon": "7.1.1",
+    "sinon": "7.2.2",
     "source-map-support": "0.5.9",
     "ts-node": "7.0.1",
     "tslint": "5.11.0"

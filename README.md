@@ -6,6 +6,8 @@ An opinionated Code Sorter
 
 Sortier is an opinionated code sorter similar to how Prettier is a opinionated code formatter. Given a file, it parses then figures out how to sort and rearrange source code in a consistent way.
 
+[Documentation](http://snowcoders.github.io/sortier)
+
 Examples of what sortier will sort in JavaScript:
 
 - Import statements
@@ -20,7 +22,7 @@ It should work with JavaScript ES6, Flow, Typescript, HTML and Json but if you f
 ## How to run it
 
 ```
-sortier [glob-file-path]
+sortier "[glob-file-path]"
 ```
 
 ## General things to keep in mind
@@ -81,73 +83,14 @@ export type Props = {
 
 ## Options
 
-We use [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) to determine the current config settings which means you can use
+- [Configuration](https://snowcoders.github.io/sortier/#/configuration)
 
-- a sortier property in your package.json
-- a .sortierrc
-- a sortier.config.js
+- [General options](https://snowcoders.github.io/sortier/#/options-general)
 
-Configuring your options
-
-- All sorts are turned on by default (or by setting it to undefined)
-- All sorts can be turned off by setting their options to null
-
-```
-{
-  // Default "false". If true, prints out very verbose lines that sortier doesn't know how to handle so you can open Github issues about them
-  isHelpMode?: boolean;
-
-  // Default "false". If true, sortier will run but not rewrite any files. Great for testing to make sure your code base doesn't have any weird issues before rewriting code.
-  isTestRun?: boolean;
-
-  // Configuration for javascript and javascript like languages
-  js: {
-    // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
-    parser?: "flow" | "typescript";
-
-    // Default "source". The order you wish to sort import statements. Source is the path the import comes from. First specifier is the first item imported.
-    sortImportDeclarations?: "first-specifier" | "source";
-
-    // Default ["undefined", "null", "*", "object", "function"]. The order to sort object types when encountered.
-    sortTypeAnnotations?: ("null" | "undefined" | "*" | "function" | "object")[];
-  }
-
-  // Default "normal". This overrides `isHelpMode` if set.
-  //  - "quiet" - No console logs
-  //  - "normal" - General information (e.g. if sortier was unable to parse a file)
-  //  - "diagnostic" - All the above along with type information that sortier was unable to handle (great for opening bugs!)
-  logLevel?: "diagnostic" | "normal" | "quiet";
-}
-```
+- [Javascript/Flow/Typescript options](https://snowcoders.github.io/sortier/#/options-js)
 
 And more to come!
 
 ## Pre-commit Hook
 
-We went with a system similar to [prettier](https://prettier.io/docs/en/precommit.html) so hopefully you have already picked a solution and can keep going with it. If not, this repository uses `lint-staged` and `husky`
-
-1. Run `npm install --save-dev lint-staged husky`
-2. Create a `.huskyrc` file with the contents
-
-```
-{
-  "hooks": {
-    "pre-commit": "lint-staged"
-  }
-}
-```
-
-2. Create a `.lintstagedrc` file with the contents
-
-```
-{
-  "linters": {
-    "**/*.{ts,tsx,js,jsx,json,html}": [
-      "prettier --write", // Remove if you don't have prettier installed
-      "sortier",
-      "git add"
-    ]
-  },
-  "ignore": ["**/package-lock.json"]
-}
-```
+See our [Install](https://snowcoders.github.io/sortier/#/install) documentation

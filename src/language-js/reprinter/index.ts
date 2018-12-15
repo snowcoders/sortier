@@ -33,8 +33,6 @@ import { TypeAnnotationOption } from "../utilities/sort-utils";
 export type ReprinterOptions = Partial<ReprinterOptionsRequired>;
 
 export interface ReprinterOptionsRequired {
-  isHelpMode: boolean;
-
   // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
   parser?: "flow" | "typescript";
 
@@ -95,7 +93,6 @@ export class Reprinter implements ILanguage {
     }
 
     return {
-      isHelpMode: partialOptions.isHelpMode === true,
       parser: partialOptions.parser,
       sortClassContents: partialOptions.sortClassContents,
       sortImportDeclarations: partialOptions.sortImportDeclarations || "source",
@@ -741,10 +738,6 @@ export class Reprinter implements ILanguage {
   }
 
   private printHelpModeInfo(item, fileContents: string) {
-    if (this._options.isHelpMode !== true) {
-      return;
-    }
-
     if (!this._helpModeHasPrintedFilename) {
       LogUtils.log(LoggerVerboseOption.Diagnostic, "");
       LogUtils.log(LoggerVerboseOption.Diagnostic, this._filename);

@@ -17,7 +17,6 @@ export class Reprinter implements ILanguage {
       filename,
       temporaryFileContents,
       {
-        isHelpMode: options.isHelpMode,
         parser: "typescript"
       }
     );

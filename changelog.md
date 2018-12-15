@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 2.3.2
+
 - Added documentation website and referenced it from readme.md
 - Fixed bug regarding case statement sorting within a switch statement
 

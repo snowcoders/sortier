@@ -1,20 +1,13 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
     "noImplicitAny": false,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "outDir": "./dist/",
-    "preserveConstEnums": true,
     "sourceMap": true,
-    "strictNullChecks": true,
     "target": "es2015"
   },
+  "extends": "@snowcoders/renovate-config",
   "include": ["./src/**/*.ts", "./src/**/*.tsx"]
 }

@@ -1,9 +1,0 @@
-{
-  isTestRun: false,
-  logLevel: "diagnostic",
-  js: {
-    sortClassContents: {
-      order: "usage"
-    }
-  }
-}

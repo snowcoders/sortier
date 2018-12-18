@@ -3,6 +3,7 @@ import { parse as scssParse } from "postcss-scss";
 import { ILanguage } from "../../language";
 import { ReprinterOptions } from "../../reprinter-options";
 import { StringUtils } from "../../utilities/string-utils";
+import { sortDeclarations, SortDeclarationsOptions } from "../sortDeclarations";
 
 export type ReprinterOptions = Partial<ReprinterOptionsRequired>;
 
@@ -11,7 +12,7 @@ export interface ReprinterOptionsRequired {
   parser?: "less" | "scss";
 
   // Default undefined. If defined, this will override the default sort and these properties will be ordered as found in the list.
-  overrides: string[];
+  sortDeclarations: SortDeclarationsOptions;
 }
 
 export class Reprinter implements ILanguage {
@@ -32,14 +33,12 @@ export class Reprinter implements ILanguage {
   ) {
     this.options = this.getValidatedOptions(options);
 
-    let ast = this.getParser(filename)(fileContents, { canSelfClose: true });
+    let parser = this.getParser(filename);
+    let ast = parser(fileContents, {
+      sourcesContent: true
+    });
 
-    return this.sortNode(
-      {
-        children: ast.rootNodes
-      },
-      fileContents
-    );
+    return this.sortNode(ast, fileContents);
   }
 
   private getValidatedOptions(
@@ -48,7 +47,9 @@ export class Reprinter implements ILanguage {
     let partialOptions = appOptions.css;
 
     return {
-      overrides: [],
+      sortDeclarations: {
+        overrides: []
+      },
       ...partialOptions
     };
   }
@@ -63,19 +64,19 @@ export class Reprinter implements ILanguage {
     }
 
     // If the user didn't override the parser type, try to infer it
-    let isTypescript = StringUtils.stringEndsWithAny(
+    let isLess = StringUtils.stringEndsWithAny(
       filename,
       Reprinter.LESS_EXTENSIONS
     );
-    if (isTypescript) {
+    if (isLess) {
       return lessParse;
     }
 
-    let isJavascript = StringUtils.stringEndsWithAny(
+    let isScss = StringUtils.stringEndsWithAny(
       filename,
       Reprinter.SCSS_EXTENSIONS
     );
-    if (isJavascript) {
+    if (isScss) {
       return scssParse;
     }
 
@@ -90,13 +91,26 @@ export class Reprinter implements ILanguage {
   }
 
   private sortNode(node: /* Document */ any, fileContents: string): string {
-    //fileContents = sortAttributes(node, fileContents);
+    let rules: any[] = [];
 
-    if (node.children != null) {
-      for (let child of node.children) {
-        fileContents = this.sortNode(child, fileContents);
+    for (let child of node.nodes) {
+      switch (child.type) {
+        case "rule":
+          rules.push(child);
+          break;
       }
     }
+
+    for (let rule of rules) {
+      fileContents = this.sortNode(rule, fileContents);
+    }
+
+    fileContents = sortDeclarations(
+      node,
+      fileContents,
+      this.options.sortDeclarations
+    );
+
     return fileContents;
   }
 }

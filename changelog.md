@@ -1,5 +1,7 @@
 ### Unreleased
 
+- Added `css`, `scss` and `less` file support
+
 ### 2.3.2
 
 - Added documentation website and referenced it from readme.md

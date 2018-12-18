@@ -1,3 +1,4 @@
+import { CssReprinterOptions } from "./language-css";
 import { JavascriptReprinterOptions } from "./language-js";
 
 // TODO: v3.0.0 - Remove extends JavascriptReprinterOptions
@@ -17,4 +18,7 @@ export interface ReprinterOptions extends JavascriptReprinterOptions {
 
   // Options for the javascript type languages
   js?: JavascriptReprinterOptions;
+
+  // Options for the javascript type languages
+  css?: CssReprinterOptions;
 }

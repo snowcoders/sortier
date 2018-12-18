@@ -89,6 +89,8 @@ export type Props = {
 
 - [Javascript/Flow/Typescript options](https://snowcoders.github.io/sortier/#/options-js)
 
+- [Css/Scss/Less options](https://snowcoders.github.io/sortier/#/options-css)
+
 And more to come!
 
 ## Pre-commit Hook

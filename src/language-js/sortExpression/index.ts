@@ -1,6 +1,6 @@
+import { reorderValues } from "../../utilities/sort-utils";
 import {
   getObjectTypeRanks,
-  reorderValues,
   TypeAnnotationOption
 } from "../utilities/sort-utils";
 

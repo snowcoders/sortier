@@ -2,10 +2,10 @@ import { BaseExpression, Comment, SwitchCase } from "estree";
 
 import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils";
 import {
+  BaseNode,
   getContextGroups,
-  MinimumTypeInformation,
   reorderValues
-} from "../utilities/sort-utils";
+} from "../../utilities/sort-utils";
 
 export interface SortSwitchCaseOptions {}
 
@@ -199,7 +199,7 @@ function caseGroupsToMinimumTypeinformations(
     if (firstRange == null || lastRange == null) {
       throw new Error("Range is null");
     }
-    let result: MinimumTypeInformation = {
+    let result: BaseNode = {
       range: [firstRange[0], lastRange[1]]
     };
     return result;

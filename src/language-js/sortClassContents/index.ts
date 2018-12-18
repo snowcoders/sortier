@@ -1,6 +1,6 @@
 import { isArray } from "util";
 import { ArrayUtils } from "../../utilities/array-utils";
-import { MinimumTypeInformation, reorderValues } from "../utilities/sort-utils";
+import { BaseNode, reorderValues } from "../../utilities/sort-utils";
 
 export type SortClassContentsOptions = Partial<
   SortClassContentsOptionsRequired
@@ -24,7 +24,7 @@ enum KindOption {
   Method
 }
 
-interface MinimumSortInformation extends MinimumTypeInformation {
+interface MinimumSortInformation extends BaseNode {
   accessModifier: AccessibilityOption;
   isStatic: boolean;
   key: string;

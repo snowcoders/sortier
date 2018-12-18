@@ -1,22 +1,25 @@
 import { StringUtils } from "./string-utils";
 
-export interface MinimumTypeInformation {
-  range: [number, number];
+export interface BaseNode {
+  range?: [number, number];
 }
 
-export interface MinimumCommentTypeInformation extends MinimumTypeInformation {
+export interface Comment extends BaseNode {
   type: "Block" | "Line";
 }
 
-export interface ContextGroup<NodeType, CommentType> {
+export interface ContextGroup<
+  NodeType extends BaseNode,
+  CommentType extends Comment
+> {
   comments: CommentType[];
   nodes: NodeType[];
 }
 
 // Blank lines between cases are considered Context breakers... we don't sort through them.
 export function getContextGroups<
-  NodeType extends MinimumTypeInformation,
-  CommentType extends MinimumCommentTypeInformation
+  NodeType extends BaseNode,
+  CommentType extends Comment
 >(
   nodes: NodeType[],
   comments: CommentType[],
@@ -81,6 +84,9 @@ export function getContextGroups<
     // Nodes
     while (nodeIndex < nodes.length) {
       let range = nodes[nodeIndex].range;
+      if (range == null) {
+        continue;
+      }
       if (contextBarrierIndex < range[1]) {
         break;
       }
@@ -143,8 +149,8 @@ export function getContextGroups<
 }
 
 export function reorderValues<
-  NodeType extends MinimumTypeInformation,
-  CommentType extends MinimumCommentTypeInformation
+  NodeType extends BaseNode,
+  CommentType extends Comment
 >(
   fileContents: string,
   comments: CommentType[],
@@ -243,8 +249,8 @@ export function reorderValues<
 }
 
 function getCommentRangeForSpecifier<
-  NodeType extends MinimumTypeInformation,
-  CommentType extends MinimumCommentTypeInformation
+  NodeType extends BaseNode,
+  CommentType extends Comment
 >(
   fileContents: string,
   comments: CommentType[],
@@ -252,6 +258,9 @@ function getCommentRangeForSpecifier<
 ): [number, number] {
   // Determine where the specifier line starts
   let range = specifier.range;
+  if (range == null) {
+    throw new Error("Specifier range cannot be null");
+  }
 
   let specifierComments = getCommentsForSpecifier(
     fileContents,
@@ -304,8 +313,8 @@ function getCommentRangeForSpecifier<
 
 // Currently we only accept comments before the specifier.
 function getCommentsForSpecifier<
-  NodeType extends MinimumTypeInformation,
-  CommentType extends MinimumCommentTypeInformation
+  NodeType extends BaseNode,
+  CommentType extends Comment
 >(
   fileContents: string,
   comments: CommentType[],
@@ -319,6 +328,9 @@ function getCommentsForSpecifier<
 
   // Determine the starting location of the comment
   let lastRange = specifier.range;
+  if (lastRange == null) {
+    return [];
+  }
   let latestCommentIndex: number = -1;
   for (let index = 0; index < comments.length; index++) {
     let commentRange = comments[index].range;
@@ -371,10 +383,7 @@ function getCommentsForSpecifier<
   return comments.slice(earliestCommentIndex, latestCommentIndex + 1);
 }
 
-function isValidComment(
-  fileContents: string,
-  comment: MinimumCommentTypeInformation
-) {
+function isValidComment(fileContents: string, comment: Comment) {
   let commentRange = comment.range;
   if (commentRange == null) {
     return false;

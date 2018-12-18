@@ -1,10 +1,9 @@
 import { Comment } from "estree";
 
+import { getContextGroups, reorderValues } from "../../utilities/sort-utils";
 import {
-  getContextGroups,
   getObjectTypeRanks,
   getSpreadGroups,
-  reorderValues,
   TypeAnnotationOption
 } from "../utilities/sort-utils";
 

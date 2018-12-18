@@ -1,7 +1,7 @@
 import {
+  BaseNode,
+  Comment,
   getContextGroups,
-  MinimumCommentTypeInformation,
-  MinimumTypeInformation,
   reorderValues
 } from "../../utilities/sort-utils";
 
@@ -9,7 +9,7 @@ export interface SortDeclarationsOptions {
   overrides: string[];
 }
 
-interface AttrInfo extends MinimumTypeInformation {
+interface AttrInfo extends BaseNode {
   prop: string;
   source: string;
 }
@@ -59,7 +59,7 @@ export function sortDeclarations(
     return result;
   });
   // Get the range locations of all declarations
-  let commentInfos: MinimumCommentTypeInformation[] = comments.map(value => {
+  let commentInfos: Comment[] = comments.map(value => {
     let startOffset =
       columnIndexToOffset[value.source.start.line - 2] +
       value.source.start.column;
@@ -67,7 +67,7 @@ export function sortDeclarations(
       columnIndexToOffset[value.source.end.line - 2] + value.source.end.column;
     let source = fileContents.substring(startOffset, endOffset);
     let isBlock = source.trim().startsWith("/*");
-    let result: MinimumCommentTypeInformation = {
+    let result: Comment = {
       range: [startOffset, endOffset],
       type: isBlock ? "Block" : "Line"
     };

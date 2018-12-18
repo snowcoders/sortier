@@ -4,7 +4,7 @@ import { getContextGroups } from "./sort-utils";
 
 import { parse as flowParse } from "../language-js/parsers/flow";
 
-describe("language-js/utilities/sort-utils", () => {
+describe("utilities/sort-utils", () => {
   it("Empty arrays", () => {
     let nodes = [];
     let comments = [];

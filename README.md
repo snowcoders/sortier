@@ -88,6 +88,7 @@ export type Props = {
 - [General options](https://snowcoders.github.io/sortier/#/options-general)
 
 - [Javascript/Flow/Typescript options](https://snowcoders.github.io/sortier/#/options-js)
+
 - [Css/Scss/Less options](https://snowcoders.github.io/sortier/#/options-css)
 
 And more to come!

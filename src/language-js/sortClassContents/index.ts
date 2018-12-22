@@ -362,13 +362,12 @@ class ClassContentsSorter {
           continue;
         } else if (
           value != null &&
-          value.callee != null &&
-          value.callee.object != null &&
-          value.callee.object.type === "ThisExpression" &&
-          value.callee.type === "MemberExpression" &&
-          value.callee.property.name != null
+          value.object != null &&
+          value.object.type === "ThisExpression" &&
+          value.type === "MemberExpression" &&
+          value.property.name != null
         ) {
-          memberExpressionOrder.push(value.callee.property.name);
+          memberExpressionOrder.push(value.property.name);
         } else if (value.type != null) {
           memberExpressionOrder.push(...this.generateCallOrderOld([value]));
         } else if (isArray(value)) {

@@ -1,6 +1,7 @@
 ### Unreleased
 
 - Added `css`, `scss` and `less` file support
+- Upgraded typescript-estree@7.0.0
 
 ### 2.3.2
 

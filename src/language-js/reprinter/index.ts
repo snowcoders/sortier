@@ -561,6 +561,7 @@ export class Reprinter implements ILanguage {
             }
             break;
           }
+          case "TSTypeAliasDeclaration":
           case "TSTypeAnnotation": {
             nodes.push(node.typeAnnotation);
             break;

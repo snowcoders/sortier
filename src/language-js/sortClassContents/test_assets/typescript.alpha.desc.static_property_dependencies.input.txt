@@ -5,9 +5,9 @@ export class Reprinter {
     ".scss",
     ".scss.txt"
   ];
-  public static readonly LESS_EXTENSIONS = [".less", ".less.txt"];
   public static readonly MIX_EXTENSIONS = [
     ...Reprinter.SCSS_EXTENSIONS,
     ...Reprinter.LESS_EXTENSIONS
   ];
+  public static readonly LESS_EXTENSIONS = [".less", ".less.txt"];
 }

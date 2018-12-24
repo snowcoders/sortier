@@ -174,10 +174,8 @@ class ClassContentsSorter {
     comments: any,
     fileContents: string
   ) {
-    let callOrder: null | string[] = null;
-    if (this.options.order === "usage") {
-      callOrder = this.generateCallOrder();
-    }
+    let isUsage = this.options.order === "usage";
+    let callOrder = this.getClassItemOrder();
 
     let sortedTypes = classItems.slice();
     sortedTypes.sort((a, b) => {
@@ -192,7 +190,13 @@ class ClassContentsSorter {
       }
 
       let callComparison = 0;
-      if (callOrder != null) {
+      if (
+        isUsage ||
+        (a.isStatic === true &&
+          a.kind === KindOption.Property &&
+          b.isStatic === true &&
+          b.kind === KindOption.Property)
+      ) {
         callComparison = this.compareMethodCallers(a, b, callOrder);
         if (callComparison !== 0) {
           return callComparison;
@@ -213,13 +217,38 @@ class ClassContentsSorter {
     return reorderValues(fileContents, comments, classItems, sortedTypes);
   }
 
-  private generateCallOrder(): string[] {
-    // Sort the initial list as in the case of ties, we want to go with alphabetical always
-    let sortedClassItems = this.classItems.slice();
-    sortedClassItems.sort((a, b) => {
+  private getClassItemOrder() {
+    // Split the list into static properties and everything else as static properties cause build failures when depending on one another out of order
+    let staticProperties: any[] = [];
+    let everythingElse: any[] = [];
+    for (let classItem of this.classItems) {
+      if (classItem.static === true && classItem.type === "ClassProperty") {
+        staticProperties.push(classItem);
+      } else {
+        everythingElse.push(classItem);
+      }
+    }
+
+    staticProperties.sort((a, b) => {
+      return a.key.name.localeCompare(b.key.name);
+    });
+    everythingElse.sort((a, b) => {
       return a.key.name.localeCompare(b.key.name);
     });
 
+    let staticOrder = this.orderItems(staticProperties, true, true);
+    let everythingElseOrder = this.orderItems(everythingElse, false, false);
+    let totalCallOrder = [...staticOrder, ...everythingElseOrder];
+
+    ArrayUtils.dedupe(totalCallOrder);
+    return totalCallOrder;
+  }
+
+  private orderItems(
+    sortedClassItems: any[],
+    isSiblingSort: boolean,
+    isStaticProperties: boolean
+  ): string[] {
     // Storage of the overall call order as read from top to bottom, left to right
     let overallCallOrder: string[] = [];
     // Map of method names to parent information
@@ -228,7 +257,13 @@ class ClassContentsSorter {
     // Figure out what parents which methods have and break any cycles
     for (let classItem of sortedClassItems) {
       let methodName = classItem.key.name;
-      let calls = this.generateCallOrderOld([classItem]);
+      let calls = this.getCalleeOrder([classItem]);
+      if (isSiblingSort) {
+        calls.sort();
+        if (this.options.order === "alpha" && !this.options.isAscending) {
+          calls.reverse();
+        }
+      }
       overallCallOrder.push(...calls);
       for (let call of calls) {
         if (call === methodName) {
@@ -288,7 +323,7 @@ class ClassContentsSorter {
         return aIndex - bIndex;
       });
 
-      if (this.options.isAscending) {
+      if (!isStaticProperties && this.options.isAscending) {
         resultingCallOrder.push(...nextGroup);
       } else {
         resultingCallOrder.unshift(...nextGroup);
@@ -347,7 +382,7 @@ class ClassContentsSorter {
     return methodToCallers.indexOf(a.key) - methodToCallers.indexOf(b.key);
   }
 
-  private generateCallOrderOld(nodes: any[]) {
+  private getCalleeOrder(nodes: any[]) {
     let memberExpressionOrder: string[] = [];
     for (let node of nodes) {
       if (node == null) {
@@ -363,15 +398,14 @@ class ClassContentsSorter {
         } else if (
           value != null &&
           value.object != null &&
-          value.object.type === "ThisExpression" &&
           value.type === "MemberExpression" &&
           value.property.name != null
         ) {
           memberExpressionOrder.push(value.property.name);
         } else if (value.type != null) {
-          memberExpressionOrder.push(...this.generateCallOrderOld([value]));
+          memberExpressionOrder.push(...this.getCalleeOrder([value]));
         } else if (isArray(value)) {
-          memberExpressionOrder.push(...this.generateCallOrderOld(value));
+          memberExpressionOrder.push(...this.getCalleeOrder(value));
         }
       }
     }

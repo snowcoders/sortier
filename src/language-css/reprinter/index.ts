@@ -16,13 +16,13 @@ export interface ReprinterOptionsRequired {
 }
 
 export class Reprinter implements ILanguage {
+  public static readonly LESS_EXTENSIONS = [".less", ".less.txt"];
   public static readonly SCSS_EXTENSIONS = [
     ".css",
     ".css.txt",
     ".scss",
     ".scss.txt"
   ];
-  public static readonly LESS_EXTENSIONS = [".less", ".less.txt"];
 
   private options: ReprinterOptionsRequired;
 
@@ -39,6 +39,13 @@ export class Reprinter implements ILanguage {
     });
 
     return this.sortNode(ast, fileContents);
+  }
+
+  public isFileSupported(filename: string) {
+    return StringUtils.stringEndsWithAny(filename, [
+      ...Reprinter.SCSS_EXTENSIONS,
+      ...Reprinter.LESS_EXTENSIONS
+    ]);
   }
 
   private getValidatedOptions(
@@ -81,13 +88,6 @@ export class Reprinter implements ILanguage {
     }
 
     throw new Error("File not supported");
-  }
-
-  public isFileSupported(filename: string) {
-    return StringUtils.stringEndsWithAny(filename, [
-      ...Reprinter.SCSS_EXTENSIONS,
-      ...Reprinter.LESS_EXTENSIONS
-    ]);
   }
 
   private sortNode(node: /* Document */ any, fileContents: string): string {

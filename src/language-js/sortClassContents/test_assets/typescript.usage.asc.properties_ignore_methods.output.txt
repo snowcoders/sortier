@@ -1,0 +1,10 @@
+// The order of the property usage within a method should not determine the order they are sorted
+export class Example {
+  private a: string;
+  private b: boolean;
+
+  public getRewrittenContents() {
+    this.b = "b";
+    this.a = "a";
+  }
+}

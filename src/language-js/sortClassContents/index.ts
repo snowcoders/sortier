@@ -141,20 +141,6 @@ class ClassContentsSorter {
     }
   }
 
-  private getKindOption(node: any) {
-    if (node.kind === "constructor") {
-      return KindOption.Constructor;
-    }
-    if (node.type === "ClassProperty") {
-      if (node.value != null && node.value.type === "ArrowFunctionExpression") {
-        return KindOption.Method;
-      } else {
-        return KindOption.Property;
-      }
-    }
-    return KindOption.Method;
-  }
-
   private getOverrideIndex(node: any) {
     let itemsToSearch = [node.key.name];
 
@@ -190,10 +176,8 @@ class ClassContentsSorter {
       }
 
       let callComparison = 0;
-      let isAStaticProperty =
-        a.isStatic === true && a.kind === KindOption.Property;
-      let isBStaticProperty =
-        b.isStatic === true && b.kind === KindOption.Property;
+      let isAStaticProperty = a.kind === KindOption.Property;
+      let isBStaticProperty = b.kind === KindOption.Property;
       if (isUsage || (isAStaticProperty && isBStaticProperty)) {
         callComparison = this.compareMethodCallers(a, b, callOrder);
         if (callComparison !== 0) {
@@ -218,11 +202,11 @@ class ClassContentsSorter {
   private getClassItemOrder() {
     // Split the list into static properties and everything else as static
     // properties cause build failures when depending on one another out of order
-    let staticProperties: any[] = [];
+    let properties: any[] = [];
     let everythingElse: any[] = [];
     for (let classItem of this.classItems) {
-      if (classItem.static === true && classItem.type === "ClassProperty") {
-        staticProperties.push(classItem);
+      if (this.getKindOption(classItem) === KindOption.Property) {
+        properties.push(classItem);
       } else {
         everythingElse.push(classItem);
       }
@@ -232,11 +216,11 @@ class ClassContentsSorter {
     let comparisonFunction = (a, b) => {
       return a.key.name.localeCompare(b.key.name);
     };
-    staticProperties.sort(comparisonFunction);
+    properties.sort(comparisonFunction);
     everythingElse.sort(comparisonFunction);
 
     // Determine the order of the items
-    let staticOrder = this.orderItems(staticProperties, true, true);
+    let staticOrder = this.orderItems(properties, true, true);
     let everythingElseOrder = this.orderItems(everythingElse, false, false);
 
     // Merge and dedupe
@@ -245,10 +229,65 @@ class ClassContentsSorter {
     return totalCallOrder;
   }
 
+  private compareGroups(
+    a: MinimumSortInformation,
+    b: MinimumSortInformation
+  ): number {
+    // Static methods
+    if (a.isStatic !== b.isStatic) {
+      if (a.isStatic) {
+        return -1;
+      } else {
+        return 1;
+      }
+    }
+
+    // Kinds
+    if (a.kind !== b.kind) {
+      return a.kind - b.kind;
+    }
+
+    // Access modifiers
+    if (a.accessModifier !== b.accessModifier) {
+      return a.accessModifier - b.accessModifier;
+    }
+
+    return 0;
+  }
+
+  private compareOverrides(
+    a: MinimumSortInformation,
+    b: MinimumSortInformation
+  ): number {
+    return a.overrideIndex - b.overrideIndex;
+  }
+
+  private compareMethodCallers(
+    a: MinimumSortInformation,
+    b: MinimumSortInformation,
+    methodToCallers: string[]
+  ) {
+    return methodToCallers.indexOf(a.key) - methodToCallers.indexOf(b.key);
+  }
+
+  private getKindOption(node: any) {
+    if (node.kind === "constructor") {
+      return KindOption.Constructor;
+    }
+    if (node.type === "ClassProperty") {
+      if (node.value != null && node.value.type === "ArrowFunctionExpression") {
+        return KindOption.Method;
+      } else {
+        return KindOption.Property;
+      }
+    }
+    return KindOption.Method;
+  }
+
   private orderItems(
     sortedClassItems: any[],
     isSiblingSort: boolean,
-    isStaticProperties: boolean
+    isProperties: boolean
   ): string[] {
     // Storage of the overall call order as read from top to bottom, left to right
     let overallCallOrder: string[] = [];
@@ -324,7 +363,7 @@ class ClassContentsSorter {
         return aIndex - bIndex;
       });
 
-      if (!isStaticProperties && this.options.isAscending) {
+      if (!isProperties && this.options.isAscending) {
         resultingCallOrder.push(...nextGroup);
       } else {
         resultingCallOrder.unshift(...nextGroup);
@@ -340,47 +379,6 @@ class ClassContentsSorter {
     }
 
     return resultingCallOrder;
-  }
-
-  private compareGroups(
-    a: MinimumSortInformation,
-    b: MinimumSortInformation
-  ): number {
-    // Static methods
-    if (a.isStatic !== b.isStatic) {
-      if (a.isStatic) {
-        return -1;
-      } else {
-        return 1;
-      }
-    }
-
-    // Kinds
-    if (a.kind !== b.kind) {
-      return a.kind - b.kind;
-    }
-
-    // Access modifiers
-    if (a.accessModifier !== b.accessModifier) {
-      return a.accessModifier - b.accessModifier;
-    }
-
-    return 0;
-  }
-
-  private compareOverrides(
-    a: MinimumSortInformation,
-    b: MinimumSortInformation
-  ): number {
-    return a.overrideIndex - b.overrideIndex;
-  }
-
-  private compareMethodCallers(
-    a: MinimumSortInformation,
-    b: MinimumSortInformation,
-    methodToCallers: string[]
-  ) {
-    return methodToCallers.indexOf(a.key) - methodToCallers.indexOf(b.key);
   }
 
   private getCalleeOrder(nodes: any[]) {
@@ -399,6 +397,8 @@ class ClassContentsSorter {
         } else if (
           value != null &&
           value.object != null &&
+          /*value.object.type !==
+            "ThisExpression"  || value.object.name !== this.className &&*/
           value.type === "MemberExpression" &&
           value.property.name != null
         ) {

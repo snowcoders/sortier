@@ -134,6 +134,7 @@ export class Reprinter implements ILanguage {
     comments: Comment[],
     fileContents: string
   ) {
+    let lastClassName = undefined;
     let nodes = originalNodes.slice();
     while (nodes.length !== 0) {
       let node = nodes.shift();
@@ -230,6 +231,9 @@ export class Reprinter implements ILanguage {
           }
           case "ClassDeclaration":
           case "ClassExpression": {
+            if (node.id != null) {
+              lastClassName = node.id.name;
+            }
             if (node.body != null) {
               nodes.push(node.body);
             } else {

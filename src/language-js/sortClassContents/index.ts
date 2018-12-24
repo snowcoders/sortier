@@ -216,7 +216,8 @@ class ClassContentsSorter {
   }
 
   private getClassItemOrder() {
-    // Split the list into static properties and everything else as static properties cause build failures when depending on one another out of order
+    // Split the list into static properties and everything else as static
+    // properties cause build failures when depending on one another out of order
     let staticProperties: any[] = [];
     let everythingElse: any[] = [];
     for (let classItem of this.classItems) {
@@ -227,17 +228,19 @@ class ClassContentsSorter {
       }
     }
 
-    staticProperties.sort((a, b) => {
+    // Sort both arrays
+    let comparisonFunction = (a, b) => {
       return a.key.name.localeCompare(b.key.name);
-    });
-    everythingElse.sort((a, b) => {
-      return a.key.name.localeCompare(b.key.name);
-    });
+    };
+    staticProperties.sort(comparisonFunction);
+    everythingElse.sort(comparisonFunction);
 
+    // Determine the order of the items
     let staticOrder = this.orderItems(staticProperties, true, true);
     let everythingElseOrder = this.orderItems(everythingElse, false, false);
-    let totalCallOrder = [...staticOrder, ...everythingElseOrder];
 
+    // Merge and dedupe
+    let totalCallOrder = [...staticOrder, ...everythingElseOrder];
     ArrayUtils.dedupe(totalCallOrder);
     return totalCallOrder;
   }

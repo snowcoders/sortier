@@ -190,13 +190,11 @@ class ClassContentsSorter {
       }
 
       let callComparison = 0;
-      if (
-        isUsage ||
-        (a.isStatic === true &&
-          a.kind === KindOption.Property &&
-          b.isStatic === true &&
-          b.kind === KindOption.Property)
-      ) {
+      let isAStaticProperty =
+        a.isStatic === true && a.kind === KindOption.Property;
+      let isBStaticProperty =
+        b.isStatic === true && b.kind === KindOption.Property;
+      if (isUsage || (isAStaticProperty && isBStaticProperty)) {
         callComparison = this.compareMethodCallers(a, b, callOrder);
         if (callComparison !== 0) {
           return callComparison;
@@ -207,7 +205,7 @@ class ClassContentsSorter {
       if (stringComparison === 0) {
         stringComparison = a.key.localeCompare(b.key);
       }
-      if (this.options.order !== "alpha" || this.options.isAscending) {
+      if (isUsage || this.options.isAscending) {
         return stringComparison;
       } else {
         return -1 * stringComparison;

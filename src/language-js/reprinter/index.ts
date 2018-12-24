@@ -221,6 +221,7 @@ export class Reprinter implements ILanguage {
             if (sortClassContentsOptions != null) {
               // TODO Fairly sure there is more in a class than just this
               fileContents = sortClassContents(
+                lastClassName,
                 node.body,
                 comments,
                 fileContents,

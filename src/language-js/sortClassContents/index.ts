@@ -33,12 +33,14 @@ interface MinimumSortInformation extends BaseNode {
 }
 
 export function sortClassContents(
+  className: undefined | string,
   classItems: any[],
   comments: any,
   fileContents: string,
   options: SortClassContentsOptions
 ): string {
   return new ClassContentsSorter(
+    className || "",
     classItems,
     comments,
     fileContents,
@@ -50,6 +52,7 @@ class ClassContentsSorter {
   private options: SortClassContentsOptionsRequired;
 
   constructor(
+    private className: string,
     private classItems: any[],
     private comments: any,
     private fileContents: string,
@@ -397,8 +400,8 @@ class ClassContentsSorter {
         } else if (
           value != null &&
           value.object != null &&
-          /*value.object.type !==
-            "ThisExpression"  || value.object.name !== this.className &&*/
+          (value.object.type === "ThisExpression" ||
+            value.object.name === this.className) &&
           value.type === "MemberExpression" &&
           value.property.name != null
         ) {

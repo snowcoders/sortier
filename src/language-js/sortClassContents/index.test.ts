@@ -82,6 +82,7 @@ describe("language-js/sortClassContents", () => {
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);
             let actual = sortClassContents(
+              parsed.body[0].declaration.id.name,
               parsed.body[0].declaration.body.body,
               parsed.comments,
               input,
@@ -157,6 +158,7 @@ describe("language-js/sortClassContents", () => {
     }`;
     let parsed = typescriptParse(input);
     let actual = sortClassContents(
+      parsed.body[0].declaration.id.name,
       parsed.body[0].declaration.body.body,
       parsed.comments,
       input,
@@ -233,6 +235,7 @@ describe("language-js/sortClassContents", () => {
     }`;
     let parsed = typescriptParse(input);
     let actual = sortClassContents(
+      parsed.body[0].declaration.id.name,
       parsed.body[0].declaration.body.body,
       parsed.comments,
       input,

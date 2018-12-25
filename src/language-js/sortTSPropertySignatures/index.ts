@@ -58,7 +58,8 @@ function cleanProperties(fileContents: string, properties: any[]) {
   // Interface properties are read in as "property: number," where we don't want to move the commas
   return properties.map((property: any) => {
     let lastIndex = property.range[1];
-    if (0 < lastIndex && fileContents[lastIndex - 1] === ",") {
+    let lastCharacter = fileContents[lastIndex - 1];
+    if (0 < lastIndex && (lastCharacter === "," || lastCharacter === ";")) {
       lastIndex--;
     }
 

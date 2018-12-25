@@ -1,0 +1,2 @@
+// Ran into this when running sortier on tslint's codebase
+export interface TsLintExample { isEnabled: boolean; modifier: Modifier; rulesList: string[] | "all" };

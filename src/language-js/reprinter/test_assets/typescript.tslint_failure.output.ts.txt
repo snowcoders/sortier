@@ -1,0 +1,3 @@
+// Ran into this when running sortier on tslint's codebase
+let example: undefined | { isEnabled: boolean; modifier: Modifier; rulesList: string[] | "all" } = undefined;
+type Modifier = undefined | "line" | "next-line";

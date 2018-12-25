@@ -1,0 +1,11 @@
+// TODO: https://github.com/snowcoders/sortier/issues/235
+switch ('e') {
+  case 'a':
+  case 'c':
+  case 'e':
+    break;
+  case 'b':
+  case 'd':
+  default:
+    break;
+}

@@ -1,6 +1,6 @@
 import { isArray } from "util";
 import { ArrayUtils } from "../../utilities/array-utils";
-import { MinimumTypeInformation, reorderValues } from "../utilities/sort-utils";
+import { BaseNode, reorderValues } from "../../utilities/sort-utils";
 
 export type SortClassContentsOptions = Partial<
   SortClassContentsOptionsRequired
@@ -24,7 +24,7 @@ enum KindOption {
   Method
 }
 
-interface MinimumSortInformation extends MinimumTypeInformation {
+interface MinimumSortInformation extends BaseNode {
   accessModifier: AccessibilityOption;
   isStatic: boolean;
   key: string;
@@ -33,12 +33,14 @@ interface MinimumSortInformation extends MinimumTypeInformation {
 }
 
 export function sortClassContents(
+  className: undefined | string,
   classItems: any[],
   comments: any,
   fileContents: string,
   options: SortClassContentsOptions
 ): string {
   return new ClassContentsSorter(
+    className || "",
     classItems,
     comments,
     fileContents,
@@ -50,6 +52,7 @@ class ClassContentsSorter {
   private options: SortClassContentsOptionsRequired;
 
   constructor(
+    private className: string,
     private classItems: any[],
     private comments: any,
     private fileContents: string,
@@ -141,20 +144,6 @@ class ClassContentsSorter {
     }
   }
 
-  private getKindOption(node: any) {
-    if (node.kind === "constructor") {
-      return KindOption.Constructor;
-    }
-    if (node.type === "ClassProperty") {
-      if (node.value != null && node.value.type === "ArrowFunctionExpression") {
-        return KindOption.Method;
-      } else {
-        return KindOption.Property;
-      }
-    }
-    return KindOption.Method;
-  }
-
   private getOverrideIndex(node: any) {
     let itemsToSearch = [node.key.name];
 
@@ -174,10 +163,8 @@ class ClassContentsSorter {
     comments: any,
     fileContents: string
   ) {
-    let callOrder: null | string[] = null;
-    if (this.options.order === "usage") {
-      callOrder = this.generateCallOrder();
-    }
+    let isUsage = this.options.order === "usage";
+    let callOrder = this.getClassItemOrder();
 
     let sortedTypes = classItems.slice();
     sortedTypes.sort((a, b) => {
@@ -192,7 +179,9 @@ class ClassContentsSorter {
       }
 
       let callComparison = 0;
-      if (callOrder != null) {
+      let isAStaticProperty = a.kind === KindOption.Property;
+      let isBStaticProperty = b.kind === KindOption.Property;
+      if (isUsage || (isAStaticProperty && isBStaticProperty)) {
         callComparison = this.compareMethodCallers(a, b, callOrder);
         if (callComparison !== 0) {
           return callComparison;
@@ -203,7 +192,7 @@ class ClassContentsSorter {
       if (stringComparison === 0) {
         stringComparison = a.key.localeCompare(b.key);
       }
-      if (this.options.order !== "alpha" || this.options.isAscending) {
+      if (isUsage || this.options.isAscending) {
         return stringComparison;
       } else {
         return -1 * stringComparison;
@@ -213,13 +202,96 @@ class ClassContentsSorter {
     return reorderValues(fileContents, comments, classItems, sortedTypes);
   }
 
-  private generateCallOrder(): string[] {
-    // Sort the initial list as in the case of ties, we want to go with alphabetical always
-    let sortedClassItems = this.classItems.slice();
-    sortedClassItems.sort((a, b) => {
-      return a.key.name.localeCompare(b.key.name);
-    });
+  private getClassItemOrder() {
+    // Split the list into static properties and everything else as static
+    // properties cause build failures when depending on one another out of order
+    let properties: any[] = [];
+    let everythingElse: any[] = [];
+    for (let classItem of this.classItems) {
+      if (this.getKindOption(classItem) === KindOption.Property) {
+        properties.push(classItem);
+      } else {
+        everythingElse.push(classItem);
+      }
+    }
 
+    // Sort both arrays
+    let comparisonFunction = (a, b) => {
+      return a.key.name.localeCompare(b.key.name);
+    };
+    properties.sort(comparisonFunction);
+    everythingElse.sort(comparisonFunction);
+
+    // Determine the order of the items
+    let staticOrder = this.orderItems(properties, true, true);
+    let everythingElseOrder = this.orderItems(everythingElse, false, false);
+
+    // Merge and dedupe
+    let totalCallOrder = [...staticOrder, ...everythingElseOrder];
+    ArrayUtils.dedupe(totalCallOrder);
+    return totalCallOrder;
+  }
+
+  private compareGroups(
+    a: MinimumSortInformation,
+    b: MinimumSortInformation
+  ): number {
+    // Static methods
+    if (a.isStatic !== b.isStatic) {
+      if (a.isStatic) {
+        return -1;
+      } else {
+        return 1;
+      }
+    }
+
+    // Kinds
+    if (a.kind !== b.kind) {
+      return a.kind - b.kind;
+    }
+
+    // Access modifiers
+    if (a.accessModifier !== b.accessModifier) {
+      return a.accessModifier - b.accessModifier;
+    }
+
+    return 0;
+  }
+
+  private compareOverrides(
+    a: MinimumSortInformation,
+    b: MinimumSortInformation
+  ): number {
+    return a.overrideIndex - b.overrideIndex;
+  }
+
+  private compareMethodCallers(
+    a: MinimumSortInformation,
+    b: MinimumSortInformation,
+    methodToCallers: string[]
+  ) {
+    return methodToCallers.indexOf(a.key) - methodToCallers.indexOf(b.key);
+  }
+
+  private getKindOption(node: any) {
+    if (node.kind === "constructor") {
+      return KindOption.Constructor;
+    }
+    if (node.type === "ClassProperty") {
+      if (node.value != null && node.value.type === "ArrowFunctionExpression") {
+        return KindOption.Method;
+      } else {
+        return KindOption.Property;
+      }
+    }
+    return KindOption.Method;
+  }
+
+  private orderItems(
+    sortedClassItems: any[],
+    isSiblingSort: boolean,
+    isProperties: boolean
+  ): string[] {
     // Storage of the overall call order as read from top to bottom, left to right
     let overallCallOrder: string[] = [];
     // Map of method names to parent information
@@ -228,7 +300,13 @@ class ClassContentsSorter {
     // Figure out what parents which methods have and break any cycles
     for (let classItem of sortedClassItems) {
       let methodName = classItem.key.name;
-      let calls = this.generateCallOrderOld([classItem]);
+      let calls = this.getCalleeOrder([classItem]);
+      if (isSiblingSort) {
+        calls.sort();
+        if (this.options.order === "alpha" && !this.options.isAscending) {
+          calls.reverse();
+        }
+      }
       overallCallOrder.push(...calls);
       for (let call of calls) {
         if (call === methodName) {
@@ -288,7 +366,7 @@ class ClassContentsSorter {
         return aIndex - bIndex;
       });
 
-      if (this.options.isAscending) {
+      if (!isProperties && this.options.isAscending) {
         resultingCallOrder.push(...nextGroup);
       } else {
         resultingCallOrder.unshift(...nextGroup);
@@ -306,48 +384,7 @@ class ClassContentsSorter {
     return resultingCallOrder;
   }
 
-  private compareGroups(
-    a: MinimumSortInformation,
-    b: MinimumSortInformation
-  ): number {
-    // Static methods
-    if (a.isStatic !== b.isStatic) {
-      if (a.isStatic) {
-        return -1;
-      } else {
-        return 1;
-      }
-    }
-
-    // Kinds
-    if (a.kind !== b.kind) {
-      return a.kind - b.kind;
-    }
-
-    // Access modifiers
-    if (a.accessModifier !== b.accessModifier) {
-      return a.accessModifier - b.accessModifier;
-    }
-
-    return 0;
-  }
-
-  private compareOverrides(
-    a: MinimumSortInformation,
-    b: MinimumSortInformation
-  ): number {
-    return a.overrideIndex - b.overrideIndex;
-  }
-
-  private compareMethodCallers(
-    a: MinimumSortInformation,
-    b: MinimumSortInformation,
-    methodToCallers: string[]
-  ) {
-    return methodToCallers.indexOf(a.key) - methodToCallers.indexOf(b.key);
-  }
-
-  private generateCallOrderOld(nodes: any[]) {
+  private getCalleeOrder(nodes: any[]) {
     let memberExpressionOrder: string[] = [];
     for (let node of nodes) {
       if (node == null) {
@@ -362,17 +399,17 @@ class ClassContentsSorter {
           continue;
         } else if (
           value != null &&
-          value.callee != null &&
-          value.callee.object != null &&
-          value.callee.object.type === "ThisExpression" &&
-          value.callee.type === "MemberExpression" &&
-          value.callee.property.name != null
+          value.object != null &&
+          (value.object.type === "ThisExpression" ||
+            value.object.name === this.className) &&
+          value.type === "MemberExpression" &&
+          value.property.name != null
         ) {
-          memberExpressionOrder.push(value.callee.property.name);
+          memberExpressionOrder.push(value.property.name);
         } else if (value.type != null) {
-          memberExpressionOrder.push(...this.generateCallOrderOld([value]));
+          memberExpressionOrder.push(...this.getCalleeOrder([value]));
         } else if (isArray(value)) {
-          memberExpressionOrder.push(...this.generateCallOrderOld(value));
+          memberExpressionOrder.push(...this.getCalleeOrder(value));
         }
       }
     }

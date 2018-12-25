@@ -1,0 +1,12 @@
+export class LogUtils {
+  public static log(
+    verbosity: LoggerVerboseOption,
+    ...args: ArgumentType<typeof console.log>
+  ) {
+    console.log(...args);
+  }
+
+  public static setVerbosity(newVerbosity: LoggerVerboseOption) {
+    LogUtils.verbosity = newVerbosity;
+  }
+}

@@ -33,8 +33,6 @@ import { TypeAnnotationOption } from "../utilities/sort-utils";
 export type ReprinterOptions = Partial<ReprinterOptionsRequired>;
 
 export interface ReprinterOptionsRequired {
-  isHelpMode: boolean;
-
   // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
   parser?: "flow" | "typescript";
 
@@ -95,7 +93,6 @@ export class Reprinter implements ILanguage {
     }
 
     return {
-      isHelpMode: partialOptions.isHelpMode === true,
       parser: partialOptions.parser,
       sortClassContents: partialOptions.sortClassContents,
       sortImportDeclarations: partialOptions.sortImportDeclarations || "source",
@@ -137,6 +134,7 @@ export class Reprinter implements ILanguage {
     comments: Comment[],
     fileContents: string
   ) {
+    let lastClassName = undefined;
     let nodes = originalNodes.slice();
     while (nodes.length !== 0) {
       let node = nodes.shift();
@@ -223,6 +221,7 @@ export class Reprinter implements ILanguage {
             if (sortClassContentsOptions != null) {
               // TODO Fairly sure there is more in a class than just this
               fileContents = sortClassContents(
+                lastClassName,
                 node.body,
                 comments,
                 fileContents,
@@ -233,6 +232,9 @@ export class Reprinter implements ILanguage {
           }
           case "ClassDeclaration":
           case "ClassExpression": {
+            if (node.id != null) {
+              lastClassName = node.id.name;
+            }
             if (node.body != null) {
               nodes.push(node.body);
             } else {
@@ -564,6 +566,7 @@ export class Reprinter implements ILanguage {
             }
             break;
           }
+          case "TSTypeAliasDeclaration":
           case "TSTypeAnnotation": {
             nodes.push(node.typeAnnotation);
             break;
@@ -741,10 +744,6 @@ export class Reprinter implements ILanguage {
   }
 
   private printHelpModeInfo(item, fileContents: string) {
-    if (this._options.isHelpMode !== true) {
-      return;
-    }
-
     if (!this._helpModeHasPrintedFilename) {
       LogUtils.log(LoggerVerboseOption.Diagnostic, "");
       LogUtils.log(LoggerVerboseOption.Diagnostic, this._filename);

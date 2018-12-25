@@ -1,5 +1,14 @@
 ### Unreleased
 
+- Added `css`, `scss` and `less` file support
+- Upgraded typescript-estree@7.0.0
+- Fixed dependent static property sort for javascript's sortClassContents
+
+### 2.3.2
+
+- Added documentation website and referenced it from readme.md
+- Fixed bug regarding case statement sorting within a switch statement
+
 ### 2.3.1
 
 - Fixed missing dependency (angular-html-parser)

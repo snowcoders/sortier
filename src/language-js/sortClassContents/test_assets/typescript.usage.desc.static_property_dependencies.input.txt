@@ -1,0 +1,13 @@
+export class Reprinter {
+  public static readonly SCSS_EXTENSIONS = [
+    ".css",
+    ".css.txt",
+    ".scss",
+    ".scss.txt"
+  ];
+  public static readonly LESS_EXTENSIONS = [".less", ".less.txt"];
+  public static readonly MIX_EXTENSIONS = [
+    ...Reprinter.SCSS_EXTENSIONS,
+    ...Reprinter.LESS_EXTENSIONS
+  ];
+}

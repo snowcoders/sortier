@@ -24,9 +24,6 @@ export function sortDeclarations(
 
   for (let child of node.nodes) {
     switch (child.type) {
-      case "atrule":
-        declarations.push(child);
-        break;
       case "comment":
         comments.push(child);
         break;

@@ -1,7 +1,8 @@
 .example {
-    // Variables
-    $position: relative;
+    // Variables should not be sorted since they may depend on one another
+    $position2: relative;
     $size-0: 0px;
+    $position: $position2;
 
     bottom: $size-0;
     left: $size-0;

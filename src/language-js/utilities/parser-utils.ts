@@ -1,4 +1,3 @@
-import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils";
 import { StringUtils } from "../../utilities/string-utils";
 
 export function createError(message: string, loc: any) {
@@ -44,24 +43,22 @@ export function includeShebang(text: string, ast: any) {
 // This function currently only edits the "range" property but nothing else.
 export function addParenthesis(fileContents: string, nodes: any[]) {
   return nodes.map(value => {
-    let newStartIndex = 0;
-    let newEndIndex = 0;
-
-    // See if we need to bump the first
     let charAt = "";
-    let startParenCount = 0;
+
+    // Find all the parenthesis before
+    let startParenStack: number[] = [];
     for (let startIndex = value.range[0] - 1; 0 < startIndex; startIndex--) {
       charAt = fileContents.charAt(startIndex);
       if (charAt !== "(" && !/\s/.test(charAt)) {
         break;
       }
       if (charAt === "(") {
-        newStartIndex = startIndex;
-        startParenCount++;
+        startParenStack.push(startIndex);
       }
     }
 
-    let endParenCount = 0;
+    // Find all the parenthesis after
+    let endParenStack: number[] = [];
     for (
       let endIndex = value.range[1];
       endIndex < fileContents.length;
@@ -72,20 +69,22 @@ export function addParenthesis(fileContents: string, nodes: any[]) {
         break;
       }
       if (charAt === ")") {
-        newEndIndex = endIndex;
-        endParenCount++;
+        endParenStack.push(endIndex);
       }
     }
 
-    if (startParenCount != endParenCount) {
-      LogUtils.log(
-        LoggerVerboseOption.Diagnostic,
-        `Encountered unmatched parenthesis at ${JSON.stringify(value.loc)}`
-      );
-      return value;
+    // Make sure the stacks are the same length
+    while (startParenStack.length < endParenStack.length) {
+      endParenStack.pop();
+    }
+    while (endParenStack.length < startParenStack.length) {
+      startParenStack.pop();
     }
 
-    if (startParenCount === 0) {
+    let newStartIndex = startParenStack.pop();
+    let newEndIndex = endParenStack.pop();
+
+    if (newStartIndex == null || newEndIndex == null) {
       return value;
     }
 

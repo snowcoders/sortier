@@ -1,4 +1,5 @@
 import { reorderValues } from "../../utilities/sort-utils";
+import { addParenthesis } from "../utilities/parser-utils";
 import {
   getObjectTypeRanks,
   TypeAnnotationOption
@@ -34,7 +35,7 @@ class UnionTypeAnnotationSorter {
   private comments;
   private fileContents: string;
   private options: SortUnionTypeAnnotationOptions;
-  private unionTypeAnnotation;
+  private unionTypeAnnotationTypes;
 
   constructor(
     unionTypeAnnotation,
@@ -42,7 +43,10 @@ class UnionTypeAnnotationSorter {
     fileContents: string,
     options: SortUnionTypeAnnotationOptions
   ) {
-    this.unionTypeAnnotation = unionTypeAnnotation;
+    this.unionTypeAnnotationTypes = addParenthesis(
+      fileContents,
+      unionTypeAnnotation.types
+    );
     this.comments = comments;
     this.fileContents = fileContents;
     this.options = options;
@@ -54,7 +58,7 @@ class UnionTypeAnnotationSorter {
     let newFileContents = reorderValues(
       this.fileContents,
       this.comments,
-      this.unionTypeAnnotation.types,
+      this.unionTypeAnnotationTypes,
       sortedTypes
     );
 
@@ -64,7 +68,9 @@ class UnionTypeAnnotationSorter {
   private getSortOrderOfTypes() {
     let getRank = value => {
       let ranks = getObjectTypeRanks(this.options.groups);
-      if (
+      if (value.type === "TSParenthesizedType") {
+        return getRank(value.typeAnnotation.typeAnnotation);
+      } else if (
         value.type === "NullLiteralTypeAnnotation" ||
         value.type === "TSNullKeyword"
       ) {
@@ -86,7 +92,7 @@ class UnionTypeAnnotationSorter {
       return ranks.everything;
     };
 
-    let newTypes = this.unionTypeAnnotation.types.slice(0);
+    let newTypes = this.unionTypeAnnotationTypes.slice(0);
     newTypes.sort((a, b) => {
       // Figure out ranks
       let aRank = getRank(a);

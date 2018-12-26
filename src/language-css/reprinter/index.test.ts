@@ -33,7 +33,7 @@ describe("language-css/reprinter", () => {
       return {
         inputFilePath: filePath,
         outputFilePath: filePath.replace(".input.", ".output."),
-        parserType: segments[0],
+        parserType: segments[2],
         testName: cleanedTestName
       };
     });

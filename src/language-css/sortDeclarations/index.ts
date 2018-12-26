@@ -86,6 +86,10 @@ export function sortDeclarations(
   for (let group of groupedAttributes) {
     let oldOrder = group.nodes;
     let newOrder = oldOrder.slice();
+    let propertyToSortableText = new Map();
+    for (let property of newOrder) {
+      propertyToSortableText.set(property, getSortableText(property));
+    }
     newOrder.sort((a, b) => {
       let aOverride = getOverrideIndex(a.prop, options.overrides);
       let bOverride = getOverrideIndex(b.prop, options.overrides);
@@ -94,7 +98,9 @@ export function sortDeclarations(
         return aOverride - bOverride;
       }
 
-      return a.prop.localeCompare(b.prop);
+      let aText = propertyToSortableText.get(a) || "";
+      let bText = propertyToSortableText.get(b) || "";
+      return aText.localeCompare(bText);
     });
 
     newFileContents = reorderValues(
@@ -105,6 +111,17 @@ export function sortDeclarations(
     );
   }
   return newFileContents;
+}
+
+function getSortableText(a): string {
+  if (a.prop != null) {
+    return a.prop;
+  }
+  if (a.source != null) {
+    return a.source;
+  }
+
+  throw new Error("Unknown object type provided");
 }
 
 function getOverrideIndex(prop: string, overrides: string[]) {

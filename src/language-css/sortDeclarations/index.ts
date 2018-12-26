@@ -24,6 +24,9 @@ export function sortDeclarations(
 
   for (let child of node.nodes) {
     switch (child.type) {
+      case "atrule":
+        declarations.push(child);
+        break;
       case "comment":
         comments.push(child);
         break;
@@ -105,6 +108,17 @@ export function sortDeclarations(
     );
   }
   return newFileContents;
+}
+
+function getSortableText(a) {
+  if (a.prop != null) {
+    return a.prop;
+  }
+  if (a.source != null) {
+    return a.source;
+  }
+
+  throw new Error("Unknown object type provided");
 }
 
 function getOverrideIndex(prop: string, overrides: string[]) {

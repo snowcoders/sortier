@@ -1,0 +1,11 @@
+.example {
+    // Variables
+    @position: relative;
+    @size-0: 0px;
+
+    bottom: @size-0;
+    left: @size-0;
+    position: @position;
+    right: @size-0;
+    top: @size-0;
+}

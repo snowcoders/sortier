@@ -1,6 +1,5 @@
 import { BaseExpression, Comment, SwitchCase } from "estree";
 
-import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils";
 import {
   BaseNode,
   getContextGroups,
@@ -105,8 +104,8 @@ export function sortSwitchCases(
             })
             .filter(value => value != null) as BaseExpression[];
           let sorted = unsorted.slice().sort((a: any, b: any) => {
-            let aText = getSortableText(a);
-            let bText = getSortableText(b);
+            let aText = getSortableText(a, fileContents);
+            let bText = getSortableText(b, fileContents);
             return aText.localeCompare(bText);
           });
 
@@ -170,7 +169,7 @@ export function sortSwitchCases(
   return newFileContents;
 }
 
-function getSortableText(a: any) {
+function getSortableText(a: any, fileContents: string) {
   if (a == null) {
     return null;
   }
@@ -183,11 +182,7 @@ function getSortableText(a: any) {
     return a.expression.raw;
   }
 
-  LogUtils.log(
-    LoggerVerboseOption.Diagnostic,
-    `Unknown case statement type: ${a.type}`
-  );
-  return null;
+  return fileContents.substring(a.range[0], a.range[1]);
 }
 
 function caseGroupsToMinimumTypeinformations(

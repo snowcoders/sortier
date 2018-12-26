@@ -1,4 +1,5 @@
 import { ILanguage } from "../language";
+import { CssReprinter } from "../language-css";
 import { HtmlReprinter } from "../language-html";
 import { JavascriptReprinter } from "../language-js";
 import { JsonReprinter } from "../language-json";
@@ -7,6 +8,7 @@ import { FileUtils } from "../utilities/file-utils";
 
 export class Reprinter {
   private static reprinters: ILanguage[] = [
+    new CssReprinter(),
     new HtmlReprinter(),
     new JavascriptReprinter(),
     new JsonReprinter()

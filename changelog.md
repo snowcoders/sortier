@@ -4,6 +4,8 @@
 - Upgraded typescript-estree@7.0.0
 - Fixed dependent static property sort for javascript's sortClassContents
 - Fixed sorting objects with semicolons as line separators
+- Fixed parenthesis not moving with BinaryExpression sort
+- Fixed case statement sort with more complex case statement test values
 
 ### 2.3.2
 

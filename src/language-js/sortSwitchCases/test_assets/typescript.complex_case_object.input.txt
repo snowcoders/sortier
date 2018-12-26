@@ -1,0 +1,23 @@
+switch (node.kind) {
+    case ts.SyntaxKind.FunctionDeclaration:
+    case ts.SyntaxKind.FunctionExpression:
+    case ts.SyntaxKind.MethodDeclaration:
+    case ts.SyntaxKind.ArrowFunction:
+    case ts.SyntaxKind.GetAccessor:
+    case ts.SyntaxKind.SetAccessor:
+    case ts.SyntaxKind.MethodSignature:
+    case ts.SyntaxKind.ConstructSignature:
+    case ts.SyntaxKind.CallSignature:
+        return "call-signature";
+    case ts.SyntaxKind.IndexSignature:
+        return "index-signature";
+    case ts.SyntaxKind.VariableDeclaration:
+        return "variable-declaration";
+    case ts.SyntaxKind.Parameter:
+        return "parameter";
+    case ts.SyntaxKind.PropertySignature:
+    case ts.SyntaxKind.PropertyDeclaration:
+        return "property-declaration";
+    default:
+        return undefined;
+}

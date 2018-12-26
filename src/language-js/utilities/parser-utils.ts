@@ -34,3 +34,64 @@ export function includeShebang(text: string, ast: any) {
 
   ast.comments = [comment].concat(ast.comments);
 }
+
+// AST's apparently ignore parenthesis so when parsing something like
+//    (undefined) | null | (() => {})
+// You'll only get "undefined", "null", and "() => {}"
+// We want to maintain parentheses when sorting union types
+// and other items so we need to be smart about adding them back.
+// This function currently only edits the "range" property but nothing else.
+export function addParenthesis(fileContents: string, nodes: any[]) {
+  return nodes.map(value => {
+    let charAt = "";
+
+    // Find all the parenthesis before
+    let startParenStack: number[] = [];
+    for (let startIndex = value.range[0] - 1; 0 < startIndex; startIndex--) {
+      charAt = fileContents.charAt(startIndex);
+      if (charAt !== "(" && !/\s/.test(charAt)) {
+        break;
+      }
+      if (charAt === "(") {
+        startParenStack.push(startIndex);
+      }
+    }
+
+    // Find all the parenthesis after
+    let endParenStack: number[] = [];
+    for (
+      let endIndex = value.range[1];
+      endIndex < fileContents.length;
+      endIndex++
+    ) {
+      charAt = fileContents.charAt(endIndex);
+      if (charAt !== ")" && !/\s/.test(charAt)) {
+        break;
+      }
+      if (charAt === ")") {
+        endParenStack.push(endIndex);
+      }
+    }
+
+    // Make sure the stacks are the same length
+    while (startParenStack.length < endParenStack.length) {
+      endParenStack.pop();
+    }
+    while (endParenStack.length < startParenStack.length) {
+      startParenStack.pop();
+    }
+
+    let newStartIndex = startParenStack.pop();
+    let newEndIndex = endParenStack.pop();
+
+    if (newStartIndex == null || newEndIndex == null) {
+      return value;
+    }
+
+    newEndIndex++;
+    return {
+      ...value,
+      range: [newStartIndex, newEndIndex]
+    };
+  });
+}

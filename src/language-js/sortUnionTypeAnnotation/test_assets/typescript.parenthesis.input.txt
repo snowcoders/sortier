@@ -1,0 +1,1 @@
+interface Definition { property: null | (   () => {}) | (undefined) }

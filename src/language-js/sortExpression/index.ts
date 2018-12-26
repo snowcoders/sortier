@@ -1,4 +1,5 @@
 import { reorderValues } from "../../utilities/sort-utils";
+import { addParenthesis } from "../utilities/parser-utils";
 import {
   getObjectTypeRanks,
   TypeAnnotationOption
@@ -63,6 +64,7 @@ class ExpressionSorter {
       return this.fileContents;
     }
 
+    // Check to see if we can actually sort this binary expression
     let operandStack = [this.expression];
     while (operandStack.length !== 0) {
       let operand = operandStack.pop();
@@ -159,18 +161,19 @@ class ExpressionSorter {
       }
     });
 
+    let unsortedValues = addParenthesis(this.fileContents, operand.values);
     let sortedValues;
     // If we are in a mixed scenario, we can't order because we may change the resulting value
     if (operand.accumulatedOperator === "Mixed") {
-      sortedValues = operand.values;
+      sortedValues = unsortedValues;
     } else {
-      sortedValues = this.getSortedValues(operand.values);
+      sortedValues = this.getSortedValues(unsortedValues);
     }
 
     let newFileContents = reorderValues(
       this.fileContents,
       this.comments,
-      operand.values,
+      unsortedValues,
       sortedValues
     );
     newFileContents = newFileContents.slice(rangeMin, rangeMax);

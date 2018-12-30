@@ -1,4 +1,9 @@
-import { BaseExpression, Comment, SwitchCase } from "estree";
+import {
+  BaseExpression,
+  BaseNodeWithoutComments,
+  Comment,
+  SwitchCase
+} from "estree";
 
 import {
   BaseNode,
@@ -161,8 +166,11 @@ export function sortSwitchCases(
     newFileContents = reorderValues(
       newFileContents,
       comments,
-      caseGroupsToMinimumTypeinformations(switchGroupsWithBreaks),
-      caseGroupsToMinimumTypeinformations(switchGroupsWithBreaksSorted)
+      caseGroupsToMinimumTypeinformations(switchGroupsWithBreaks, comments),
+      caseGroupsToMinimumTypeinformations(
+        switchGroupsWithBreaksSorted,
+        comments
+      )
     );
   }
 
@@ -186,10 +194,31 @@ function getSortableText(a: any, fileContents: string) {
 }
 
 function caseGroupsToMinimumTypeinformations(
-  switchGroupsWithBreaks: SwitchCase[][]
+  switchGroupsWithBreaks: SwitchCase[][],
+  comments: Comment[]
 ) {
   return switchGroupsWithBreaks.map(value => {
-    let firstRange = value[0].range;
+    let firstNode: BaseNodeWithoutComments = value[0];
+    for (
+      let commentIndex = comments.length - 1;
+      commentIndex >= 0;
+      commentIndex--
+    ) {
+      let comment = comments[commentIndex];
+      if (comment.loc == null) {
+        continue;
+      }
+
+      if (firstNode.loc == null) {
+        break;
+      }
+
+      if (firstNode.loc.start.line - 1 == comment.loc.start.line) {
+        firstNode = comment;
+      }
+    }
+
+    let firstRange = firstNode.range;
     let lastRange = value[value.length - 1].range;
     if (firstRange == null || lastRange == null) {
       throw new Error("Range is null");

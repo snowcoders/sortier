@@ -1,0 +1,26 @@
+// https://github.com/snowcoders/sortier/issues/264
+// Things to note:
+// - Comment "Recurse through these..." is expected to match with DeleteExpression as there are multiple comments in the case block
+// - Comment "Allow stringification..." stays on the 5th line of the case block as we don't move comments to the right of lines
+switch ("wheee") {
+    case ts.SyntaxKind.AsExpression:
+    // Recurse through these, but ignore the immediate child because it is allowed to be 'any'.
+    case ts.SyntaxKind.DeleteExpression:
+    case ts.SyntaxKind.ExpressionStatement:
+    case ts.SyntaxKind.TemplateSpan:
+    case ts.SyntaxKind.TypeAssertionExpression: // Allow stringification (works on all values). Note: tagged templates handled differently.
+    case ts.SyntaxKind.TypeOfExpression:
+    case ts.SyntaxKind.VoidExpression:
+        return this.visitNode(
+            (node as
+                | ts.ExpressionStatement
+                | ts.AssertionExpression
+                | ts.TemplateSpan
+                | ts.TypeOfExpression
+                | ts.VoidExpression).expression,
+            true,
+        );
+    case ts.SyntaxKind.Identifier:
+    case ts.SyntaxKind.ThisKeyword:
+        return anyOk ? false : this.check(node as ts.Expression);
+}

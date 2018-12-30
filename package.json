@@ -62,5 +62,5 @@
     "start": "npm run build && node bin/index.js",
     "test": "nyc npm run mocha"
   },
-  "version": "2.3.2"
+  "version": "2.4.0"
 }

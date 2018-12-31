@@ -13,7 +13,7 @@ describe("utilities/sort-utils", () => {
   });
 
   describe("Single context group", () => {
-    it("comment", () => {
+    it("comment top", () => {
       let input = `
       // First
       `;
@@ -37,7 +37,7 @@ describe("utilities/sort-utils", () => {
       expect(result[0].comments).to.have.lengthOf(0);
     });
 
-    it("comment, node", () => {
+    it("comment top, node", () => {
       let input = `
       // First
       log("First");
@@ -50,7 +50,7 @@ describe("utilities/sort-utils", () => {
       expect(result[0].comments).to.have.lengthOf(0);
     });
 
-    it("comment, comment, node", () => {
+    it("comment top, comment top, node", () => {
       let input = `
       // First
       // First - 2
@@ -64,7 +64,7 @@ describe("utilities/sort-utils", () => {
       expect(result[0].comments).to.have.lengthOf(0);
     });
 
-    it("comment, node, comment, node", () => {
+    it("comment top, node, comment top, node", () => {
       let input = `
       // First
       log("First");
@@ -79,7 +79,7 @@ describe("utilities/sort-utils", () => {
       expect(result[0].comments).to.have.lengthOf(2);
     });
 
-    it("comment, node, node", () => {
+    it("comment top, node, node", () => {
       let input = `
       // First
       log("First");
@@ -93,7 +93,7 @@ describe("utilities/sort-utils", () => {
       expect(result[0].comments).to.have.lengthOf(0);
     });
 
-    it("node, comment", () => {
+    it("node, comment top", () => {
       let input = `
       log("First");
       // Second
@@ -106,7 +106,7 @@ describe("utilities/sort-utils", () => {
       expect(result[0].comments).to.have.lengthOf(0);
     });
 
-    it("node, comment, node", () => {
+    it("node, comment top, node", () => {
       let input = `
       log("First");
       // Second
@@ -118,6 +118,82 @@ describe("utilities/sort-utils", () => {
       expect(result).to.have.lengthOf(1);
       expect(result[0].nodes).to.have.lengthOf(2);
       expect(result[0].comments).to.have.lengthOf(1);
+    });
+
+    it("node, comment right", () => {
+      let input = `
+      log("First")  // First;
+      `;
+      let parsed = flowParse(input);
+      let result = getContextGroups(parsed.body, parsed.comments, input);
+
+      expect(result).to.have.lengthOf(1);
+      expect(result[0].nodes).to.have.lengthOf(1);
+      expect(result[0].comments).to.have.lengthOf(1);
+    });
+
+    it("comment, node, comment right", () => {
+      let input = `
+      // First
+      log("First")  // First
+      `;
+      let parsed = flowParse(input);
+      let result = getContextGroups(parsed.body, parsed.comments, input);
+
+      expect(result).to.have.lengthOf(1);
+      expect(result[0].nodes).to.have.lengthOf(1);
+      expect(result[0].comments).to.have.lengthOf(2);
+    });
+
+    it("node, comment right, node", () => {
+      let input = `
+      log("First"); // First
+      log("Second");
+      `;
+      let parsed = flowParse(input);
+      let result = getContextGroups(parsed.body, parsed.comments, input);
+
+      expect(result).to.have.lengthOf(1);
+      expect(result[0].nodes).to.have.lengthOf(2);
+      expect(result[0].comments).to.have.lengthOf(1);
+    });
+
+    it("node, block comment right, node", () => {
+      let input = `
+      log("First"); /* First */
+      log("Second");
+      `;
+      let parsed = flowParse(input);
+      let result = getContextGroups(parsed.body, parsed.comments, input);
+
+      expect(result).to.have.lengthOf(1);
+      expect(result[0].nodes).to.have.lengthOf(2);
+      expect(result[0].comments).to.have.lengthOf(1);
+    });
+
+    it("node, comment right, node, comment right", () => {
+      let input = `
+      log("First"); // First
+      log("Second"); // Second
+      `;
+      let parsed = flowParse(input);
+      let result = getContextGroups(parsed.body, parsed.comments, input);
+
+      expect(result).to.have.lengthOf(1);
+      expect(result[0].nodes).to.have.lengthOf(2);
+      expect(result[0].comments).to.have.lengthOf(2);
+    });
+
+    it("comment, node, comment, node all on one line", () => {
+      let input = `
+      /* First */ log("First"); /* Second */ log("Second");
+      `;
+      let parsed = flowParse(input);
+      let result = getContextGroups(parsed.body, parsed.comments, input);
+
+      expect(result).to.have.lengthOf(1);
+      expect(result[0].nodes).to.have.lengthOf(2);
+      expect(result[0].comments).to.have.lengthOf(2);
     });
   });
 

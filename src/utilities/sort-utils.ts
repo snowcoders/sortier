@@ -48,7 +48,7 @@ export function getContextGroups<
   }
   let rangeStart = firstNodeLoc[0];
   let rangeEnd = lastNodeLoc[1];
-  let firstNodeComments = getCommentsForSpecifier(
+  let firstNodeComments = getPrecedingCommentsForSpecifier(
     fileContents,
     comments,
     nodes[0]
@@ -57,6 +57,18 @@ export function getContextGroups<
     let firstNodeCommentsRange = firstNodeComments[0].range;
     if (firstNodeCommentsRange != null) {
       rangeStart = firstNodeCommentsRange[0];
+    }
+  }
+  let lastNodeComments = getSucceedingCommentsForSpecifier(
+    fileContents,
+    comments,
+    nodes[nodes.length - 1]
+  );
+  if (lastNodeComments.length > 0) {
+    let lastNodeCommentsRange =
+      lastNodeComments[lastNodeComments.length - 1].range;
+    if (lastNodeCommentsRange != null) {
+      rangeEnd = lastNodeCommentsRange[1];
     }
   }
 
@@ -83,27 +95,33 @@ export function getContextGroups<
 
     // Nodes
     while (nodeIndex < nodes.length) {
-      let range = nodes[nodeIndex].range;
+      let node = nodes[nodeIndex];
+      let range = node.range;
       if (range == null) {
         continue;
       }
       if (contextBarrierIndex < range[1]) {
         break;
       }
-      partialNodes.push(nodes[nodeIndex]);
-      let nodeComments = getCommentsForSpecifier(
+      partialNodes.push(node);
+      let precedingComments = getPrecedingCommentsForSpecifier(
         fileContents,
         comments,
-        nodes[nodeIndex]
+        node
       );
-      partialComments.push(...nodeComments);
+      let succeedingComments = getSucceedingCommentsForSpecifier(
+        fileContents,
+        comments,
+        node
+      );
+      partialComments.push(...precedingComments, ...succeedingComments);
       nodeIndex++;
     }
 
     // If the only comments for the whole group are above the first node, it's contextual
     firstNodeComments = [];
     if (partialNodes.length > 0) {
-      firstNodeComments = getCommentsForSpecifier(
+      firstNodeComments = getPrecedingCommentsForSpecifier(
         fileContents,
         comments,
         partialNodes[0]
@@ -122,14 +140,23 @@ export function getContextGroups<
   let partialNodes = nodes.slice(nodeIndex);
   let partialComments: CommentType[] = [];
   partialNodes.forEach(node => {
-    let nodeComments = getCommentsForSpecifier(fileContents, comments, node);
-    partialComments.push(...nodeComments);
+    let precedingComments = getPrecedingCommentsForSpecifier(
+      fileContents,
+      comments,
+      node
+    );
+    let succeedingComments = getSucceedingCommentsForSpecifier(
+      fileContents,
+      comments,
+      node
+    );
+    partialComments.push(...precedingComments, ...succeedingComments);
   });
 
   // If the only comments for the whole group are above the first node, it's contextual
   firstNodeComments = [];
   if (partialNodes.length > 0) {
-    firstNodeComments = getCommentsForSpecifier(
+    firstNodeComments = getPrecedingCommentsForSpecifier(
       fileContents,
       comments,
       partialNodes[0]
@@ -170,27 +197,41 @@ export function reorderValues<
     let specifier = unsortedTypes[x];
     let newSpecifier = sortedTypes[x];
 
+    // Checks to see if the two specifiers are actually the same thing
+    if (specifier === newSpecifier) {
+      continue;
+    }
     let specifierRange = specifier.range;
     let newSpecifierRange = newSpecifier.range;
+    if (specifierRange == null || newSpecifierRange == null) {
+      throw new Error("Range cannot be null");
+    }
+    if (
+      specifierRange[0] === newSpecifierRange[0] &&
+      specifierRange[1] === newSpecifierRange[1]
+    ) {
+      continue;
+    }
 
-    let specifierCommentRange = getCommentRangeForSpecifier(
+    // As long as the comment isn't the same comment and one of the specifiers has a comment
+    // Swap the specifier comments (as they will be before the specifier)
+    let specifierCommentRange = getPrecedingCommentRangeForSpecifier(
       fileContents,
       comments,
       specifier
     );
-    let newSpecifierCommentRange = getCommentRangeForSpecifier(
+    let newSpecifierCommentRange = getPrecedingCommentRangeForSpecifier(
       fileContents,
       comments,
       newSpecifier
     );
-
-    // As long as the comment isn't the same comment and one of the specifiers has a comment
-    // Swap the specifier comments (as they will be before the specifier)
+    let noCommentsExist =
+      specifierCommentRange[0] === specifierCommentRange[1] &&
+      newSpecifierCommentRange[0] === newSpecifierCommentRange[1];
     if (
+      !noCommentsExist &&
       specifierCommentRange[0] !== newSpecifierCommentRange[0] &&
-      specifierCommentRange[1] !== newSpecifierCommentRange[1] &&
-      (specifierCommentRange[0] !== specifierCommentRange[1] ||
-        newSpecifierCommentRange[0] !== newSpecifierCommentRange[1])
+      specifierCommentRange[1] !== newSpecifierCommentRange[1]
     ) {
       let spliceRemoveIndexStart =
         specifierCommentRange[0] + newFileContentIndexCorrection;
@@ -216,12 +257,6 @@ export function reorderValues<
 
     // Swap the specifier
     {
-      if (specifierRange == null) {
-        throw new Error("Range cannot be null");
-      }
-      if (newSpecifierRange == null) {
-        throw new Error("Range cannot be null");
-      }
       let spliceRemoveIndexStart =
         specifierRange[0] + newFileContentIndexCorrection;
       let spliceRemoveIndexEnd =
@@ -243,12 +278,54 @@ export function reorderValues<
         spliceAddIndexStart -
         (spliceRemoveIndexEnd - spliceRemoveIndexStart);
     }
+
+    // As long as the comment isn't the same comment and one of the specifiers has a comment
+    // Swap the specifier comments (as they will be before the specifier)
+    specifierCommentRange = getSucceedingCommentRangeForSpecifier(
+      fileContents,
+      comments,
+      specifier
+    );
+    newSpecifierCommentRange = getSucceedingCommentRangeForSpecifier(
+      fileContents,
+      comments,
+      newSpecifier
+    );
+    noCommentsExist =
+      specifierCommentRange[0] === specifierCommentRange[1] &&
+      newSpecifierCommentRange[0] === newSpecifierCommentRange[1];
+    if (
+      !noCommentsExist &&
+      specifierCommentRange[0] !== newSpecifierCommentRange[0] &&
+      specifierCommentRange[1] !== newSpecifierCommentRange[1]
+    ) {
+      let spliceRemoveIndexStart =
+        specifierCommentRange[0] + newFileContentIndexCorrection;
+      let spliceRemoveIndexEnd =
+        specifierCommentRange[1] + newFileContentIndexCorrection;
+
+      let untouchedBeginning = newFileContents.slice(0, spliceRemoveIndexStart);
+      let untouchedEnd = newFileContents.slice(spliceRemoveIndexEnd);
+
+      let spliceAddIndexStart = newSpecifierCommentRange[0];
+      let spliceAddIndexEnd = newSpecifierCommentRange[1];
+      let stringToInsert = fileContents.substring(
+        spliceAddIndexStart,
+        spliceAddIndexEnd
+      );
+
+      newFileContents = untouchedBeginning + stringToInsert + untouchedEnd;
+      newFileContentIndexCorrection +=
+        spliceAddIndexEnd -
+        spliceAddIndexStart -
+        (spliceRemoveIndexEnd - spliceRemoveIndexStart);
+    }
   }
 
   return newFileContents;
 }
 
-function getCommentRangeForSpecifier<
+function getPrecedingCommentRangeForSpecifier<
   NodeType extends BaseNode,
   CommentType extends Comment
 >(
@@ -262,7 +339,7 @@ function getCommentRangeForSpecifier<
     throw new Error("Specifier range cannot be null");
   }
 
-  let specifierComments = getCommentsForSpecifier(
+  let specifierComments = getPrecedingCommentsForSpecifier(
     fileContents,
     comments,
     specifier
@@ -311,8 +388,60 @@ function getCommentRangeForSpecifier<
   return [specifierLineStart, specifierLineStart];
 }
 
+function getSucceedingCommentRangeForSpecifier<
+  NodeType extends BaseNode,
+  CommentType extends Comment
+>(
+  fileContents: string,
+  comments: CommentType[],
+  specifier: NodeType
+): [number, number] {
+  // Determine where the specifier line starts
+  let range = specifier.range;
+  if (range == null) {
+    throw new Error("Specifier range cannot be null");
+  }
+
+  let specifierEndOfLine = fileContents.indexOf("\r", range[1]);
+  if (specifierEndOfLine === -1) {
+    specifierEndOfLine = fileContents.indexOf("\n", range[1]);
+  }
+  let specifierComments = getSucceedingCommentsForSpecifier(
+    fileContents,
+    comments,
+    specifier
+  );
+
+  // Null and empty checks
+  if (specifierComments.length === 0) {
+    return [specifierEndOfLine, specifierEndOfLine];
+  }
+  let firstCommentRange = specifierComments[0].range;
+  let lastCommentRange = specifierComments[specifierComments.length - 1].range;
+  if (firstCommentRange == null || lastCommentRange == null) {
+    return [specifierEndOfLine, specifierEndOfLine];
+  }
+
+  // Determine where we need to copy paste from
+  let textBetweenSpecifierAndComment = fileContents.substring(
+    range[1],
+    firstCommentRange[0]
+  );
+  let nonWhiteSpaceMatches = textBetweenSpecifierAndComment.match(/[^(\s)]/gim);
+  let lastIndexOfNonWhitespace = 0;
+  if (nonWhiteSpaceMatches != null && nonWhiteSpaceMatches.length !== 0) {
+    lastIndexOfNonWhitespace =
+      textBetweenSpecifierAndComment.lastIndexOf(
+        nonWhiteSpaceMatches[nonWhiteSpaceMatches.length - 1]
+      ) + 1;
+  }
+  let specifierLineStart = range[1] + lastIndexOfNonWhitespace;
+
+  return [specifierLineStart, lastCommentRange[1]];
+}
+
 // Currently we only accept comments before the specifier.
-function getCommentsForSpecifier<
+function getPrecedingCommentsForSpecifier<
   NodeType extends BaseNode,
   CommentType extends Comment
 >(
@@ -326,11 +455,12 @@ function getCommentsForSpecifier<
     return isValidComment(fileContents, comment);
   });
 
-  // Determine the starting location of the comment
   let lastRange = specifier.range;
   if (lastRange == null) {
     return [];
   }
+
+  // Determine the comment next to the specifier
   let latestCommentIndex: number = -1;
   for (let index = 0; index < comments.length; index++) {
     let commentRange = comments[index].range;
@@ -341,16 +471,52 @@ function getCommentsForSpecifier<
     if (commentRange[0] > lastRange[0]) {
       break;
     }
-
-    let textBetweenCommentAndSpecier = fileContents.substring(
+    let textBetweenStartOfLineAndComment = fileContents.substring(
+      fileContents.lastIndexOf("\n", commentRange[0]) + 1,
+      commentRange[0]
+    );
+    let textBetweenCommentAndSpecifier = fileContents.substring(
       commentRange[1],
       lastRange[0]
     );
-    // Ignore opeators and whitespace
-    if ((textBetweenCommentAndSpecier.match(/\n/gim) || []).length > 1) {
-      continue;
-    } else {
+    let isTextBetweenStartOfLineAndCommentWhitespace =
+      textBetweenStartOfLineAndComment.match(/[^\s]/gim) == null;
+    let isCommentOwnedByPreviousLine =
+      !isTextBetweenStartOfLineAndCommentWhitespace &&
+      textBetweenCommentAndSpecifier.indexOf("\n") !== -1;
+    let isTextBetweenCommentAndSpecifierWhitespace =
+      textBetweenCommentAndSpecifier.match(/[^\s]/gim) == null;
+    let newLineCount = textBetweenCommentAndSpecifier.match(/\n/gim) || 0;
+    if (
+      newLineCount <= 1 &&
+      isTextBetweenCommentAndSpecifierWhitespace &&
+      !isCommentOwnedByPreviousLine
+    ) {
       latestCommentIndex = index;
+    }
+  }
+
+  // If there are multiple comments all stacked on one another on separate lines
+  let earliestCommentIndex = latestCommentIndex;
+  if (latestCommentIndex !== -1) {
+    while (earliestCommentIndex > 0) {
+      let previousComment = comments[earliestCommentIndex - 1].range;
+      let thisComment = comments[earliestCommentIndex].range;
+
+      if (previousComment == null || thisComment == null) {
+        throw new Error("Comment cannot have a null range");
+      }
+
+      let textBetweenCommentAndSpecier = fileContents.substring(
+        previousComment[1],
+        thisComment[0]
+      );
+      // Ignore opeators and whitespace
+      if (textBetweenCommentAndSpecier.match(/[^(\|\&\+\-\*\/\s)]/gim)) {
+        break;
+      } else {
+        earliestCommentIndex--;
+      }
     }
   }
 
@@ -358,29 +524,68 @@ function getCommentsForSpecifier<
     return [];
   }
 
-  let earliestCommentIndex = latestCommentIndex;
-
-  while (earliestCommentIndex > 0) {
-    let previousComment = comments[earliestCommentIndex - 1].range;
-    let thisComment = comments[earliestCommentIndex].range;
-
-    if (previousComment == null || thisComment == null) {
-      throw new Error("Comment cannot have a null range");
-    }
-
-    let textBetweenCommentAndSpecier = fileContents.substring(
-      previousComment[1],
-      thisComment[0]
-    );
-    // Ignore opeators and whitespace
-    if (textBetweenCommentAndSpecier.match(/[^(\|\&\+\-\*\/\s)]/gim)) {
-      break;
-    } else {
-      earliestCommentIndex--;
-    }
+  if (earliestCommentIndex === -1) {
+    earliestCommentIndex = latestCommentIndex;
   }
 
   return comments.slice(earliestCommentIndex, latestCommentIndex + 1);
+}
+
+function getSucceedingCommentsForSpecifier<
+  NodeType extends BaseNode,
+  CommentType extends Comment
+>(
+  fileContents: string,
+  comments: CommentType[],
+  specifier: NodeType
+): CommentType[] {
+  comments = comments.filter(comment => {
+    // There seems to be bugs with the parsers regarding certain comments
+    // https://github.com/eslint/typescript-eslint-parser/issues/450
+    return isValidComment(fileContents, comment);
+  });
+
+  let lastRange = specifier.range;
+  if (lastRange == null) {
+    return [];
+  }
+
+  for (let index = 0; index < comments.length; index++) {
+    let comment = comments[index];
+    let commentRange = comment.range;
+    if (commentRange == null) {
+      continue;
+    }
+
+    // Comment is before the specifier
+    if (commentRange[0] < lastRange[0]) {
+      continue;
+    }
+
+    let textBetweenCommentAndSpecifier = fileContents.substring(
+      lastRange[1],
+      commentRange[0]
+    );
+    let nextNewLine = fileContents.indexOf("\n", lastRange[1]);
+    let textBetweenCommentAndEndOfLine = fileContents.substring(
+      commentRange[1],
+      nextNewLine === -1 ? undefined : nextNewLine
+    );
+    let isTextBetweenCommentAndSpecifierWhitespaceButNotNewline =
+      textBetweenCommentAndSpecifier.match(/[\w\n]/gim) == null;
+    let isTextBetweenCommentAndEndOfLineWhitespaceButNotNewline =
+      textBetweenCommentAndEndOfLine.match(/[\w\n]/gim) == null;
+    if (
+      isTextBetweenCommentAndSpecifierWhitespaceButNotNewline &&
+      isTextBetweenCommentAndEndOfLineWhitespaceButNotNewline
+    ) {
+      // TODO test multiple block comments at the end of the line
+      return comments.slice(index, index + 1);
+    }
+    break;
+  }
+
+  return [];
 }
 
 function isValidComment(fileContents: string, comment: Comment) {

@@ -1,0 +1,11 @@
+switch (parent.kind) {
+              case ts.SyntaxKind.JsxClosingElement:
+              case ts.SyntaxKind.JsxSelfClosingElement:
+                  // there can only be trailing trivia if we are at the end of the top level element
+                  return parent.parent.parent.kind !== ts.SyntaxKind.JsxElement;
+              case ts.SyntaxKind.JsxOpeningElement:
+                  return false; // would be inside the element
+
+              default:
+                  return true;
+          }

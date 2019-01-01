@@ -5,14 +5,12 @@ function canHaveTrailingTrivia(tokenKind: ts.SyntaxKind, parent: ts.Node): boole
         case ts.SyntaxKind.JsxText:
             // there is no trivia after JsxText
             return false;
-
         case ts.SyntaxKind.CloseBraceToken:
             // after a JsxExpression inside a JsxElement's body can only be other JsxChild, but no trivia
             return (
                 parent.kind !== ts.SyntaxKind.JsxExpression ||
                 parent.parent.kind !== ts.SyntaxKind.JsxElement
             );
-
         case ts.SyntaxKind.GreaterThanToken:
             switch (parent.kind) {
                 case ts.SyntaxKind.JsxOpeningElement:
@@ -25,7 +23,6 @@ function canHaveTrailingTrivia(tokenKind: ts.SyntaxKind, parent: ts.Node): boole
                 default:
                     return true;
             }
-
         default:
             return true;
     }

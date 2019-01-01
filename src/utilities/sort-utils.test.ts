@@ -195,6 +195,19 @@ describe("utilities/sort-utils", () => {
       expect(result[0].nodes).to.have.lengthOf(2);
       expect(result[0].comments).to.have.lengthOf(2);
     });
+
+    it("node, comment right, break, comment front, node, comment right", () => {
+      let input = `
+      log("First"); // First
+      /* Second */ log("Second");
+      `;
+      let parsed = flowParse(input);
+      let result = getContextGroups(parsed.body, parsed.comments, input);
+
+      expect(result).to.have.lengthOf(1);
+      expect(result[0].nodes).to.have.lengthOf(2);
+      expect(result[0].comments).to.have.lengthOf(2);
+    });
   });
 
   describe("Multiple context groups", () => {
@@ -251,6 +264,58 @@ describe("utilities/sort-utils", () => {
       expect(result[0].comments).to.have.lengthOf(0);
       expect(result[1].nodes).to.have.lengthOf(1);
       expect(result[1].comments).to.have.lengthOf(0);
+    });
+
+    it("comment, break, comment top, comment front, node, comment right", () => {
+      let input = `
+      // First
+
+      // Second
+      /* Second2 */ log("Second"); // Second-3
+      `;
+      let parsed = flowParse(input);
+      let result = getContextGroups(parsed.body, parsed.comments, input);
+
+      expect(result).to.have.lengthOf(1);
+      expect(result[0].nodes).to.have.lengthOf(1);
+      expect(result[0].comments).to.have.lengthOf(3);
+    });
+
+    it("comment top, comment front, node, comment right, break, comment top, comment front, node, comment right", () => {
+      let input = `
+      // First
+      /* First2 */ log("First"); // First-3
+
+      // Second
+      /* Second2 */ log("Second"); // Second-3
+      `;
+      let parsed = flowParse(input);
+      let result = getContextGroups(parsed.body, parsed.comments, input);
+
+      expect(result).to.have.lengthOf(2);
+      expect(result[0].nodes).to.have.lengthOf(1);
+      expect(result[0].comments).to.have.lengthOf(3);
+      expect(result[1].nodes).to.have.lengthOf(1);
+      expect(result[1].comments).to.have.lengthOf(3);
+    });
+
+    it("comment top, comment front, node, comment right, break, comment top, comment top, comment front, node, comment right", () => {
+      let input = `
+      // First
+      /* First2 */ log("First"); // First-3
+
+      // Second1
+      // Second11
+      /* Second2 */ log("Second"); // Second-3
+      `;
+      let parsed = flowParse(input);
+      let result = getContextGroups(parsed.body, parsed.comments, input);
+
+      expect(result).to.have.lengthOf(2);
+      expect(result[0].nodes).to.have.lengthOf(1);
+      expect(result[0].comments).to.have.lengthOf(3);
+      expect(result[1].nodes).to.have.lengthOf(1);
+      expect(result[1].comments).to.have.lengthOf(4);
     });
   });
 });

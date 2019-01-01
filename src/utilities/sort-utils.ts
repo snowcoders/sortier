@@ -354,10 +354,15 @@ function getPrecedingCommentRangeForSpecifier<
       throw new Error("Comment cannot have a null range");
     }
 
-    if (
-      fileContents.substring(lastCommentRange[1], range[0]).indexOf("\n") === -1
-    ) {
-      return [firstCommentRange[0], lastCommentRange[1]];
+    let textBetweenCommentAndSpecifier = fileContents.substring(
+      lastCommentRange[1],
+      range[0]
+    );
+    if (textBetweenCommentAndSpecifier.indexOf("\n") === -1) {
+      return [
+        firstCommentRange[0],
+        lastCommentRange[1] + textBetweenCommentAndSpecifier.length
+      ];
     }
   }
   let indexOfNewLineBeforeSpecifier = fileContents
@@ -507,12 +512,26 @@ function getPrecedingCommentsForSpecifier<
         throw new Error("Comment cannot have a null range");
       }
 
-      let textBetweenCommentAndSpecier = fileContents.substring(
+      let textBetweenCommentAndSpecifier = fileContents.substring(
         previousComment[1],
         thisComment[0]
       );
+      let textBetweenStartOfLineAndComment = fileContents.substring(
+        fileContents.lastIndexOf("\n", previousComment[0]),
+        previousComment[0]
+      );
+      let isTextBetweenStartOfLineAndCommentWhitespace =
+        textBetweenStartOfLineAndComment.match(/[^\s]/gim) == null;
+      let isCommentOwnedByPreviousLine =
+        !isTextBetweenStartOfLineAndCommentWhitespace &&
+        textBetweenCommentAndSpecifier.indexOf("\n") !== -1;
       // Ignore opeators and whitespace
-      if (textBetweenCommentAndSpecier.match(/[^(\|\&\+\-\*\/\s)]/gim)) {
+      let newLineCount = textBetweenCommentAndSpecifier.match(/\n/gim);
+      if (
+        textBetweenCommentAndSpecifier.match(/[^(\|\&\+\-\*\/\s)]/gim) ||
+        (newLineCount != null && 1 < newLineCount.length) ||
+        isCommentOwnedByPreviousLine
+      ) {
         break;
       } else {
         earliestCommentIndex--;

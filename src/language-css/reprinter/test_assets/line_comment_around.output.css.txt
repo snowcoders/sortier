@@ -1,0 +1,8 @@
+.example {
+    position: relative;   // Position
+
+    /* bottom */ bottom: 0px;
+    left: 0px; // Left
+    right: 0px;  // Right
+    top: 0px; // Top
+}

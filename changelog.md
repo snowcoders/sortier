@@ -1,6 +1,6 @@
 ### Unreleased
 
-- We now sort comments to the right of a line not just to the top and to the left
+- We now move comments to the right of a line when sorting not just to the top and to the left
 - Improved handling of switch statements
 
 ### 2.4.0

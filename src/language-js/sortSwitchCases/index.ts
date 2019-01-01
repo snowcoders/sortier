@@ -167,16 +167,35 @@ export function sortSwitchCases(
 
 function doesCaseBreakOutOfSwitch(caseStatement: any) {
   let breakStatement = caseStatement.consequent.filter((value: any) => {
-    if (value.type === "BlockStatement") {
-      return (
-        value.body.filter((value: any) => {
-          return (
-            value.type === "BreakStatement" || value.type === "ReturnStatement"
-          );
-        }).length !== 0
-      );
+    switch (value.type) {
+      case "BlockStatement": {
+        return (
+          value.body.filter((value: any) => {
+            return (
+              value.type === "BreakStatement" ||
+              value.type === "ReturnStatement"
+            );
+          }).length !== 0
+        );
+      }
+      case "BreakStatement":
+      case "ReturnStatement":
+      case "ThrowStatement":
+        return true;
+      default:
+        // There are several types which are a bit more complicated which
+        // leaves us in an undeterminate state if we will exit or not
+        return (
+          // Value is some sort of loop
+          value.body != null ||
+          // Value is a switch statement
+          value.cases != null ||
+          // Value is some sort of conditional
+          value.consequent != null ||
+          // Value is a try catch
+          value.block != null
+        );
     }
-    return value.type === "BreakStatement" || value.type === "ReturnStatement";
   });
   return breakStatement.length !== 0;
 }

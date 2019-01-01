@@ -1,0 +1,23 @@
+switch (node.kind) {
+    case ts.SyntaxKind.PropertyAccessExpression:
+        return isSimple((node as ts.PropertyAccessExpression).expression);
+    case ts.SyntaxKind.PrefixUnaryExpression:
+        switch ((node as ts.PrefixUnaryExpression).operator) {
+            case ts.SyntaxKind.PlusPlusToken:
+            case ts.SyntaxKind.MinusMinusToken:
+                return false;
+            default:
+                return isSimple((node as ts.PrefixUnaryExpression).operand);
+        }
+    case ts.SyntaxKind.Identifier:
+    case ts.SyntaxKind.NumericLiteral:
+    case ts.SyntaxKind.StringLiteral:
+    case ts.SyntaxKind.ThisKeyword:
+    case ts.SyntaxKind.NoSubstitutionTemplateLiteral:
+    case ts.SyntaxKind.TrueKeyword:
+    case ts.SyntaxKind.FalseKeyword:
+    case ts.SyntaxKind.NullKeyword:
+        return true;
+    default:
+        return false;
+}

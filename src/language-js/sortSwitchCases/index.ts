@@ -11,6 +11,12 @@ import {
   reorderValues
 } from "../../utilities/sort-utils";
 
+enum HasImmediateExitOption {
+  Indeterminate,
+  True,
+  False
+}
+
 export interface SortSwitchCaseOptions {}
 
 export function sortSwitchCases(
@@ -37,7 +43,7 @@ export function sortSwitchCases(
     return fileContents;
   }
 
-  let doesBreakOut = "indeterminate";
+  let doesBreakOut = HasImmediateExitOption.Indeterminate;
   let newFileContents = fileContents.slice();
   let contextGroups = getContextGroups(cases, comments, fileContents);
 
@@ -49,7 +55,7 @@ export function sortSwitchCases(
     }
 
     doesBreakOut = doesCaseBreakOutOfSwitch(cases[cases.length - 1]);
-    if (doesBreakOut !== "true") {
+    if (doesBreakOut !== HasImmediateExitOption.True) {
       cases.pop();
     }
 
@@ -61,10 +67,10 @@ export function sortSwitchCases(
     for (switchCaseEnd = 0; switchCaseEnd < cases.length; switchCaseEnd++) {
       // Do not rearrange items that are in a non-break statement
       doesBreakOut = doesCaseBreakOutOfSwitch(cases[switchCaseEnd]);
-      if (doesBreakOut === "indeterminate") {
+      if (doesBreakOut === HasImmediateExitOption.Indeterminate) {
         return fileContents;
       }
-      if (doesBreakOut === "false") {
+      if (doesBreakOut === HasImmediateExitOption.False) {
         continue;
       }
 
@@ -120,7 +126,7 @@ export function sortSwitchCases(
 
     // If the last switch group is a fall through, don't include it in the swap
     doesBreakOut = doesCaseBreakOutOfSwitch(cases[cases.length - 1]);
-    if (doesBreakOut !== "true") {
+    if (doesBreakOut !== HasImmediateExitOption.True) {
       switchGroupsWithBreaks.pop();
     }
 
@@ -173,13 +179,11 @@ export function sortSwitchCases(
   return newFileContents;
 }
 
-function doesCaseBreakOutOfSwitch(
-  caseStatement: any
-): "false" | "indeterminate" | "true" {
+function doesCaseBreakOutOfSwitch(caseStatement: any): HasImmediateExitOption {
   return doesHaveImmediateExit(caseStatement.consequent);
 }
 
-function doesHaveImmediateExit(values: any) {
+function doesHaveImmediateExit(values: any): HasImmediateExitOption {
   for (let value of values) {
     switch (value.type) {
       case "BlockStatement": {
@@ -188,7 +192,7 @@ function doesHaveImmediateExit(values: any) {
       case "BreakStatement":
       case "ReturnStatement":
       case "ThrowStatement":
-        return "true";
+        return HasImmediateExitOption.True;
       case "SwitchStatement": {
         // If the last option in the switch statement has an exit, then either
         // all previosu consequents have an exit (e.g. not getting to the last one)
@@ -196,9 +200,9 @@ function doesHaveImmediateExit(values: any) {
         if (
           doesHaveImmediateExit(
             value.cases[value.cases.length - 1].consequent
-          ) === "true"
+          ) === HasImmediateExitOption.True
         ) {
-          return "true";
+          return HasImmediateExitOption.True;
         }
       }
       default:
@@ -212,11 +216,11 @@ function doesHaveImmediateExit(values: any) {
           // Value is a try catch
           value.block != null
         ) {
-          return "indeterminate";
+          return HasImmediateExitOption.Indeterminate;
         }
     }
   }
-  return "false";
+  return HasImmediateExitOption.False;
 }
 
 function getSortableText(a: any, fileContents: string) {

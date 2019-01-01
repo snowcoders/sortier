@@ -58,9 +58,8 @@
     "cover": "nyc report --reporter=text-lcov | coveralls",
     "mocha": "mocha --require ts-node/register --require source-map-support/register --full-trace \"./src/**/*.test.ts\"",
     "prepare": "npm run clean && npm run build-production",
-    "prettier": "prettier",
     "start": "npm run build && node bin/index.js",
     "test": "nyc npm run mocha"
   },
-  "version": "2.4.0"
+  "version": "2.5.0"
 }

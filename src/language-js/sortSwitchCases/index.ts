@@ -54,24 +54,7 @@ export function sortSwitchCases(
     let switchCaseEnd = 0;
     for (switchCaseEnd = 0; switchCaseEnd < cases.length; switchCaseEnd++) {
       // Do not rearrange items that are in a non-break statement
-      let breakStatement = cases[switchCaseEnd].consequent.filter(
-        (value: any) => {
-          if (value.type === "BlockStatement") {
-            return (
-              value.body.filter((value: any) => {
-                return (
-                  value.type === "BreakStatement" ||
-                  value.type === "ReturnStatement"
-                );
-              }).length !== 0
-            );
-          }
-          return (
-            value.type === "BreakStatement" || value.type === "ReturnStatement"
-          );
-        }
-      );
-      if (breakStatement.length === 0) {
+      if (!doesCaseBreakOutOfSwitch(cases[switchCaseEnd])) {
         continue;
       }
 
@@ -125,6 +108,14 @@ export function sortSwitchCases(
       }
     }
 
+    // If the last switch group is a fall through, don't include it in the swap
+    if (!doesCaseBreakOutOfSwitch(cases[cases.length - 1])) {
+      switchGroupsWithBreaks = switchGroupsWithBreaks.slice(
+        0,
+        switchGroupsWithBreaks.length - 1
+      );
+    }
+
     // Now sort the actual switch groups
     let switchGroupsWithBreaksSorted = switchGroupsWithBreaks.slice();
     let switchGroupToLowestCase = new Map();
@@ -172,6 +163,22 @@ export function sortSwitchCases(
   }
 
   return newFileContents;
+}
+
+function doesCaseBreakOutOfSwitch(caseStatement: any) {
+  let breakStatement = caseStatement.consequent.filter((value: any) => {
+    if (value.type === "BlockStatement") {
+      return (
+        value.body.filter((value: any) => {
+          return (
+            value.type === "BreakStatement" || value.type === "ReturnStatement"
+          );
+        }).length !== 0
+      );
+    }
+    return value.type === "BreakStatement" || value.type === "ReturnStatement";
+  });
+  return breakStatement.length !== 0;
 }
 
 function getSortableText(a: any, fileContents: string) {

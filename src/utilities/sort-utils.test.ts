@@ -12,7 +12,28 @@ describe("utilities/sort-utils", () => {
     getContextGroups(nodes, comments, "");
   });
 
-  describe("Single context group", () => {
+  it("Spaces within nodes but not around", () => {
+    let input = `
+    {
+      console.log("a");
+      
+      console.log("b");
+    }
+    {
+      console.log("c");
+      
+      console.log("d");
+    }
+    `;
+    let parsed = flowParse(input);
+    let result = getContextGroups(parsed.body, parsed.comments, input);
+
+    expect(result).to.have.lengthOf(1);
+    expect(result[0].nodes).to.have.lengthOf(2);
+    expect(result[0].comments).to.have.lengthOf(0);
+  });
+
+  describe("Comments - Single context group", () => {
     it("comment top", () => {
       let input = `
       // First
@@ -210,7 +231,7 @@ describe("utilities/sort-utils", () => {
     });
   });
 
-  describe("Multiple context groups", () => {
+  describe("Comments - Multiple context groups", () => {
     it("comment, node, break, comment, node", () => {
       let input = `
       // First

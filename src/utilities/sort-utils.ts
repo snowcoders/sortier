@@ -100,9 +100,28 @@ export function getContextGroups<
       if (range == null) {
         continue;
       }
-      if (contextBarrierIndex < range[1]) {
-        break;
+
+      // Deal with context barriers if its between the last node and the current
+      if (contextBarrierIndex != null && nodeIndex > 0) {
+        let lastNode = nodes[nodeIndex - 1];
+        let lastRange = lastNode.range;
+        if (lastRange != null) {
+          while (
+            contextBarrierIndex != null &&
+            contextBarrierIndex < lastRange[1]
+          ) {
+            contextBarrierIndex = contextBarrierIndices.shift();
+          }
+          if (
+            contextBarrierIndex != null &&
+            contextBarrierIndex >= lastRange[1] &&
+            contextBarrierIndex <= range[0]
+          ) {
+            break;
+          }
+        }
       }
+
       partialNodes.push(node);
       let precedingComments = getPrecedingCommentsForSpecifier(
         fileContents,
@@ -188,6 +207,10 @@ export function reorderValues<
     throw new Error(
       "Sortier ran into a problem - Expected the same number of unsorted types and sorted types to be provided"
     );
+  }
+
+  if (unsortedTypes.length === 1) {
+    return fileContents;
   }
 
   let newFileContents = fileContents.slice();

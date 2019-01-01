@@ -1,6 +1,7 @@
 ### Unreleased
 
-- Improved handling of adjacent comments and we now sort comments to the right of a line
+- We now sort comments to the right of a line not just to the top and to the left
+- Improved handling of switch statements
 
 ### 2.4.0
 

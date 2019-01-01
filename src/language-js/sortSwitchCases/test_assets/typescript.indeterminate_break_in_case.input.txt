@@ -1,4 +1,10 @@
+// Currently we declare this "indeterminate" because "ts.SyntaxKind.PropertyAccessExpression2" has a conditional that sometimes breaks and sometimes doesn't.
+// In these situations we should return the original switch statement as to not break the execution code
 switch (node.kind) {
+    case ts.SyntaxKind.PropertyAccessExpression2:
+        if (false) {
+            break;
+        } // Fallthrough into next line
     case ts.SyntaxKind.PropertyAccessExpression:
         return isSimple((node as ts.PropertyAccessExpression).expression);
     case ts.SyntaxKind.PrefixUnaryExpression:

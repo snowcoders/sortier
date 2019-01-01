@@ -1,8 +1,9 @@
 // Since the last case statement falls through, if we sort without ignoring the last break, we will log "a" and "b", not just "a"
-switch ("a") {
-    case "b":
-        log("b");
+switch (unify.kind) {
+    case "single-parameter-difference": {
         break;
-    case "a":
-        log("a");
+    }
+    case "extra-parameter": {
+        const { extraParameter, otherSignature } = unify;
+    }
 }

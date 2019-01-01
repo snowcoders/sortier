@@ -37,6 +37,7 @@ export function sortSwitchCases(
     return fileContents;
   }
 
+  let doesBreakOut = "indeterminate";
   let newFileContents = fileContents.slice();
   let contextGroups = getContextGroups(cases, comments, fileContents);
 
@@ -47,6 +48,11 @@ export function sortSwitchCases(
       continue;
     }
 
+    doesBreakOut = doesCaseBreakOutOfSwitch(cases[cases.length - 1]);
+    if (doesBreakOut !== "true") {
+      cases.pop();
+    }
+
     // Determine where the "break" statements are so we dont' sort through them
     // which would change the logic of the code
     let switchGroupsWithBreaks: Array<SwitchCase[]> = [];
@@ -54,7 +60,11 @@ export function sortSwitchCases(
     let switchCaseEnd = 0;
     for (switchCaseEnd = 0; switchCaseEnd < cases.length; switchCaseEnd++) {
       // Do not rearrange items that are in a non-break statement
-      if (!doesCaseBreakOutOfSwitch(cases[switchCaseEnd])) {
+      doesBreakOut = doesCaseBreakOutOfSwitch(cases[switchCaseEnd]);
+      if (doesBreakOut === "indeterminate") {
+        return fileContents;
+      }
+      if (doesBreakOut === "false") {
         continue;
       }
 
@@ -109,11 +119,9 @@ export function sortSwitchCases(
     }
 
     // If the last switch group is a fall through, don't include it in the swap
-    if (!doesCaseBreakOutOfSwitch(cases[cases.length - 1])) {
-      switchGroupsWithBreaks = switchGroupsWithBreaks.slice(
-        0,
-        switchGroupsWithBreaks.length - 1
-      );
+    doesBreakOut = doesCaseBreakOutOfSwitch(cases[cases.length - 1]);
+    if (doesBreakOut !== "true") {
+      switchGroupsWithBreaks.pop();
     }
 
     // Now sort the actual switch groups
@@ -165,39 +173,50 @@ export function sortSwitchCases(
   return newFileContents;
 }
 
-function doesCaseBreakOutOfSwitch(caseStatement: any) {
-  let breakStatement = caseStatement.consequent.filter((value: any) => {
+function doesCaseBreakOutOfSwitch(
+  caseStatement: any
+): "false" | "indeterminate" | "true" {
+  return doesHaveImmediateExit(caseStatement.consequent);
+}
+
+function doesHaveImmediateExit(values: any) {
+  for (let value of values) {
     switch (value.type) {
       case "BlockStatement": {
-        return (
-          value.body.filter((value: any) => {
-            return (
-              value.type === "BreakStatement" ||
-              value.type === "ReturnStatement"
-            );
-          }).length !== 0
-        );
+        return doesHaveImmediateExit(value.body);
       }
       case "BreakStatement":
       case "ReturnStatement":
       case "ThrowStatement":
-        return true;
+        return "true";
+      case "SwitchStatement": {
+        // If the last option in the switch statement has an exit, then either
+        // all previosu consequents have an exit (e.g. not getting to the last one)
+        // or they all fall through to the last one which means we exit
+        if (
+          doesHaveImmediateExit(
+            value.cases[value.cases.length - 1].consequent
+          ) === "true"
+        ) {
+          return "true";
+        }
+      }
       default:
         // There are several types which are a bit more complicated which
         // leaves us in an undeterminate state if we will exit or not
-        return (
+        if (
           // Value is some sort of loop
           value.body != null ||
-          // Value is a switch statement
-          value.cases != null ||
           // Value is some sort of conditional
           value.consequent != null ||
           // Value is a try catch
           value.block != null
-        );
+        ) {
+          return "indeterminate";
+        }
     }
-  });
-  return breakStatement.length !== 0;
+  }
+  return "false";
 }
 
 function getSortableText(a: any, fileContents: string) {

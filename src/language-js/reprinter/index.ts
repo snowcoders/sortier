@@ -277,6 +277,7 @@ export class Reprinter implements ILanguage {
             if (node.specifiers.length !== 0) {
               fileContents = sortImportDeclarationSpecifiers(
                 node.specifiers,
+                comments,
                 fileContents
               );
             }
@@ -344,6 +345,7 @@ export class Reprinter implements ILanguage {
           case "ImportDeclaration": {
             fileContents = sortImportDeclarationSpecifiers(
               node.specifiers,
+              comments,
               fileContents
             );
             break;

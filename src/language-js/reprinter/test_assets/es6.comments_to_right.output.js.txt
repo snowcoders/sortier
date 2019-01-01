@@ -1,0 +1,4 @@
+import { 
+  a1, /* Com a1 */
+  a2 /* Comment a2 */
+  } from "./a";

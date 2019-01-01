@@ -1,0 +1,29 @@
+// https://github.com/snowcoders/sortier/issues/264
+/** Exclude trailing positions that would lead to scanning for trivia inside JsxText */
+function canHaveTrailingTrivia(tokenKind: ts.SyntaxKind, parent: ts.Node): boolean {
+    switch (tokenKind) {
+        case ts.SyntaxKind.JsxText:
+            // there is no trivia after JsxText
+            return false;
+        case ts.SyntaxKind.CloseBraceToken:
+            // after a JsxExpression inside a JsxElement's body can only be other JsxChild, but no trivia
+            return (
+                parent.kind !== ts.SyntaxKind.JsxExpression ||
+                parent.parent.kind !== ts.SyntaxKind.JsxElement
+            );
+        case ts.SyntaxKind.GreaterThanToken:
+            switch (parent.kind) {
+                case ts.SyntaxKind.JsxOpeningElement:
+                    return false; // would be inside the element
+                case ts.SyntaxKind.JsxClosingElement:
+                case ts.SyntaxKind.JsxSelfClosingElement:
+                    // there can only be trailing trivia if we are at the end of the top level element
+                    return parent.parent.parent.kind !== ts.SyntaxKind.JsxElement;
+
+                default:
+                    return true;
+            }
+        default:
+            return true;
+    }
+}

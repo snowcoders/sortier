@@ -64,7 +64,9 @@ export function sortDeclarations(
       columnIndexToOffset[value.source.start.line - 2] +
       value.source.start.column;
     let endOffset =
-      columnIndexToOffset[value.source.end.line - 2] + value.source.end.column;
+      columnIndexToOffset[value.source.end.line - 2] +
+      value.source.end.column +
+      1;
     let source = fileContents.substring(startOffset, endOffset);
     let isBlock = source.trim().startsWith("/*");
     let result: Comment = {

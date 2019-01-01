@@ -46,11 +46,12 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
     };
   });
 
-  let getSortedOverBody = (body, input, options?) => {
+  let getSortedOverBody = (body, comments, input, options?) => {
     let actual = input;
     body.forEach(item => {
       actual = sortImportDeclarationSpecifiers(
         item.specifiers,
+        comments,
         actual,
         options
       );
@@ -82,7 +83,8 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
           it(testInfo.testName, () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
-            let actual = getSortedOverBody(parser(input).body, input);
+            let parsed = parser(input);
+            let actual = getSortedOverBody(parsed.body, parsed.comments, input);
             expect(actual).to.equal(expected);
           });
         }
@@ -94,8 +96,8 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
     it("Group by everything then types then interfaces", () => {
       let input = 'import { type Hi, Something, IInterface } from "module";';
       let expected = 'import { Something, type Hi, IInterface } from "module";';
-
-      let output = getSortedOverBody(flowParse(input).body, input, {
+      let parsed = flowParse(input);
+      let output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["*", "types", "interfaces"],
         orderBy: "alpha"
       });
@@ -105,8 +107,8 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
     it("Group by everything then types", () => {
       let input = 'import { type Hi, Something, IInterface } from "module";';
       let expected = 'import { IInterface, Something, type Hi } from "module";';
-
-      let output = getSortedOverBody(flowParse(input).body, input, {
+      let parsed = flowParse(input);
+      let output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["*", "types"],
         orderBy: "alpha"
       });
@@ -116,8 +118,8 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
     it("Group by everything then interfaces", () => {
       let input = 'import { type Hi, Something, IInterface } from "module";';
       let expected = 'import { type Hi, Something, IInterface } from "module";';
-
-      let output = getSortedOverBody(flowParse(input).body, input, {
+      let parsed = flowParse(input);
+      let output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["*", "interfaces"],
         orderBy: "alpha"
       });
@@ -127,8 +129,8 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
     it("Group by interfaces then everything", () => {
       let input = 'import { type Hi, Something, IInterface } from "module";';
       let expected = 'import { IInterface, type Hi, Something } from "module";';
-
-      let output = getSortedOverBody(flowParse(input).body, input, {
+      let parsed = flowParse(input);
+      let output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["interfaces", "*"],
         orderBy: "alpha"
       });
@@ -140,8 +142,8 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
     it("Group by interfaces then everything", () => {
       let input = 'import { Hi, Something, IInterface } from "module";';
       let expected = 'import { IInterface, Hi, Something } from "module";';
-
-      let output = getSortedOverBody(typescriptParse(input).body, input, {
+      let parsed = flowParse(input);
+      let output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["interfaces", "*"],
         orderBy: "alpha"
       });

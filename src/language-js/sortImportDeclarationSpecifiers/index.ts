@@ -1,35 +1,40 @@
+import { Comment } from "estree";
+import { BaseNode, reorderValues } from "../../utilities/sort-utils";
+
 export type SortByExportOptionsGroups = "*" | "interfaces" | "types";
 
 export interface SortImportDeclarationSpecifiersOptions {
   groups: SortByExportOptionsGroups[];
 }
 
-interface SingleSpecifier {
+interface SingleSpecifier extends BaseNode {
   importedName: string;
   importKind: null | string;
   isDefaultImportType: boolean;
   isInterface: boolean;
-  originalIndex: number;
-  originalLocation: {
-    end: number;
-    start: number;
-  };
 }
 
 export function sortImportDeclarationSpecifiers(
   specifiers: any,
+  comments: Comment[],
   fileContents: string,
   options?: SortImportDeclarationSpecifiersOptions
 ) {
   options = ensureOptions(options);
 
-  fileContents = sortSingleSpecifier(specifiers, fileContents, options);
+  fileContents = sortSingleSpecifier(
+    specifiers,
+    comments,
+    fileContents,
+    options
+  );
 
   return fileContents;
 }
 
 function sortSingleSpecifier(
   specifiers: any,
+  comments: Comment[],
   fileContents: string,
   options: SortImportDeclarationSpecifiersOptions
 ): string {
@@ -38,27 +43,29 @@ function sortSingleSpecifier(
     return fileContents;
   }
 
-  // First create an object to remember all that we care about
-  let sortedSpecifiers: SingleSpecifier[] = [];
-  for (let x = 0; x < specifiers.length; x++) {
-    let specifier = specifiers[x];
-
-    let importedName =
-      specifier.imported != null
-        ? specifier.imported.name
-        : specifier.local.name;
-    sortedSpecifiers.push({
-      importedName: importedName,
-      importKind: specifier.importKind,
-      isDefaultImportType: specifier.type.indexOf("Default") !== -1,
-      isInterface: nameIsLikelyInterface(importedName),
-      originalIndex: x,
-      originalLocation: {
-        end: specifier.end || specifier.range[1],
-        start: specifier.start || specifier.range[0]
+  let unsortedSpecifiers = specifiers.map(specifier => {
+    {
+      let importedName =
+        specifier.imported != null
+          ? specifier.imported.name
+          : specifier.local.name;
+      let start = specifier.start || specifier.range[0];
+      let end = specifier.end || specifier.range[1];
+      if (specifier.importKind != null) {
+        start = fileContents.lastIndexOf(specifier.importKind, start);
       }
-    });
-  }
+      return {
+        importedName: importedName,
+        importKind: specifier.importKind,
+        isDefaultImportType: specifier.type.indexOf("Default") !== -1,
+        isInterface: nameIsLikelyInterface(importedName),
+        range: [start, end]
+      };
+    }
+  });
+
+  // First create an object to remember all that we care about
+  let sortedSpecifiers = unsortedSpecifiers.slice();
 
   // Sort them by name
   let everythingRank = options.groups.indexOf("*");
@@ -74,14 +81,6 @@ function sortSingleSpecifier(
     typeRanking = everythingRank;
   }
   sortedSpecifiers.sort((a: SingleSpecifier, b: SingleSpecifier) => {
-    if (
-      a.isInterface === b.isInterface &&
-      a.importKind === b.importKind &&
-      a.isDefaultImportType === b.isDefaultImportType
-    ) {
-      return a.importedName.localeCompare(b.importedName);
-    }
-
     let aRank = everythingRank;
     if (a.isInterface) {
       aRank = interfaceRank;
@@ -110,54 +109,12 @@ function sortSingleSpecifier(
     return aRank - bRank;
   });
 
-  let newFileContents = fileContents.slice();
-  let newFileContentIndexCorrection = 0;
-  // Now go through the original specifiers again and if any have moved, switch them
-  for (let x = 0; x < specifiers.length; x++) {
-    let specifier = specifiers[x];
-    if (sortedSpecifiers[x].originalIndex === x) {
-      continue;
-    }
-
-    let spliceRemoveIndexStart =
-      (specifier.start || specifier.range[0]) + newFileContentIndexCorrection;
-    let spliceRemoveIndexEnd =
-      (specifier.end || specifier.range[1]) + newFileContentIndexCorrection;
-    // Flow allows for "type " and  "typeof " to prefix any export"
-    if (specifier.importKind != null) {
-      let text = fileContents.substring(
-        0,
-        spliceRemoveIndexStart - newFileContentIndexCorrection
-      );
-      let importKindIndex = text.lastIndexOf(specifier.importKind);
-      spliceRemoveIndexStart = importKindIndex + newFileContentIndexCorrection;
-    }
-
-    let untouchedBeginning = newFileContents.slice(0, spliceRemoveIndexStart);
-    let untouchedEnd = newFileContents.slice(spliceRemoveIndexEnd);
-
-    let spliceAddIndexStart = sortedSpecifiers[x].originalLocation.start;
-    let spliceAddIndexEnd = sortedSpecifiers[x].originalLocation.end;
-    // Flow allows for "type " and  "typeof " to prefix any export"
-    if (sortedSpecifiers[x].importKind != null) {
-      let importKindIndex = fileContents
-        .substring(0, spliceAddIndexStart)
-        .lastIndexOf((sortedSpecifiers[x] as any).importKind);
-      spliceAddIndexStart = importKindIndex;
-    }
-    let stringToInsert = fileContents.substring(
-      spliceAddIndexStart,
-      spliceAddIndexEnd
-    );
-
-    newFileContents = untouchedBeginning + stringToInsert + untouchedEnd;
-    newFileContentIndexCorrection +=
-      spliceAddIndexEnd -
-      spliceAddIndexStart -
-      (spliceRemoveIndexEnd - spliceRemoveIndexStart);
-  }
-
-  return newFileContents;
+  return reorderValues(
+    fileContents,
+    comments,
+    unsortedSpecifiers,
+    sortedSpecifiers
+  );
 }
 
 function nameIsLikelyInterface(name: string) {

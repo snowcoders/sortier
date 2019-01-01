@@ -28,7 +28,6 @@ sortier "[glob-file-path]"
 ## General things to keep in mind
 
 - Blank lines are treated as context breaks... Sortier will not sort through them
-- Inline comments to the right of the code may not be sorted. We suggest putting comments above or in front of code.
 - Comments will stay with the line they comment (see Props example below)
 
 ### Example Input

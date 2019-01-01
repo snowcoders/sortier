@@ -1,5 +1,7 @@
 ### Unreleased
 
+- Improved handling of adjacent comments and we now sort comments to the right of a line
+
 ### 2.4.0
 
 - Added `css`, `scss` and `less` file support

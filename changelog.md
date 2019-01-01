@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 2.4.0
+
 - Added `css`, `scss` and `less` file support
 - Upgraded typescript-estree@7.0.0
 - Fixed dependent static property sort for javascript's sortClassContents

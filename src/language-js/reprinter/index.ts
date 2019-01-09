@@ -536,6 +536,7 @@ export class Reprinter implements ILanguage {
             }
             break;
           }
+          case "TSDeclareFunction":
           case "TSFunctionType":
           case "TSMethodSignature": {
             if (node.params != null && node.params.length !== 0) {
@@ -544,6 +545,9 @@ export class Reprinter implements ILanguage {
                 comments,
                 fileContents
               );
+            }
+            if (node.returnType != null) {
+              nodes.push(node.returnType);
             }
             if (node.typeAnnotation != null) {
               nodes.push(node.typeAnnotation);

@@ -69,7 +69,7 @@ class UnionTypeAnnotationSorter {
     let getRank = value => {
       let ranks = getObjectTypeRanks(this.options.groups);
       if (value.type === "TSParenthesizedType") {
-        return getRank(value.typeAnnotation.typeAnnotation);
+        return getRank(value.typeAnnotation);
       } else if (
         value.type === "NullLiteralTypeAnnotation" ||
         value.type === "TSNullKeyword"

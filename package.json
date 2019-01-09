@@ -8,7 +8,7 @@
     "cosmiconfig": "5.0.7",
     "flow-parser": "0.89.0",
     "fs": "0.0.1-security",
-    "globby": "8.0.1",
+    "globby": "8.0.2",
     "postcss-less": "^3.1.0",
     "postcss-scss": "^2.0.0",
     "rimraf": "2.6.3",

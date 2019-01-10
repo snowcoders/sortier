@@ -12,7 +12,7 @@
     "postcss-less": "^3.1.0",
     "postcss-scss": "^2.0.0",
     "rimraf": "2.6.3",
-    "typescript-estree": "13.5.2",
+    "typescript-estree": "13.6.0",
     "typescript": "3.2.2"
   },
   "description": "An opionated code sorter",

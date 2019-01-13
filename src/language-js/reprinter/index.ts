@@ -534,6 +534,9 @@ export class Reprinter implements ILanguage {
             if (node.argument) {
               nodes.push(node.argument);
             }
+            if (node.typeAnnotation) {
+              nodes.push(node.typeAnnotation);
+            }
             break;
           }
           case "TSDeclareFunction":

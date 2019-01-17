@@ -72,6 +72,14 @@ export function getContextGroups<
     }
   }
 
+  // For performance, shorten the comments array to only the comments that are between what is provided
+  comments = comments.filter(comment => {
+    if (comment.range != null) {
+      return rangeStart <= comment.range[0] && comment.range[0] <= rangeEnd;
+    }
+    return true;
+  });
+
   // Now figure out all the indexes of any whitespace surrounded by two new lines (e.g. context separator)
   let contextBarrierIndices = StringUtils.getBlankLineLocations(
     fileContents,
@@ -483,20 +491,37 @@ function getPrecedingCommentsForSpecifier<
     return isValidComment(fileContents, comment);
   });
 
-  let lastRange = specifier.range;
-  if (lastRange == null) {
+  let specifierRange = specifier.range;
+  if (specifierRange == null) {
     return [];
   }
 
   // Determine the comment next to the specifier
   let latestCommentIndex: number = -1;
-  for (let index = 0; index < comments.length; index++) {
+  let firstIndex = 0;
+  let lastIndex = Math.max(0, comments.length - 1);
+  let middleIndex = Math.floor((lastIndex + firstIndex) / 2);
+  while (Math.abs(firstIndex - lastIndex) > 1) {
+    let commentRange = comments[middleIndex].range;
+    if (commentRange == null) {
+      continue;
+    }
+    if (commentRange[0] < specifierRange[0]) {
+      firstIndex = middleIndex;
+      middleIndex = Math.floor((lastIndex + middleIndex) / 2);
+    }
+    if (commentRange[0] > specifierRange[0]) {
+      lastIndex = middleIndex;
+      middleIndex = Math.floor((firstIndex + middleIndex) / 2);
+    }
+  }
+  for (let index = middleIndex; index < comments.length; index++) {
     let commentRange = comments[index].range;
     if (commentRange == null) {
       continue;
     }
 
-    if (commentRange[0] > lastRange[0]) {
+    if (commentRange[0] > specifierRange[0]) {
       break;
     }
     let textBetweenStartOfLineAndComment = fileContents.substring(
@@ -505,7 +530,7 @@ function getPrecedingCommentsForSpecifier<
     );
     let textBetweenCommentAndSpecifier = fileContents.substring(
       commentRange[1],
-      lastRange[0]
+      specifierRange[0]
     );
     let isTextBetweenStartOfLineAndCommentWhitespace =
       textBetweenStartOfLineAndComment.match(/[^\s]/gim) == null;
@@ -592,7 +617,24 @@ function getSucceedingCommentsForSpecifier<
     return [];
   }
 
-  for (let index = 0; index < comments.length; index++) {
+  let firstIndex = 0;
+  let lastIndex = Math.max(0, comments.length - 1);
+  let middleIndex = Math.floor((lastIndex + firstIndex) / 2);
+  while (Math.abs(firstIndex - lastIndex) > 1) {
+    let commentRange = comments[middleIndex].range;
+    if (commentRange == null) {
+      continue;
+    }
+    if (commentRange[0] < lastRange[0]) {
+      firstIndex = middleIndex;
+      middleIndex = Math.floor((lastIndex + middleIndex) / 2);
+    }
+    if (commentRange[0] > lastRange[0]) {
+      lastIndex = middleIndex;
+      middleIndex = Math.floor((firstIndex + middleIndex) / 2);
+    }
+  }
+  for (let index = middleIndex; index < comments.length; index++) {
     let comment = comments[index];
     let commentRange = comment.range;
     if (commentRange == null) {

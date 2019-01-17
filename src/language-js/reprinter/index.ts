@@ -534,8 +534,12 @@ export class Reprinter implements ILanguage {
             if (node.argument) {
               nodes.push(node.argument);
             }
+            if (node.typeAnnotation) {
+              nodes.push(node.typeAnnotation);
+            }
             break;
           }
+          case "TSDeclareFunction":
           case "TSFunctionType":
           case "TSMethodSignature": {
             if (node.params != null && node.params.length !== 0) {
@@ -544,6 +548,9 @@ export class Reprinter implements ILanguage {
                 comments,
                 fileContents
               );
+            }
+            if (node.returnType != null) {
+              nodes.push(node.returnType);
             }
             if (node.typeAnnotation != null) {
               nodes.push(node.typeAnnotation);

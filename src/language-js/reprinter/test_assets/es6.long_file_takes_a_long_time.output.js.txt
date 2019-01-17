@@ -4,29 +4,29 @@ const assert = require("assert");
 // TODO(azz): anything that imports from main shouldn't be in a `language-*` dir.
 const comments = require("../main/comments");
 const {
-  getParentExportDeclaration,
-  isExportDeclaration,
-  shouldFlatten,
+  getIndentSize,
+  getLast,
   getNextNonSpaceNonCommentCharacter,
+  getParentExportDeclaration,
+  getPenultimate,
+  getPreferredQuote,
+  getStringWidth,
+  hasIgnoreComment,
   hasNewline,
   hasNewlineInRange,
-  getLast,
-  getStringWidth,
-  printString,
-  printNumber,
-  hasIgnoreComment,
-  skipWhitespace,
   hasNodeIgnoreComment,
-  getPenultimate,
-  startsWithNoLookaheadToken,
-  getIndentSize,
+  isExportDeclaration,
   matchAncestorTypes,
-  getPreferredQuote
+  printNumber,
+  printString,
+  shouldFlatten,
+  skipWhitespace,
+  startsWithNoLookaheadToken
 } = require("../common/util");
 const {
+  getNextNonSpaceNonCommentCharacterIndex,
   isNextLineEmpty,
-  isNextLineEmptyAfterIndex,
-  getNextNonSpaceNonCommentCharacterIndex
+  isNextLineEmptyAfterIndex
 } = require("../common/util-shared");
 const isIdentifierName = require("esutils").keyword.isIdentifierNameES5;
 const embed = require("./embed");
@@ -35,37 +35,37 @@ const insertPragma = require("./pragma").insertPragma;
 const handleComments = require("./comments");
 const pathNeedsParens = require("./needs-parens");
 const {
-  printHtmlBinding,
-  isVueEventBindingExpression
+  isVueEventBindingExpression,
+  printHtmlBinding
 } = require("./html-binding");
 const preprocess = require("./preprocess");
 const {
-  hasNode,
   hasFlowAnnotationComment,
-  hasFlowShorthandAnnotationComment
+  hasFlowShorthandAnnotationComment,
+  hasNode
 } = require("./utils");
 
 const {
   builders: {
+    addAlignmentToDoc,
+    align,
+    breakParent,
     concat,
+    conditionalGroup,
+    dedent,
+    fill,
+    group,
+    hardline,
+    ifBreak,
+    indent,
     join,
     line,
-    hardline,
-    softline,
-    literalline,
-    group,
-    indent,
-    align,
-    conditionalGroup,
-    fill,
-    ifBreak,
-    breakParent,
     lineSuffixBoundary,
-    addAlignmentToDoc,
-    dedent
+    literalline,
+    softline
   },
-  utils: { willBreak, isLineNext, isEmpty, removeLines },
-  printer: { printDocToString }
+  printer: { printDocToString },
+  utils: { isEmpty, isLineNext, removeLines, willBreak }
 } = require("../doc");
 
 let uid = 0;
@@ -1345,9 +1345,9 @@ function printPathNoParens(path, options, print, args) {
         path.each(childPath => {
           const node = childPath.getValue();
           propsAndLoc.push({
+            loc: options.locStart(node),
             node: node,
-            printed: print(childPath),
-            loc: options.locStart(node)
+            printed: print(childPath)
           });
         }, field);
       });
@@ -1651,14 +1651,14 @@ function printPathNoParens(path, options, print, args) {
       return concat(parts);
     case "ConditionalExpression":
       return printTernaryOperator(path, options, print, {
-        beforeParts: () => [path.call(print, "test")],
-        afterParts: breakClosingParen => [breakClosingParen ? softline : ""],
-        shouldCheckJsx: true,
+        alternateNodePropertyName: "alternate",
+        breakNested: true,
         conditionalNodeType: "ConditionalExpression",
         consequentNodePropertyName: "consequent",
-        alternateNodePropertyName: "alternate",
+        shouldCheckJsx: true,
         testNodePropertyName: "test",
-        breakNested: true
+        afterParts: breakClosingParen => [breakClosingParen ? softline : ""],
+        beforeParts: () => [path.call(print, "test")]
       });
     case "VariableDeclaration": {
       const printed = path.map(childPath => {
@@ -2406,7 +2406,7 @@ function printPathNoParens(path, options, print, args) {
               "}"
           );
 
-          const tableBody = [{ hasLineBreak: false, cells: [] }];
+          const tableBody = [{ cells: [], hasLineBreak: false }];
           for (let i = 1; i < n.quasis.length; i++) {
             const row = tableBody[tableBody.length - 1];
             const correspondingExpression = stringifiedExpressions[i - 1];
@@ -2417,7 +2417,7 @@ function printPathNoParens(path, options, print, args) {
             }
 
             if (n.quasis[i].value.raw.indexOf("\n") !== -1) {
-              tableBody.push({ hasLineBreak: false, cells: [] });
+              tableBody.push({ cells: [], hasLineBreak: false });
             }
           }
 
@@ -3463,20 +3463,20 @@ function printPathNoParens(path, options, print, args) {
 
     case "TSConditionalType":
       return printTernaryOperator(path, options, print, {
+        alternateNodePropertyName: "falseType",
+        breakNested: true,
+        conditionalNodeType: "TSConditionalType",
+        consequentNodePropertyName: "trueType",
+        shouldCheckJsx: false,
+        testNodePropertyName: "checkType",
+        afterParts: () => [],
         beforeParts: () => [
           path.call(print, "checkType"),
           " ",
           "extends",
           " ",
           path.call(print, "extendsType")
-        ],
-        afterParts: () => [],
-        shouldCheckJsx: false,
-        conditionalNodeType: "TSConditionalType",
-        consequentNodePropertyName: "trueType",
-        alternateNodePropertyName: "falseType",
-        testNodePropertyName: "checkType",
-        breakNested: true
+        ]
       });
 
     case "TSInferType":
@@ -3591,12 +3591,12 @@ function isNgForOf(node, index, parentNode) {
 function hasNgSideEffect(path) {
   return hasNode(path.getValue(), node => {
     switch (node.type) {
-      case undefined:
-        return false;
+      case "AssignmentExpression":
       case "CallExpression":
       case "OptionalCallExpression":
-      case "AssignmentExpression":
         return true;
+      case undefined:
+        return false;
     }
   });
 }
@@ -3855,16 +3855,16 @@ const functionCompositionFunctionNames = new Set([
 
 function isFunctionCompositionFunction(node) {
   switch (node.type) {
-    case "OptionalMemberExpression":
-    case "MemberExpression": {
-      return isFunctionCompositionFunction(node.property);
-    }
     case "Identifier": {
       return functionCompositionFunctionNames.has(node.name);
     }
-    case "StringLiteral":
-    case "Literal": {
+    case "Literal":
+    case "StringLiteral": {
       return functionCompositionFunctionNames.has(node.value);
+    }
+    case "MemberExpression":
+    case "OptionalMemberExpression": {
+      return isFunctionCompositionFunction(node.property);
     }
   }
 }
@@ -4432,10 +4432,10 @@ function getFlowVariance(path) {
   const variance = path.variance.kind || path.variance;
 
   switch (variance) {
-    case "plus":
-      return "+";
     case "minus":
       return "-";
+    case "plus":
+      return "+";
     default:
       /* istanbul ignore next */
       return variance;
@@ -4708,8 +4708,8 @@ function printMemberChain(path, options, print) {
       path.call(callee => rec(callee), "callee");
     } else if (isMemberish(node)) {
       printedNodes.unshift({
-        node: node,
         needsParens: pathNeedsParens(path, options),
+        node: node,
         printed: comments.printComments(
           path,
           () =>
@@ -5385,9 +5385,9 @@ function printJSXElement(path, options, print) {
   n.children = n.children.map(child => {
     if (isJSXWhitespaceExpression(child)) {
       return {
+        raw: " ",
         type: "JSXText",
-        value: " ",
-        raw: " "
+        value: " "
       };
     }
     return child;
@@ -5555,15 +5555,15 @@ function maybeWrapJSXElementInParens(path, elem) {
 
   const NO_WRAP_PARENTS = {
     ArrayExpression: true,
+    CallExpression: true,
+    ConditionalExpression: true,
+    ExpressionStatement: true,
+    JsExpressionRoot: true,
     JSXAttribute: true,
     JSXElement: true,
     JSXExpressionContainer: true,
     JSXFragment: true,
-    ExpressionStatement: true,
-    CallExpression: true,
-    OptionalCallExpression: true,
-    ConditionalExpression: true,
-    JsExpressionRoot: true
+    OptionalCallExpression: true
   };
   if (NO_WRAP_PARENTS[parent.type]) {
     return elem;
@@ -6481,19 +6481,19 @@ function identity(x) {
 }
 
 module.exports = {
+  canAttachComment,
+  embed,
+  handleComments: {
+    endOfLine: handleComments.handleEndOfLineComment,
+    ownLine: handleComments.handleOwnLineComment,
+    remaining: handleComments.handleRemainingComment
+  },
+  hasPrettierIgnore,
+  insertPragma,
+  isBlockComment: handleComments.isBlockComment,
+  massageAstNode: clean,
   preprocess,
   print: genericPrint,
-  embed,
-  insertPragma,
-  massageAstNode: clean,
-  hasPrettierIgnore,
-  willPrintOwnComments,
-  canAttachComment,
   printComment,
-  isBlockComment: handleComments.isBlockComment,
-  handleComments: {
-    ownLine: handleComments.handleOwnLineComment,
-    endOfLine: handleComments.handleEndOfLineComment,
-    remaining: handleComments.handleRemainingComment
-  }
+  willPrintOwnComments
 };

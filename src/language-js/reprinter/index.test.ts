@@ -43,26 +43,23 @@ describe("language-js/reprinter", () => {
   });
 
   parserTypes.forEach(parserType => {
-    describe.only(parserType, () => {
+    describe(parserType, () => {
       testInfos.forEach(testInfo => {
         if (testInfo.parserType === parserType) {
           // Useful if you need to test a single file
-          if (!testInfo.testName.includes("Long file takes a long time"))
-            it(testInfo.testName, () => {
-              let expected = FileUtils.readFileContents(
-                testInfo.outputFilePath
-              );
-              let inputContents = FileUtils.readFileContents(
-                testInfo.inputFilePath
-              );
-              let actual = new Reprinter().getRewrittenContents(
-                testInfo.inputFilePath,
-                inputContents,
-                {}
-              );
+          it(testInfo.testName, () => {
+            let expected = FileUtils.readFileContents(testInfo.outputFilePath);
+            let inputContents = FileUtils.readFileContents(
+              testInfo.inputFilePath
+            );
+            let actual = new Reprinter().getRewrittenContents(
+              testInfo.inputFilePath,
+              inputContents,
+              {}
+            );
 
-              expect(actual).to.equal(expected);
-            });
+            expect(actual).to.equal(expected);
+          });
         }
       });
     });

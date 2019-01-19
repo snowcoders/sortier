@@ -1,6 +1,7 @@
 // sortier-ignore
 const example = 2 * pi * distance * distance * 5
  
+ // TODO - Figure out how we want to handle sorts where the sortier ignore contextually implies two nodes (here it's the group of imports and the first import)
 /* sortier-ignore */
 import { b3, b1 } from "./b";
 import {a3, a1 } from "./a";
@@ -19,6 +20,7 @@ let {b3, b1} = d;
 switch ("a") {
       case "c":
       case "d":
+            // The ignore statement stops sorting for the whole tree, not just the node above it
             let {a3, a1} = d;
             console.log("c");
             break;

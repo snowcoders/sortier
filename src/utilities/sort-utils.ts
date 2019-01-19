@@ -694,3 +694,24 @@ function isValidComment(fileContents: string, comment: Comment) {
 
   return true;
 }
+
+export function isIgnored<
+  NodeType extends BaseNode,
+  CommentType extends Comment
+>(fileContents: string, comments: CommentType[], node: NodeType) {
+  if (node.range == null) {
+    return false;
+  }
+  let newLineBeforeRange = fileContents.lastIndexOf("\n", node.range[0]);
+  if (newLineBeforeRange === -1) {
+    return false;
+  }
+  let beginningOfLine = fileContents.lastIndexOf("\n", newLineBeforeRange - 1);
+  beginningOfLine = beginningOfLine === -1 ? 0 : beginningOfLine;
+
+  return (
+    fileContents
+      .substring(beginningOfLine, newLineBeforeRange)
+      .indexOf("sortier-ignore") !== -1
+  );
+}

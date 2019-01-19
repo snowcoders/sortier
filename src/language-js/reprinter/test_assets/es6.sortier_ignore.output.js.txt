@@ -1,0 +1,31 @@
+// sortier-ignore
+const example = 2 * pi * distance * distance * 5
+ 
+/* sortier-ignore */
+import { b3, b1 } from "./b";
+import {a1, a3 } from "./a";
+import {c1, c3 } from "./c";
+
+import {g1, g3 } from "./c";
+/* sortier-ignore */
+import {e3, e1 } from "./a";
+import { f1, f3 } from "./b";
+
+/* sortier-ignore */
+let {a3, a1} = d;
+let {b1, b3} = d;
+
+// sortier-ignore
+switch ("a") {
+      case "c":
+      case "d":
+            let {a3, a1} = d;
+            console.log("c");
+            break;
+      case "b":
+      case "a":
+            console.log("a");
+            break;
+      default:
+            break;
+}

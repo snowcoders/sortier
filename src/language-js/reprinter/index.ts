@@ -23,6 +23,7 @@ import { ILanguage } from "../../language";
 import { ReprinterOptions } from "../../reprinter-options";
 import { ArrayUtils } from "../../utilities/array-utils";
 import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils";
+import { isIgnored } from "../../utilities/sort-utils";
 import { StringUtils } from "../../utilities/string-utils";
 import {
   sortClassContents,
@@ -147,6 +148,9 @@ export class Reprinter implements ILanguage {
         throw new Error("Unexpected Exception - Node received is null");
       }
 
+      if (node.type !== "Program" && isIgnored(fileContents, comments, node)) {
+        continue;
+      }
       // Now go through and push any bodies in the current context to the stack
       try {
         switch (node.type) {

@@ -22,7 +22,7 @@ export function run(args: string[]) {
       }
 
       try {
-        Reprinter.rewrite(filePath, options);
+        Reprinter.rewriteFile(filePath, options);
       } catch (e) {
         LogUtils.log(LoggerVerboseOption.Normal, "");
         LogUtils.log(

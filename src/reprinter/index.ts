@@ -13,7 +13,7 @@ export class Reprinter {
     new JavascriptReprinter(),
     new JsonReprinter()
   ];
-  public static rewrite(filename: string, options: ReprinterOptions) {
+  public static rewriteFile(filename: string, options: ReprinterOptions) {
     let language: null | ILanguage = null;
     for (let reprinter of Reprinter.reprinters) {
       if (!reprinter.isFileSupported(filename)) {
@@ -37,5 +37,35 @@ export class Reprinter {
     if (options.isTestRun == null || !options.isTestRun) {
       FileUtils.writeFileContents(filename, newFileContents);
     }
+  }
+
+  public static rewriteText(
+    fileExtension: string,
+    text: string,
+    options: ReprinterOptions
+  ) {
+    let fakeFileName = `example.${fileExtension}`;
+    let language: null | ILanguage = null;
+    for (let reprinter of Reprinter.reprinters) {
+      if (!reprinter.isFileSupported(fakeFileName)) {
+        continue;
+      }
+
+      language = reprinter;
+    }
+
+    if (language == null) {
+      throw new Error(
+        "Could not find language support for extension type - " + fileExtension
+      );
+    }
+
+    let newFileContents = language.getRewrittenContents(
+      fakeFileName,
+      text,
+      options
+    );
+
+    return newFileContents;
   }
 }

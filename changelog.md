@@ -1,5 +1,8 @@
 ### Unreleased
 
+- Added formatText and formatFile to exports for non-cli support
+- Increased performance
+
 ### 2.5.0
 
 - We now move comments to the right of a line when sorting not just to the top and to the left

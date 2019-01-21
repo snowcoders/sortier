@@ -1,15 +1,23 @@
-<!DOCTYPE html>
 <html>
-    <head>
-        <style>
-            body {
-                margin: 0px;
-                border: 0px;
-            }
-        </style>
-    </head>
-
-    <body>
-        <div></div>
-    </body>
+  <head>
+    <style></style>
+    <style type="text/css">
+      body {
+        margin: 0px;
+        border: 0px;
+      }
+    </style>
+    <style>
+      body {
+        margin: 0px;
+        border: 0px;
+      }
+    </style>
+    <style type="text/future-css">
+      body {
+        margin: 0px;
+        border: 0px;
+      }
+    </style>
+  </head>
 </html>

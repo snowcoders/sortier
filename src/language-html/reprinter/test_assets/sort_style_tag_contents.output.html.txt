@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                border: 0px;
+                margin: 0px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div></div>
+    </body>
+</html>

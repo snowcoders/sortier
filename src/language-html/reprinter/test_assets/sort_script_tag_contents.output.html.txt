@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <script>
+      let value = {
+        a: "a",
+        b: "b"
+      }
+    </script>
+    <script type="application/javascript">
+      let value = {
+        a: "a",
+        b: "b"
+      }
+    </script>
+    <script type="application/future-javascript">
+      let value = {
+        b: "b",
+        a: "a"
+      }
+    </script>
+  </head>
+</html>

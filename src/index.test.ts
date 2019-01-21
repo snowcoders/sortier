@@ -1,3 +1,4 @@
+import { expect } from "chai";
 import { join } from "path";
 import { formatFile, formatText } from "./index";
 
@@ -9,7 +10,8 @@ it("Runs without crashing", () => {
 });
 
 it("Runs formatText without crashing", () => {
-  formatText("ts", "", {
+  let result = formatText("ts", "let a = {b: 'b', a: 'a'};", {
     isTestRun: true
   });
+  expect(result).to.equal("let a = {a: 'a', b: 'b'};");
 });

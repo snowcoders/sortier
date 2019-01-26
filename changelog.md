@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 2.5.1
+
 - Added formatText and formatFile functions to exports for non-cli support
 - `script` and `style` tags in html files are now sorted
 - Increased performance

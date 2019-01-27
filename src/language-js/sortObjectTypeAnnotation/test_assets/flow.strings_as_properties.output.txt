@@ -1,7 +1,9 @@
 export type htmlEscapes = {
+  "'": '&#39',
   '"': '&quot',
   '&': '&amp',
   '<': '&lt',
   '>': '&gt',
-  "'": '&#39'
+  react: "16.4.2",
+  "react-dom": "16.4.2"
 }

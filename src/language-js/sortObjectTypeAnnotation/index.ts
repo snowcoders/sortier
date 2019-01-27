@@ -55,6 +55,14 @@ export function sortObjectTypeAnnotation(
 }
 
 function getString(property, fileContents: string) {
+  if (property.key != null) {
+    if (property.key.value != null) {
+      return property.key.value;
+    }
+    if (property.key.name != null) {
+      return property.key.name;
+    }
+  }
   return fileContents.substring(property.range[0], property.range[1]);
 }
 

@@ -23,7 +23,7 @@
     "@types/estree": "0.0.39",
     "@types/globby": "8.0.0",
     "@types/mocha": "5.2.5",
-    "@types/node": "10.12.18",
+    "@types/node": "10.12.20",
     "@types/sinon": "7.0.5",
     "chai": "4.2.0",
     "coveralls": "3.0.2",

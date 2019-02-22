@@ -1,22 +1,24 @@
-// sortier-ignore
+// sortier-ignore-line - All on one line, doesn't sort
 const example = 2 * pi * distance * distance * 5
- 
- // TODO - Figure out how we want to handle sorts where the sortier ignore contextually implies two nodes (here it's the group of imports and the first import)
-/* sortier-ignore */
-import { b3, b1 } from "./b";
-import {a1, a3 } from "./a";
-import {c1, c3 } from "./c";
 
-import {g1, g3 } from "./c";
-/* sortier-ignore */
-import {e3, e1 } from "./a";
-import { f1, f3 } from "./b";
+// sortier-ignore-node - All on one line, doesn't sort
+const example = 2 * pi * distance * distance * 5
 
-/* sortier-ignore */
-let {a3, a1} = d;
-let {b1, b3} = d;
+// sortier-ignore-line - All on multiple lines, sorts because expression is not on the next line
+const example = 
+      2 
+      * 5 
+      * distance * distance 
+      * pi 
 
-// sortier-ignore
+// sortier-ignore-node - Since this affects the whole node, doesn't sort
+const example = 
+      2
+      * pi
+      * distance * distance
+      * 5
+
+// sortier-ignore-node - Prevents sorting the switch statement along with all nodes inside (e.g. see `a3, a1`)
 switch ("a") {
       case "c":
       case "d":
@@ -30,4 +32,27 @@ switch ("a") {
             break;
       default:
             break;
+}
+
+// sortier-ignore-line - Doesn't do anything since the switch statement exists across multiple lines
+switch ("a") {
+      case "a":
+      case "b":
+            console.log("a");
+            break;
+      case "c":
+      case "d":
+            // The ignore statement stops sorting for the whole tree, not just the node above it
+            let {a1, a3} = d;
+            console.log("c");
+            break;
+      default:
+            break;
+}
+
+// Making sure that the ignores move with context groups even when it's the only comment above the group
+let d = {
+      a: 1 * 3
+      // sortier-ignore-line
+      b: 4 * 2,
 }

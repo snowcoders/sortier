@@ -1,5 +1,11 @@
 ### Unreleased
 
+### 2.5.1
+
+- Added formatText and formatFile functions to exports for non-cli support
+- `script` and `style` tags in html files are now sorted
+- Increased performance
+
 ### 2.5.0
 
 - We now move comments to the right of a line when sorting not just to the top and to the left

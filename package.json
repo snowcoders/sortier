@@ -5,36 +5,36 @@
   },
   "dependencies": {
     "angular-html-parser": "1.2.0",
-    "cosmiconfig": "5.0.7",
-    "flow-parser": "0.90.0",
+    "cosmiconfig": "5.1.0",
+    "flow-parser": "0.93.0",
     "fs": "0.0.1-security",
     "globby": "9.0.0",
     "postcss-less": "^3.1.0",
     "postcss-scss": "^2.0.0",
     "rimraf": "2.6.3",
     "typescript-estree": "18.1.0",
-    "typescript": "3.2.2"
+    "typescript": "3.3.3"
   },
   "description": "An opionated code sorter",
   "devDependencies": {
-    "@angular/compiler": "7.2.0",
+    "@angular/compiler": "7.2.5",
     "@snowcoders/renovate-config": "0.2.1",
     "@types/chai": "4.1.7",
     "@types/estree": "0.0.39",
     "@types/globby": "8.0.0",
-    "@types/mocha": "5.2.5",
-    "@types/node": "10.12.18",
-    "@types/sinon": "7.0.3",
+    "@types/mocha": "5.2.6",
+    "@types/node": "10.12.24",
+    "@types/sinon": "7.0.6",
     "chai": "4.2.0",
     "coveralls": "3.0.2",
     "husky": "1.3.1",
-    "lint-staged": "8.1.0",
-    "mocha": "5.2.0",
-    "nyc": "13.1.0",
-    "prettier": "1.15.3",
-    "sinon": "7.2.2",
+    "lint-staged": "8.1.4",
+    "mocha": "6.0.0",
+    "nyc": "13.3.0",
+    "prettier": "1.16.4",
+    "sinon": "7.2.4",
     "source-map-support": "0.5.10",
-    "ts-node": "7.0.1",
+    "ts-node": "8.0.2",
     "tslint": "5.12.1"
   },
   "homepage": "https://snowcoders.github.io/sortier",
@@ -61,5 +61,5 @@
     "start": "npm run build && node bin/index.js",
     "test": "nyc npm run mocha"
   },
-  "version": "2.5.0"
+  "version": "2.5.1"
 }

@@ -15,7 +15,7 @@ describe("cli", () => {
 
   before(() => {
     logMock = sinon.stub(LogUtils, "log");
-    reprinterMock = sinon.stub(Reprinter, "rewrite");
+    reprinterMock = sinon.stub(Reprinter, "rewriteFile");
   });
 
   beforeEach(() => {

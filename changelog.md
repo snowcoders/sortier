@@ -1,5 +1,10 @@
 ### Unreleased
 
+### 2.5.2
+
+- Fixed ordering of json properties to ignore quotes
+- Fixed line endings for `bin/index.js`
+
 ### 2.5.1
 
 - Added formatText and formatFile functions to exports for non-cli support

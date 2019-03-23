@@ -191,8 +191,10 @@ function doesHaveImmediateExit(values: any): HasImmediateExitOption {
       }
       case "BreakStatement":
       case "ReturnStatement":
-      case "ThrowStatement":
+      case "ThrowStatement": {
         return HasImmediateExitOption.True;
+      }
+      // @ts-ignore - Fallthrough expected
       case "SwitchStatement": {
         // If the last option in the switch statement has an exit, then either
         // all previosu consequents have an exit (e.g. not getting to the last one)

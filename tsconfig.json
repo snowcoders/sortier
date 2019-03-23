@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
     "noImplicitAny": false,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
     "noUnusedLocals": true,
     "outDir": "./dist/",
     "sourceMap": true,
+    "strictPropertyInitialization": false,
     "target": "es2015"
   },
   "extends": "@snowcoders/renovate-config",

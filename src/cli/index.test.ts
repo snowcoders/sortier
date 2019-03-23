@@ -10,8 +10,8 @@ import { Reprinter } from "../reprinter";
 import { LoggerVerboseOption, LogUtils } from "../utilities/log-utils";
 
 describe("cli", () => {
-  let logMock: sinon.SinonStub;
-  let reprinterMock: sinon.SinonStub;
+  let logMock: sinon.SinonStubbedInstance<any>;
+  let reprinterMock: sinon.SinonStubbedInstance<any>;
 
   before(() => {
     logMock = sinon.stub(LogUtils, "log");
@@ -58,7 +58,7 @@ describe("cli", () => {
 
   // TODO Figure out how to stub cosmiconfig
   xdescribe("Cosmiconfig settings", () => {
-    let setVerbosityMock: sinon.SinonStub;
+    let setVerbosityMock: sinon.SinonStubbedInstance<any>;
     let cosmiconfigMock: sinon.SinonStubbedInstance<any>;
     let config: Object;
 

@@ -36,10 +36,20 @@ export function sortObjectTypeAnnotation(
           return aGroup - bGroup;
         }
 
-        let aString = getString(a, fileContents);
-        let bString = getString(b, fileContents);
+        let aKey = getPropertyKey(a, fileContents);
+        let bKey = getPropertyKey(b, fileContents);
 
-        return aString.localeCompare(bString);
+        let aKeyType = typeof aKey;
+        let bKeyType = typeof bKey;
+        if (aKeyType !== bKeyType) {
+          return aKeyType.localeCompare(bKeyType);
+        } else if (aKeyType === "string") {
+          return aKey.localeCompare(bKey);
+        } else if (aKeyType === "number") {
+          return aKey - bKey;
+        } else {
+          return aKey.toString().localeCompare(bKey.toString());
+        }
       });
 
       newFileContents = reorderValues(
@@ -54,7 +64,7 @@ export function sortObjectTypeAnnotation(
   return newFileContents;
 }
 
-function getString(property, fileContents: string) {
+function getPropertyKey(property, fileContents: string) {
   if (property.key != null) {
     if (property.key.value != null) {
       return property.key.value;

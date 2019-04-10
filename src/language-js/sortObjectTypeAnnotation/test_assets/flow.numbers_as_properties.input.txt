@@ -1,0 +1,7 @@
+export type htmlEscapes = {
+  3: "c",
+  1: "a",
+  "4": "4",
+  11: "aa",
+  2: "b",
+}

@@ -1,5 +1,7 @@
 ### Unreleased
 
+- Fixed error when object property keys are numbers instead of strings
+
 ### 2.5.2
 
 - Fixed ordering of json properties to ignore quotes

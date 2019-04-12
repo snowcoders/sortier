@@ -107,8 +107,8 @@ import { Apple } from "./food";`;
       let output = `import "./header.scss";
 import "./styles.scss";
 import { Apple } from "./food";
-import honda from "./cars";
-import * as React from "react";`;
+import * as React from "react";
+import honda from "./cars";`;
       let actual = sortImportDeclarations(flowParse(input).body, input, {
         orderBy: "first-specifier"
       });

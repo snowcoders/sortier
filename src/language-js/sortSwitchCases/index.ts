@@ -7,6 +7,7 @@ import {
 
 import {
   BaseNode,
+  compare,
   getContextGroups,
   reorderValues
 } from "../../utilities/sort-utils";
@@ -110,7 +111,7 @@ export function sortSwitchCases(
           let sorted = unsorted.slice().sort((a: any, b: any) => {
             let aText = getSortableText(a, fileContents);
             let bText = getSortableText(b, fileContents);
-            return aText.localeCompare(bText);
+            return compare(aText, bText);
           });
 
           newFileContents = reorderValues(
@@ -147,7 +148,7 @@ export function sortSwitchCases(
 
         let text = fileContents.substring(testRange[0], testRange[1]);
 
-        if (lowestText == null || lowestText.localeCompare(text) > 0) {
+        if (lowestText == null || compare(lowestText, text) > 0) {
           lowestText = text;
         }
       }
@@ -165,7 +166,7 @@ export function sortSwitchCases(
         throw new Error("Null value for switch case statement");
       }
 
-      return aValue.localeCompare(bValue);
+      return compare(aValue, bValue);
     });
 
     newFileContents = reorderValues(

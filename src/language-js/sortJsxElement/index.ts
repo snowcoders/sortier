@@ -1,6 +1,10 @@
 import { Comment } from "estree";
 
-import { getContextGroups, reorderValues } from "../../utilities/sort-utils";
+import {
+  compare,
+  getContextGroups,
+  reorderValues
+} from "../../utilities/sort-utils";
 import { getSpreadGroups } from "../utilities/sort-utils";
 
 export interface SortJsxElementOptions {}
@@ -32,7 +36,7 @@ export function sortJsxElement(
     groupings.forEach(element => {
       let unsorted = element.nodes;
       let sorted = element.nodes.slice().sort((a, b) => {
-        return a.name.name.localeCompare(b.name.name);
+        return compare(a.name.name, b.name.name);
       });
 
       newFileContents = reorderValues(

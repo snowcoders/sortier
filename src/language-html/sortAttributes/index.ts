@@ -1,3 +1,4 @@
+import { compare } from "../../utilities/sort-utils";
 import { StringUtils } from "../../utilities/string-utils";
 
 interface AttrInfo {
@@ -65,7 +66,7 @@ export function sortAttributes(node: any, fileContents: string) {
   for (let group of groupedAttributes) {
     let newOrder = group.slice();
     newOrder.sort((a, b) => {
-      return a.source.localeCompare(b.source);
+      return compare(a.source, b.source);
     });
 
     newFileContents = reorderValues(newFileContents, group, newOrder);

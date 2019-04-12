@@ -1,6 +1,10 @@
 import { Comment } from "estree";
 
-import { getContextGroups, reorderValues } from "../../utilities/sort-utils";
+import {
+  compare,
+  getContextGroups,
+  reorderValues
+} from "../../utilities/sort-utils";
 import {
   getObjectTypeRanks,
   getSpreadGroups,
@@ -39,7 +43,7 @@ export function sortTSPropertySignatures(
         let aString = getString(a, fileContents);
         let bString = getString(b, fileContents);
 
-        return aString.localeCompare(bString);
+        return compare(aString, bString);
       });
 
       newFileContents = reorderValues(
@@ -71,6 +75,14 @@ function cleanProperties(fileContents: string, properties: any[]) {
 }
 
 function getString(property, fileContents: string) {
+  if (property.key != null) {
+    if (property.key.value != null) {
+      return property.key.value;
+    }
+    if (property.key.name != null) {
+      return property.key.name;
+    }
+  }
   return fileContents.substring(property.range[0], property.range[1]);
 }
 

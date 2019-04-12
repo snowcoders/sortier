@@ -1,7 +1,9 @@
 export interface htmlEscapes {
   '"': '&quot',
   '&': '&amp',
+  "'": '&#39',
   '<': '&lt',
   '>': '&gt',
-  "'": '&#39'
+  react: "16.4.2",
+  "react-dom": "16.4.2"
 }

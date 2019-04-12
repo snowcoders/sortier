@@ -1,4 +1,4 @@
-import { reorderValues } from "../../utilities/sort-utils";
+import { compare, reorderValues } from "../../utilities/sort-utils";
 import { addParenthesis } from "../utilities/parser-utils";
 import {
   getObjectTypeRanks,
@@ -199,7 +199,7 @@ class ExpressionSorter {
       let bRank = b.groupIndex;
 
       if (aRank == bRank) {
-        return a.value.localeCompare(b.value);
+        return compare(a.value, b.value);
       }
       return aRank - bRank;
     });

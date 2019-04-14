@@ -5558,11 +5558,11 @@ function maybeWrapJSXElementInParens(path, elem) {
     CallExpression: true,
     ConditionalExpression: true,
     ExpressionStatement: true,
-    JsExpressionRoot: true,
     JSXAttribute: true,
     JSXElement: true,
     JSXExpressionContainer: true,
     JSXFragment: true,
+    JsExpressionRoot: true,
     OptionalCallExpression: true
   };
   if (NO_WRAP_PARENTS[parent.type]) {

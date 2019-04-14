@@ -1,5 +1,5 @@
 import { Comment } from "estree";
-import { BaseNode, reorderValues } from "../../utilities/sort-utils";
+import { BaseNode, compare, reorderValues } from "../../utilities/sort-utils";
 
 export type SortByExportOptionsGroups = "*" | "interfaces" | "types";
 
@@ -104,7 +104,7 @@ function sortSingleSpecifier(
     }
 
     if (aRank == bRank) {
-      return a.importedName.localeCompare(b.importedName);
+      return compare(a.importedName, b.importedName);
     }
     return aRank - bRank;
   });

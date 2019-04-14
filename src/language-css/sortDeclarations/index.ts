@@ -1,6 +1,7 @@
 import {
   BaseNode,
   Comment,
+  compare,
   getContextGroups,
   reorderValues
 } from "../../utilities/sort-utils";
@@ -102,7 +103,7 @@ export function sortDeclarations(
 
       let aText = propertyToSortableText.get(a) || "";
       let bText = propertyToSortableText.get(b) || "";
-      return aText.localeCompare(bText);
+      return compare(aText, bText);
     });
 
     newFileContents = reorderValues(

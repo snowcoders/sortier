@@ -1,4 +1,4 @@
-import { reorderValues } from "../../utilities/sort-utils";
+import { compare, reorderValues } from "../../utilities/sort-utils";
 import { addParenthesis } from "../utilities/parser-utils";
 import {
   getObjectTypeRanks,
@@ -112,7 +112,7 @@ class UnionTypeAnnotationSorter {
 
       if (isALiteral && isBLiteral) {
         if (a.type !== b.type) {
-          return a.type.localeCompare(b.type);
+          return compare(a.type, b.type);
         }
       }
 
@@ -122,7 +122,7 @@ class UnionTypeAnnotationSorter {
 
       let aString = this.getStringToCompare(a);
       let bString = this.getStringToCompare(b);
-      return aString.localeCompare(bString);
+      return compare(aString, bString);
     });
 
     return newTypes;

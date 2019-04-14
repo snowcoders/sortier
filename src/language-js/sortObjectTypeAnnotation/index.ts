@@ -1,6 +1,10 @@
 import { Comment } from "estree";
 
-import { getContextGroups, reorderValues } from "../../utilities/sort-utils";
+import {
+  compare,
+  getContextGroups,
+  reorderValues
+} from "../../utilities/sort-utils";
 import {
   getObjectTypeRanks,
   getSpreadGroups,
@@ -39,17 +43,7 @@ export function sortObjectTypeAnnotation(
         let aKey = getPropertyKey(a, fileContents);
         let bKey = getPropertyKey(b, fileContents);
 
-        let aKeyType = typeof aKey;
-        let bKeyType = typeof bKey;
-        if (aKeyType !== bKeyType) {
-          return aKeyType.localeCompare(bKeyType);
-        } else if (aKeyType === "string") {
-          return aKey.localeCompare(bKey);
-        } else if (aKeyType === "number") {
-          return aKey - bKey;
-        } else {
-          return aKey.toString().localeCompare(bKey.toString());
-        }
+        return compare(aKey, bKey);
       });
 
       newFileContents = reorderValues(

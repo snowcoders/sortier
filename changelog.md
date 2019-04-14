@@ -1,6 +1,7 @@
 ### Unreleased
 
-- Fixed error when object property keys are numbers instead of strings
+- Switched from `localeCompare` to comparison operator to sort by Unicode value instead of locale (Thanks @trevorr for the suggestion)
+- Fixed error when object property keys are numbers instead of strings (Thanks @trevorr for the bug)
 
 ### 2.5.2
 

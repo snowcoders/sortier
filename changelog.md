@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.5.4
+
+- Moved from `typescript-estree` to `@typescript-eslint/typescript-estree` as the former has been deprecated
+
 ### 2.5.3
 
 - Switched from `localeCompare` to comparison operator to sort by Unicode value instead of locale (Thanks @trevorr for the suggestion)

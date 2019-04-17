@@ -6,11 +6,11 @@ import { parse as parseTypescript } from "../parsers/typescript";
 
 // Types of sorts
 import { sortExpression } from "../sortExpression";
-import {
-  sortImportDeclarations,
-  SortImportDeclarationsOrderOption
-} from "../sortImportDeclarations";
 import { sortImportDeclarationSpecifiers } from "../sortImportDeclarationSpecifiers";
+import {
+  SortImportDeclarationsOrderOption,
+  sortImportDeclarations
+} from "../sortImportDeclarations";
 import { sortJsxElement } from "../sortJsxElement";
 import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation";
 import { sortSwitchCases } from "../sortSwitchCases";
@@ -22,11 +22,11 @@ import { isArray } from "util";
 import { ILanguage } from "../../language";
 import { ReprinterOptions } from "../../reprinter-options";
 import { ArrayUtils } from "../../utilities/array-utils";
-import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils";
+import { LogUtils, LoggerVerboseOption } from "../../utilities/log-utils";
 import { StringUtils } from "../../utilities/string-utils";
 import {
-  sortClassContents,
-  SortClassContentsOptions
+  SortClassContentsOptions,
+  sortClassContents
 } from "../sortClassContents";
 import { TypeAnnotationOption } from "../utilities/sort-utils";
 

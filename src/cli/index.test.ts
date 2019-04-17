@@ -7,7 +7,7 @@ import { run } from "./index";
 // Mocks
 import * as cosmiconfig from "cosmiconfig";
 import { Reprinter } from "../reprinter";
-import { LoggerVerboseOption, LogUtils } from "../utilities/log-utils";
+import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils";
 
 describe("cli", () => {
   let logMock: sinon.SinonStubbedInstance<any>;

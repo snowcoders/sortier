@@ -19,10 +19,11 @@ export class Reprinter {
     const ignoreFilePath = path.resolve(".sortierignore");
     try {
       let ignoreText = FileUtils.readFileContents(ignoreFilePath).trim();
+      const relativeFilePath = path.relative(path.resolve("."), filename);
       if (0 < ignoreText.length) {
         let ig = ignore();
         ig.add(ignoreText.split(/\r?\n/));
-        if (ig.ignores(filename)) {
+        if (ig.ignores(relativeFilePath)) {
           return;
         }
       }

@@ -6,9 +6,9 @@ import {
   reorderValues
 } from "../../utilities/sort-utils";
 import {
+  TypeAnnotationOption,
   getObjectTypeRanks,
-  getSpreadGroups,
-  TypeAnnotationOption
+  getSpreadGroups
 } from "../utilities/sort-utils";
 
 export interface SortObjectTypeAnnotationOptions {

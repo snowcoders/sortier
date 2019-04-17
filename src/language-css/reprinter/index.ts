@@ -3,7 +3,7 @@ import { parse as scssParse } from "postcss-scss";
 import { ILanguage } from "../../language";
 import { ReprinterOptions } from "../../reprinter-options";
 import { StringUtils } from "../../utilities/string-utils";
-import { sortDeclarations, SortDeclarationsOptions } from "../sortDeclarations";
+import { SortDeclarationsOptions, sortDeclarations } from "../sortDeclarations";
 
 export type ReprinterOptions = Partial<ReprinterOptionsRequired>;
 

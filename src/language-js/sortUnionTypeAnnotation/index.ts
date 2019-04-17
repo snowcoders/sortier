@@ -1,8 +1,8 @@
 import { compare, reorderValues } from "../../utilities/sort-utils";
 import { addParenthesis } from "../utilities/parser-utils";
 import {
-  getObjectTypeRanks,
-  TypeAnnotationOption
+  TypeAnnotationOption,
+  getObjectTypeRanks
 } from "../utilities/sort-utils";
 
 export interface SortUnionTypeAnnotationOptions {

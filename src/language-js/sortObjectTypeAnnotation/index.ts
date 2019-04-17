@@ -1,6 +1,10 @@
 import { Comment } from "estree";
 
-import { getContextGroups, reorderValues } from "../../utilities/sort-utils";
+import {
+  compare,
+  getContextGroups,
+  reorderValues
+} from "../../utilities/sort-utils";
 import {
   getObjectTypeRanks,
   getSpreadGroups,
@@ -36,10 +40,10 @@ export function sortObjectTypeAnnotation(
           return aGroup - bGroup;
         }
 
-        let aString = getString(a, fileContents);
-        let bString = getString(b, fileContents);
+        let aKey = getPropertyKey(a, fileContents);
+        let bKey = getPropertyKey(b, fileContents);
 
-        return aString.localeCompare(bString);
+        return compare(aKey, bKey);
       });
 
       newFileContents = reorderValues(
@@ -54,7 +58,7 @@ export function sortObjectTypeAnnotation(
   return newFileContents;
 }
 
-function getString(property, fileContents: string) {
+function getPropertyKey(property, fileContents: string) {
   if (property.key != null) {
     if (property.key.value != null) {
       return property.key.value;

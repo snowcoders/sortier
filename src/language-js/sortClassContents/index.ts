@@ -1,6 +1,6 @@
 import { isArray } from "util";
 import { ArrayUtils } from "../../utilities/array-utils";
-import { BaseNode, reorderValues } from "../../utilities/sort-utils";
+import { BaseNode, compare, reorderValues } from "../../utilities/sort-utils";
 
 export type SortClassContentsOptions = Partial<
   SortClassContentsOptionsRequired
@@ -188,10 +188,7 @@ class ClassContentsSorter {
         }
       }
 
-      let stringComparison = 0;
-      if (stringComparison === 0) {
-        stringComparison = a.key.localeCompare(b.key);
-      }
+      let stringComparison = compare(a.key, b.key);
       if (isUsage || this.options.isAscending) {
         return stringComparison;
       } else {
@@ -217,7 +214,7 @@ class ClassContentsSorter {
 
     // Sort both arrays
     let comparisonFunction = (a, b) => {
-      return a.key.name.localeCompare(b.key.name);
+      return compare(a.key.name, b.key.name);
     };
     properties.sort(comparisonFunction);
     everythingElse.sort(comparisonFunction);

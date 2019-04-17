@@ -1,5 +1,19 @@
 ### Unreleased
 
+### 2.5.4
+
+- Moved from `typescript-estree` to `@typescript-eslint/typescript-estree` as the former has been deprecated
+
+### 2.5.3
+
+- Switched from `localeCompare` to comparison operator to sort by Unicode value instead of locale (Thanks @trevorr for the suggestion)
+- Fixed error when object property keys are numbers instead of strings (Thanks @trevorr for the bug)
+
+### 2.5.2
+
+- Fixed ordering of json properties to ignore quotes
+- Fixed line endings for `bin/index.js`
+
 ### 2.5.1
 
 - Added formatText and formatFile functions to exports for non-cli support

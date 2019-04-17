@@ -8,6 +8,15 @@ export interface Comment extends BaseNode {
   type: "Block" | "Line";
 }
 
+export function compare(a: number | string, b: number | string) {
+  const aType = typeof a;
+  const bType = typeof b;
+  if (aType !== bType) {
+    return compare(aType, bType);
+  }
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+
 export interface ContextGroup<
   NodeType extends BaseNode,
   CommentType extends Comment

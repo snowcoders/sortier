@@ -1,4 +1,5 @@
 // Utils
+import { compare } from "../../utilities/sort-utils";
 import { StringUtils } from "../../utilities/string-utils";
 
 export type SortImportDeclarationsOrderOption = "first-specifier" | "source";
@@ -79,13 +80,13 @@ export function sortImportDeclarations(
     }
 
     let sortBySpecifier = (a: SingleImportSource, b: SingleImportSource) => {
-      return a.firstSpecifier.localeCompare(b.firstSpecifier);
+      return compare(a.firstSpecifier, b.firstSpecifier);
     };
     let sortByPath = (a: SingleImportSource, b: SingleImportSource) => {
       let aIsRelative = a.source.startsWith(".");
       let bIsRelative = b.source.startsWith(".");
       if (aIsRelative === bIsRelative) {
-        return a.source.localeCompare(b.source);
+        return compare(a.source, b.source);
       } else {
         return Number(aIsRelative) - Number(bIsRelative);
       }

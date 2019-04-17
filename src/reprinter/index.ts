@@ -1,3 +1,5 @@
+import ignore from "ignore";
+import path from "path";
 import { ILanguage } from "../language";
 import { CssReprinter } from "../language-css";
 import { HtmlReprinter } from "../language-html";
@@ -14,6 +16,18 @@ export class Reprinter {
     new JsonReprinter()
   ];
   public static rewriteFile(filename: string, options: ReprinterOptions) {
+    const ignoreFilePath = path.resolve(".sortierignore");
+    try {
+      let ignoreText = FileUtils.readFileContents(ignoreFilePath).trim();
+      if (0 < ignoreText.length) {
+        let ig = ignore();
+        ig.add(ignoreText.split(/\r?\n/));
+        if (ig.ignores(filename)) {
+          return;
+        }
+      }
+    } catch (readError) {}
+
     let language: null | ILanguage = null;
     for (let reprinter of Reprinter.reprinters) {
       if (!reprinter.isFileSupported(filename)) {

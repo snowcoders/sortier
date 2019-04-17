@@ -8,8 +8,8 @@ export interface SortImportDeclarationSpecifiersOptions {
 }
 
 interface SingleSpecifier extends BaseNode {
-  importedName: string;
   importKind: null | string;
+  importedName: string;
   isDefaultImportType: boolean;
   isInterface: boolean;
 }
@@ -55,8 +55,8 @@ function sortSingleSpecifier(
         start = fileContents.lastIndexOf(specifier.importKind, start);
       }
       return {
-        importedName: importedName,
         importKind: specifier.importKind,
+        importedName: importedName,
         isDefaultImportType: specifier.type.indexOf("Default") !== -1,
         isInterface: nameIsLikelyInterface(importedName),
         range: [start, end]

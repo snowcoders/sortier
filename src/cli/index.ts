@@ -3,7 +3,7 @@ import { sync } from "globby";
 
 import { Reprinter } from "../reprinter";
 import { ReprinterOptions } from "../reprinter-options";
-import { LoggerVerboseOption, LogUtils } from "../utilities/log-utils";
+import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils";
 
 export function run(args: string[]) {
   {

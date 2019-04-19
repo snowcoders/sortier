@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.6.0
+
+- Added `.sortierignore` file support (Thanks @TikiTDO)
+
 ### 2.5.4
 
 - Moved from `typescript-estree` to `@typescript-eslint/typescript-estree` as the former has been deprecated

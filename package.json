@@ -36,7 +36,7 @@
     "prettier": "1.17.0",
     "sinon": "7.3.2",
     "source-map-support": "0.5.12",
-    "ts-node": "8.0.3",
+    "ts-node": "8.1.0",
     "tslint": "5.15.0"
   },
   "homepage": "https://snowcoders.github.io/sortier",

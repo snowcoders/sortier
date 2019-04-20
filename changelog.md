@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 2.6.1
+
 - Improved `.sortierignore` file support for monorepos by using the closest .sortierignore file
 
 ### 2.6.0

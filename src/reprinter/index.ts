@@ -1,3 +1,4 @@
+import findup from "find-up";
 import ignore from "ignore";
 import path from "path";
 import { ILanguage } from "../language";
@@ -16,26 +17,30 @@ export class Reprinter {
     new JsonReprinter()
   ];
   public static rewriteFile(filename: string, options: ReprinterOptions) {
-    const ignoreFilePath = path.resolve(".sortierignore");
-    try {
-      let ignoreText = FileUtils.readFileContents(ignoreFilePath).trim();
-      const relativeFilePath = path.relative(path.resolve("."), filename);
-      if (0 < ignoreText.length) {
-        let ig = ignore();
-        ig.add(ignoreText.split(/\r?\n/));
-        if (ig.ignores(relativeFilePath)) {
-          return;
+    // Find the nearest sortier ignore file
+    const ignoreFilePath = findup.sync(".sortierignore", {
+      cwd: filename
+    });
+    if (ignoreFilePath != null) {
+      try {
+        let ignoreText = FileUtils.readFileContents(ignoreFilePath).trim();
+        const relativeFilePath = path.relative(path.resolve("."), filename);
+        if (0 < ignoreText.length) {
+          let ig = ignore();
+          ig.add(ignoreText.split(/\r?\n/));
+          if (ig.ignores(relativeFilePath)) {
+            return;
+          }
         }
-      }
-    } catch (readError) {}
+      } catch (readError) {}
+    }
 
     let language: null | ILanguage = null;
     for (let reprinter of Reprinter.reprinters) {
-      if (!reprinter.isFileSupported(filename)) {
-        continue;
+      if (reprinter.isFileSupported(filename)) {
+        language = reprinter;
+        break;
       }
-
-      language = reprinter;
     }
 
     if (language == null) {

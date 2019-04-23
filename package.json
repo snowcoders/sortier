@@ -4,7 +4,7 @@
     "sortier": "./bin/index.js"
   },
   "dependencies": {
-    "@typescript-eslint/typescript-estree": "1.6.0",
+    "@typescript-eslint/typescript-estree": "1.7.0",
     "angular-html-parser": "1.2.0",
     "cosmiconfig": "5.2.0",
     "find-up": "3.0.0",

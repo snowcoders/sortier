@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.6.2
+
+- Added `sortImportDeclarationSpecifiers` to the public options (Thanks @abrougher)
+
 ### 2.6.1
 
 - Improved `.sortierignore` file support for monorepos by using the closest .sortierignore file

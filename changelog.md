@@ -2,7 +2,7 @@
 
 ### 2.6.2
 
-- Added `sortImportDeclarationSpecifiers` to the public options (Thanks @abrougher)
+- Added `sortImportDeclarationSpecifiers` to the public options (Thanks @abrougher for the bug)
 
 ### 2.6.1
 

@@ -6,7 +6,10 @@ import { parse as parseTypescript } from "../parsers/typescript";
 
 // Types of sorts
 import { sortExpression } from "../sortExpression";
-import { sortImportDeclarationSpecifiers } from "../sortImportDeclarationSpecifiers";
+import {
+  SortImportDeclarationSpecifiersOptions,
+  sortImportDeclarationSpecifiers
+} from "../sortImportDeclarationSpecifiers";
 import {
   SortImportDeclarationsOrderOption,
   sortImportDeclarations
@@ -30,20 +33,17 @@ import {
 } from "../sortClassContents";
 import { TypeAnnotationOption } from "../utilities/sort-utils";
 
-export type ReprinterOptions = Partial<ReprinterOptionsRequired>;
-
-export interface ReprinterOptionsRequired {
+export interface ReprinterOptions {
   // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
   parser?: "flow" | "typescript";
-
-  // Default "source". The order you wish to sort import statements. Source is the path the import comes from. First specifier is the first item imported.
-  sortImportDeclarations: SortImportDeclarationsOrderOption;
-
-  // Default ["undefined", "null", "*", "function"]. The order to sort object types when encountered.
-  sortTypeAnnotations?: TypeAnnotationOption[];
-
   // Default undefined. If defined, class contents will be sorted based on the options provided. Turned off by default because it will sort over blank lines.
   sortClassContents?: SortClassContentsOptions;
+  // Default ["*", "interfaces", "types"] (see SortImportDeclarationSpecifiersOptions)
+  sortImportDeclarationSpecifiers?: SortImportDeclarationSpecifiersOptions;
+  // Default "source". The order you wish to sort import statements. Source is the path the import comes from. First specifier is the first item imported.
+  sortImportDeclarations?: SortImportDeclarationsOrderOption;
+  // Default ["undefined", "null", "*", "function"]. The order to sort object types when encountered.
+  sortTypeAnnotations?: TypeAnnotationOption[];
 }
 
 export class Reprinter implements ILanguage {
@@ -52,7 +52,7 @@ export class Reprinter implements ILanguage {
 
   private _filename: string;
   private _helpModeHasPrintedFilename: boolean;
-  private _options: ReprinterOptionsRequired;
+  private _options: ReprinterOptions;
 
   public getRewrittenContents(
     filename: string,
@@ -77,11 +77,18 @@ export class Reprinter implements ILanguage {
     ]);
   }
 
-  private getValidatedOptions(
-    appOptions: ReprinterOptions
-  ): ReprinterOptionsRequired {
-    let partialOptions = {
-      ...appOptions,
+  private getValidatedOptions(appOptions: ReprinterOptions): ReprinterOptions {
+    // TODO: v3.0.0 - Remove extends JavascriptReprinterOptions
+    let {
+      css,
+      isHelpMode,
+      isTestRun,
+      js,
+      logLevel,
+      ...onlyJsOptions
+    } = appOptions;
+    let partialOptions: ReprinterOptions = {
+      ...onlyJsOptions,
       ...appOptions.js
     };
     let sortTypeAnnotations:
@@ -95,7 +102,9 @@ export class Reprinter implements ILanguage {
     return {
       parser: partialOptions.parser,
       sortClassContents: partialOptions.sortClassContents,
-      sortImportDeclarations: partialOptions.sortImportDeclarations || "source",
+      sortImportDeclarationSpecifiers:
+        partialOptions.sortImportDeclarationSpecifiers,
+      sortImportDeclarations: partialOptions.sortImportDeclarations,
       sortTypeAnnotations: sortTypeAnnotations
     };
   }
@@ -278,7 +287,8 @@ export class Reprinter implements ILanguage {
               fileContents = sortImportDeclarationSpecifiers(
                 node.specifiers,
                 comments,
-                fileContents
+                fileContents,
+                this._options.sortImportDeclarationSpecifiers
               );
             }
             break;
@@ -346,7 +356,8 @@ export class Reprinter implements ILanguage {
             fileContents = sortImportDeclarationSpecifiers(
               node.specifiers,
               comments,
-              fileContents
+              fileContents,
+              this._options.sortImportDeclarationSpecifiers
             );
             break;
           }

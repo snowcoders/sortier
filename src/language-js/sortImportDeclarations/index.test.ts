@@ -98,7 +98,7 @@ describe("language-js/sortImportDeclarations", () => {
   });
 
   describe("es6 - Custom options", () => {
-    it("Sort by first specifier", () => {
+    it("Order by first specifier", () => {
       let input = `import "./styles.scss";
 import "./header.scss";
 import * as React from "react";
@@ -111,6 +111,42 @@ import * as React from "react";
 import honda from "./cars";`;
       let actual = sortImportDeclarations(flowParse(input).body, input, {
         orderBy: "first-specifier"
+      });
+
+      expect(actual).to.equal(output);
+    });
+
+    it("Order by source", () => {
+      let input = `import "./styles.scss";
+import "./header.scss";
+import * as React from "react";
+import honda from "./cars";
+import { Apple } from "./food";`;
+      let output = `import * as React from "react";
+import honda from "./cars";
+import { Apple } from "./food";
+import "./header.scss";
+import "./styles.scss";`;
+      let actual = sortImportDeclarations(flowParse(input).body, input, {
+        orderBy: "source"
+      });
+
+      expect(actual).to.equal(output);
+    });
+
+    it("Order by undefined", () => {
+      let input = `import "./styles.scss";
+import "./header.scss";
+import * as React from "react";
+import honda from "./cars";
+import { Apple } from "./food";`;
+      let output = `import * as React from "react";
+import honda from "./cars";
+import { Apple } from "./food";
+import "./header.scss";
+import "./styles.scss";`;
+      let actual = sortImportDeclarations(flowParse(input).body, input, {
+        orderBy: "source"
       });
 
       expect(actual).to.equal(output);

@@ -3,7 +3,11 @@ import { BaseNode, compare, reorderValues } from "../../utilities/sort-utils";
 
 export type SortByExportOptionsGroups = "*" | "interfaces" | "types";
 
-export interface SortImportDeclarationSpecifiersOptions {
+export type SortImportDeclarationSpecifiersOptions = Partial<
+  SortImportDeclarationSpecifiersOptionsRequired
+>;
+
+interface SortImportDeclarationSpecifiersOptionsRequired {
   groups: SortByExportOptionsGroups[];
 }
 
@@ -20,13 +24,13 @@ export function sortImportDeclarationSpecifiers(
   fileContents: string,
   options?: SortImportDeclarationSpecifiersOptions
 ) {
-  options = ensureOptions(options);
+  let cleanedOptions = ensureOptions(options);
 
   fileContents = sortSingleSpecifier(
     specifiers,
     comments,
     fileContents,
-    options
+    cleanedOptions
   );
 
   return fileContents;
@@ -36,7 +40,7 @@ function sortSingleSpecifier(
   specifiers: any,
   comments: Comment[],
   fileContents: string,
-  options: SortImportDeclarationSpecifiersOptions
+  options: SortImportDeclarationSpecifiersOptionsRequired
 ): string {
   // If there is one or less specifiers, there is not anything to sort
   if (specifiers.length <= 1) {
@@ -125,7 +129,7 @@ function nameIsLikelyInterface(name: string) {
 
 function ensureOptions(
   options?: null | SortImportDeclarationSpecifiersOptions
-): SortImportDeclarationSpecifiersOptions {
+): SortImportDeclarationSpecifiersOptionsRequired {
   if (options == null) {
     return {
       groups: ["*", "interfaces", "types"]

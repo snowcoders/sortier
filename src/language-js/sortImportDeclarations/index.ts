@@ -3,7 +3,10 @@ import { compare } from "../../utilities/sort-utils";
 import { StringUtils } from "../../utilities/string-utils";
 
 export type SortImportDeclarationsOrderOption = "first-specifier" | "source";
-export interface SortImportDeclarationsOptions {
+export type SortImportDeclarationsOptions = Partial<
+  SortImportDeclarationsOptionsRequired
+>;
+interface SortImportDeclarationsOptionsRequired {
   orderBy: SortImportDeclarationsOrderOption;
 }
 
@@ -178,8 +181,9 @@ export function sortImportDeclarations(
 
 function ensureOptions(
   options: undefined | null | SortImportDeclarationsOptions
-): SortImportDeclarationsOptions {
+): SortImportDeclarationsOptionsRequired {
   return {
-    orderBy: (options && options.orderBy) || "source"
+    orderBy: "source",
+    ...options
   };
 }

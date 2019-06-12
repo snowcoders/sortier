@@ -26,7 +26,7 @@
     "@types/globby": "8.0.0",
     "@types/mocha": "5.2.7",
     "@types/node": "12.0.8",
-    "@types/sinon": "7.0.12",
+    "@types/sinon": "7.0.13",
     "chai": "4.2.0",
     "coveralls": "3.0.4",
     "husky": "2.4.1",

@@ -37,7 +37,7 @@
     "sinon": "7.3.2",
     "source-map-support": "0.5.12",
     "ts-node": "8.3.0",
-    "tslint": "5.17.0"
+    "tslint": "5.18.0"
   },
   "homepage": "https://snowcoders.github.io/sortier",
   "keywords": [

@@ -1,4 +1,3 @@
-import { isArray } from "util";
 import { ArrayUtils } from "../../utilities/array-utils";
 import { BaseNode, compare, reorderValues } from "../../utilities/sort-utils";
 
@@ -405,7 +404,7 @@ class ClassContentsSorter {
           memberExpressionOrder.push(value.property.name);
         } else if (value.type != null) {
           memberExpressionOrder.push(...this.getCalleeOrder([value]));
-        } else if (isArray(value)) {
+        } else if (Array.isArray(value)) {
           memberExpressionOrder.push(...this.getCalleeOrder(value));
         }
       }

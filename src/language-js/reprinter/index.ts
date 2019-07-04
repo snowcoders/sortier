@@ -21,7 +21,6 @@ import { sortTSPropertySignatures } from "../sortTSPropertySignatures";
 import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation";
 
 // Utils
-import { isArray } from "util";
 import { ILanguage } from "../../language";
 import { ReprinterOptions } from "../../reprinter-options";
 import { ArrayUtils } from "../../utilities/array-utils";
@@ -147,7 +146,7 @@ export class Reprinter implements ILanguage {
     let nodes = originalNodes.slice();
     while (nodes.length !== 0) {
       let node = nodes.shift();
-      if (isArray(node)) {
+      if (Array.isArray(node)) {
         throw new Error(
           "Unexpected Exception - Array sent as node in rewrite nodes"
         );

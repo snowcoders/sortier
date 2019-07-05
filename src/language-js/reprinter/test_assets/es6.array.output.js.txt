@@ -1,3 +1,4 @@
+// ArrayExpression
 let result = [{
      a: "a",
       b: "b",
@@ -6,3 +7,6 @@ let result = [{
      b: "b",
     c: "c",
 }];
+
+// ArrayPattern
+let [,two, one, {a,b}] = [4,2,1,{ a: 4,  b: 3}];

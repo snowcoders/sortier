@@ -15,7 +15,7 @@
         "999999",
         "--colors",
         "--full-trace",
-        "${workspaceRoot}/src/**/*.test.ts"
+        "\"${workspaceRoot}/src/**/*.test.ts\""
       ],
       "console": "integratedTerminal",
       "cwd": "${workspaceRoot}",

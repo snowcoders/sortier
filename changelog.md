@@ -1,5 +1,7 @@
 ### Unreleased
 
+- Fixed switch statement bug when there is only one case statement per context group
+
 ### 2.6.2
 
 - Added `sortImportDeclarationSpecifiers` to the public options (Thanks @abrougher for the bug)

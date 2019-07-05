@@ -72,7 +72,7 @@ describe("language-js/sortSwitchCases", () => {
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);
             let actual = sortSwitchCases(
-              parsed.body[0].cases,
+              parsed.body[0].cases || parsed.body[0].body.body[0].cases,
               parsed.comments,
               input
             );

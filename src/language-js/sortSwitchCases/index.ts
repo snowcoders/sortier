@@ -51,7 +51,8 @@ export function sortSwitchCases(
   for (let x = 0; x < contextGroups.length; x++) {
     let cases = contextGroups[x].nodes;
     let comments = contextGroups[x].comments;
-    if (cases.length === 0) {
+    if (cases.length <= 1) {
+      // No need to sort if there's only one case
       continue;
     }
 

@@ -10,7 +10,7 @@
     "find-up": "4.1.0",
     "flow-parser": "0.102.0",
     "fs": "0.0.1-security",
-    "globby": "10.0.0",
+    "globby": "9.2.0",
     "ignore": "5.1.2",
     "postcss-less": "3.1.4",
     "postcss-scss": "2.0.0",
@@ -60,8 +60,8 @@
     "cover": "nyc report --reporter=text-lcov | coveralls",
     "mocha": "mocha --require ts-node/register --require source-map-support/register --full-trace \"./src/**/*.test.ts\"",
     "prepare": "npm run clean && npm run build-production",
-    "start": "npm run build && npm run run",
     "run": "node bin/index.js",
+    "start": "npm run build && npm run run",
     "test": "nyc npm run mocha",
     "test-e2e": "docker build -f e2e_tests.dockerfile ."
   },

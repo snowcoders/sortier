@@ -32,6 +32,7 @@
       "cwd": "${workspaceRoot}",
       "name": "Debug app",
       "outFiles": [],
+      "preLaunchTask": "npm: build",
       "program": "${workspaceRoot}/bin/index",
       "request": "launch",
       "runtimeArgs": ["--nolazy"],

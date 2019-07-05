@@ -9,4 +9,4 @@ let result = [{
 }];
 
 // ArrayPattern
-let [two, one, {b,a}] = [2,1,{ b: 3,  a: 4}];
+let [,two, one, {b,a}] = [4,2,1,{ b: 3,  a: 4}];

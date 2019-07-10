@@ -19,7 +19,7 @@
   },
   "description": "An opionated code sorter",
   "devDependencies": {
-    "@angular/compiler": "8.1.0",
+    "@angular/compiler": "8.1.1",
     "@snowcoders/renovate-config": "1.0.4",
     "@types/chai": "4.1.7",
     "@types/estree": "0.0.39",

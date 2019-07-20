@@ -1,5 +1,10 @@
 ### Unreleased
 
+- Fixed switch statement bug when there is only one case statement per context group
+- Added support for JSXFragment
+- Added support for ArrayPattern
+- Added support for JSXEmptyExpression
+
 ### 2.6.2
 
 - Added `sortImportDeclarationSpecifiers` to the public options (Thanks @abrougher for the bug)

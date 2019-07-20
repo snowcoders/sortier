@@ -159,9 +159,10 @@ export class Reprinter implements ILanguage {
       try {
         switch (node.type) {
           // From estree.d.ts
+          case "ArrayPattern":
           case "ArrayExpression": {
             fileContents = this.rewriteNodes(
-              node.elements,
+              node.elements.filter(value => value != null),
               comments,
               fileContents
             );
@@ -493,6 +494,7 @@ export class Reprinter implements ILanguage {
 
           // JSX
           case "JSXElement":
+          case "JSXFragment":
           case "JSXOpeningElement": {
             fileContents = this.rewriteNodes(
               node.children,
@@ -502,6 +504,7 @@ export class Reprinter implements ILanguage {
             fileContents = sortJsxElement(node, comments, fileContents);
             break;
           }
+          case "JSXEmptyExpression":
           case "JSXText": {
             break;
           }

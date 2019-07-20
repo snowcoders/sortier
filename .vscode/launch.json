@@ -15,7 +15,7 @@
         "999999",
         "--colors",
         "--full-trace",
-        "${workspaceRoot}/src/**/*.test.ts"
+        "\"${workspaceRoot}/src/**/*.test.ts\""
       ],
       "console": "integratedTerminal",
       "cwd": "${workspaceRoot}",
@@ -32,6 +32,7 @@
       "cwd": "${workspaceRoot}",
       "name": "Debug app",
       "outFiles": [],
+      "preLaunchTask": "npm: build",
       "program": "${workspaceRoot}/bin/index",
       "request": "launch",
       "runtimeArgs": ["--nolazy"],

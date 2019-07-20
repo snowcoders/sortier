@@ -23,6 +23,11 @@ return <div className={className}>
       ref={this.setInputRef}
       type="checkbox"
     />
-    {labelText != null && <span className="text" title={labelText}>{labelText}</span>}
+    <>
+      {/*
+          This is a fragment with an empty expression inside
+        */}
+      {labelText != null && <span className="text" title={labelText}>{labelText}</span>}
+    </>
   </label>
 </div>;

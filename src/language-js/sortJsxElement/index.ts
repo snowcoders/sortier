@@ -23,6 +23,11 @@ export function sortJsxElement(
   fileContents: string,
   options?: SortJsxElementOptions
 ) {
+  if (jsxElement.openingElement == null) {
+    // Fragment element
+    return fileContents;
+  }
+
   let newFileContents = fileContents.slice();
 
   let allNodes: JsxAttribute[] = jsxElement.openingElement.attributes;

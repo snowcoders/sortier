@@ -1,9 +1,9 @@
 interface Definition {
   property: 
-    undefined |
     null |
-    number |
-    string |
+    undefined |
     "home" |
-    "string",
+    "string" |
+    string |
+    number,
 }

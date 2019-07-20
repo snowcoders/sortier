@@ -139,7 +139,7 @@ class UnionTypeAnnotationSorter {
     } else if (a.literal != null && a.literal.raw != null) {
       return a.literal.raw;
     } else {
-      return a.type;
+      return this.fileContents.substring(a.range[0], a.range[1]);
     }
   }
 }

@@ -1,5 +1,6 @@
 ### Unreleased
 
+- Fixed incorrect sorting of typescript union types
 - Fixed switch statement bug when there is only one case statement per context group
 - Added support for JSXFragment
 - Added support for ArrayPattern

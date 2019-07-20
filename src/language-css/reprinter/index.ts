@@ -5,9 +5,9 @@ import { ReprinterOptions } from "../../reprinter-options";
 import { StringUtils } from "../../utilities/string-utils";
 import { SortDeclarationsOptions, sortDeclarations } from "../sortDeclarations";
 
-export type ReprinterOptions = Partial<ReprinterOptionsRequired>;
+export type ReprinterOptions = Partial<CssReprinterOptionsRequired>;
 
-export interface ReprinterOptionsRequired {
+export interface CssReprinterOptionsRequired {
   // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
   parser?: "less" | "scss";
 
@@ -24,7 +24,7 @@ export class Reprinter implements ILanguage {
     ".scss.txt"
   ];
 
-  private options: ReprinterOptionsRequired;
+  private options: CssReprinterOptionsRequired;
 
   public getRewrittenContents(
     filename: string,
@@ -50,7 +50,7 @@ export class Reprinter implements ILanguage {
 
   private getValidatedOptions(
     appOptions: ReprinterOptions
-  ): ReprinterOptionsRequired {
+  ): CssReprinterOptionsRequired {
     let partialOptions = appOptions.css;
 
     return {

@@ -44,9 +44,6 @@ function getConfig(filename: string): ReprinterOptions {
   let options = result == null ? {} : (result.config as ReprinterOptions);
 
   // Set the LogUtils verbosity based on options
-  if (options.isHelpMode) {
-    LogUtils.setVerbosity(LoggerVerboseOption.Diagnostic);
-  }
   if (options.logLevel != null) {
     switch (options.logLevel) {
       case "diagnostic":

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { sync } from "globby";
-import { basename, join } from "path";
+import { basename } from "path";
 
 // The methods being tested here
 import { Reprinter } from "./index";
@@ -18,7 +18,10 @@ interface TestInfo {
 describe("language-html/reprinter", () => {
   let testInfos: TestInfo[];
 
-  let assetsFolderPath = join(__dirname, "test_assets/*.input.html.txt");
+  let assetsFolderPath = FileUtils.globbyJoin(
+    __dirname,
+    "test_assets/*.input.html.txt"
+  );
   testInfos = sync(assetsFolderPath).map(filePath => {
     let segments = basename(filePath).split(".");
 

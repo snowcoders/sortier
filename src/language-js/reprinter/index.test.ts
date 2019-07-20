@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { sync } from "globby";
-import { basename, join } from "path";
+import { basename } from "path";
 import { FileUtils } from "../../utilities/file-utils";
 import { StringUtils } from "../../utilities/string-utils";
 
@@ -18,7 +18,10 @@ describe("language-js/reprinter", () => {
   let testInfos: TestInfo[];
   let parserTypes: Set<string> = new Set<string>();
 
-  let assetsFolderPath = join(__dirname, "test_assets/*.input.(js|ts).txt");
+  let assetsFolderPath = FileUtils.globbyJoin(
+    __dirname,
+    "test_assets/*.input.(js|ts).txt"
+  );
   testInfos = sync(assetsFolderPath).map(filePath => {
     let segments = basename(filePath).split(".");
 

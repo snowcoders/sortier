@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { join } from "path";
 import { formatFile, formatText } from "./index";
+import { FileUtils } from "./utilities/file-utils";
 
 describe("index", () => {
   it("Runs without crashing", () => {
-    let thisFile = join(__dirname, "index.test.ts");
+    let thisFile = FileUtils.globbyJoin(__dirname, "index.test.ts");
     formatFile(thisFile, {
       isTestRun: true
     });

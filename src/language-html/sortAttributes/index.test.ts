@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { readFileSync } from "fs";
 import { sync } from "globby";
-import { basename, join } from "path";
+import { basename } from "path";
 
 // Parsers
 import { parse } from "angular-html-parser";
@@ -11,6 +11,7 @@ import { sortAttributes } from "./index";
 
 // Utilities
 import { StringUtils } from "../../utilities/string-utils";
+import { FileUtils } from "../../utilities/file-utils";
 
 interface TestInfo {
   inputFilePath: string;
@@ -21,7 +22,10 @@ interface TestInfo {
 describe("language-html/sortAttributes", () => {
   let testInfos: TestInfo[];
 
-  let assetsFolderPath = join(__dirname, "test_assets/*.input.html.txt");
+  let assetsFolderPath = FileUtils.globbyJoin(
+    __dirname,
+    "test_assets/*.input.html.txt"
+  );
   testInfos = sync(assetsFolderPath).map(filePath => {
     let segments = basename(filePath).split(".");
 

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { readFileSync } from "fs";
 import { sync } from "globby";
-import { basename, join } from "path";
+import { basename } from "path";
 
 // Parsers
 import { parse as flowParse } from "../parsers/flow";
@@ -12,6 +12,7 @@ import { sortImportDeclarations } from "./index";
 
 // Utilities
 import { StringUtils } from "../../utilities/string-utils";
+import { FileUtils } from "../../utilities/file-utils";
 
 interface TestInfo {
   inputFilePath: string;
@@ -26,7 +27,10 @@ describe("language-js/sortImportDeclarations", () => {
 
   parserTypes = [];
 
-  let assetsFolderPath = join(__dirname, "test_assets/*.input.txt");
+  let assetsFolderPath = FileUtils.globbyJoin(
+    __dirname,
+    "test_assets/*.input.txt"
+  );
   testInfos = sync(assetsFolderPath).map(filePath => {
     let segments = basename(filePath).split(".");
 

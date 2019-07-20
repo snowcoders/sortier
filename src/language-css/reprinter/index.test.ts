@@ -19,7 +19,7 @@ describe("language-css/reprinter", () => {
   ["css", "less"].forEach(cssType => {
     let testInfos: TestInfo[];
 
-    let assetsFolderPath = join(
+    let assetsFolderPath = FileUtils.globbyJoin(
       __dirname,
       `test_assets/*.input.${cssType}.txt`
     );

@@ -4,6 +4,7 @@
 - Added support for JSXFragment
 - Added support for ArrayPattern
 - Added support for JSXEmptyExpression
+- Breaking: Updated globby@10.0.0 which [only allows forward slashes in paths](https://github.com/mrmlnc/fast-glob#pattern-syntax)
 
 ### 2.6.2
 

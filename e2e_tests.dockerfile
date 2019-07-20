@@ -14,7 +14,7 @@ WORKDIR /react-redux-typescript-guide
 RUN git clone https://github.com/piotrwitek/react-redux-typescript-guide .
 WORKDIR /react-redux-typescript-guide/playground
 RUN npm install --unsafe-perm
-RUN echo "{ isHelpMode: true }" > .sortierrc
+RUN echo "{ 'logLevel': 'diagnostic' }" > .sortierrc
 WORKDIR /sortier
 RUN npm run start -- "/react-redux-typescript-guide/playground/src/**/*.ts"
 RUN npm run start -- "/react-redux-typescript-guide/playground/src/**/*.tsx"
@@ -27,7 +27,7 @@ RUN echo "### prettier"
 WORKDIR /prettier
 RUN git clone https://github.com/prettier/prettier .
 RUN npm install --unsafe-perm
-RUN echo "{ isHelpMode: true }" > .sortierrc
+RUN echo "{ 'logLevel': 'diagnostic' }" > .sortierrc
 WORKDIR /sortier
 RUN npm run start -- "/prettier/src/**/*.js"
 WORKDIR /prettier

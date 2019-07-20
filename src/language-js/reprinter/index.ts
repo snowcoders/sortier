@@ -32,7 +32,9 @@ import {
 } from "../sortClassContents";
 import { TypeAnnotationOption } from "../utilities/sort-utils";
 
-export interface ReprinterOptions {
+export type ReprinterOptions = Partial<JsReprinterOptionsRequired>;
+
+interface JsReprinterOptionsRequired {
   // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
   parser?: "flow" | "typescript";
   // Default undefined. If defined, class contents will be sorted based on the options provided. Turned off by default because it will sort over blank lines.
@@ -51,7 +53,7 @@ export class Reprinter implements ILanguage {
 
   private _filename: string;
   private _helpModeHasPrintedFilename: boolean;
-  private _options: ReprinterOptions;
+  private _options: JsReprinterOptionsRequired;
 
   public getRewrittenContents(
     filename: string,
@@ -76,20 +78,10 @@ export class Reprinter implements ILanguage {
     ]);
   }
 
-  private getValidatedOptions(appOptions: ReprinterOptions): ReprinterOptions {
-    // TODO: v3.0.0 - Remove extends JavascriptReprinterOptions
-    let {
-      css,
-      isHelpMode,
-      isTestRun,
-      js,
-      logLevel,
-      ...onlyJsOptions
-    } = appOptions;
-    let partialOptions: ReprinterOptions = {
-      ...onlyJsOptions,
-      ...appOptions.js
-    };
+  private getValidatedOptions(
+    appOptions: ReprinterOptions
+  ): JsReprinterOptionsRequired {
+    let partialOptions = appOptions.js || {};
     let sortTypeAnnotations:
       | undefined
       | Array<TypeAnnotationOption> = undefined;
@@ -99,12 +91,8 @@ export class Reprinter implements ILanguage {
     }
 
     return {
-      parser: partialOptions.parser,
-      sortClassContents: partialOptions.sortClassContents,
-      sortImportDeclarationSpecifiers:
-        partialOptions.sortImportDeclarationSpecifiers,
-      sortImportDeclarations: partialOptions.sortImportDeclarations,
-      sortTypeAnnotations: sortTypeAnnotations
+      ...partialOptions,
+      sortTypeAnnotations
     };
   }
 

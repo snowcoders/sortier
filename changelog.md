@@ -4,7 +4,41 @@
 - Added support for JSXFragment
 - Added support for ArrayPattern
 - Added support for JSXEmptyExpression
-- Breaking: Updated globby@10.0.0 which [only allows forward slashes in paths](https://github.com/mrmlnc/fast-glob#pattern-syntax)
+- Breaking:
+
+  - From the root exports removed `format` in favor of `formatFile`
+  - Updated globby@10.0.0 which [only allows forward slashes in paths](https://github.com/mrmlnc/fast-glob#pattern-syntax)
+    - Fix: If you were running `sortier ".\**\*.ts"` you'll need to update to `sortier "./**/*.ts"`
+  - Configuration file updates
+
+    - Removed `isHelpMode: true` in favor of `logLevel: diagnostic`
+    - Removed javascript options from the root
+
+      - Fix: In the root of your configuration file, if you had any of the javascript specific options you should move them into a js object. For example, migrating from:
+
+        ```
+        {
+          parser: 'typescript',
+          sortClassContents: {},
+          sortImportDeclarationSpecifiers: {},
+          sortImportDeclarations: {},
+          sortTypeAnnotations: {}
+        }
+        ```
+
+        To
+
+        ```
+        {
+          js: {
+            parser: 'typescript',
+            sortClassContents: {},
+            sortImportDeclarationSpecifiers: {},
+            sortImportDeclarations: {},
+            sortTypeAnnotations: {}
+          }
+        }
+        ```
 
 ### 2.6.2
 

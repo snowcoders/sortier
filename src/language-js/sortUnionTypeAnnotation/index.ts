@@ -16,6 +16,7 @@ export function sortUnionTypeAnnotation(
   options: SortUnionTypeAnnotationOptions
 ) {
   if (
+    unionTypeAnnotation.type === "TSIntersectionType" ||
     unionTypeAnnotation.type === "UnionTypeAnnotation" ||
     unionTypeAnnotation.type === "IntersectionTypeAnnotation" ||
     unionTypeAnnotation.type === "TSUnionType"

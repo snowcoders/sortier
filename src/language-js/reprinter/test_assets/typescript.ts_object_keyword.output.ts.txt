@@ -1,0 +1,10 @@
+function renderWithRedux(
+  jsx: JSX.Element,
+  options: { initialState?: object } = {}
+) {
+  const store = createStore(reducer, options.initialState);
+  return {
+    ...render(<Provider store={store}>{jsx}</Provider>),
+    store,
+  };
+}

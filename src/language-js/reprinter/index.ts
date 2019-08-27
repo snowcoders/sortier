@@ -522,6 +522,8 @@ export class Reprinter implements ILanguage {
           case "TSNonNullExpression":
           case "TSNullKeyword":
           case "TSNumberKeyword":
+          case "TSObjectKeyword":
+          case "TSImportType":
           case "TSParenthesizedType":
           case "TSStringKeyword":
           case "TSTypeOperator":
@@ -711,6 +713,22 @@ export class Reprinter implements ILanguage {
           }
           case "TypeAnnotation": {
             nodes.push(node.typeAnnotation);
+            break;
+          }
+          case "TSIntersectionType": {
+            fileContents = this.rewriteNodes(
+              node.types,
+              comments,
+              fileContents
+            );
+            fileContents = sortUnionTypeAnnotation(
+              node,
+              comments,
+              fileContents,
+              {
+                groups: this._options.sortTypeAnnotations
+              }
+            );
             break;
           }
           case "UnionTypeAnnotation": {

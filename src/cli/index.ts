@@ -16,7 +16,21 @@ export function run(args: string[]) {
     }
 
     let options: null | ReprinterOptions = null;
-    sync(args).map(filePath => {
+    let files = sync(args);
+    if (files.length === 0) {
+      if (args[0].indexOf("\\")) {
+        LogUtils.log(
+          LoggerVerboseOption.Normal,
+          "Sortier no longer supports file paths that contain '\\' (see fast-glob@3.0.0 release notes). Is your glob pattern correct?"
+        );
+      } else {
+        LogUtils.log(
+          LoggerVerboseOption.Normal,
+          "No filepaths found for file pattern"
+        );
+      }
+    }
+    files.map(filePath => {
       if (options == null) {
         options = getConfig(filePath);
       }
@@ -41,7 +55,8 @@ ${e}`
 function getConfig(filename: string): ReprinterOptions {
   const explorer = cosmiconfig("sortier");
   const result = explorer.searchSync(filename);
-  let options = result == null ? {} : (result.config as ReprinterOptions);
+  let config = result == null ? {} : result.config;
+  let options = config as ReprinterOptions;
 
   // Set the LogUtils verbosity based on options
   if (options.logLevel != null) {
@@ -55,6 +70,27 @@ function getConfig(filename: string): ReprinterOptions {
       default:
         LogUtils.setVerbosity(LoggerVerboseOption.Normal);
         break;
+    }
+  }
+
+  if (config["isHelpMode"] != null) {
+    LogUtils.log(
+      LoggerVerboseOption.Normal,
+      `Config property 'isHelpMode' has been replaced with 'logLevel'. Please upgrade your config file.`
+    );
+  }
+  for (let removedProperty of [
+    "parser",
+    "sortClassContents",
+    "sortImportDeclarationSpecifiers",
+    "sortImportDeclarations",
+    "sortTypeAnnotations"
+  ]) {
+    if (config[removedProperty] != null) {
+      LogUtils.log(
+        LoggerVerboseOption.Normal,
+        `Config property '${removedProperty}' has been moved in 3.0.0 to the 'js' property. Please upgrade your config file.`
+      );
     }
   }
 

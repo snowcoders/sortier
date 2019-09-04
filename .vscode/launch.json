@@ -15,7 +15,7 @@
         "999999",
         "--colors",
         "--full-trace",
-        "\"${workspaceRoot}/src/**/*.test.ts\""
+        "\"./src/**/*.test.ts\""
       ],
       "console": "integratedTerminal",
       "cwd": "${workspaceRoot}",
@@ -28,7 +28,7 @@
       "type": "node"
     },
     {
-      "args": ["${workspaceRoot}/src/**/*.ts"],
+      "args": ["./src/language-js/reprinter/index.ts"],
       "cwd": "${workspaceRoot}",
       "name": "Debug app",
       "outFiles": [],

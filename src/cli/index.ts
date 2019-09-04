@@ -18,7 +18,7 @@ export function run(args: string[]) {
     let options: null | ReprinterOptions = null;
     let files = sync(args);
     if (files.length === 0) {
-      if (args[0].indexOf("\\")) {
+      if (args[0].indexOf("\\") !== -1) {
         LogUtils.log(
           LoggerVerboseOption.Normal,
           "Sortier no longer supports file paths that contain '\\' (see fast-glob@3.0.0 release notes). Is your glob pattern correct?"

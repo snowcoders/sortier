@@ -2,11 +2,13 @@
 
 - Fixed incorrect sorting of typescript union types
 - Fixed switch statement bug when there is only one case statement per context group
+- Fixed switch statement bug where it wouldn't sort if there was a conditional inside the case
 - Added support for JSXFragment
 - Added support for ArrayPattern
 - Added support for JSXEmptyExpression
 - Breaking:
 
+  - Non-supported files no longer throw errors. Now we only output a dianostic level log message.
   - From the root exports removed `format` in favor of `formatFile`
   - Updated globby@10.0.0 which [only allows forward slashes in paths](https://github.com/mrmlnc/fast-glob#pattern-syntax)
     - Fix: If you were running `sortier ".\**\*.ts"` you'll need to update to `sortier "./**/*.ts"`

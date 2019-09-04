@@ -4,8 +4,8 @@ import { expect } from "chai";
 import { Reprinter } from "./index";
 
 // Utilities
-import { FileUtils } from "../utilities/file-utils";
 import { join } from "path";
+import { FileUtils } from "../utilities/file-utils";
 
 describe("reprinter", () => {
   it("Does not rewrite sortier ignored files", () => {
@@ -20,5 +20,12 @@ describe("reprinter", () => {
     Reprinter.rewriteFile(inputFilePath, {});
     const newInput = FileUtils.readFileContents(inputFilePath);
     expect(newInput).to.equal(output);
+  });
+
+  it("Does not throw error for unsupported files", () => {
+    const inputFilePath = join(__dirname, "../../readme.md");
+    expect(() => {
+      Reprinter.rewriteFile(inputFilePath, {});
+    }).to.not.throw();
   });
 });

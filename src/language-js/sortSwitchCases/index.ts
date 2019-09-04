@@ -186,6 +186,7 @@ function doesCaseBreakOutOfSwitch(caseStatement: any): HasImmediateExitOption {
 }
 
 function doesHaveImmediateExit(values: any): HasImmediateExitOption {
+  let isIndeterminate = false;
   for (let value of values) {
     switch (value.type) {
       case "BlockStatement": {
@@ -220,11 +221,13 @@ function doesHaveImmediateExit(values: any): HasImmediateExitOption {
           // Value is a try catch
           value.block != null
         ) {
-          return HasImmediateExitOption.Indeterminate;
+          isIndeterminate = true;
         }
     }
   }
-  return HasImmediateExitOption.False;
+  return isIndeterminate
+    ? HasImmediateExitOption.Indeterminate
+    : HasImmediateExitOption.False;
 }
 
 function getSortableText(a: any, fileContents: string) {

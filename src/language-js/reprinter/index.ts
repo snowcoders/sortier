@@ -147,8 +147,8 @@ export class Reprinter implements ILanguage {
       try {
         switch (node.type) {
           // From estree.d.ts
-          case "ArrayPattern":
-          case "ArrayExpression": {
+          case "ArrayExpression":
+          case "ArrayPattern": {
             fileContents = this.rewriteNodes(
               node.elements.filter(value => value != null),
               comments,
@@ -514,8 +514,9 @@ export class Reprinter implements ILanguage {
           case "TSBooleanKeyword":
           case "TSConstructorType":
           case "TSEnumDeclaration":
-          case "TSIndexedAccessType":
+          case "TSImportType":
           case "TSIndexSignature":
+          case "TSIndexedAccessType":
           case "TSLastTypeNode":
           case "TSLiteralType":
           case "TSMappedType":
@@ -523,7 +524,6 @@ export class Reprinter implements ILanguage {
           case "TSNullKeyword":
           case "TSNumberKeyword":
           case "TSObjectKeyword":
-          case "TSImportType":
           case "TSParenthesizedType":
           case "TSStringKeyword":
           case "TSTypeOperator":
@@ -703,18 +703,6 @@ export class Reprinter implements ILanguage {
             nodes.push(node.body);
             break;
           }
-          case "TSPropertySignature": {
-            nodes.push(node.typeAnnotation);
-            break;
-          }
-          case "TypeAlias": {
-            nodes.push(node.right);
-            break;
-          }
-          case "TypeAnnotation": {
-            nodes.push(node.typeAnnotation);
-            break;
-          }
           case "TSIntersectionType": {
             fileContents = this.rewriteNodes(
               node.types,
@@ -729,6 +717,18 @@ export class Reprinter implements ILanguage {
                 groups: this._options.sortTypeAnnotations
               }
             );
+            break;
+          }
+          case "TSPropertySignature": {
+            nodes.push(node.typeAnnotation);
+            break;
+          }
+          case "TypeAlias": {
+            nodes.push(node.right);
+            break;
+          }
+          case "TypeAnnotation": {
+            nodes.push(node.typeAnnotation);
             break;
           }
           case "UnionTypeAnnotation": {

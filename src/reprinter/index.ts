@@ -8,6 +8,7 @@ import { JavascriptReprinter } from "../language-js";
 import { JsonReprinter } from "../language-json";
 import { ReprinterOptions } from "../reprinter-options";
 import { FileUtils } from "../utilities/file-utils";
+import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils";
 
 export class Reprinter {
   private static reprinters: ILanguage[] = [
@@ -35,16 +36,9 @@ export class Reprinter {
       } catch (readError) {}
     }
 
-    let language: null | ILanguage = null;
-    for (let reprinter of Reprinter.reprinters) {
-      if (reprinter.isFileSupported(filename)) {
-        language = reprinter;
-        break;
-      }
-    }
-
+    let language = this.getReprinterForFile(filename);
     if (language == null) {
-      throw new Error("Could not find language support for file - " + filename);
+      return;
     }
 
     let originalFileContents = FileUtils.readFileContents(filename);
@@ -65,19 +59,9 @@ export class Reprinter {
     options: ReprinterOptions
   ) {
     let fakeFileName = `example.${fileExtension}`;
-    let language: null | ILanguage = null;
-    for (let reprinter of Reprinter.reprinters) {
-      if (!reprinter.isFileSupported(fakeFileName)) {
-        continue;
-      }
-
-      language = reprinter;
-    }
-
+    let language = this.getReprinterForFile(fakeFileName);
     if (language == null) {
-      throw new Error(
-        "Could not find language support for extension type - " + fileExtension
-      );
+      return;
     }
 
     let newFileContents = language.getRewrittenContents(
@@ -87,5 +71,19 @@ export class Reprinter {
     );
 
     return newFileContents;
+  }
+
+  private static getReprinterForFile(filename: string) {
+    for (let reprinter of Reprinter.reprinters) {
+      if (reprinter.isFileSupported(filename)) {
+        return reprinter;
+      }
+    }
+
+    LogUtils.log(
+      LoggerVerboseOption.Diagnostic,
+      "Could not find language support for file - " + filename
+    );
+    return null;
   }
 }

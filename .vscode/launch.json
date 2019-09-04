@@ -28,7 +28,7 @@
       "type": "node"
     },
     {
-      "args": ["./src/language-js/reprinter/index.ts"],
+      "args": ["./src/**/*"],
       "cwd": "${workspaceRoot}",
       "name": "Debug app",
       "outFiles": [],

@@ -1,5 +1,6 @@
 ### Unreleased
 
+- Fixed typescript generics being mistaken for JSX elements
 - Fixed incorrect sorting of typescript union types
 - Fixed switch statement bug when there is only one case statement per context group
 - Fixed switch statement bug where it wouldn't sort if there was a conditional inside the case

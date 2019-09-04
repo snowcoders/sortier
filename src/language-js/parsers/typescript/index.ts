@@ -34,7 +34,7 @@ function tryParseTypeScript(text: string, jsx: boolean) {
   return parser.parse(text, {
     comment: true,
     errorOnUnknownASTType: false,
-    jsx: true,
+    jsx: jsx,
     loc: true,
     range: true,
     tokens: true,

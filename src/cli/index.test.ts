@@ -47,10 +47,12 @@ describe("cli", () => {
     expect(reprinterMock.lastCall.args[0]).to.contain("/package.json");
   });
 
-  it("Prints error message if rewrite fails", () => {
+  it("Throws exception if rewrite fails", () => {
     reprinterMock.throws("Some error");
 
-    run(["./package.json"]);
+    expect(() => {
+      run(["./package.json"]);
+    }).to.throw();
 
     expect(logMock.lastCall.args[0]).to.equal(LoggerVerboseOption.Normal);
     expect(logMock.lastCall.args[1]).to.contain("Some error");

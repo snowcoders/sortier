@@ -164,7 +164,7 @@ describe("language-css/reprinter", () => {
       expect(actual).to.equal(expected);
     });
 
-    it("Throws error when unsupported file is provided", () => {
+    it("Throws error if file is not supported", () => {
       let input = `
     .example {
       position: relative;
@@ -176,6 +176,16 @@ describe("language-css/reprinter", () => {
         new Reprinter().getRewrittenContents("example.fake", input, {
           css: {}
         });
+      }).to.throw();
+    });
+
+    it("Throws an error if the file cannot be parsed", () => {
+      expect(() => {
+        new Reprinter().getRewrittenContents(
+          "parse_fail.css",
+          "This shouldn't parse",
+          {}
+        );
       }).to.throw();
     });
   });

@@ -50,4 +50,14 @@ describe("language-html/reprinter", () => {
       expect(actual).to.equal(expected);
     });
   });
+
+  it("Throws an error if the file cannot be parsed", () => {
+    expect(() => {
+      new Reprinter().getRewrittenContents(
+        "parse_fail.html",
+        "<html>This has the wrong closing tag</html2>",
+        {}
+      );
+    }).to.throw();
+  });
 });

@@ -74,4 +74,14 @@ describe("language-js/reprinter", () => {
       new Reprinter().getRewrittenContents("./readme.md", "", {});
     }).to.throw();
   });
+
+  it("Throws an error if the file cannot be parsed", () => {
+    expect(() => {
+      new Reprinter().getRewrittenContents(
+        "parse_fail.js",
+        "This shouldn't parse",
+        {}
+      );
+    }).to.throw();
+  });
 });

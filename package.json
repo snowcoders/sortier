@@ -56,13 +56,13 @@
     "build": "tsc",
     "build-production": "npm run build -- -p ./tsconfig.production.json",
     "clean": "rimraf .nyc_output coverage dist",
+    "cli": "node bin/index.js",
     "cover": "nyc report --reporter=text-lcov | coveralls",
     "mocha": "mocha --require ts-node/register --require source-map-support/register --full-trace \"./src/**/*.test.ts\"",
     "prepare": "npm run clean && npm run build-production",
-    "cli": "node bin/index.js",
     "start": "npm run build && npm run cli",
     "test": "nyc npm run mocha",
     "test-e2e": "docker build -f e2e_tests.dockerfile ."
   },
-  "version": "2.6.2"
+  "version": "3.0.0"
 }

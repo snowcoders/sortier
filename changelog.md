@@ -1,15 +1,19 @@
 ### Unreleased
 
-- Fixed typescript generics being mistaken for JSX elements
-- Fixed incorrect sorting of typescript union types
-- Fixed switch statement bug when there is only one case statement per context group
-- Fixed switch statement bug where it wouldn't sort if there was a conditional inside the case
-- Added support for JSXFragment
-- Added support for ArrayPattern
-- Added support for JSXEmptyExpression
-- Breaking:
+- Bug fixes
+  - Fixed typescript generics being mistaken for JSX elements
+  - Fixed incorrect sorting of typescript union types
+  - Fixed switch statement bug when there is only one case statement per context group
+  - Fixed switch statement bug where it wouldn't sort if there was a conditional inside the case
+- New support
+  - JSXFragment
+  - ArrayPattern
+  - JSXEmptyExpression
+- Breaking
 
-  - Non-supported files no longer throw errors. Now we only output a dianostic level log message.
+  - Error handling changes
+    - Non-supported files no longer throw exceptions. Now we only output a dianostic level log message (yay easier glob formats)
+    - Returns non-zero exit code if sorting any one file fails which should force lint-staged to fail via hooks
   - From the root exports removed `format` in favor of `formatFile`
   - Updated globby@10.0.0 which [only allows forward slashes in paths](https://github.com/mrmlnc/fast-glob#pattern-syntax)
     - Fix: If you were running `sortier ".\**\*.ts"` you'll need to update to `sortier "./**/*.ts"`

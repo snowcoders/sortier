@@ -18,6 +18,10 @@ export class Reprinter implements ILanguage {
     this.options = options;
     let ast = parse(fileContents, { canSelfClose: true });
 
+    if (ast.errors.length > 0) {
+      throw new Error(ast.errors[0].msg);
+    }
+
     return this.sortNode(
       {
         children: ast.rootNodes

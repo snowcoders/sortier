@@ -17,6 +17,7 @@ export function run(args: string[]) {
 
     let options: null | ReprinterOptions = null;
     let files = sync(args);
+    let error = null;
     if (files.length === 0) {
       if (args[0].indexOf("\\") !== -1) {
         LogUtils.log(
@@ -38,6 +39,7 @@ export function run(args: string[]) {
       try {
         Reprinter.rewriteFile(filePath, options);
       } catch (e) {
+        error = e;
         LogUtils.log(LoggerVerboseOption.Normal, "");
         LogUtils.log(
           LoggerVerboseOption.Normal,
@@ -47,6 +49,10 @@ ${e}`
         );
       }
     });
+
+    if (error != null) {
+      throw error;
+    }
 
     return 0;
   }

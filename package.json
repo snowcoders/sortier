@@ -59,8 +59,8 @@
     "cover": "nyc report --reporter=text-lcov | coveralls",
     "mocha": "mocha --require ts-node/register --require source-map-support/register --full-trace \"./src/**/*.test.ts\"",
     "prepare": "npm run clean && npm run build-production",
-    "run": "node bin/index.js",
-    "start": "npm run build && npm run run",
+    "cli": "node bin/index.js",
+    "start": "npm run build && npm run cli",
     "test": "nyc npm run mocha",
     "test-e2e": "docker build -f e2e_tests.dockerfile ."
   },

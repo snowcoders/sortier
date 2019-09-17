@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 3.0.0
+
 - Bug fixes
   - Fixed typescript generics being mistaken for JSX elements
   - Fixed incorrect sorting of typescript union types

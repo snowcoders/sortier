@@ -18,7 +18,7 @@
   "devDependencies": {
     "@angular/compiler": "8.2.11",
     "@snowcoders/renovate-config": "1.0.4",
-    "@types/chai": "4.2.3",
+    "@types/chai": "4.2.4",
     "@types/estree": "0.0.39",
     "@types/globby": "8.0.0",
     "@types/mocha": "5.2.7",

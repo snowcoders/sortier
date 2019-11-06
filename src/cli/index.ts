@@ -1,4 +1,4 @@
-import cosmiconfig from "cosmiconfig";
+import { cosmiconfigSync } from "cosmiconfig";
 import { sync } from "globby";
 
 import { Reprinter } from "../reprinter";
@@ -59,8 +59,8 @@ ${e}`
 }
 
 function getConfig(filename: string): ReprinterOptions {
-  const explorer = cosmiconfig("sortier");
-  const result = explorer.searchSync(filename);
+  const explorer = cosmiconfigSync("sortier");
+  const result = explorer.search(filename);
   let config = result == null ? {} : result.config;
   let options = config as ReprinterOptions;
 

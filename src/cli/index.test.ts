@@ -5,7 +5,7 @@ import * as sinon from "sinon";
 import { run } from "./index";
 
 // Mocks
-import * as cosmiconfig from "cosmiconfig";
+import { cosmiconfigSync } from "cosmiconfig";
 import { Reprinter } from "../reprinter";
 import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils";
 
@@ -66,9 +66,9 @@ describe("cli", () => {
 
     before(() => {
       setVerbosityMock = sinon.stub(LogUtils, "setVerbosity");
-      cosmiconfigMock = sinon.stub(cosmiconfig);
+      cosmiconfigMock = sinon.stub(cosmiconfigSync);
       cosmiconfigMock.returns({
-        searchSync: () => {
+        search: () => {
           return {
             config: config
           };

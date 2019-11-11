@@ -22,7 +22,7 @@ import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation";
 
 // Utils
 import { ILanguage } from "../../language";
-import { ReprinterOptions } from "../../reprinter-options";
+import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options";
 import { ArrayUtils } from "../../utilities/array-utils";
 import { LogUtils, LoggerVerboseOption } from "../../utilities/log-utils";
 import { StringUtils } from "../../utilities/string-utils";
@@ -58,7 +58,7 @@ export class Reprinter implements ILanguage {
   public getRewrittenContents(
     filename: string,
     fileContents: string,
-    options: ReprinterOptions
+    options: BaseReprinterOptions
   ) {
     this._filename = filename;
     this._options = this.getValidatedOptions(options);
@@ -79,7 +79,7 @@ export class Reprinter implements ILanguage {
   }
 
   private getValidatedOptions(
-    appOptions: ReprinterOptions
+    appOptions: BaseReprinterOptions
   ): JsReprinterOptionsRequired {
     let partialOptions = appOptions.js || {};
     let sortTypeAnnotations:

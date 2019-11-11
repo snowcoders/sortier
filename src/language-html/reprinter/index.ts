@@ -2,18 +2,18 @@ import { parse } from "angular-html-parser";
 import { ILanguage } from "../../language";
 import { CssReprinter } from "../../language-css";
 import { JavascriptReprinter } from "../../language-js";
-import { ReprinterOptions } from "../../reprinter-options";
+import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options";
 import { StringUtils } from "../../utilities/string-utils";
 import { sortAttributes } from "../sortAttributes";
 
 export class Reprinter implements ILanguage {
   public static readonly EXTENSIONS = [".html", ".html.txt"];
-  private options: ReprinterOptions;
+  private options: BaseReprinterOptions;
 
   public getRewrittenContents(
     filename: string,
     fileContents: string,
-    options: ReprinterOptions
+    options: BaseReprinterOptions
   ) {
     this.options = options;
     let ast = parse(fileContents, { canSelfClose: true });

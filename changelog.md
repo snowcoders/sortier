@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 3.0.1
+
+- Fixed typescript definition breaks from the 3.7.2 upgrade
+
 ### 3.0.0
 
 - Bug fixes

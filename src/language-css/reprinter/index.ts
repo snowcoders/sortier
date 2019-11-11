@@ -1,7 +1,7 @@
 import { parse as lessParse } from "postcss-less";
 import { parse as scssParse } from "postcss-scss";
 import { ILanguage } from "../../language";
-import { ReprinterOptions } from "../../reprinter-options";
+import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options";
 import { StringUtils } from "../../utilities/string-utils";
 import { SortDeclarationsOptions, sortDeclarations } from "../sortDeclarations";
 
@@ -29,7 +29,7 @@ export class Reprinter implements ILanguage {
   public getRewrittenContents(
     filename: string,
     fileContents: string,
-    options: ReprinterOptions
+    options: BaseReprinterOptions
   ) {
     this.options = this.getValidatedOptions(options);
 
@@ -49,7 +49,7 @@ export class Reprinter implements ILanguage {
   }
 
   private getValidatedOptions(
-    appOptions: ReprinterOptions
+    appOptions: BaseReprinterOptions
   ): CssReprinterOptionsRequired {
     let partialOptions = appOptions.css;
 

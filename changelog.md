@@ -1,5 +1,7 @@
 ### Unreleased
 
+- Fixed Json sort failure when comment is above the object
+
 ### 3.0.1
 
 - Fixed typescript definition breaks from the 3.7.2 upgrade

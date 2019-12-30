@@ -1,0 +1,9 @@
+/* Webpack's tsconfig... needs to be "tsconfig.json" so webpack picks it up automatically */
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "sourceMap": true,
+    "target": "es5"
+  }
+}

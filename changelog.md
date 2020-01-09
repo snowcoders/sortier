@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 3.0.2
+
 - Fixed Json sort failure when comment is above the object
 - Fixed invalid output when sorting css, less and scss variables when located at the beginning of a file
 - Fixed css, less and scss variable sorting by preventing it when dependencies are detected

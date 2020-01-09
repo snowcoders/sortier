@@ -1,0 +1,6 @@
+$grid-size: 4px; // 8 by default
+$icon-size: 12px; // 18 by default
+
+// Change the primary / accent colors
+$ag-mat-accent: #fbc02d;
+$ag-mat-primary: #1976d2;

@@ -16,7 +16,7 @@ interface TestInfo {
 }
 
 describe("language-css/reprinter", () => {
-  ["css", "less"].forEach(cssType => {
+  ["css", "scss", "less"].forEach(cssType => {
     let testInfos: TestInfo[];
 
     let assetsFolderPath = FileUtils.globbyJoin(

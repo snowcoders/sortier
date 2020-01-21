@@ -18,7 +18,7 @@
   "devDependencies": {
     "@angular/compiler": "8.2.14",
     "@istanbuljs/nyc-config-typescript": "1.0.1",
-    "@snowcoders/renovate-config": "1.0.5",
+    "@snowcoders/renovate-config": "1.0.6",
     "@types/chai": "4.2.7",
     "@types/estree": "0.0.42",
     "@types/globby": "8.0.0",

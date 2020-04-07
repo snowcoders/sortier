@@ -16,7 +16,7 @@
   },
   "description": "An opionated code sorter",
   "devDependencies": {
-    "@angular/compiler": "9.1.0",
+    "@angular/compiler": "9.1.1",
     "@istanbuljs/nyc-config-typescript": "1.0.1",
     "@snowcoders/renovate-config": "1.0.6",
     "@types/chai": "4.2.11",

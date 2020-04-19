@@ -70,9 +70,9 @@ describe("cli", () => {
       cosmiconfigMock.returns({
         search: () => {
           return {
-            config: config
+            config: config,
           };
-        }
+        },
       });
     });
 
@@ -86,7 +86,7 @@ describe("cli", () => {
 
     it("Sets log level to diagnostic when set in config", () => {
       config = {
-        logLevel: "diagnostic"
+        logLevel: "diagnostic",
       };
 
       run(["./package.json"]);
@@ -99,7 +99,7 @@ describe("cli", () => {
 
     it("Sets log level to quiet when set in config", () => {
       config = {
-        logLevel: "quiet"
+        logLevel: "quiet",
       };
 
       run(["./package.json"]);
@@ -112,7 +112,7 @@ describe("cli", () => {
 
     it("Sets log level to normal when invalid in config", () => {
       config = {
-        logLevel: "asdfasdf"
+        logLevel: "asdfasdf",
       };
 
       run(["./package.json"]);

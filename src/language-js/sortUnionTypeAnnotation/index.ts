@@ -2,7 +2,7 @@ import { compare, reorderValues } from "../../utilities/sort-utils";
 import { addParenthesis } from "../utilities/parser-utils";
 import {
   TypeAnnotationOption,
-  getObjectTypeRanks
+  getObjectTypeRanks,
 } from "../utilities/sort-utils";
 
 export interface SortUnionTypeAnnotationOptions {
@@ -67,7 +67,7 @@ class UnionTypeAnnotationSorter {
   }
 
   private getSortOrderOfTypes() {
-    let getRank = value => {
+    let getRank = (value) => {
       let ranks = getObjectTypeRanks(this.options.groups);
       if (value.type === "TSParenthesizedType") {
         return getRank(value.typeAnnotation);

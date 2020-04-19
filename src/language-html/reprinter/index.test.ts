@@ -22,7 +22,7 @@ describe("language-html/reprinter", () => {
     __dirname,
     "test_assets/*.input.html.txt"
   );
-  testInfos = sync(assetsFolderPath).map(filePath => {
+  testInfos = sync(assetsFolderPath).map((filePath) => {
     let segments = basename(filePath).split(".");
 
     let cleanedTestName = StringUtils.sentenceCase(
@@ -33,11 +33,11 @@ describe("language-html/reprinter", () => {
       inputFilePath: filePath,
       outputFilePath: filePath.replace(".input.html.txt", ".output.html.txt"),
       parserType: segments[0],
-      testName: cleanedTestName
+      testName: cleanedTestName,
     };
   });
 
-  testInfos.forEach(testInfo => {
+  testInfos.forEach((testInfo) => {
     it(testInfo.testName, () => {
       let input = FileUtils.readFileContents(testInfo.inputFilePath);
       let expected = FileUtils.readFileContents(testInfo.outputFilePath);

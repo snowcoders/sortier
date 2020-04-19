@@ -23,13 +23,13 @@ export function sortAttributes(node: any, fileContents: string) {
     node.sourceSpan.start.offset,
     node.sourceSpan.end.offset
   );
-  let attributeInfos: AttrInfo[] = attrs.map(value => {
+  let attributeInfos: AttrInfo[] = attrs.map((value) => {
     let startOffset = value.sourceSpan.start.offset;
     let endOffset = value.sourceSpan.end.offset;
     let result: AttrInfo = {
       endOffset,
       source: fileContents.substring(startOffset, endOffset),
-      startOffset
+      startOffset,
     };
     return result;
   });

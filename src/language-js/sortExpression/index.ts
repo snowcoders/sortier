@@ -2,7 +2,7 @@ import { compare, reorderValues } from "../../utilities/sort-utils";
 import { addParenthesis } from "../utilities/parser-utils";
 import {
   TypeAnnotationOption,
-  getObjectTypeRanks
+  getObjectTypeRanks,
 } from "../utilities/sort-utils";
 
 export type SortExpressionOptions = Partial<SortExpressionOptionsRequired>;
@@ -111,9 +111,9 @@ class ExpressionSorter {
             value: this.fileContents.substring(
               operand.range[0],
               operand.range[1]
-            )
-          }
-        ]
+            ),
+          },
+        ],
       };
     }
 
@@ -140,7 +140,7 @@ class ExpressionSorter {
 
     return {
       accumulatedOperator: accumulatedOperator,
-      values: values
+      values: values,
     };
   }
 
@@ -152,7 +152,7 @@ class ExpressionSorter {
     // Determine range we are working on in the file
     let rangeMin = operand.values[0].range[0];
     let rangeMax = operand.values[0].range[1];
-    operand.values.forEach(element => {
+    operand.values.forEach((element) => {
       if (rangeMin > element.range[0]) {
         rangeMin = element.range[0];
       }
@@ -184,9 +184,9 @@ class ExpressionSorter {
         {
           groupIndex: this.getAllRanks().everything,
           range: [rangeMin, rangeMax],
-          value: newFileContents
-        }
-      ]
+          value: newFileContents,
+        },
+      ],
     };
   }
 

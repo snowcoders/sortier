@@ -70,15 +70,15 @@ export function sortImportDeclarations(
           end: {
             column: importSource.loc.end.column,
             index: importSource.end,
-            line: importSource.loc.end.line
+            line: importSource.loc.end.line,
           },
           start: {
             column: importSource.loc.start.column,
             index: importSource.start,
-            line: importSource.loc.start.line
-          }
+            line: importSource.loc.start.line,
+          },
         },
-        source: importSource.source.value
+        source: importSource.source.value,
       });
     }
 
@@ -184,6 +184,6 @@ function ensureOptions(
 ): SortImportDeclarationsOptionsRequired {
   return {
     orderBy: "source",
-    ...options
+    ...options,
   };
 }

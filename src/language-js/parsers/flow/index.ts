@@ -10,14 +10,14 @@ export function parse(text: string /*, parsers, opts*/) {
     esproposal_decorators: true,
     esproposal_export_star_as: true,
     esproposal_nullish_coalescing: true,
-    esproposal_optional_chaining: true
+    esproposal_optional_chaining: true,
   });
 
   if (ast.errors.length > 0) {
     const loc = ast.errors[0].loc;
     throw createError(ast.errors[0].message, {
       end: { column: loc.end.column + 1, line: loc.end.line },
-      start: { column: loc.start.column + 1, line: loc.start.line }
+      start: { column: loc.start.column + 1, line: loc.start.line },
     });
   }
 

@@ -27,16 +27,16 @@ describe("language-js/parser-utils", () => {
           loc: {
             end: { column: 37, line: 1 },
             source: null,
-            start: { column: 33, line: 1 }
+            start: { column: 33, line: 1 },
           },
           range: [33, 37],
-          type: "NullLiteralTypeAnnotation"
+          type: "NullLiteralTypeAnnotation",
         },
         {
           loc: {
             end: { column: 52, line: 1 },
             source: null,
-            start: { column: 44, line: 1 }
+            start: { column: 44, line: 1 },
           },
           params: [],
           range: [44, 52],
@@ -50,37 +50,37 @@ describe("language-js/parser-utils", () => {
             loc: {
               end: { column: 52, line: 1 },
               source: null,
-              start: { column: 50, line: 1 }
+              start: { column: 50, line: 1 },
             },
             properties: [],
             range: [50, 52],
-            type: "ObjectTypeAnnotation"
+            type: "ObjectTypeAnnotation",
           },
           type: "FunctionTypeAnnotation",
-          typeParameters: null
+          typeParameters: null,
         },
         {
           id: {
             loc: {
               end: { column: 66, line: 1 },
               source: null,
-              start: { column: 57, line: 1 }
+              start: { column: 57, line: 1 },
             },
             name: "undefined",
             optional: false,
             range: [57, 66],
             type: "Identifier",
-            typeAnnotation: null
+            typeAnnotation: null,
           },
           loc: {
             end: { column: 66, line: 1 },
             source: null,
-            start: { column: 57, line: 1 }
+            start: { column: 57, line: 1 },
           },
           range: [57, 66],
           type: "GenericTypeAnnotation",
-          typeParameters: null
-        }
+          typeParameters: null,
+        },
       ];
       let newNodes = addParenthesis(fileContents, nodes);
       expect(newNodes[0].range[0]).to.equal(nodes[0].range[0]);
@@ -98,7 +98,7 @@ describe("language-js/parser-utils", () => {
         {
           loc: { end: { column: 37, line: 1 }, start: { column: 33, line: 1 } },
           range: [33, 37],
-          type: "TSNullKeyword"
+          type: "TSNullKeyword",
         },
         {
           loc: { end: { column: 53, line: 1 }, start: { column: 40, line: 1 } },
@@ -107,14 +107,14 @@ describe("language-js/parser-utils", () => {
           typeAnnotation: {
             loc: {
               end: { column: 52, line: 1 },
-              start: { column: 40, line: 1 }
+              start: { column: 40, line: 1 },
             },
             range: [40, 52],
             type: "TSTypeAnnotation",
             typeAnnotation: {
               loc: {
                 end: { column: 52, line: 1 },
-                start: { column: 44, line: 1 }
+                start: { column: 44, line: 1 },
               },
               parameters: [],
               range: [44, 52],
@@ -122,23 +122,23 @@ describe("language-js/parser-utils", () => {
               typeAnnotation: {
                 loc: {
                   end: { column: 52, line: 1 },
-                  start: { column: 48, line: 1 }
+                  start: { column: 48, line: 1 },
                 },
                 range: [48, 52],
                 type: "TSTypeAnnotation",
                 typeAnnotation: {
                   loc: {
                     end: { column: 52, line: 1 },
-                    start: { column: 50, line: 1 }
+                    start: { column: 50, line: 1 },
                   },
                   members: [],
                   range: [50, 52],
-                  type: "TSTypeLiteral"
-                }
+                  type: "TSTypeLiteral",
+                },
               },
-              typeParameters: null
-            }
-          }
+              typeParameters: null,
+            },
+          },
         },
         {
           loc: { end: { column: 67, line: 1 }, start: { column: 56, line: 1 } },
@@ -147,20 +147,20 @@ describe("language-js/parser-utils", () => {
           typeAnnotation: {
             loc: {
               end: { column: 66, line: 1 },
-              start: { column: 56, line: 1 }
+              start: { column: 56, line: 1 },
             },
             range: [56, 66],
             type: "TSTypeAnnotation",
             typeAnnotation: {
               loc: {
                 end: { column: 66, line: 1 },
-                start: { column: 57, line: 1 }
+                start: { column: 57, line: 1 },
               },
               range: [57, 66],
-              type: "TSUndefinedKeyword"
-            }
-          }
-        }
+              type: "TSUndefinedKeyword",
+            },
+          },
+        },
       ];
       let newNodes = addParenthesis(fileContents, nodes);
       // Typescript takes parenthesis into the AST structure so everything should be good

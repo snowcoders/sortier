@@ -11,8 +11,8 @@ import { parse as typescriptParse } from "../parsers/typescript";
 import { sortImportDeclarations } from "./index";
 
 // Utilities
-import { StringUtils } from "../../utilities/string-utils";
 import { FileUtils } from "../../utilities/file-utils";
+import { StringUtils } from "../../utilities/string-utils";
 
 interface TestInfo {
   inputFilePath: string;
@@ -31,7 +31,7 @@ describe("language-js/sortImportDeclarations", () => {
     __dirname,
     "test_assets/*.input.txt"
   );
-  testInfos = sync(assetsFolderPath).map(filePath => {
+  testInfos = sync(assetsFolderPath).map((filePath) => {
     let segments = basename(filePath).split(".");
 
     if (parserTypes.indexOf(segments[0]) === -1) {
@@ -46,11 +46,11 @@ describe("language-js/sortImportDeclarations", () => {
       inputFilePath: filePath,
       outputFilePath: filePath.replace(".input.txt", ".output.txt"),
       parserType: segments[0],
-      testName: cleanedTestName
+      testName: cleanedTestName,
     };
   });
 
-  parserTypes.forEach(fileType => {
+  parserTypes.forEach((fileType) => {
     describe(fileType, () => {
       let parser;
       switch (fileType) {
@@ -69,7 +69,7 @@ describe("language-js/sortImportDeclarations", () => {
           );
       }
 
-      testInfos.forEach(testInfo => {
+      testInfos.forEach((testInfo) => {
         if (testInfo.parserType == fileType) {
           describe(testInfo.testName, () => {
             it("Unix line endings", () => {
@@ -114,7 +114,7 @@ import { Apple } from "./food";
 import * as React from "react";
 import honda from "./cars";`;
       let actual = sortImportDeclarations(flowParse(input).body, input, {
-        orderBy: "first-specifier"
+        orderBy: "first-specifier",
       });
 
       expect(actual).to.equal(output);
@@ -132,7 +132,7 @@ import { Apple } from "./food";
 import "./header.scss";
 import "./styles.scss";`;
       let actual = sortImportDeclarations(flowParse(input).body, input, {
-        orderBy: "source"
+        orderBy: "source",
       });
 
       expect(actual).to.equal(output);
@@ -150,7 +150,7 @@ import { Apple } from "./food";
 import "./header.scss";
 import "./styles.scss";`;
       let actual = sortImportDeclarations(flowParse(input).body, input, {
-        orderBy: "source"
+        orderBy: "source",
       });
 
       expect(actual).to.equal(output);

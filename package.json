@@ -28,7 +28,7 @@
     "chai": "4.2.0",
     "coveralls": "3.0.11",
     "husky": "4.2.5",
-    "lint-staged": "10.1.5",
+    "lint-staged": "10.1.6",
     "mocha": "7.1.1",
     "nyc": "15.0.1",
     "prettier": "2.0.4",

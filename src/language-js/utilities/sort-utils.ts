@@ -25,7 +25,6 @@ let defaultObjectTypeOrder: TypeAnnotationOption[] = [
   "undefined",
   "null",
   "*",
-  "object",
   "function",
 ];
 let lastCalculatedRankOptions: undefined | TypeAnnotationOption[] = undefined;

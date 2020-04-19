@@ -17,8 +17,8 @@ describe("language-js/utilities/sort-utils", () => {
       expect(result.undefined).to.equal(0);
       expect(result.null).to.equal(1);
       expect(result.everything).to.equal(2);
-      expect(result.object).to.equal(3);
-      expect(result.function).to.equal(4);
+      expect(result.object).to.equal(2);
+      expect(result.function).to.equal(3);
     });
 
     it("Returns the exact same value when passed the same array", () => {

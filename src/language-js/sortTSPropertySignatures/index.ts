@@ -92,12 +92,14 @@ function getSortGroupIndex(
 ): number {
   let ranks = getObjectTypeRanks(options.groups);
 
+  let annotationType = property.typeAnnotation?.typeAnnotation?.type;
   if (
+    property.type === "TSCallSignatureDeclaration" ||
     property.type === "TSMethodSignature" ||
-    property.typeAnnotation.typeAnnotation.type === "TSFunctionType"
+    annotationType === "TSFunctionType"
   ) {
     return ranks.function;
-  } else if (property.typeAnnotation.typeAnnotation.type === "TSTypeLiteral") {
+  } else if (annotationType === "TSTypeLiteral") {
     return ranks.object;
   }
   return ranks.everything;

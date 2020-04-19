@@ -10,8 +10,8 @@ import { parse } from "angular-html-parser";
 import { sortAttributes } from "./index";
 
 // Utilities
-import { StringUtils } from "../../utilities/string-utils";
 import { FileUtils } from "../../utilities/file-utils";
+import { StringUtils } from "../../utilities/string-utils";
 
 interface TestInfo {
   inputFilePath: string;
@@ -26,7 +26,7 @@ describe("language-html/sortAttributes", () => {
     __dirname,
     "test_assets/*.input.html.txt"
   );
-  testInfos = sync(assetsFolderPath).map(filePath => {
+  testInfos = sync(assetsFolderPath).map((filePath) => {
     let segments = basename(filePath).split(".");
 
     let cleanedTestName = StringUtils.sentenceCase(
@@ -36,11 +36,11 @@ describe("language-html/sortAttributes", () => {
     return {
       inputFilePath: filePath,
       outputFilePath: filePath.replace(".input.html.txt", ".output.html.txt"),
-      testName: cleanedTestName
+      testName: cleanedTestName,
     };
   });
 
-  testInfos.forEach(testInfo => {
+  testInfos.forEach((testInfo) => {
     it(testInfo.testName, () => {
       let input = readFileSync(testInfo.inputFilePath, "utf8");
       let expected = readFileSync(testInfo.outputFilePath, "utf8");

@@ -31,7 +31,7 @@ export function run(args: string[]) {
         );
       }
     }
-    files.map(filePath => {
+    files.map((filePath) => {
       if (options == null) {
         options = getConfig(filePath);
       }
@@ -90,7 +90,7 @@ function getConfig(filename: string): ReprinterOptions {
     "sortClassContents",
     "sortImportDeclarationSpecifiers",
     "sortImportDeclarations",
-    "sortTypeAnnotations"
+    "sortTypeAnnotations",
   ]) {
     if (config[removedProperty] != null) {
       LogUtils.log(

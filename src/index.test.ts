@@ -6,13 +6,13 @@ describe("index", () => {
   it("Runs without crashing", () => {
     let thisFile = FileUtils.globbyJoin(__dirname, "index.test.ts");
     formatFile(thisFile, {
-      isTestRun: true
+      isTestRun: true,
     });
   });
 
   it("Runs formatText without crashing", () => {
     let result = formatText("ts", "let a = {b: 'b', a: 'a'};", {
-      isTestRun: true
+      isTestRun: true,
     });
     expect(result).to.equal("let a = {a: 'a', b: 'b'};");
   });
@@ -22,9 +22,9 @@ describe("index", () => {
       let result = formatText("ts", "import { IP, Po } from '@foo';", {
         js: {
           sortImportDeclarationSpecifiers: {
-            groups: undefined
-          }
-        }
+            groups: undefined,
+          },
+        },
       });
       expect(result).to.equal("import { Po, IP } from '@foo';");
     });
@@ -33,9 +33,9 @@ describe("index", () => {
       let result = formatText("ts", "import { Po, IP } from '@foo';", {
         js: {
           sortImportDeclarationSpecifiers: {
-            groups: ["*"]
-          }
-        }
+            groups: ["*"],
+          },
+        },
       });
       expect(result).to.equal("import { IP, Po } from '@foo';");
     });

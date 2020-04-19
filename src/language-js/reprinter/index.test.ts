@@ -22,7 +22,7 @@ describe("language-js/reprinter", () => {
     __dirname,
     "test_assets/*.input.(js|ts).txt"
   );
-  testInfos = sync(assetsFolderPath).map(filePath => {
+  testInfos = sync(assetsFolderPath).map((filePath) => {
     let segments = basename(filePath).split(".");
 
     let parserType = StringUtils.sentenceCase(segments[0]);
@@ -34,7 +34,7 @@ describe("language-js/reprinter", () => {
       inputFilePath: filePath,
       outputFilePath: filePath.replace(".input.", ".output."),
       parserType: parserType,
-      testName: cleanedTestName
+      testName: cleanedTestName,
     };
   });
 
@@ -45,9 +45,9 @@ describe("language-js/reprinter", () => {
     );
   });
 
-  parserTypes.forEach(parserType => {
+  parserTypes.forEach((parserType) => {
     describe(parserType, () => {
-      testInfos.forEach(testInfo => {
+      testInfos.forEach((testInfo) => {
         if (testInfo.parserType === parserType) {
           // Useful if you need to test a single file
           // if (testInfo.testName.includes("Inline property"))

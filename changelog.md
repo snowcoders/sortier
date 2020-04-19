@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 3.1.0
+
 - Fixed property moving when changing from object to type or adding utility type
 
   - Note: This required the default sort order to change from `"undefined", "null", "*", "object" then "function"` to `"undefined", "null", "*" then "function"` which means `object`s are treated in the same sort order as primative properties and anything that doesn't match.

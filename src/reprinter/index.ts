@@ -15,12 +15,12 @@ export class Reprinter {
     new CssReprinter(),
     new HtmlReprinter(),
     new JavascriptReprinter(),
-    new JsonReprinter()
+    new JsonReprinter(),
   ];
   public static rewriteFile(filename: string, options: ReprinterOptions) {
     // Find the nearest sortier ignore file
     const ignoreFilePath = findup.sync(".sortierignore", {
-      cwd: filename
+      cwd: filename,
     });
     if (ignoreFilePath != null) {
       try {

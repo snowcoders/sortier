@@ -2,20 +2,20 @@ import {
   BaseExpression,
   BaseNodeWithoutComments,
   Comment,
-  SwitchCase
+  SwitchCase,
 } from "estree";
 
 import {
   BaseNode,
   compare,
   getContextGroups,
-  reorderValues
+  reorderValues,
 } from "../../utilities/sort-utils";
 
 enum HasImmediateExitOption {
   Indeterminate,
   True,
-  False
+  False,
 }
 
 export interface SortSwitchCaseOptions {}
@@ -36,7 +36,7 @@ export function sortSwitchCases(
   }
 
   if (
-    cases.findIndex(value => {
+    cases.findIndex((value) => {
       return value.test == null;
     }) !== -1
   ) {
@@ -108,7 +108,7 @@ export function sortSwitchCases(
             .map((value: SwitchCase) => {
               return value.test;
             })
-            .filter(value => value != null) as BaseExpression[];
+            .filter((value) => value != null) as BaseExpression[];
           let sorted = unsorted.slice().sort((a: any, b: any) => {
             let aText = getSortableText(a, fileContents);
             let bText = getSortableText(b, fileContents);
@@ -249,7 +249,7 @@ function getSortableText(a: any, fileContents: string) {
 function caseGroupsToMinimumTypeinformations(
   switchGroupsWithBreaks: SwitchCase[][]
 ) {
-  return switchGroupsWithBreaks.map(value => {
+  return switchGroupsWithBreaks.map((value) => {
     let firstNode: BaseNodeWithoutComments = value[0];
 
     let firstRange = firstNode.range;
@@ -258,7 +258,7 @@ function caseGroupsToMinimumTypeinformations(
       throw new Error("Range is null");
     }
     let result: BaseNode = {
-      range: [firstRange[0], lastRange[1]]
+      range: [firstRange[0], lastRange[1]],
     };
     return result;
   });

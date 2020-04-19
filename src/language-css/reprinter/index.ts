@@ -21,7 +21,7 @@ export class Reprinter implements ILanguage {
     ".css",
     ".css.txt",
     ".scss",
-    ".scss.txt"
+    ".scss.txt",
   ];
 
   private options: CssReprinterOptionsRequired;
@@ -35,7 +35,7 @@ export class Reprinter implements ILanguage {
 
     let parser = this.getParser(filename);
     let ast = parser(fileContents, {
-      sourcesContent: true
+      sourcesContent: true,
     });
 
     return this.sortNode(ast, fileContents);
@@ -44,7 +44,7 @@ export class Reprinter implements ILanguage {
   public isFileSupported(filename: string) {
     return StringUtils.stringEndsWithAny(filename, [
       ...Reprinter.SCSS_EXTENSIONS,
-      ...Reprinter.LESS_EXTENSIONS
+      ...Reprinter.LESS_EXTENSIONS,
     ]);
   }
 
@@ -55,9 +55,9 @@ export class Reprinter implements ILanguage {
 
     return {
       sortDeclarations: {
-        overrides: []
+        overrides: [],
       },
-      ...partialOptions
+      ...partialOptions,
     };
   }
 

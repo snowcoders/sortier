@@ -19,17 +19,17 @@ export function includeShebang(text: string, ast: any) {
     loc: {
       end: {
         column: index,
-        line: 1
+        line: 1,
       },
       source: null,
       start: {
         column: 0,
-        line: 1
-      }
+        line: 1,
+      },
     },
     range: [0, index],
     type: "Line",
-    value: shebang
+    value: shebang,
   };
 
   ast.comments = [comment].concat(ast.comments);
@@ -42,7 +42,7 @@ export function includeShebang(text: string, ast: any) {
 // and other items so we need to be smart about adding them back.
 // This function currently only edits the "range" property but nothing else.
 export function addParenthesis(fileContents: string, nodes: any[]) {
-  return nodes.map(value => {
+  return nodes.map((value) => {
     let charAt = "";
 
     // Find all the parenthesis before
@@ -91,7 +91,7 @@ export function addParenthesis(fileContents: string, nodes: any[]) {
     newEndIndex++;
     return {
       ...value,
-      range: [newStartIndex, newEndIndex]
+      range: [newStartIndex, newEndIndex],
     };
   });
 }

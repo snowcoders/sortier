@@ -19,8 +19,8 @@ export class Reprinter implements ILanguage {
       temporaryFileContents,
       {
         js: {
-          parser: "typescript"
-        }
+          parser: "typescript",
+        },
       }
     );
     return rewritten.substring(prefix.length, rewritten.length - suffix.length);

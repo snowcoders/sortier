@@ -11,8 +11,8 @@ import { parse as typescriptParse } from "../parsers/typescript";
 import { sortImportDeclarationSpecifiers } from "./index";
 
 // Utilities
-import { StringUtils } from "../../utilities/string-utils";
 import { FileUtils } from "../../utilities/file-utils";
+import { StringUtils } from "../../utilities/string-utils";
 
 interface TestInfo {
   inputFilePath: string;
@@ -31,7 +31,7 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
     __dirname,
     "test_assets/*.input.txt"
   );
-  testInfos = sync(assetsFolderPath).map(filePath => {
+  testInfos = sync(assetsFolderPath).map((filePath) => {
     let segments = basename(filePath).split(".");
 
     if (parserTypes.indexOf(segments[0]) === -1) {
@@ -46,13 +46,13 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
       inputFilePath: filePath,
       outputFilePath: filePath.replace(".input.txt", ".output.txt"),
       parserType: segments[0],
-      testName: cleanedTestName
+      testName: cleanedTestName,
     };
   });
 
   let getSortedOverBody = (body, comments, input, options?) => {
     let actual = input;
-    body.forEach(item => {
+    body.forEach((item) => {
       actual = sortImportDeclarationSpecifiers(
         item.specifiers,
         comments,
@@ -63,7 +63,7 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
     return actual;
   };
 
-  parserTypes.forEach(fileType => {
+  parserTypes.forEach((fileType) => {
     describe(fileType, () => {
       let parser;
       switch (fileType) {
@@ -82,7 +82,7 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
           );
       }
 
-      testInfos.forEach(testInfo => {
+      testInfos.forEach((testInfo) => {
         if (testInfo.parserType == fileType) {
           it(testInfo.testName, () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
@@ -103,7 +103,7 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
       let parsed = flowParse(input);
       let output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["*", "types", "interfaces"],
-        orderBy: "alpha"
+        orderBy: "alpha",
       });
       expect(output).to.equal(expected);
     });
@@ -114,7 +114,7 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
       let parsed = flowParse(input);
       let output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["*", "types"],
-        orderBy: "alpha"
+        orderBy: "alpha",
       });
       expect(output).to.equal(expected);
     });
@@ -125,7 +125,7 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
       let parsed = flowParse(input);
       let output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["*", "interfaces"],
-        orderBy: "alpha"
+        orderBy: "alpha",
       });
       expect(output).to.equal(expected);
     });
@@ -136,7 +136,7 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
       let parsed = flowParse(input);
       let output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["interfaces", "*"],
-        orderBy: "alpha"
+        orderBy: "alpha",
       });
       expect(output).to.equal(expected);
     });
@@ -149,7 +149,7 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
       let parsed = flowParse(input);
       let output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["interfaces", "*"],
-        orderBy: "alpha"
+        orderBy: "alpha",
       });
       expect(output).to.equal(expected);
     });

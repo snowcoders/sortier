@@ -3,7 +3,7 @@ import {
   Comment,
   compare,
   getContextGroups,
-  reorderValues
+  reorderValues,
 } from "../../utilities/sort-utils";
 
 export interface SortDeclarationsOptions {
@@ -46,7 +46,7 @@ export function sortDeclarations(
     }
   }
   // Get the range locations of all declarations
-  let attributeInfos: AttrInfo[] = declarations.map(value => {
+  let attributeInfos: AttrInfo[] = declarations.map((value) => {
     let startOffset =
       columnIndexToOffset[value.source.start.line - 1] +
       value.source.start.column;
@@ -57,12 +57,12 @@ export function sortDeclarations(
       prop: value.prop,
       range: [startOffset, endOffset],
       source: source,
-      value: value.value
+      value: value.value,
     };
     return result;
   });
   // Get the range locations of all declarations
-  let commentInfos: Comment[] = comments.map(value => {
+  let commentInfos: Comment[] = comments.map((value) => {
     let startOffset =
       columnIndexToOffset[value.source.start.line - 1] +
       value.source.start.column;
@@ -74,7 +74,7 @@ export function sortDeclarations(
     let isBlock = source.trim().startsWith("/*");
     let result: Comment = {
       range: [startOffset, endOffset],
-      type: isBlock ? "Block" : "Line"
+      type: isBlock ? "Block" : "Line",
     };
     return result;
   });

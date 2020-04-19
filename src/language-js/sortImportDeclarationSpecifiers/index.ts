@@ -47,7 +47,7 @@ function sortSingleSpecifier(
     return fileContents;
   }
 
-  let unsortedSpecifiers = specifiers.map(specifier => {
+  let unsortedSpecifiers = specifiers.map((specifier) => {
     {
       let importedName =
         specifier.imported != null
@@ -63,7 +63,7 @@ function sortSingleSpecifier(
         importedName: importedName,
         isDefaultImportType: specifier.type.indexOf("Default") !== -1,
         isInterface: nameIsLikelyInterface(importedName),
-        range: [start, end]
+        range: [start, end],
       };
     }
   });
@@ -132,11 +132,11 @@ function ensureOptions(
 ): SortImportDeclarationSpecifiersOptionsRequired {
   if (options == null) {
     return {
-      groups: ["*", "interfaces", "types"]
+      groups: ["*", "interfaces", "types"],
     };
   }
 
   return {
-    groups: options.groups || ["*", "interfaces", "types"]
+    groups: options.groups || ["*", "interfaces", "types"],
   };
 }

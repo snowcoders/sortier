@@ -22,7 +22,7 @@ describe("language-json/reprinter", () => {
     __dirname,
     "test_assets/*.input.json.txt"
   );
-  testInfos = sync(assetsFolderPath).map(filePath => {
+  testInfos = sync(assetsFolderPath).map((filePath) => {
     let segments = basename(filePath).split(".");
 
     let cleanedTestName = StringUtils.sentenceCase(
@@ -33,11 +33,11 @@ describe("language-json/reprinter", () => {
       inputFilePath: filePath,
       outputFilePath: filePath.replace(".input.json.txt", ".output.json.txt"),
       parserType: segments[0],
-      testName: cleanedTestName
+      testName: cleanedTestName,
     };
   });
 
-  testInfos.forEach(testInfo => {
+  testInfos.forEach((testInfo) => {
     it(testInfo.testName, () => {
       let input = FileUtils.readFileContents(testInfo.inputFilePath);
       let expected = FileUtils.readFileContents(testInfo.outputFilePath);

@@ -24,7 +24,7 @@ export class Reprinter implements ILanguage {
 
     return this.sortNode(
       {
-        children: ast.rootNodes
+        children: ast.rootNodes,
       },
       fileContents
     );
@@ -55,7 +55,7 @@ export class Reprinter implements ILanguage {
 
   private sortStyleTagContents(node: any, fileContents: string) {
     let isCssType = this.cantFindOrMatchesAttributeKeyValue(node, "type", [
-      "text/css"
+      "text/css",
     ]);
     if (!isCssType) {
       return fileContents;
@@ -108,7 +108,7 @@ export class Reprinter implements ILanguage {
     key: string,
     value: Array<string>
   ) {
-    let typeAttrs = node.attrs.filter(attr => {
+    let typeAttrs = node.attrs.filter((attr) => {
       return attr.name === key;
     });
     if (typeAttrs.length !== 0) {

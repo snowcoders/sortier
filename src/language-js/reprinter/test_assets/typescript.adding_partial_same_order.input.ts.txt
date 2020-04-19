@@ -1,0 +1,15 @@
+export type SomeType1 = {
+  aaaa: string;
+  address: {
+    addressLine1: string;
+  };
+  bbbbb: string;
+}
+
+export type SomeType2 = {
+  aaaa: string;
+  address: Partial<{
+    addressLine1: string;
+  }>;
+  bbbbb: string;
+}

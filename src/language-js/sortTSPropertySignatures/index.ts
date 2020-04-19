@@ -3,12 +3,12 @@ import { Comment } from "estree";
 import {
   compare,
   getContextGroups,
-  reorderValues
+  reorderValues,
 } from "../../utilities/sort-utils";
 import {
   TypeAnnotationOption,
   getObjectTypeRanks,
-  getSpreadGroups
+  getSpreadGroups,
 } from "../utilities/sort-utils";
 
 export interface SortTSPropertySignaturesOptions {
@@ -30,7 +30,7 @@ export function sortTSPropertySignatures(
   for (let nodes of spreadGroups) {
     let contextGroups = getContextGroups(nodes, comments, fileContents);
 
-    contextGroups.forEach(element => {
+    contextGroups.forEach((element) => {
       let unsorted: any[] = element.nodes;
       let sorted: any[] = element.nodes.slice().sort((a, b) => {
         let aGroup = getSortGroupIndex(a, options);
@@ -69,7 +69,7 @@ function cleanProperties(fileContents: string, properties: any[]) {
 
     return {
       ...property,
-      range: [property.range[0], lastIndex]
+      range: [property.range[0], lastIndex],
     };
   });
 }
@@ -92,12 +92,14 @@ function getSortGroupIndex(
 ): number {
   let ranks = getObjectTypeRanks(options.groups);
 
+  let annotationType = property.typeAnnotation?.typeAnnotation?.type;
   if (
+    property.type === "TSCallSignatureDeclaration" ||
     property.type === "TSMethodSignature" ||
-    property.typeAnnotation.typeAnnotation.type === "TSFunctionType"
+    annotationType === "TSFunctionType"
   ) {
     return ranks.function;
-  } else if (property.typeAnnotation.typeAnnotation.type === "TSTypeLiteral") {
+  } else if (annotationType === "TSTypeLiteral") {
     return ranks.object;
   }
   return ranks.everything;

@@ -8,11 +8,11 @@ import { parse as parseTypescript } from "../parsers/typescript";
 import { sortExpression } from "../sortExpression";
 import {
   SortImportDeclarationSpecifiersOptions,
-  sortImportDeclarationSpecifiers
+  sortImportDeclarationSpecifiers,
 } from "../sortImportDeclarationSpecifiers";
 import {
   SortImportDeclarationsOrderOption,
-  sortImportDeclarations
+  sortImportDeclarations,
 } from "../sortImportDeclarations";
 import { sortJsxElement } from "../sortJsxElement";
 import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation";
@@ -28,7 +28,7 @@ import { LogUtils, LoggerVerboseOption } from "../../utilities/log-utils";
 import { StringUtils } from "../../utilities/string-utils";
 import {
   SortClassContentsOptions,
-  sortClassContents
+  sortClassContents,
 } from "../sortClassContents";
 import { TypeAnnotationOption } from "../utilities/sort-utils";
 
@@ -74,7 +74,7 @@ export class Reprinter implements ILanguage {
   public isFileSupported(filename: string) {
     return StringUtils.stringEndsWithAny(filename, [
       ...Reprinter.JAVASCRIPT_EXTENSIONS,
-      ...Reprinter.TYPESCRIPT_EXTENSIONS
+      ...Reprinter.TYPESCRIPT_EXTENSIONS,
     ]);
   }
 
@@ -92,7 +92,7 @@ export class Reprinter implements ILanguage {
 
     return {
       ...partialOptions,
-      sortTypeAnnotations
+      sortTypeAnnotations,
     };
   }
 
@@ -150,7 +150,7 @@ export class Reprinter implements ILanguage {
           case "ArrayExpression":
           case "ArrayPattern": {
             fileContents = this.rewriteNodes(
-              node.elements.filter(value => value != null),
+              node.elements.filter((value) => value != null),
               comments,
               fileContents
             );
@@ -173,7 +173,7 @@ export class Reprinter implements ILanguage {
           }
           case "BinaryExpression": {
             fileContents = sortExpression(node, comments, fileContents, {
-              groups: this._options.sortTypeAnnotations
+              groups: this._options.sortTypeAnnotations,
             });
             break;
           }
@@ -326,7 +326,12 @@ export class Reprinter implements ILanguage {
             nodes.push(node.body);
             break;
           }
-          case "Identifier": {
+          case "Identifier":
+          case "TSParenthesizedType":
+          case "TSPropertySignature":
+          case "TSTypeAliasDeclaration":
+          case "TSTypeAnnotation":
+          case "TypeAnnotation": {
             if (node.typeAnnotation != null) {
               nodes.push(node.typeAnnotation);
             }
@@ -379,7 +384,7 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
@@ -578,11 +583,6 @@ export class Reprinter implements ILanguage {
             }
             break;
           }
-          case "TSTypeAliasDeclaration":
-          case "TSTypeAnnotation": {
-            nodes.push(node.typeAnnotation);
-            break;
-          }
           case "TSTypeLiteral": {
             fileContents = this.rewriteNodes(
               node.members,
@@ -594,7 +594,7 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
@@ -610,7 +610,7 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
@@ -656,7 +656,7 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
@@ -678,7 +678,7 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
@@ -694,7 +694,7 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
@@ -714,21 +714,13 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
           }
-          case "TSPropertySignature": {
-            nodes.push(node.typeAnnotation);
-            break;
-          }
           case "TypeAlias": {
             nodes.push(node.right);
-            break;
-          }
-          case "TypeAnnotation": {
-            nodes.push(node.typeAnnotation);
             break;
           }
           case "UnionTypeAnnotation": {
@@ -742,7 +734,7 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
@@ -763,7 +755,7 @@ export class Reprinter implements ILanguage {
         originalNodes,
         fileContents,
         this._options.sortImportDeclarations && {
-          orderBy: this._options.sortImportDeclarations
+          orderBy: this._options.sortImportDeclarations,
         }
       );
     }

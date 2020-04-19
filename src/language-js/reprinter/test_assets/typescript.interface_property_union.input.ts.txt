@@ -1,0 +1,17 @@
+// https://github.com/snowcoders/sortier/issues/782
+export interface Data {
+  payment: (
+    | AData
+    | BData
+    | CData
+    | IData
+    | PlData
+    | PrData
+    | SoData
+    | SeData
+    | PoData
+    | WeData
+  ) & {
+    saveToProfile: boolean;
+  };
+}

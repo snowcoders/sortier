@@ -1,5 +1,22 @@
 ### Unreleased
 
+- Fixed property moving when changing from object to type or adding utility type
+
+  - Note: This required the default sort order to change from `"undefined", "null", "*", "object" then "function"` to `"undefined", "null", "*" then "function"` which means `object`s are treated in the same sort order as primative properties and anything that doesn't match.
+
+    If you preferred the original functionality modify the `.sortierrc.js` like so:
+
+    ```
+    {
+      js: {
+        sortTypeAnnotations: ["undefined", "null", "*", "object", "function"]
+      }
+    }
+    ```
+
+- Added support for TSCallSignatureDeclaration
+- Fixed TSParenthesizedType's contents not being sorted
+
 ### 3.0.2
 
 - Fixed Json sort failure when comment is above the object

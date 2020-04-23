@@ -1,5 +1,7 @@
 ### Unreleased
 
+- Moved typescript from dev-dependencies to dependencies as it's needed by the typescript-eslint-parser
+
 ### 3.1.0
 
 - Fixed property moving when changing from object to type or adding utility type

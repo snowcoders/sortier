@@ -1,1 +1,9 @@
+# From the .gitignore file
+.nyc_output
+coverage
+dist
+node_modules
+*.log
+
+# Our test files
 **/test_assets

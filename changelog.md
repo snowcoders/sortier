@@ -1,6 +1,7 @@
 ### Unreleased
 
 - Moved typescript from dev-dependencies to dependencies as it's needed by the typescript-eslint-parser
+- Added support for typescript definition files
 
 ### 3.1.0
 

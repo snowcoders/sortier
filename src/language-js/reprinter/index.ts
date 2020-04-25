@@ -186,6 +186,7 @@ export class Reprinter implements ILanguage {
           case "DebuggerStatement":
           case "EmptyStatement":
           case "Literal":
+          case "OptionalMemberExpression":
           case "RestProperty":
           case "SpreadElement":
           case "Super":
@@ -323,7 +324,9 @@ export class Reprinter implements ILanguage {
             break;
           }
           case "FunctionExpression": {
-            nodes.push(node.body);
+            if (node.body != null) {
+              nodes.push(node.body);
+            }
             break;
           }
           case "Identifier":
@@ -517,6 +520,7 @@ export class Reprinter implements ILanguage {
           case "TSArrayType":
           case "TSAsExpression":
           case "TSBooleanKeyword":
+          case "TSConditionalType":
           case "TSConstructorType":
           case "TSEnumDeclaration":
           case "TSImportType":

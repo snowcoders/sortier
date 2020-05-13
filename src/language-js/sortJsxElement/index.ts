@@ -10,11 +10,11 @@ import { getSpreadGroups } from "../utilities/sort-utils";
 export interface SortJsxElementOptions {}
 
 interface JsxAttribute {
-  range?: [number, number];
-  type: string;
   name: {
     name: string;
   };
+  range?: [number, number];
+  type: string;
 }
 
 export function sortJsxElement(

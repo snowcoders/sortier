@@ -13,7 +13,6 @@ interface SortImportDeclarationsOptionsRequired {
 interface SingleImportSource {
   firstSpecifier: string;
   originalIndex: number;
-  source: string;
   originalLocation: {
     end: {
       column: number;
@@ -26,6 +25,7 @@ interface SingleImportSource {
       line: number;
     };
   };
+  source: string;
 }
 
 export function sortImportDeclarations(

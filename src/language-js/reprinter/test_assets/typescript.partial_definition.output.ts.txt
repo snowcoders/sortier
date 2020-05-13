@@ -1,0 +1,10 @@
+// https://github.com/snowcoders/sortier/issues/873
+
+declare module "*.svg" {
+  const content: string;
+  export default content;
+}
+
+declare module "@company/tds-*";
+
+declare module "*.story";

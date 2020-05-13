@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 3.1.2
+
 - Fixed error on sort when typescript module has no body
 
 ### 3.1.1

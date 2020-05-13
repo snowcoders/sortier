@@ -64,5 +64,5 @@
     "test": "nyc npm run mocha",
     "test-e2e": "docker build -f e2e_tests.dockerfile ."
   },
-  "version": "3.1.1"
+  "version": "3.1.2"
 }

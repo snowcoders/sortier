@@ -1,5 +1,7 @@
 ### Unreleased
 
+- Fixed error on sort when typescript module has no body
+
 ### 3.1.1
 
 - Moved typescript from dev-dependencies to dependencies as it's needed by the typescript-eslint-parser

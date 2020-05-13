@@ -574,7 +574,9 @@ export class Reprinter implements ILanguage {
             break;
           }
           case "TSModuleDeclaration": {
-            nodes.push(node.body);
+            if (node.body != null) {
+              nodes.push(node.body);
+            }
             break;
           }
           case "TSTupleType": {

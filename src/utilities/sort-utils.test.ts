@@ -7,14 +7,14 @@ import { parse as flowParse } from "../language-js/parsers/flow";
 describe("utilities/sort-utils", () => {
   describe("getContextGroups", () => {
     it("Empty arrays", () => {
-      let nodes = [];
-      let comments = [];
+      const nodes = [];
+      const comments = [];
 
       getContextGroups(nodes, comments, "");
     });
 
     it("Spaces within nodes but not around", () => {
-      let input = `
+      const input = `
     {
       console.log("a");
       
@@ -26,8 +26,8 @@ describe("utilities/sort-utils", () => {
       console.log("d");
     }
     `;
-      let parsed = flowParse(input);
-      let result = getContextGroups(parsed.body, parsed.comments, input);
+      const parsed = flowParse(input);
+      const result = getContextGroups(parsed.body, parsed.comments, input);
 
       expect(result).to.have.lengthOf(1);
       expect(result[0].nodes).to.have.lengthOf(2);
@@ -36,11 +36,11 @@ describe("utilities/sort-utils", () => {
 
     describe("Comments - Single context group", () => {
       it("comment top", () => {
-        let input = `
+        const input = `
       // First
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(0);
@@ -48,11 +48,11 @@ describe("utilities/sort-utils", () => {
       });
 
       it("node", () => {
-        let input = `
+        const input = `
       log("First");
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(1);
@@ -60,12 +60,12 @@ describe("utilities/sort-utils", () => {
       });
 
       it("comment top, node", () => {
-        let input = `
+        const input = `
       // First
       log("First");
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(1);
@@ -73,13 +73,13 @@ describe("utilities/sort-utils", () => {
       });
 
       it("comment top, comment top, node", () => {
-        let input = `
+        const input = `
       // First
       // First - 2
       log("First");
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(1);
@@ -87,14 +87,14 @@ describe("utilities/sort-utils", () => {
       });
 
       it("comment top, node, comment top, node", () => {
-        let input = `
+        const input = `
       // First
       log("First");
       // Second
       log("Second");
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(2);
@@ -102,13 +102,13 @@ describe("utilities/sort-utils", () => {
       });
 
       it("comment top, node, node", () => {
-        let input = `
+        const input = `
       // First
       log("First");
       log("Second");
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(2);
@@ -116,12 +116,12 @@ describe("utilities/sort-utils", () => {
       });
 
       it("node, comment top", () => {
-        let input = `
+        const input = `
       log("First");
       // Second
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(1);
@@ -129,13 +129,13 @@ describe("utilities/sort-utils", () => {
       });
 
       it("node, comment top, node", () => {
-        let input = `
+        const input = `
       log("First");
       // Second
       log("Second");
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(2);
@@ -143,11 +143,11 @@ describe("utilities/sort-utils", () => {
       });
 
       it("node, comment right", () => {
-        let input = `
+        const input = `
       log("First")  // First;
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(1);
@@ -155,12 +155,12 @@ describe("utilities/sort-utils", () => {
       });
 
       it("comment, node, comment right", () => {
-        let input = `
+        const input = `
       // First
       log("First")  // First
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(1);
@@ -168,12 +168,12 @@ describe("utilities/sort-utils", () => {
       });
 
       it("node, comment right, node", () => {
-        let input = `
+        const input = `
       log("First"); // First
       log("Second");
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(2);
@@ -181,12 +181,12 @@ describe("utilities/sort-utils", () => {
       });
 
       it("node, block comment right, node", () => {
-        let input = `
+        const input = `
       log("First"); /* First */
       log("Second");
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(2);
@@ -194,12 +194,12 @@ describe("utilities/sort-utils", () => {
       });
 
       it("node, comment right, node, comment right", () => {
-        let input = `
+        const input = `
       log("First"); // First
       log("Second"); // Second
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(2);
@@ -207,11 +207,11 @@ describe("utilities/sort-utils", () => {
       });
 
       it("comment, node, comment, node all on one line", () => {
-        let input = `
+        const input = `
       /* First */ log("First"); /* Second */ log("Second");
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(2);
@@ -219,12 +219,12 @@ describe("utilities/sort-utils", () => {
       });
 
       it("node, comment right, break, comment front, node, comment right", () => {
-        let input = `
+        const input = `
       log("First"); // First
       /* Second */ log("Second");
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(2);
@@ -234,15 +234,15 @@ describe("utilities/sort-utils", () => {
 
     describe("Comments - Multiple context groups", () => {
       it("comment, node, break, comment, node", () => {
-        let input = `
+        const input = `
       // First
       log("First");
 
       // Second
       log("Second");
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(2);
         expect(result[0].nodes).to.have.lengthOf(1);
@@ -252,15 +252,15 @@ describe("utilities/sort-utils", () => {
       });
 
       it("comment, break, node, comment, node", () => {
-        let input = `
+        const input = `
       // First
 
       log("First");
       // Second
       log("Second");
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(2);
@@ -271,15 +271,15 @@ describe("utilities/sort-utils", () => {
       // This means that `// First` is the "context" comment for the first group, `// Second` is ignored and the second context group
       // has no comments
       it("comment, node, comment, break, node", () => {
-        let input = `
+        const input = `
       // First
       log("First");
       // Second
 
       log("Second");
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(2);
         expect(result[0].nodes).to.have.lengthOf(1);
@@ -289,14 +289,14 @@ describe("utilities/sort-utils", () => {
       });
 
       it("comment, break, comment top, comment front, node, comment right", () => {
-        let input = `
+        const input = `
       // First
 
       // Second
       /* Second2 */ log("Second"); // Second-3
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(1);
         expect(result[0].nodes).to.have.lengthOf(1);
@@ -304,15 +304,15 @@ describe("utilities/sort-utils", () => {
       });
 
       it("comment top, comment front, node, comment right, break, comment top, comment front, node, comment right", () => {
-        let input = `
+        const input = `
       // First
       /* First2 */ log("First"); // First-3
 
       // Second
       /* Second2 */ log("Second"); // Second-3
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(2);
         expect(result[0].nodes).to.have.lengthOf(1);
@@ -322,7 +322,7 @@ describe("utilities/sort-utils", () => {
       });
 
       it("comment top, comment front, node, comment right, break, comment top, comment top, comment front, node, comment right", () => {
-        let input = `
+        const input = `
       // First
       /* First2 */ log("First"); // First-3
 
@@ -330,8 +330,8 @@ describe("utilities/sort-utils", () => {
       // Second11
       /* Second2 */ log("Second"); // Second-3
       `;
-        let parsed = flowParse(input);
-        let result = getContextGroups(parsed.body, parsed.comments, input);
+        const parsed = flowParse(input);
+        const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).to.have.lengthOf(2);
         expect(result[0].nodes).to.have.lengthOf(1);

@@ -54,9 +54,9 @@ class UnionTypeAnnotationSorter {
   }
 
   public sort() {
-    let sortedTypes = this.getSortOrderOfTypes();
+    const sortedTypes = this.getSortOrderOfTypes();
 
-    let newFileContents = reorderValues(
+    const newFileContents = reorderValues(
       this.fileContents,
       this.comments,
       this.unionTypeAnnotationTypes,
@@ -67,8 +67,8 @@ class UnionTypeAnnotationSorter {
   }
 
   private getSortOrderOfTypes() {
-    let getRank = (value) => {
-      let ranks = getObjectTypeRanks(this.options.groups);
+    const getRank = (value) => {
+      const ranks = getObjectTypeRanks(this.options.groups);
       if (value.type === "TSParenthesizedType") {
         return getRank(value.typeAnnotation);
       } else if (
@@ -93,21 +93,21 @@ class UnionTypeAnnotationSorter {
       return ranks.everything;
     };
 
-    let newTypes = this.unionTypeAnnotationTypes.slice(0);
+    const newTypes = this.unionTypeAnnotationTypes.slice(0);
     newTypes.sort((a, b) => {
       // Figure out ranks
-      let aRank = getRank(a);
-      let bRank = getRank(b);
+      const aRank = getRank(a);
+      const bRank = getRank(b);
 
       // Do the actual compare
-      if (aRank != bRank) {
+      if (aRank !== bRank) {
         return aRank - bRank;
       }
 
-      let isALiteral =
+      const isALiteral =
         a.type.indexOf("Literal") !== -1 ||
         a.type.indexOf("TSLastTypeNode") !== -1;
-      let isBLiteral =
+      const isBLiteral =
         b.type.indexOf("Literal") !== -1 ||
         b.type.indexOf("TSLastTypeNode") !== -1;
 
@@ -117,12 +117,12 @@ class UnionTypeAnnotationSorter {
         }
       }
 
-      if (isALiteral != isBLiteral) {
+      if (isALiteral !== isBLiteral) {
         return (isALiteral ? 1 : 0) - (isBLiteral ? 1 : 0);
       }
 
-      let aString = this.getStringToCompare(a);
-      let bString = this.getStringToCompare(b);
+      const aString = this.getStringToCompare(a);
+      const bString = this.getStringToCompare(b);
       return compare(aString, bString);
     });
 

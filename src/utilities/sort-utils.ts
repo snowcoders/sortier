@@ -50,8 +50,8 @@ export function getContextGroups<
   }
 
   // Determine the start and end of the nodes and comments provided
-  let firstNodeLoc = nodes[0].range;
-  let lastNodeLoc = nodes[nodes.length - 1].range;
+  const firstNodeLoc = nodes[0].range;
+  const lastNodeLoc = nodes[nodes.length - 1].range;
   if (firstNodeLoc == null || lastNodeLoc == null) {
     throw new Error("Node location is null?");
   }
@@ -63,18 +63,18 @@ export function getContextGroups<
     nodes[0]
   );
   if (firstNodeComments.length > 0) {
-    let firstNodeCommentsRange = firstNodeComments[0].range;
+    const firstNodeCommentsRange = firstNodeComments[0].range;
     if (firstNodeCommentsRange != null) {
       rangeStart = firstNodeCommentsRange[0];
     }
   }
-  let lastNodeComments = getSucceedingCommentsForSpecifier(
+  const lastNodeComments = getSucceedingCommentsForSpecifier(
     fileContents,
     comments,
     nodes[nodes.length - 1]
   );
   if (lastNodeComments.length > 0) {
-    let lastNodeCommentsRange =
+    const lastNodeCommentsRange =
       lastNodeComments[lastNodeComments.length - 1].range;
     if (lastNodeCommentsRange != null) {
       rangeEnd = lastNodeCommentsRange[1];
@@ -90,19 +90,19 @@ export function getContextGroups<
   });
 
   // Now figure out all the indexes of any whitespace surrounded by two new lines (e.g. context separator)
-  let contextBarrierIndices = StringUtils.getBlankLineLocations(
+  const contextBarrierIndices = StringUtils.getBlankLineLocations(
     fileContents,
     rangeStart,
     rangeEnd
   );
 
   // Now that we have the indices of all context breaks, anything that is between those breaks will be a single context
-  let groupings: ContextGroup<NodeType, CommentType>[] = [];
+  const groupings: ContextGroup<NodeType, CommentType>[] = [];
   let nodeIndex = 0;
-  let commentIndex = 0;
+  const commentIndex = 0;
 
   while (contextBarrierIndices.length > 0) {
-    let partialNodes: NodeType[] = [];
+    const partialNodes: NodeType[] = [];
     let partialComments: CommentType[] = [];
     let contextBarrierIndex = contextBarrierIndices.shift();
 
@@ -112,16 +112,16 @@ export function getContextGroups<
 
     // Nodes
     while (nodeIndex < nodes.length) {
-      let node = nodes[nodeIndex];
-      let range = node.range;
+      const node = nodes[nodeIndex];
+      const range = node.range;
       if (range == null) {
         continue;
       }
 
       // Deal with context barriers if its between the last node and the current
       if (contextBarrierIndex != null && nodeIndex > 0) {
-        let lastNode = nodes[nodeIndex - 1];
-        let lastRange = lastNode.range;
+        const lastNode = nodes[nodeIndex - 1];
+        const lastRange = lastNode.range;
         if (lastRange != null) {
           while (
             contextBarrierIndex != null &&
@@ -140,12 +140,12 @@ export function getContextGroups<
       }
 
       partialNodes.push(node);
-      let precedingComments = getPrecedingCommentsForSpecifier(
+      const precedingComments = getPrecedingCommentsForSpecifier(
         fileContents,
         comments,
         node
       );
-      let succeedingComments = getSucceedingCommentsForSpecifier(
+      const succeedingComments = getSucceedingCommentsForSpecifier(
         fileContents,
         comments,
         node
@@ -173,15 +173,15 @@ export function getContextGroups<
     });
   }
 
-  let partialNodes = nodes.slice(nodeIndex);
+  const partialNodes = nodes.slice(nodeIndex);
   let partialComments: CommentType[] = [];
   partialNodes.forEach((node) => {
-    let precedingComments = getPrecedingCommentsForSpecifier(
+    const precedingComments = getPrecedingCommentsForSpecifier(
       fileContents,
       comments,
       node
     );
-    let succeedingComments = getSucceedingCommentsForSpecifier(
+    const succeedingComments = getSucceedingCommentsForSpecifier(
       fileContents,
       comments,
       node
@@ -234,15 +234,15 @@ export function reorderValues<
   let newFileContentIndexCorrection = 0;
   // Now go through the original specifiers again and if any have moved, switch them
   for (let x = 0; x < unsortedTypes.length; x++) {
-    let specifier = unsortedTypes[x];
-    let newSpecifier = sortedTypes[x];
+    const specifier = unsortedTypes[x];
+    const newSpecifier = sortedTypes[x];
 
     // Checks to see if the two specifiers are actually the same thing
     if (specifier === newSpecifier) {
       continue;
     }
-    let specifierRange = specifier.range;
-    let newSpecifierRange = newSpecifier.range;
+    const specifierRange = specifier.range;
+    const newSpecifierRange = newSpecifier.range;
     if (specifierRange == null || newSpecifierRange == null) {
       throw new Error("Range cannot be null");
     }
@@ -273,17 +273,20 @@ export function reorderValues<
       specifierCommentRange[0] !== newSpecifierCommentRange[0] &&
       specifierCommentRange[1] !== newSpecifierCommentRange[1]
     ) {
-      let spliceRemoveIndexStart =
+      const spliceRemoveIndexStart =
         specifierCommentRange[0] + newFileContentIndexCorrection;
-      let spliceRemoveIndexEnd =
+      const spliceRemoveIndexEnd =
         specifierCommentRange[1] + newFileContentIndexCorrection;
 
-      let untouchedBeginning = newFileContents.slice(0, spliceRemoveIndexStart);
-      let untouchedEnd = newFileContents.slice(spliceRemoveIndexEnd);
+      const untouchedBeginning = newFileContents.slice(
+        0,
+        spliceRemoveIndexStart
+      );
+      const untouchedEnd = newFileContents.slice(spliceRemoveIndexEnd);
 
-      let spliceAddIndexStart = newSpecifierCommentRange[0];
-      let spliceAddIndexEnd = newSpecifierCommentRange[1];
-      let stringToInsert = fileContents.substring(
+      const spliceAddIndexStart = newSpecifierCommentRange[0];
+      const spliceAddIndexEnd = newSpecifierCommentRange[1];
+      const stringToInsert = fileContents.substring(
         spliceAddIndexStart,
         spliceAddIndexEnd
       );
@@ -297,17 +300,20 @@ export function reorderValues<
 
     // Swap the specifier
     {
-      let spliceRemoveIndexStart =
+      const spliceRemoveIndexStart =
         specifierRange[0] + newFileContentIndexCorrection;
-      let spliceRemoveIndexEnd =
+      const spliceRemoveIndexEnd =
         specifierRange[1] + newFileContentIndexCorrection;
 
-      let untouchedBeginning = newFileContents.slice(0, spliceRemoveIndexStart);
-      let untouchedEnd = newFileContents.slice(spliceRemoveIndexEnd);
+      const untouchedBeginning = newFileContents.slice(
+        0,
+        spliceRemoveIndexStart
+      );
+      const untouchedEnd = newFileContents.slice(spliceRemoveIndexEnd);
 
-      let spliceAddIndexStart = newSpecifierRange[0];
-      let spliceAddIndexEnd = newSpecifierRange[1];
-      let stringToInsert = fileContents.substring(
+      const spliceAddIndexStart = newSpecifierRange[0];
+      const spliceAddIndexEnd = newSpecifierRange[1];
+      const stringToInsert = fileContents.substring(
         spliceAddIndexStart,
         spliceAddIndexEnd
       );
@@ -339,17 +345,20 @@ export function reorderValues<
       specifierCommentRange[0] !== newSpecifierCommentRange[0] &&
       specifierCommentRange[1] !== newSpecifierCommentRange[1]
     ) {
-      let spliceRemoveIndexStart =
+      const spliceRemoveIndexStart =
         specifierCommentRange[0] + newFileContentIndexCorrection;
-      let spliceRemoveIndexEnd =
+      const spliceRemoveIndexEnd =
         specifierCommentRange[1] + newFileContentIndexCorrection;
 
-      let untouchedBeginning = newFileContents.slice(0, spliceRemoveIndexStart);
-      let untouchedEnd = newFileContents.slice(spliceRemoveIndexEnd);
+      const untouchedBeginning = newFileContents.slice(
+        0,
+        spliceRemoveIndexStart
+      );
+      const untouchedEnd = newFileContents.slice(spliceRemoveIndexEnd);
 
-      let spliceAddIndexStart = newSpecifierCommentRange[0];
-      let spliceAddIndexEnd = newSpecifierCommentRange[1];
-      let stringToInsert = fileContents.substring(
+      const spliceAddIndexStart = newSpecifierCommentRange[0];
+      const spliceAddIndexEnd = newSpecifierCommentRange[1];
+      const stringToInsert = fileContents.substring(
         spliceAddIndexStart,
         spliceAddIndexEnd
       );
@@ -374,12 +383,12 @@ function getPrecedingCommentRangeForSpecifier<
   specifier: NodeType
 ): [number, number] {
   // Determine where the specifier line starts
-  let range = specifier.range;
+  const range = specifier.range;
   if (range == null) {
     throw new Error("Specifier range cannot be null");
   }
 
-  let specifierComments = getPrecedingCommentsForSpecifier(
+  const specifierComments = getPrecedingCommentsForSpecifier(
     fileContents,
     comments,
     specifier
@@ -387,14 +396,14 @@ function getPrecedingCommentRangeForSpecifier<
 
   // If the specifier comments are block comments infront of the specifier
   if (specifierComments.length >= 1 && specifierComments[0].type === "Block") {
-    let firstCommentRange = specifierComments[0].range;
-    let lastCommentRange =
+    const firstCommentRange = specifierComments[0].range;
+    const lastCommentRange =
       specifierComments[specifierComments.length - 1].range;
     if (firstCommentRange == null || lastCommentRange == null) {
       throw new Error("Comment cannot have a null range");
     }
 
-    let textBetweenCommentAndSpecifier = fileContents.substring(
+    const textBetweenCommentAndSpecifier = fileContents.substring(
       lastCommentRange[1],
       range[0]
     );
@@ -405,10 +414,10 @@ function getPrecedingCommentRangeForSpecifier<
       ];
     }
   }
-  let indexOfNewLineBeforeSpecifier = fileContents
+  const indexOfNewLineBeforeSpecifier = fileContents
     .substring(0, range[0])
     .lastIndexOf("\n");
-  let textBetweenLineAndSpecifier = fileContents.substring(
+  const textBetweenLineAndSpecifier = fileContents.substring(
     indexOfNewLineBeforeSpecifier,
     range[0]
   );
@@ -418,12 +427,12 @@ function getPrecedingCommentRangeForSpecifier<
   if (firstIndexOfNonWhitespace === -1) {
     firstIndexOfNonWhitespace = textBetweenLineAndSpecifier.length;
   }
-  let specifierLineStart =
+  const specifierLineStart =
     indexOfNewLineBeforeSpecifier + firstIndexOfNonWhitespace;
 
   // If we got a comment for the specifier, lets set up it's range and use it
   if (specifierComments.length !== 0) {
-    let firstComment = specifierComments[0];
+    const firstComment = specifierComments[0];
 
     if (firstComment.range != null && specifier.range != null) {
       return [firstComment.range[0], specifierLineStart];
@@ -442,7 +451,7 @@ function getSucceedingCommentRangeForSpecifier<
   specifier: NodeType
 ): [number, number] {
   // Determine where the specifier line starts
-  let range = specifier.range;
+  const range = specifier.range;
   if (range == null) {
     throw new Error("Specifier range cannot be null");
   }
@@ -451,7 +460,7 @@ function getSucceedingCommentRangeForSpecifier<
   if (specifierEndOfLine === -1) {
     specifierEndOfLine = fileContents.indexOf("\n", range[1]);
   }
-  let specifierComments = getSucceedingCommentsForSpecifier(
+  const specifierComments = getSucceedingCommentsForSpecifier(
     fileContents,
     comments,
     specifier
@@ -461,18 +470,21 @@ function getSucceedingCommentRangeForSpecifier<
   if (specifierComments.length === 0) {
     return [specifierEndOfLine, specifierEndOfLine];
   }
-  let firstCommentRange = specifierComments[0].range;
-  let lastCommentRange = specifierComments[specifierComments.length - 1].range;
+  const firstCommentRange = specifierComments[0].range;
+  const lastCommentRange =
+    specifierComments[specifierComments.length - 1].range;
   if (firstCommentRange == null || lastCommentRange == null) {
     return [specifierEndOfLine, specifierEndOfLine];
   }
 
   // Determine where we need to copy paste from
-  let textBetweenSpecifierAndComment = fileContents.substring(
+  const textBetweenSpecifierAndComment = fileContents.substring(
     range[1],
     firstCommentRange[0]
   );
-  let nonWhiteSpaceMatches = textBetweenSpecifierAndComment.match(/[^(\s)]/gim);
+  const nonWhiteSpaceMatches = textBetweenSpecifierAndComment.match(
+    /[^(\s)]/gim
+  );
   let lastIndexOfNonWhitespace = 0;
   if (nonWhiteSpaceMatches != null && nonWhiteSpaceMatches.length !== 0) {
     lastIndexOfNonWhitespace =
@@ -480,7 +492,7 @@ function getSucceedingCommentRangeForSpecifier<
         nonWhiteSpaceMatches[nonWhiteSpaceMatches.length - 1]
       ) + 1;
   }
-  let specifierLineStart = range[1] + lastIndexOfNonWhitespace;
+  const specifierLineStart = range[1] + lastIndexOfNonWhitespace;
 
   return [specifierLineStart, lastCommentRange[1]];
 }
@@ -500,18 +512,18 @@ function getPrecedingCommentsForSpecifier<
     return isValidComment(fileContents, comment);
   });
 
-  let specifierRange = specifier.range;
+  const specifierRange = specifier.range;
   if (specifierRange == null) {
     return [];
   }
 
   // Determine the comment next to the specifier
-  let latestCommentIndex: number = -1;
+  let latestCommentIndex = -1;
   let firstIndex = 0;
   let lastIndex = Math.max(0, comments.length - 1);
   let middleIndex = Math.floor((lastIndex + firstIndex) / 2);
   while (Math.abs(firstIndex - lastIndex) > 1) {
-    let commentRange = comments[middleIndex].range;
+    const commentRange = comments[middleIndex].range;
     if (commentRange == null) {
       continue;
     }
@@ -525,7 +537,7 @@ function getPrecedingCommentsForSpecifier<
     }
   }
   for (let index = middleIndex; index < comments.length; index++) {
-    let commentRange = comments[index].range;
+    const commentRange = comments[index].range;
     if (commentRange == null) {
       continue;
     }
@@ -533,22 +545,22 @@ function getPrecedingCommentsForSpecifier<
     if (commentRange[0] > specifierRange[0]) {
       break;
     }
-    let textBetweenStartOfLineAndComment = fileContents.substring(
+    const textBetweenStartOfLineAndComment = fileContents.substring(
       fileContents.lastIndexOf("\n", commentRange[0]) + 1,
       commentRange[0]
     );
-    let textBetweenCommentAndSpecifier = fileContents.substring(
+    const textBetweenCommentAndSpecifier = fileContents.substring(
       commentRange[1],
       specifierRange[0]
     );
-    let isTextBetweenStartOfLineAndCommentWhitespace =
+    const isTextBetweenStartOfLineAndCommentWhitespace =
       textBetweenStartOfLineAndComment.match(/[^\s]/gim) == null;
-    let isCommentOwnedByPreviousLine =
+    const isCommentOwnedByPreviousLine =
       !isTextBetweenStartOfLineAndCommentWhitespace &&
       textBetweenCommentAndSpecifier.indexOf("\n") !== -1;
-    let isTextBetweenCommentAndSpecifierWhitespace =
+    const isTextBetweenCommentAndSpecifierWhitespace =
       textBetweenCommentAndSpecifier.match(/[^\s]/gim) == null;
-    let newLineCount = textBetweenCommentAndSpecifier.match(/\n/gim) || 0;
+    const newLineCount = textBetweenCommentAndSpecifier.match(/\n/gim) || 0;
     if (
       newLineCount <= 1 &&
       isTextBetweenCommentAndSpecifierWhitespace &&
@@ -562,30 +574,30 @@ function getPrecedingCommentsForSpecifier<
   let earliestCommentIndex = latestCommentIndex;
   if (latestCommentIndex !== -1) {
     while (earliestCommentIndex > 0) {
-      let previousComment = comments[earliestCommentIndex - 1].range;
-      let thisComment = comments[earliestCommentIndex].range;
+      const previousComment = comments[earliestCommentIndex - 1].range;
+      const thisComment = comments[earliestCommentIndex].range;
 
       if (previousComment == null || thisComment == null) {
         throw new Error("Comment cannot have a null range");
       }
 
-      let textBetweenCommentAndSpecifier = fileContents.substring(
+      const textBetweenCommentAndSpecifier = fileContents.substring(
         previousComment[1],
         thisComment[0]
       );
-      let textBetweenStartOfLineAndComment = fileContents.substring(
+      const textBetweenStartOfLineAndComment = fileContents.substring(
         fileContents.lastIndexOf("\n", previousComment[0]),
         previousComment[0]
       );
-      let isTextBetweenStartOfLineAndCommentWhitespace =
+      const isTextBetweenStartOfLineAndCommentWhitespace =
         textBetweenStartOfLineAndComment.match(/[^\s]/gim) == null;
-      let isCommentOwnedByPreviousLine =
+      const isCommentOwnedByPreviousLine =
         !isTextBetweenStartOfLineAndCommentWhitespace &&
         textBetweenCommentAndSpecifier.indexOf("\n") !== -1;
       // Ignore opeators and whitespace
-      let newLineCount = textBetweenCommentAndSpecifier.match(/\n/gim);
+      const newLineCount = textBetweenCommentAndSpecifier.match(/\n/gim);
       if (
-        textBetweenCommentAndSpecifier.match(/[^(\|\&\+\-\*\/\s)]/gim) ||
+        textBetweenCommentAndSpecifier.match(/[^(|&+\-*/\s)]/gim) ||
         (newLineCount != null && 1 < newLineCount.length) ||
         isCommentOwnedByPreviousLine
       ) {
@@ -621,7 +633,7 @@ function getSucceedingCommentsForSpecifier<
     return isValidComment(fileContents, comment);
   });
 
-  let lastRange = specifier.range;
+  const lastRange = specifier.range;
   if (lastRange == null) {
     return [];
   }
@@ -630,7 +642,7 @@ function getSucceedingCommentsForSpecifier<
   let lastIndex = Math.max(0, comments.length - 1);
   let middleIndex = Math.floor((lastIndex + firstIndex) / 2);
   while (Math.abs(firstIndex - lastIndex) > 1) {
-    let commentRange = comments[middleIndex].range;
+    const commentRange = comments[middleIndex].range;
     if (commentRange == null) {
       continue;
     }
@@ -644,8 +656,8 @@ function getSucceedingCommentsForSpecifier<
     }
   }
   for (let index = middleIndex; index < comments.length; index++) {
-    let comment = comments[index];
-    let commentRange = comment.range;
+    const comment = comments[index];
+    const commentRange = comment.range;
     if (commentRange == null) {
       continue;
     }
@@ -655,18 +667,18 @@ function getSucceedingCommentsForSpecifier<
       continue;
     }
 
-    let textBetweenCommentAndSpecifier = fileContents.substring(
+    const textBetweenCommentAndSpecifier = fileContents.substring(
       lastRange[1],
       commentRange[0]
     );
-    let nextNewLine = fileContents.indexOf("\n", lastRange[1]);
-    let textBetweenCommentAndEndOfLine = fileContents.substring(
+    const nextNewLine = fileContents.indexOf("\n", lastRange[1]);
+    const textBetweenCommentAndEndOfLine = fileContents.substring(
       commentRange[1],
       nextNewLine === -1 ? undefined : nextNewLine
     );
-    let isTextBetweenCommentAndSpecifierWhitespaceButNotNewline =
+    const isTextBetweenCommentAndSpecifierWhitespaceButNotNewline =
       textBetweenCommentAndSpecifier.match(/[\w\n]/gim) == null;
-    let isTextBetweenCommentAndEndOfLineWhitespaceButNotNewline =
+    const isTextBetweenCommentAndEndOfLineWhitespaceButNotNewline =
       textBetweenCommentAndEndOfLine.match(/[\w\n]/gim) == null;
     if (
       isTextBetweenCommentAndSpecifierWhitespaceButNotNewline &&
@@ -682,7 +694,7 @@ function getSucceedingCommentsForSpecifier<
 }
 
 function isValidComment(fileContents: string, comment: Comment) {
-  let commentRange = comment.range;
+  const commentRange = comment.range;
   if (commentRange == null) {
     return false;
   }
@@ -711,20 +723,23 @@ export function isIgnored<
   if (node.range == null) {
     return false;
   }
-  let newLineBeforeRange = fileContents.lastIndexOf("\n", node.range[0]);
+  const newLineBeforeRange = fileContents.lastIndexOf("\n", node.range[0]);
   if (newLineBeforeRange === -1) {
     return false;
   }
   let beginningOfLine = fileContents.lastIndexOf("\n", newLineBeforeRange - 1);
   beginningOfLine = beginningOfLine === -1 ? 0 : beginningOfLine;
 
-  let commentText = fileContents.substring(beginningOfLine, newLineBeforeRange);
+  const commentText = fileContents.substring(
+    beginningOfLine,
+    newLineBeforeRange
+  );
   if (commentText.indexOf("sortier-ignore-nodes") !== -1) {
     return true;
   }
   if (commentText.indexOf("sortier-ignore-next-line") === -1) {
     return false;
   }
-  let nodeText = fileContents.substring(node.range[0], node.range[1]);
+  const nodeText = fileContents.substring(node.range[0], node.range[1]);
   return nodeText.indexOf("\n") === -1;
 }

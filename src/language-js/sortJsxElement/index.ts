@@ -7,6 +7,8 @@ import {
 } from "../../utilities/sort-utils";
 import { getSpreadGroups } from "../utilities/sort-utils";
 
+// Left in for consistency with other sort functions
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SortJsxElementOptions {}
 
 interface JsxAttribute {
@@ -21,6 +23,8 @@ export function sortJsxElement(
   jsxElement: any,
   comments: Comment[],
   fileContents: string,
+  // Left in for consistency with other sort functions
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   options?: SortJsxElementOptions
 ) {
   if (jsxElement.openingElement == null) {
@@ -30,17 +34,17 @@ export function sortJsxElement(
 
   let newFileContents = fileContents.slice();
 
-  let allNodes: JsxAttribute[] = jsxElement.openingElement.attributes;
+  const allNodes: JsxAttribute[] = jsxElement.openingElement.attributes;
 
   // Any time there is a spread operator, we need to sort around it... moving it could cause functionality changes
-  let spreadGroups = getSpreadGroups(allNodes);
+  const spreadGroups = getSpreadGroups(allNodes);
 
-  for (let nodes of spreadGroups) {
-    let groupings = getContextGroups(nodes, comments, fileContents);
+  for (const nodes of spreadGroups) {
+    const groupings = getContextGroups(nodes, comments, fileContents);
 
     groupings.forEach((element) => {
-      let unsorted = element.nodes;
-      let sorted = element.nodes.slice().sort((a, b) => {
+      const unsorted = element.nodes;
+      const sorted = element.nodes.slice().sort((a, b) => {
         return compare(a.name.name, b.name.name);
       });
 

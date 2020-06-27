@@ -16,7 +16,7 @@ export function run(args: string[]) {
     }
 
     let options: null | ReprinterOptions = null;
-    let files = sync(args);
+    const files = sync(args);
     let error = null;
     if (files.length === 0) {
       if (args[0].indexOf("\\") !== -1) {
@@ -61,8 +61,8 @@ ${e}`
 function getConfig(filename: string): ReprinterOptions {
   const explorer = cosmiconfigSync("sortier");
   const result = explorer.search(filename);
-  let config = result == null ? {} : result.config;
-  let options = config as ReprinterOptions;
+  const config = result == null ? {} : result.config;
+  const options = config as ReprinterOptions;
 
   // Set the LogUtils verbosity based on options
   if (options.logLevel != null) {
@@ -85,7 +85,7 @@ function getConfig(filename: string): ReprinterOptions {
       `Config property 'isHelpMode' has been replaced with 'logLevel'. Please upgrade your config file.`
     );
   }
-  for (let removedProperty of [
+  for (const removedProperty of [
     "parser",
     "sortClassContents",
     "sortImportDeclarationSpecifiers",

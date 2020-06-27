@@ -21,7 +21,7 @@ type RankMap = {
   undefined: number;
 };
 
-let defaultObjectTypeOrder: TypeAnnotationOption[] = [
+const defaultObjectTypeOrder: TypeAnnotationOption[] = [
   "undefined",
   "null",
   "*",
@@ -78,7 +78,7 @@ export function getObjectTypeRanks(options?: TypeAnnotationOption[]): RankMap {
 
 export function getSpreadGroups<T extends Node>(allNodes: T[]) {
   // Any time there is a spread operator, we need to sort around it... moving it could cause functionality changes
-  let spreadGroups: T[][] = [];
+  const spreadGroups: T[][] = [];
   let currentStart = 0;
   for (let x = 0; x < allNodes.length; x++) {
     if (

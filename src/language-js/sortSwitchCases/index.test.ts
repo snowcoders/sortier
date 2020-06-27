@@ -10,9 +10,9 @@ describe("language-js/sortSwitchCases", () => {
     __dirname,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
-      let parsed = parser(inputFileContents);
+      const parsed = parser(inputFileContents);
 
-      let actual = sortSwitchCases(
+      const actual = sortSwitchCases(
         parsed.body[0].cases || parsed.body[0].body.body[0].cases,
         parsed.comments,
         inputFileContents,

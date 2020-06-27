@@ -39,9 +39,10 @@ function tryParseTypeScript(text: string, jsx: boolean) {
     range: true,
     tokens: true,
     useJSXTextNode: false,
-    // Override logger function with noop,
-    // to avoid unsupported version errors being logged
-    loggerFn: () => {},
+    loggerFn: () => {
+      // Override logger function with noop,
+      // to avoid unsupported version errors being logged
+    },
   });
 }
 

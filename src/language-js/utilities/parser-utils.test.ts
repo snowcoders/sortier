@@ -4,15 +4,15 @@ import { addParenthesis, createError, includeShebang } from "./parser-utils";
 describe("language-js/parser-utils", () => {
   describe("createError", () => {
     it("Constructors an error", () => {
-      let error = createError("message", { start: { column: 3, line: 2 } });
+      const error = createError("message", { start: { column: 3, line: 2 } });
       expect(error).to.exist;
     });
   });
 
   describe("includeShebang", () => {
     it("Does not modify comments if shebang exists", () => {
-      let array = [];
-      let ast = { comments: array };
+      const array = [];
+      const ast = { comments: array };
       includeShebang("#!message", ast);
       expect(ast.comments === array).to.be.true;
     });
@@ -20,9 +20,9 @@ describe("language-js/parser-utils", () => {
 
   describe("addParenthesis", () => {
     it("Basic add parenthesis for Flow", () => {
-      let fileContents = `interface Definition { property: null | (   () => {}) | (undefined) }`;
+      const fileContents = `interface Definition { property: null | (   () => {}) | (undefined) }`;
 
-      let nodes = [
+      const nodes = [
         {
           loc: {
             end: { column: 37, line: 1 },
@@ -82,7 +82,7 @@ describe("language-js/parser-utils", () => {
           typeParameters: null,
         },
       ];
-      let newNodes = addParenthesis(fileContents, nodes);
+      const newNodes = addParenthesis(fileContents, nodes);
       expect(newNodes[0].range[0]).to.equal(nodes[0].range[0]);
       expect(newNodes[0].range[1]).to.equal(nodes[0].range[1]);
       expect(newNodes[1].range[0]).to.equal(nodes[1].range[0] - 4);
@@ -92,9 +92,9 @@ describe("language-js/parser-utils", () => {
     });
 
     it("Basic add parenthesis for Typescript", () => {
-      let fileContents = `interface Definition { property: null | (   () => {}) | (undefined) }`;
+      const fileContents = `interface Definition { property: null | (   () => {}) | (undefined) }`;
 
-      let nodes = [
+      const nodes = [
         {
           loc: { end: { column: 37, line: 1 }, start: { column: 33, line: 1 } },
           range: [33, 37],
@@ -162,7 +162,7 @@ describe("language-js/parser-utils", () => {
           },
         },
       ];
-      let newNodes = addParenthesis(fileContents, nodes);
+      const newNodes = addParenthesis(fileContents, nodes);
       // Typescript takes parenthesis into the AST structure so everything should be good
       expect(newNodes[0].range[0]).to.equal(nodes[0].range[0]);
       expect(newNodes[0].range[1]).to.equal(nodes[0].range[1]);

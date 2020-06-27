@@ -33,8 +33,8 @@ export class Reprinter implements ILanguage {
   ) {
     this.options = this.getValidatedOptions(options);
 
-    let parser = this.getParser(filename);
-    let ast = parser(fileContents, {
+    const parser = this.getParser(filename);
+    const ast = parser(fileContents, {
       sourcesContent: true,
     });
 
@@ -51,7 +51,7 @@ export class Reprinter implements ILanguage {
   private getValidatedOptions(
     appOptions: BaseReprinterOptions
   ): CssReprinterOptionsRequired {
-    let partialOptions = appOptions.css;
+    const partialOptions = appOptions.css;
 
     return {
       sortDeclarations: {
@@ -71,7 +71,7 @@ export class Reprinter implements ILanguage {
     }
 
     // If the user didn't override the parser type, try to infer it
-    let isLess = StringUtils.stringEndsWithAny(
+    const isLess = StringUtils.stringEndsWithAny(
       filename,
       Reprinter.LESS_EXTENSIONS
     );
@@ -79,7 +79,7 @@ export class Reprinter implements ILanguage {
       return lessParse;
     }
 
-    let isScss = StringUtils.stringEndsWithAny(
+    const isScss = StringUtils.stringEndsWithAny(
       filename,
       Reprinter.SCSS_EXTENSIONS
     );
@@ -91,9 +91,9 @@ export class Reprinter implements ILanguage {
   }
 
   private sortNode(node: /* Document */ any, fileContents: string): string {
-    let rules: any[] = [];
+    const rules: any[] = [];
 
-    for (let child of node.nodes) {
+    for (const child of node.nodes) {
       switch (child.type) {
         case "rule":
           rules.push(child);
@@ -101,7 +101,7 @@ export class Reprinter implements ILanguage {
       }
     }
 
-    for (let rule of rules) {
+    for (const rule of rules) {
       fileContents = this.sortNode(rule, fileContents);
     }
 

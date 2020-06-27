@@ -1,12 +1,12 @@
 export class StringUtils {
   public static getBlankLineLocations(
     string: string,
-    rangeStart: number = 0,
+    rangeStart = 0,
     rangeEnd: number = string.length
   ) {
-    let regex = /\n\s*\n/gim;
+    const regex = /\n\s*\n/gim;
     let result: null | RegExpExecArray;
-    let contextBarrierIndices: number[] = [];
+    const contextBarrierIndices: number[] = [];
     while ((result = regex.exec(string))) {
       if (rangeStart < result.index && result.index < rangeEnd) {
         contextBarrierIndices.push(result.index);
@@ -17,8 +17,8 @@ export class StringUtils {
 
   // https://stackoverflow.com/questions/14480345/how-to-get-the-nth-occurrence-in-a-string
   public static nthIndexOf(str: string, pat: string, n: number) {
-    var L = str.length;
-    var i = -1;
+    const L = str.length;
+    let i = -1;
     while (n-- && i++ < L) {
       i = str.indexOf(pat, i);
       if (i < 0) break;
@@ -37,7 +37,7 @@ export class StringUtils {
   public static stringEndsWithAny(text: string, endings: string[]) {
     // If the user didn't override the parser type, try to infer it
     let endsWithAny = false;
-    for (let extension of endings) {
+    for (const extension of endings) {
       endsWithAny = endsWithAny || text.endsWith(extension);
     }
     return endsWithAny;

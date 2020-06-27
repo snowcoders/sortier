@@ -9,9 +9,9 @@ describe("language-js/sortObjectTypeAnnotation", () => {
     __dirname,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
-      let parsed = parser(inputFileContents);
+      const parsed = parser(inputFileContents);
 
-      let actual = sortObjectTypeAnnotation(
+      const actual = sortObjectTypeAnnotation(
         parsed.body[0].declaration.right,
         parsed.comments,
         inputFileContents,

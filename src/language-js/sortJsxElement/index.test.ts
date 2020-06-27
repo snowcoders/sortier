@@ -10,9 +10,9 @@ describe("language-js/sortJsxElement", () => {
     __dirname,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
-      let parsed = parser(inputFileContents);
+      const parsed = parser(inputFileContents);
 
-      let actual = sortJsxElement(
+      const actual = sortJsxElement(
         parsed.body[0].argument,
         parsed.comments,
         inputFileContents

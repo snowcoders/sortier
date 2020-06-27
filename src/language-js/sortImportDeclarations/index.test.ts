@@ -13,7 +13,7 @@ describe("language-js/sortImportDeclarations", () => {
     __dirname,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
-      let parsed = parser(inputFileContents);
+      const parsed = parser(inputFileContents);
 
       return sortImportDeclarations(parsed.body, inputFileContents);
     }
@@ -21,17 +21,17 @@ describe("language-js/sortImportDeclarations", () => {
 
   describe("es6 - Custom options", () => {
     it("Order by first specifier", () => {
-      let input = `import "./styles.scss";
+      const input = `import "./styles.scss";
 import "./header.scss";
 import * as React from "react";
 import honda from "./cars";
 import { Apple } from "./food";`;
-      let output = `import "./header.scss";
+      const output = `import "./header.scss";
 import "./styles.scss";
 import { Apple } from "./food";
 import * as React from "react";
 import honda from "./cars";`;
-      let actual = sortImportDeclarations(flowParse(input).body, input, {
+      const actual = sortImportDeclarations(flowParse(input).body, input, {
         orderBy: "first-specifier",
       });
 
@@ -39,17 +39,17 @@ import honda from "./cars";`;
     });
 
     it("Order by source", () => {
-      let input = `import "./styles.scss";
+      const input = `import "./styles.scss";
 import "./header.scss";
 import * as React from "react";
 import honda from "./cars";
 import { Apple } from "./food";`;
-      let output = `import * as React from "react";
+      const output = `import * as React from "react";
 import honda from "./cars";
 import { Apple } from "./food";
 import "./header.scss";
 import "./styles.scss";`;
-      let actual = sortImportDeclarations(flowParse(input).body, input, {
+      const actual = sortImportDeclarations(flowParse(input).body, input, {
         orderBy: "source",
       });
 
@@ -57,17 +57,17 @@ import "./styles.scss";`;
     });
 
     it("Order by undefined", () => {
-      let input = `import "./styles.scss";
+      const input = `import "./styles.scss";
 import "./header.scss";
 import * as React from "react";
 import honda from "./cars";
 import { Apple } from "./food";`;
-      let output = `import * as React from "react";
+      const output = `import * as React from "react";
 import honda from "./cars";
 import { Apple } from "./food";
 import "./header.scss";
 import "./styles.scss";`;
-      let actual = sortImportDeclarations(flowParse(input).body, input, {
+      const actual = sortImportDeclarations(flowParse(input).body, input, {
         orderBy: "source",
       });
 

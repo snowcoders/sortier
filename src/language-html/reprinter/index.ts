@@ -16,7 +16,7 @@ export class Reprinter implements ILanguage {
     options: BaseReprinterOptions
   ) {
     this.options = options;
-    let ast = parse(fileContents, { canSelfClose: true });
+    const ast = parse(fileContents, { canSelfClose: true });
 
     if (ast.errors.length > 0) {
       throw new Error(ast.errors[0].msg);
@@ -38,7 +38,7 @@ export class Reprinter implements ILanguage {
     fileContents = sortAttributes(node, fileContents);
 
     if (node.children != null) {
-      for (let child of node.children) {
+      for (const child of node.children) {
         fileContents = this.sortNode(child, fileContents);
       }
     }
@@ -54,14 +54,14 @@ export class Reprinter implements ILanguage {
   }
 
   private sortStyleTagContents(node: any, fileContents: string) {
-    let isCssType = this.cantFindOrMatchesAttributeKeyValue(node, "type", [
+    const isCssType = this.cantFindOrMatchesAttributeKeyValue(node, "type", [
       "text/css",
     ]);
     if (!isCssType) {
       return fileContents;
     }
     for (let x = 0; x < node.children.length; x++) {
-      let child = node.children[x];
+      const child = node.children[x];
       fileContents = this.sortSubstring(
         fileContents,
         child.sourceSpan.start.offset,
@@ -78,7 +78,7 @@ export class Reprinter implements ILanguage {
   }
 
   private sortScriptTagContents(node: any, fileContents: string) {
-    let isJavascriptType = this.cantFindOrMatchesAttributeKeyValue(
+    const isJavascriptType = this.cantFindOrMatchesAttributeKeyValue(
       node,
       "type",
       ["text/javascript", "application/javascript"]
@@ -87,7 +87,7 @@ export class Reprinter implements ILanguage {
       return fileContents;
     }
     for (let x = 0; x < node.children.length; x++) {
-      let child = node.children[x];
+      const child = node.children[x];
       fileContents = this.sortSubstring(
         fileContents,
         child.sourceSpan.start.offset,
@@ -108,7 +108,7 @@ export class Reprinter implements ILanguage {
     key: string,
     value: Array<string>
   ) {
-    let typeAttrs = node.attrs.filter((attr) => {
+    const typeAttrs = node.attrs.filter((attr) => {
       return attr.name === key;
     });
     if (typeAttrs.length !== 0) {
@@ -124,10 +124,10 @@ export class Reprinter implements ILanguage {
     end: number,
     sortFunc: (text: string) => string
   ) {
-    let textBefore = fileContents.substring(0, start);
-    let textToSort = fileContents.substring(start, end);
-    let textAfter = fileContents.substring(end);
-    let newContents = sortFunc(textToSort);
+    const textBefore = fileContents.substring(0, start);
+    const textToSort = fileContents.substring(start, end);
+    const textAfter = fileContents.substring(end);
+    const newContents = sortFunc(textToSort);
     return textBefore + newContents + textAfter;
   }
 }

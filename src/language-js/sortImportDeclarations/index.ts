@@ -33,15 +33,15 @@ export function sortImportDeclarations(
   fileContents: string,
   options?: SortImportDeclarationsOptions
 ) {
-  let ensuredOptions = ensureOptions(options);
+  const ensuredOptions = ensureOptions(options);
 
   // First create an object to remember all that we care about
   let overallIndex = 0;
   let newFileContents = fileContents.slice();
   while (overallIndex < body.length) {
-    let sortedImportSources: SingleImportSource[] = [];
+    const sortedImportSources: SingleImportSource[] = [];
     for (; overallIndex < body.length; overallIndex++) {
-      let importSource = body[overallIndex];
+      const importSource = body[overallIndex];
 
       if (importSource.type !== "ImportDeclaration") {
         if (sortedImportSources.length !== 0) {
@@ -52,10 +52,10 @@ export function sortImportDeclarations(
       }
 
       if (
-        sortedImportSources.length != 0 &&
+        sortedImportSources.length !== 0 &&
         importSource.loc.start.line -
           sortedImportSources[sortedImportSources.length - 1].originalLocation
-            .end.line !=
+            .end.line !==
           1
       ) {
         break;
@@ -82,12 +82,12 @@ export function sortImportDeclarations(
       });
     }
 
-    let sortBySpecifier = (a: SingleImportSource, b: SingleImportSource) => {
+    const sortBySpecifier = (a: SingleImportSource, b: SingleImportSource) => {
       return compare(a.firstSpecifier, b.firstSpecifier);
     };
-    let sortByPath = (a: SingleImportSource, b: SingleImportSource) => {
-      let aIsRelative = a.source.startsWith(".");
-      let bIsRelative = b.source.startsWith(".");
+    const sortByPath = (a: SingleImportSource, b: SingleImportSource) => {
+      const aIsRelative = a.source.startsWith(".");
+      const bIsRelative = b.source.startsWith(".");
       if (aIsRelative === bIsRelative) {
         return compare(a.source, b.source);
       } else {
@@ -96,13 +96,13 @@ export function sortImportDeclarations(
     };
     sortedImportSources.sort((a: SingleImportSource, b: SingleImportSource) => {
       if (ensuredOptions.orderBy === "first-specifier") {
-        let result = sortBySpecifier(a, b);
+        const result = sortBySpecifier(a, b);
         if (result !== 0) {
           return result;
         }
         return sortByPath(a, b);
       } else {
-        let result = sortByPath(a, b);
+        const result = sortByPath(a, b);
         if (result !== 0) {
           return result;
         }
@@ -113,7 +113,7 @@ export function sortImportDeclarations(
     // Now go through the original specifiers again and if any have moved, switch them
     let newFileContentIndexCorrection = 0;
     for (let x = 0; x < sortedImportSources.length; x++) {
-      let oldSpecifier = body[overallIndex - sortedImportSources.length + x];
+      const oldSpecifier = body[overallIndex - sortedImportSources.length + x];
 
       let spliceRemoveIndexStart = StringUtils.nthIndexOf(
         fileContents,
@@ -136,11 +136,11 @@ export function sortImportDeclarations(
         spliceRemoveIndexEnd--;
       }
 
-      let untouchedBeginning = newFileContents.slice(
+      const untouchedBeginning = newFileContents.slice(
         0,
         spliceRemoveIndexStart + newFileContentIndexCorrection
       );
-      let untouchedEnd = newFileContents.slice(
+      const untouchedEnd = newFileContents.slice(
         spliceRemoveIndexEnd + newFileContentIndexCorrection
       );
 
@@ -165,7 +165,7 @@ export function sortImportDeclarations(
       if (fileContents[spliceAddIndexEnd - 1] === "\r") {
         spliceAddIndexEnd--;
       }
-      let stringToInsert = fileContents.substring(
+      const stringToInsert = fileContents.substring(
         spliceAddIndexStart,
         spliceAddIndexEnd
       );

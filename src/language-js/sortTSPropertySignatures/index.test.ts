@@ -10,8 +10,8 @@ describe("language-js/sortTSPropertySignatures", () => {
     __dirname,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
-      let parsed = parser(inputFileContents);
-      let actual = sortTSPropertySignatures(
+      const parsed = parser(inputFileContents);
+      const actual = sortTSPropertySignatures(
         parsed.body[0].declaration.body.body,
         parsed.comments,
         inputFileContents,

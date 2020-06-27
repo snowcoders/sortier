@@ -9,12 +9,14 @@ export class Reprinter implements ILanguage {
   public getRewrittenContents(
     filename: string,
     fileContents: string,
+    // Left in for consistency with other sort functions
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options: ReprinterOptions
   ) {
-    let prefix = "export default (";
-    let suffix = ");";
-    let temporaryFileContents = prefix + fileContents + suffix;
-    let rewritten = new JavascriptReprinter().getRewrittenContents(
+    const prefix = "export default (";
+    const suffix = ");";
+    const temporaryFileContents = prefix + fileContents + suffix;
+    const rewritten = new JavascriptReprinter().getRewrittenContents(
       filename,
       temporaryFileContents,
       {

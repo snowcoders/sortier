@@ -22,21 +22,21 @@ export function sortTSPropertySignatures(
   options: SortTSPropertySignaturesOptions
 ) {
   let newFileContents = fileContents.slice();
-  let allNodes: any[] = cleanProperties(fileContents, properties);
+  const allNodes: any[] = cleanProperties(fileContents, properties);
 
   // Any time there is a spread operator, we need to sort around it... moving it could cause functionality changes
-  let spreadGroups: any[] = getSpreadGroups(allNodes);
+  const spreadGroups: any[] = getSpreadGroups(allNodes);
 
-  for (let nodes of spreadGroups) {
-    let contextGroups = getContextGroups(nodes, comments, fileContents);
+  for (const nodes of spreadGroups) {
+    const contextGroups = getContextGroups(nodes, comments, fileContents);
 
     contextGroups.forEach((element) => {
-      let unsorted: any[] = element.nodes;
-      let sorted: any[] = element.nodes.slice().sort((a: any, b: any) => {
-        let aGroup = getSortGroupIndex(a, options);
-        let bGroup = getSortGroupIndex(b, options);
+      const unsorted: any[] = element.nodes;
+      const sorted: any[] = element.nodes.slice().sort((a: any, b: any) => {
+        const aGroup = getSortGroupIndex(a, options);
+        const bGroup = getSortGroupIndex(b, options);
 
-        if (aGroup != bGroup) {
+        if (aGroup !== bGroup) {
           return aGroup - bGroup;
         }
 
@@ -47,8 +47,8 @@ export function sortTSPropertySignatures(
           return a.range[0] - b.range[0];
         }
 
-        let aString = getString(a, fileContents);
-        let bString = getString(b, fileContents);
+        const aString = getString(a, fileContents);
+        const bString = getString(b, fileContents);
 
         return compare(aString, bString);
       });
@@ -69,7 +69,7 @@ function cleanProperties(fileContents: string, properties: any[]) {
   // Interface properties are read in as "property: number," where we don't want to move the commas
   return properties.map((property: any) => {
     let lastIndex = property.range[1];
-    let lastCharacter = fileContents[lastIndex - 1];
+    const lastCharacter = fileContents[lastIndex - 1];
     if (0 < lastIndex && (lastCharacter === "," || lastCharacter === ";")) {
       lastIndex--;
     }
@@ -97,9 +97,9 @@ function getSortGroupIndex(
   property,
   options: SortTSPropertySignaturesOptions
 ): number {
-  let ranks = getObjectTypeRanks(options.groups);
+  const ranks = getObjectTypeRanks(options.groups);
 
-  let annotationType = property.typeAnnotation?.typeAnnotation?.type;
+  const annotationType = property.typeAnnotation?.typeAnnotation?.type;
   if (
     property.type === "TSCallSignatureDeclaration" ||
     property.type === "TSMethodSignature" ||

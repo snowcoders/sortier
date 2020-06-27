@@ -1,2 +1,2 @@
 // Ran into this when running sortier on tslint's codebase
-export interface TsLintExample { rulesList: string[] | "all"; isEnabled: boolean; modifier: Modifier };
+export interface TsLintExample { rulesList: string[] | "all"; isEnabled: boolean; modifier: Modifier }

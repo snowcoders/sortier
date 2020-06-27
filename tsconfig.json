@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "noFallthroughCasesInSwitch": false,
     "noImplicitAny": false,
     "noUnusedLocals": true,
     "outDir": "./dist/",

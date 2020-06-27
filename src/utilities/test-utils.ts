@@ -52,7 +52,7 @@ function runNodes(
   testNodes: Array<TestTreeNode>,
   transform: TestInputTransform
 ) {
-  for (let node of testNodes) {
+  for (const node of testNodes) {
     if (node.children.length === 0 && node.tests.length === 0) {
       throw new Error("Test node must have children and/or tests");
     }
@@ -61,9 +61,9 @@ function runNodes(
       // Run all the tests
       node.tests.forEach((testInfo) => {
         it(StringUtils.sentenceCase(testInfo.testName), () => {
-          let input = FileUtils.readFileContents(testInfo.inputFilePath);
-          let expected = FileUtils.readFileContents(testInfo.outputFilePath);
-          let actual = transform(testInfo.inputFilePath, input);
+          const input = FileUtils.readFileContents(testInfo.inputFilePath);
+          const expected = FileUtils.readFileContents(testInfo.outputFilePath);
+          const actual = transform(testInfo.inputFilePath, input);
 
           expect(actual).to.equal(expected);
         });
@@ -76,15 +76,15 @@ function runNodes(
 }
 
 function getTestAssetsTree(folderPath: string) {
-  let roots: Array<TestTreeNode> = [];
+  const roots: Array<TestTreeNode> = [];
 
-  let assetsFolderPath = FileUtils.globbyJoin(
+  const assetsFolderPath = FileUtils.globbyJoin(
     folderPath,
     `test_assets/*.input.*.txt`
   );
   const filePaths = sync(assetsFolderPath);
   for (const filePath of filePaths) {
-    let segments = basename(filePath).split(".");
+    const segments = basename(filePath).split(".");
     if (segments.length < 4) {
       console.error(`${filePath} does not match getTestAssetsTree pattern`);
     }
@@ -102,7 +102,7 @@ function getTestAssetsTree(folderPath: string) {
       root = getOrInsertNodeInArray(root.children, category);
     }
 
-    let testName = segments[0].replace(/_/g, " ");
+    const testName = segments[0].replace(/_/g, " ");
 
     root.tests.push({
       inputFilePath: filePath,

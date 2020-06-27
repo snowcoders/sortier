@@ -15,8 +15,8 @@ describe("language-js/sortClassContents", () => {
     __dirname,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
-      let parsed = parser(inputFileContents);
-      let actual = sortClassContents(
+      const parsed = parser(inputFileContents);
+      const actual = sortClassContents(
         parsed.body[0].declaration.id.name,
         parsed.body[0].declaration.body.body,
         parsed.comments,
@@ -31,7 +31,7 @@ describe("language-js/sortClassContents", () => {
   );
 
   it("Overrides", () => {
-    let input = `
+    const input = `
     export class Clock {
       constructor(props) {
         super(props);
@@ -59,7 +59,7 @@ describe("language-js/sortClassContents", () => {
         );
       }
     }`;
-    let expected = `
+    const expected = `
     export class Clock {
       constructor(props) {
         super(props);
@@ -87,8 +87,8 @@ describe("language-js/sortClassContents", () => {
         return <h2>It is {this.state.date.toLocaleTimeString()}.</h2>;
       }
     }`;
-    let parsed = typescriptParse(input);
-    let actual = sortClassContents(
+    const parsed = typescriptParse(input);
+    const actual = sortClassContents(
       parsed.body[0].declaration.id.name,
       parsed.body[0].declaration.body.body,
       parsed.comments,
@@ -108,7 +108,7 @@ describe("language-js/sortClassContents", () => {
   });
 
   it("Overrides reverse", () => {
-    let input = `
+    const input = `
     export class Clock {
       constructor(props) {
         super(props);
@@ -136,7 +136,7 @@ describe("language-js/sortClassContents", () => {
         );
       }
     }`;
-    let expected = `
+    const expected = `
     export class Clock {
       constructor(props) {
         super(props);
@@ -164,8 +164,8 @@ describe("language-js/sortClassContents", () => {
         );
       }
     }`;
-    let parsed = typescriptParse(input);
-    let actual = sortClassContents(
+    const parsed = typescriptParse(input);
+    const actual = sortClassContents(
       parsed.body[0].declaration.id.name,
       parsed.body[0].declaration.body.body,
       parsed.comments,

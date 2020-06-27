@@ -10,7 +10,7 @@ describe("language-js/sortUnionTypeAnnotation", () => {
     __dirname,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
-      let parsed = parser(inputFileContents);
+      const parsed = parser(inputFileContents);
 
       if (inputFilePath.indexOf("typescript") !== -1) {
         return sortUnionTypeAnnotation(

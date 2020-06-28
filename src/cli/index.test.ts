@@ -1,126 +1,32 @@
-import { expect } from "chai";
-
-import * as sinon from "sinon";
-
+import path from "path";
 import { run } from "./index";
 
-// Mocks
-import { cosmiconfigSync } from "cosmiconfig";
-import { Reprinter } from "../reprinter";
-import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils";
+describe(path.relative(process.cwd(), __dirname), () => {
+  let consoleLogSpy: jest.SpyInstance<void, any>;
+  let consoleErrorSpy: jest.SpyInstance<void, any>;
 
-describe("cli", () => {
-  let logMock: sinon.SinonStubbedInstance<any>;
-  let reprinterMock: sinon.SinonStubbedInstance<any>;
-
-  before(() => {
-    logMock = sinon.stub(LogUtils, "log");
-    reprinterMock = sinon.stub(Reprinter, "rewriteFile");
+  beforeAll(() => {
+    consoleLogSpy = jest.spyOn(console, "log");
+    consoleErrorSpy = jest.spyOn(console, "error");
+    consoleLogSpy.mockImplementation(() => {});
+    consoleErrorSpy.mockImplementation(() => {});
   });
 
   beforeEach(() => {
-    logMock.reset();
-    reprinterMock.reset();
+    consoleLogSpy.mockReset();
+    consoleErrorSpy.mockReset();
   });
 
-  afterEach(() => {
-    logMock.reset();
-    reprinterMock.reset();
+  afterAll(() => {
+    consoleLogSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
   });
 
-  after(() => {
-    logMock.restore();
-    reprinterMock.restore();
+  it("Returns -1 when no arguments are passed", () => {
+    expect(run([])).toBe(-1);
   });
 
-  it("Prints message when 0 arguments given", () => {
-    run([]);
-
-    expect(logMock.lastCall.args[0]).to.equal(LoggerVerboseOption.Normal);
-    expect(logMock.lastCall.args[1]).not.to.have.length(0);
-  });
-
-  it("Does not message when 0 arguments given", () => {
-    run(["./package.json"]);
-
-    expect(logMock.lastCall).to.be.null;
-    expect(reprinterMock.lastCall.args[0]).to.contain("/package.json");
-  });
-
-  it("Throws exception if rewrite fails", () => {
-    reprinterMock.throws("Some error");
-
-    expect(() => {
-      run(["./package.json"]);
-    }).to.throw();
-
-    expect(logMock.lastCall.args[0]).to.equal(LoggerVerboseOption.Normal);
-    expect(logMock.lastCall.args[1]).to.contain("Some error");
-  });
-
-  // TODO Figure out how to stub cosmiconfig
-  xdescribe("Cosmiconfig settings", () => {
-    let setVerbosityMock: sinon.SinonStubbedInstance<any>;
-    let cosmiconfigMock: sinon.SinonStubbedInstance<any>;
-    let config: Object;
-
-    before(() => {
-      setVerbosityMock = sinon.stub(LogUtils, "setVerbosity");
-      cosmiconfigMock = sinon.stub(cosmiconfigSync);
-      cosmiconfigMock.returns({
-        search: () => {
-          return {
-            config: config,
-          };
-        },
-      });
-    });
-
-    afterEach(() => {
-      cosmiconfigMock.reset();
-    });
-
-    after(() => {
-      cosmiconfigMock.restore();
-    });
-
-    it("Sets log level to diagnostic when set in config", () => {
-      config = {
-        logLevel: "diagnostic",
-      };
-
-      run(["./package.json"]);
-
-      expect(setVerbosityMock.callCount).to.equal(1);
-      expect(reprinterMock.lastCall.args[0]).to.be(
-        LoggerVerboseOption.Diagnostic as any
-      );
-    });
-
-    it("Sets log level to quiet when set in config", () => {
-      config = {
-        logLevel: "quiet",
-      };
-
-      run(["./package.json"]);
-
-      expect(setVerbosityMock.callCount).to.equal(1);
-      expect(reprinterMock.lastCall.args[0]).to.be(
-        LoggerVerboseOption.Quiet as any
-      );
-    });
-
-    it("Sets log level to normal when invalid in config", () => {
-      config = {
-        logLevel: "asdfasdf",
-      };
-
-      run(["./package.json"]);
-
-      expect(setVerbosityMock.callCount).to.equal(1);
-      expect(reprinterMock.lastCall.args[0]).to.be(
-        LoggerVerboseOption.Normal as any
-      );
-    });
+  it("Returns 0 when an argument is provided", () => {
+    expect(run(["asdf"])).toBe(0);
   });
 });

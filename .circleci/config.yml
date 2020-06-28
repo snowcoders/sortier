@@ -1,23 +1,14 @@
-version: 2
+version: 2.1
+orbs:
+  node: circleci/node@3.0.0
 jobs:
-  build:
-    working_directory: ~/mern-starter
-    docker:
-      - image: circleci/node:latest
+  test:
+    executor: node/default
     steps:
       - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-      - run:
-          name: Install npm dependencies
-          command: npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - ./node_modules
-      - run:
-          name: Test
-          command: npm run test
-      - run:
-          name: Report coverage
-          command: npm run cover
+      - node/install-packages
+      - run: npm run test
+workflows:
+  test:
+    jobs:
+      - test

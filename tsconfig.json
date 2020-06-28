@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
     "noImplicitAny": false,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "outDir": "./dist/",
+    "rootDir": "./src/",
     "sourceMap": true,
-    "strictPropertyInitialization": false,
-    "target": "es2015"
+    "strictPropertyInitialization": true,
+    "target": "ES6"
   },
-  "extends": "@snowcoders/renovate-config",
-  "include": ["./src/**/*.ts", "./src/**/*.tsx"]
+  "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.base.json",
+  "include": ["./src/**/*"]
 }

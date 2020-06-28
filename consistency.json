@@ -1,7 +1,13 @@
 {
   "base": [
     {
+      "branch": "consistency_test",
       "name": "sortier",
+      "owner": "snowcoders",
+      "platform": "github"
+    },
+    {
+      "name": "scaffold-typescript-cli--circleci",
       "owner": "snowcoders",
       "platform": "github"
     }

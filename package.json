@@ -58,7 +58,7 @@
     "clean": "rimraf .nyc_output coverage dist",
     "cli": "node bin/index.js",
     "cover": "nyc report --reporter=text-lcov | coveralls",
-    "mocha": "mocha --require ts-node/register --require source-map-support/register --recursive --full-trace \"./src/**/*.test.ts\"",
+    "mocha": "mocha --timeout 5000 --require ts-node/register --require source-map-support/register --recursive --full-trace \"./src/**/*.test.ts\"",
     "prepare": "npm run clean && npm run build-production",
     "start": "npm run build && npm run cli",
     "test": "nyc npm run mocha",

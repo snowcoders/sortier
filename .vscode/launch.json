@@ -21,14 +21,18 @@
       "type": "node"
     },
     {
-      "args": [],
+      "args": [
+        "./src/**/*"
+      ],
       "cwd": "${workspaceRoot}",
       "name": "Debug app",
       "outFiles": [],
       "preLaunchTask": "npm: build",
       "program": "${workspaceRoot}/bin/index",
       "request": "launch",
-      "runtimeArgs": ["--nolazy"],
+      "runtimeArgs": [
+        "--nolazy"
+      ],
       "sourceMaps": true,
       "type": "node"
     }

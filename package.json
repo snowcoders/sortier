@@ -19,7 +19,7 @@
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "1.0.1",
     "@snowcoders/renovate-config": "1.0.7",
-    "@types/chai": "4.2.11",
+    "@types/chai": "4.2.12",
     "@types/estree": "0.0.45",
     "@types/globby": "8.0.0",
     "@types/mocha": "8.0.0",

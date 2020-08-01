@@ -6,7 +6,7 @@
   "dependencies": {
     "@typescript-eslint/typescript-estree": "3.0.1",
     "angular-html-parser": "1.7.1",
-    "cosmiconfig": "6.0.0",
+    "cosmiconfig": "7.0.0",
     "find-up": "4.1.0",
     "flow-parser": "0.130.0",
     "globby": "11.0.1",

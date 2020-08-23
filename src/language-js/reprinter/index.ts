@@ -48,7 +48,13 @@ interface JsReprinterOptionsRequired {
 }
 
 export class Reprinter implements ILanguage {
-  public static readonly JAVASCRIPT_EXTENSIONS = [".js", ".jsx", ".js.txt"];
+  public static readonly JAVASCRIPT_EXTENSIONS = [
+    ".cjs",
+    ".js",
+    ".js.txt",
+    ".jsx",
+    ".mjs",
+  ];
   public static readonly TYPESCRIPT_EXTENSIONS = [".ts", ".tsx", ".ts.txt"];
 
   private _filename: string;

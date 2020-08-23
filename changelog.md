@@ -1,5 +1,7 @@
 ### Unreleased
 
+- Added support for `.cjs` and `.mjs` file types
+
 ### 3.1.2
 
 - Fixed error on sort when typescript module has no body

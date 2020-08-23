@@ -1,0 +1,5 @@
+// https://github.com/snowcoders/sortier/issues/942
+export interface LogFn<TScopes> {
+  (key: keyof TScopes): (...args: any[]) => void;
+  (...args: any[]): void;
+}

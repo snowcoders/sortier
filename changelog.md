@@ -1,6 +1,7 @@
 ### Unreleased
 
 - Added support for `.cjs` and `.mjs` file types
+- Do not sort TSCallSignatureDeclaration as their order in TSInterfaceBody is important
 
 ### 3.1.2
 

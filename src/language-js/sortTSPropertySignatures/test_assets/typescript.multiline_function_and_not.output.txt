@@ -1,8 +1,8 @@
 export interface Hello {
   b: string,
   d: string,
-  (value: T): string,
   (value: string): string,
+  (value: T): string,
   a(): string,
   c: () => void,
 }  

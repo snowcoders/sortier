@@ -32,12 +32,19 @@ export function sortTSPropertySignatures(
 
     contextGroups.forEach((element) => {
       let unsorted: any[] = element.nodes;
-      let sorted: any[] = element.nodes.slice().sort((a, b) => {
+      let sorted: any[] = element.nodes.slice().sort((a: any, b: any) => {
         let aGroup = getSortGroupIndex(a, options);
         let bGroup = getSortGroupIndex(b, options);
 
         if (aGroup != bGroup) {
           return aGroup - bGroup;
+        }
+
+        // Certain types should not be sorted against one another
+        // so for these situations, we use their start index to make
+        // sure we maintain their order
+        if (a.type === b.type && a.type === "TSCallSignatureDeclaration") {
+          return a.range[0] - b.range[0];
         }
 
         let aString = getString(a, fileContents);

@@ -14,7 +14,7 @@ interface TestInfo {
   testName: string;
 }
 
-describe.only("language-js/reprinter", () => {
+describe("language-js/reprinter", () => {
   let testInfos: TestInfo[];
   let parserTypes: Set<string> = new Set<string>();
 
@@ -50,22 +50,20 @@ describe.only("language-js/reprinter", () => {
       testInfos.forEach((testInfo) => {
         if (testInfo.parserType === parserType) {
           // Useful if you need to test a single file
-          if (testInfo.testName.includes("Sortier ignore"))
-            it(testInfo.testName, () => {
-              let expected = FileUtils.readFileContents(
-                testInfo.outputFilePath
-              );
-              let inputContents = FileUtils.readFileContents(
-                testInfo.inputFilePath
-              );
-              let actual = new Reprinter().getRewrittenContents(
-                testInfo.inputFilePath,
-                inputContents,
-                {}
-              );
+          // if (testInfo.testName.includes("Inline property"))
+          it(testInfo.testName, () => {
+            let expected = FileUtils.readFileContents(testInfo.outputFilePath);
+            let inputContents = FileUtils.readFileContents(
+              testInfo.inputFilePath
+            );
+            let actual = new Reprinter().getRewrittenContents(
+              testInfo.inputFilePath,
+              inputContents,
+              {}
+            );
 
-              expect(actual).to.equal(expected);
-            });
+            expect(actual).to.equal(expected);
+          });
         }
       });
     });

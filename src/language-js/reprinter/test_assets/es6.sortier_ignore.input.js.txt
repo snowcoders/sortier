@@ -1,40 +1,30 @@
-// sortier-ignore-line - All on one line, doesn't sort
+// sortier-ignore-next-line - All on one line, doesn't sort
 const example = 2 * pi * distance * distance * 5
 
-// sortier-ignore-node - All on one line, doesn't sort
+// sortier-ignore-nodes - All on one line, doesn't sort
 const example = 2 * pi * distance * distance * 5
 
-// sortier-ignore-line - All on multiple lines, sorts because expression is not on the next line
+/* sortier-ignore-next-line - All on one line, doesn't sort */
+const example = 2 * pi * distance * distance * 5
+
+/* sortier-ignore-nodes - All on one line, doesn't sort */
+const example = 2 * pi * distance * distance * 5
+
+// sortier-ignore-next-line - All on multiple lines, sorts because expression is not on the next line
 const example = 
       2 
       * pi 
       * distance * distance 
       * 5 
 
-// sortier-ignore-node - Since this affects the whole node, doesn't sort
+// sortier-ignore-nodes - Since this affects the whole node, doesn't sort
 const example = 
       2
       * pi
       * distance * distance
       * 5
 
-// sortier-ignore-node - Prevents sorting the switch statement along with all nodes inside (e.g. see `a3, a1`)
-switch ("a") {
-      case "c":
-      case "d":
-            // The ignore statement stops sorting for the whole tree, not just the node above it
-            let {a3, a1} = d;
-            console.log("c");
-            break;
-      case "b":
-      case "a":
-            console.log("a");
-            break;
-      default:
-            break;
-}
-
-// sortier-ignore-line - Doesn't do anything since the switch statement exists across multiple lines
+// sortier-ignore-next-line - Doesn't do anything since the case statements aren't on the next line
 switch ("a") {
       case "d":
       case "c":
@@ -50,9 +40,30 @@ switch ("a") {
             break;
 }
 
-// Making sure that the ignores move with context groups even when it's the only comment above the group
-let d = {
-      // sortier-ignore-line
-      b: 4 * 2,
-      a: 3 * 1
+// sortier-ignore-nodes - Prevents sorting the switch statement along with all nodes inside (e.g. see `a3, a1`)
+switch ("a") {
+      case "c":
+      case "d":
+            // The ignore statement stops sorting for the whole tree, not just the node above it
+            let {a3, a1} = d;
+            console.log("c");
+            break;
+      case "b":
+      case "a":
+            console.log("a");
+            break;
+      default:
+            break;
+}
+
+// sortier-ignore-next-line - Ignores the destructure (all on next line) but the right side is sorted
+const {b, a} = {
+      b: "b",
+      a: "a",
+}
+
+// sortier-ignore-nodes - All are ignored as all nodes start on next line
+const {b, a} = {
+      b: "b",
+      a: "a",
 }

@@ -719,10 +719,10 @@ export function isIgnored<
   beginningOfLine = beginningOfLine === -1 ? 0 : beginningOfLine;
 
   let commentText = fileContents.substring(beginningOfLine, newLineBeforeRange);
-  if (commentText.indexOf("sortier-ignore-node") !== -1) {
+  if (commentText.indexOf("sortier-ignore-nodes") !== -1) {
     return true;
   }
-  if (commentText.indexOf("sortier-ignore-line") === -1) {
+  if (commentText.indexOf("sortier-ignore-next-line") === -1) {
     return false;
   }
   let nodeText = fileContents.substring(node.range[0], node.range[1]);

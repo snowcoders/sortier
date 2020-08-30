@@ -3,13 +3,17 @@ import { BaseNode, compare, reorderValues } from "../../utilities/sort-utils";
 
 export type SortByExportOptionsGroups = "*" | "interfaces" | "types";
 
-export interface SortImportDeclarationSpecifiersOptions {
+export type SortImportDeclarationSpecifiersOptions = Partial<
+  SortImportDeclarationSpecifiersOptionsRequired
+>;
+
+interface SortImportDeclarationSpecifiersOptionsRequired {
   groups: SortByExportOptionsGroups[];
 }
 
 interface SingleSpecifier extends BaseNode {
-  importedName: string;
   importKind: null | string;
+  importedName: string;
   isDefaultImportType: boolean;
   isInterface: boolean;
 }
@@ -20,13 +24,13 @@ export function sortImportDeclarationSpecifiers(
   fileContents: string,
   options?: SortImportDeclarationSpecifiersOptions
 ) {
-  options = ensureOptions(options);
+  let cleanedOptions = ensureOptions(options);
 
   fileContents = sortSingleSpecifier(
     specifiers,
     comments,
     fileContents,
-    options
+    cleanedOptions
   );
 
   return fileContents;
@@ -36,14 +40,14 @@ function sortSingleSpecifier(
   specifiers: any,
   comments: Comment[],
   fileContents: string,
-  options: SortImportDeclarationSpecifiersOptions
+  options: SortImportDeclarationSpecifiersOptionsRequired
 ): string {
   // If there is one or less specifiers, there is not anything to sort
   if (specifiers.length <= 1) {
     return fileContents;
   }
 
-  let unsortedSpecifiers = specifiers.map(specifier => {
+  let unsortedSpecifiers = specifiers.map((specifier) => {
     {
       let importedName =
         specifier.imported != null
@@ -55,11 +59,11 @@ function sortSingleSpecifier(
         start = fileContents.lastIndexOf(specifier.importKind, start);
       }
       return {
-        importedName: importedName,
         importKind: specifier.importKind,
+        importedName: importedName,
         isDefaultImportType: specifier.type.indexOf("Default") !== -1,
         isInterface: nameIsLikelyInterface(importedName),
-        range: [start, end]
+        range: [start, end],
       };
     }
   });
@@ -125,14 +129,14 @@ function nameIsLikelyInterface(name: string) {
 
 function ensureOptions(
   options?: null | SortImportDeclarationSpecifiersOptions
-): SortImportDeclarationSpecifiersOptions {
+): SortImportDeclarationSpecifiersOptionsRequired {
   if (options == null) {
     return {
-      groups: ["*", "interfaces", "types"]
+      groups: ["*", "interfaces", "types"],
     };
   }
 
   return {
-    groups: options.groups || ["*", "interfaces", "types"]
+    groups: options.groups || ["*", "interfaces", "types"],
   };
 }

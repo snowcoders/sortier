@@ -3,12 +3,12 @@ import { Comment } from "estree";
 import {
   compare,
   getContextGroups,
-  reorderValues
+  reorderValues,
 } from "../../utilities/sort-utils";
 import {
+  TypeAnnotationOption,
   getObjectTypeRanks,
   getSpreadGroups,
-  TypeAnnotationOption
 } from "../utilities/sort-utils";
 
 export interface SortObjectTypeAnnotationOptions {
@@ -30,7 +30,7 @@ export function sortObjectTypeAnnotation(
   for (let nodes of spreadGroups) {
     let contextGroups = getContextGroups(nodes, comments, fileContents);
 
-    contextGroups.forEach(element => {
+    contextGroups.forEach((element) => {
       let unsorted: any[] = element.nodes;
       let sorted: any[] = element.nodes.slice().sort((a, b) => {
         let aGroup = getSortGroupIndex(a, options);

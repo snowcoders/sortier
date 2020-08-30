@@ -1,8 +1,8 @@
 import { compare, reorderValues } from "../../utilities/sort-utils";
 import { addParenthesis } from "../utilities/parser-utils";
 import {
+  TypeAnnotationOption,
   getObjectTypeRanks,
-  TypeAnnotationOption
 } from "../utilities/sort-utils";
 
 export interface SortUnionTypeAnnotationOptions {
@@ -16,6 +16,7 @@ export function sortUnionTypeAnnotation(
   options: SortUnionTypeAnnotationOptions
 ) {
   if (
+    unionTypeAnnotation.type === "TSIntersectionType" ||
     unionTypeAnnotation.type === "UnionTypeAnnotation" ||
     unionTypeAnnotation.type === "IntersectionTypeAnnotation" ||
     unionTypeAnnotation.type === "TSUnionType"
@@ -66,7 +67,7 @@ class UnionTypeAnnotationSorter {
   }
 
   private getSortOrderOfTypes() {
-    let getRank = value => {
+    let getRank = (value) => {
       let ranks = getObjectTypeRanks(this.options.groups);
       if (value.type === "TSParenthesizedType") {
         return getRank(value.typeAnnotation);
@@ -139,7 +140,7 @@ class UnionTypeAnnotationSorter {
     } else if (a.literal != null && a.literal.raw != null) {
       return a.literal.raw;
     } else {
-      return a.type;
+      return this.fileContents.substring(a.range[0], a.range[1]);
     }
   }
 }

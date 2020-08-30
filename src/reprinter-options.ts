@@ -1,16 +1,11 @@
 import { CssReprinterOptions } from "./language-css";
 import { JavascriptReprinterOptions } from "./language-js";
 
-// TODO: v3.0.0 - Remove extends JavascriptReprinterOptions
-export interface ReprinterOptions extends JavascriptReprinterOptions {
-  // Default "false". If true, prints out very verbose lines that sortier doesn't know how to handle so you can open Github issues about them
-  // Deprecated: Will be removed in v3.0.0
-  isHelpMode?: boolean;
-
+export interface ReprinterOptions {
   // Default "false". If true, sortier will run but not rewrite any files. Great for testing to make sure your code base doesn't have any weird issues before rewriting code.
   isTestRun?: boolean;
 
-  // Default "normal". This overrides isHelpMode.
+  // Default "normal"
   //  - "quiet" - No console logs
   //  - "normal" - General information (e.g. if sortier was unable to parse a file)
   //  - "diagnostic" - All the above along with type information that sortier was unable to handle (great for opening bugs!)

@@ -3,18 +3,18 @@ import { Comment } from "estree";
 import {
   compare,
   getContextGroups,
-  reorderValues
+  reorderValues,
 } from "../../utilities/sort-utils";
 import { getSpreadGroups } from "../utilities/sort-utils";
 
 export interface SortJsxElementOptions {}
 
 interface JsxAttribute {
-  range?: [number, number];
-  type: string;
   name: {
     name: string;
   };
+  range?: [number, number];
+  type: string;
 }
 
 export function sortJsxElement(
@@ -23,6 +23,11 @@ export function sortJsxElement(
   fileContents: string,
   options?: SortJsxElementOptions
 ) {
+  if (jsxElement.openingElement == null) {
+    // Fragment element
+    return fileContents;
+  }
+
   let newFileContents = fileContents.slice();
 
   let allNodes: JsxAttribute[] = jsxElement.openingElement.attributes;
@@ -33,7 +38,7 @@ export function sortJsxElement(
   for (let nodes of spreadGroups) {
     let groupings = getContextGroups(nodes, comments, fileContents);
 
-    groupings.forEach(element => {
+    groupings.forEach((element) => {
       let unsorted = element.nodes;
       let sorted = element.nodes.slice().sort((a, b) => {
         return compare(a.name.name, b.name.name);

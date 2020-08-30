@@ -1,0 +1,12 @@
+.example {
+    // Variables should not be sorted since they may depend on one another
+    --position2: relative;
+    --size-0: 0px;
+    --position: var(--position2);
+
+    position: var(position);
+    top: var(size-0);
+    bottom: var(size-0);
+    left: var(size-0);
+    right: var(size-0);
+}

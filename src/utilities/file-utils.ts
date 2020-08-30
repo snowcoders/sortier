@@ -1,6 +1,12 @@
 import * as fs from "fs";
+import { join } from "path";
 
 export class FileUtils {
+  public static globbyJoin(...paths: string[]) {
+    let path = join(...paths);
+    return path.split("\\").join("/");
+  }
+
   public static readFileContents(filename: string) {
     try {
       return fs.readFileSync(filename, "utf8");

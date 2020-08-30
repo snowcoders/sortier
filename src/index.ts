@@ -1,13 +1,6 @@
 import { Reprinter } from "./reprinter";
 import { ReprinterOptions } from "./reprinter-options";
 
-/**
- * @deprecated use formatFile or formatText
- */
-export function format(filePath: string, options: ReprinterOptions) {
-  formatFile(filePath, options);
-}
-
 export function formatFile(filePath: string, options: ReprinterOptions) {
   Reprinter.rewriteFile(filePath, options);
 }

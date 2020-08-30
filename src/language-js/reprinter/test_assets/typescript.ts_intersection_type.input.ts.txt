@@ -1,0 +1,1 @@
+type Surname = 3 & 2;

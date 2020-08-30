@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { sync } from "globby";
-import { basename, join } from "path";
+import { basename } from "path";
 import { FileUtils } from "../../utilities/file-utils";
 import { StringUtils } from "../../utilities/string-utils";
 
@@ -18,8 +18,11 @@ describe.only("language-js/reprinter", () => {
   let testInfos: TestInfo[];
   let parserTypes: Set<string> = new Set<string>();
 
-  let assetsFolderPath = join(__dirname, "test_assets/*.input.(js|ts).txt");
-  testInfos = sync(assetsFolderPath).map(filePath => {
+  let assetsFolderPath = FileUtils.globbyJoin(
+    __dirname,
+    "test_assets/*.input.(js|ts).txt"
+  );
+  testInfos = sync(assetsFolderPath).map((filePath) => {
     let segments = basename(filePath).split(".");
 
     let parserType = StringUtils.sentenceCase(segments[0]);
@@ -31,7 +34,7 @@ describe.only("language-js/reprinter", () => {
       inputFilePath: filePath,
       outputFilePath: filePath.replace(".input.", ".output."),
       parserType: parserType,
-      testName: cleanedTestName
+      testName: cleanedTestName,
     };
   });
 
@@ -42,9 +45,9 @@ describe.only("language-js/reprinter", () => {
     );
   });
 
-  parserTypes.forEach(parserType => {
+  parserTypes.forEach((parserType) => {
     describe(parserType, () => {
-      testInfos.forEach(testInfo => {
+      testInfos.forEach((testInfo) => {
         if (testInfo.parserType === parserType) {
           // Useful if you need to test a single file
           if (testInfo.testName.includes("Sortier ignore"))
@@ -71,6 +74,16 @@ describe.only("language-js/reprinter", () => {
   it("Throws error if file is not supported", () => {
     expect(() => {
       new Reprinter().getRewrittenContents("./readme.md", "", {});
+    }).to.throw();
+  });
+
+  it("Throws an error if the file cannot be parsed", () => {
+    expect(() => {
+      new Reprinter().getRewrittenContents(
+        "parse_fail.js",
+        "This shouldn't parse",
+        {}
+      );
     }).to.throw();
   });
 });

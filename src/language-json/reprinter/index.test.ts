@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { sync } from "globby";
-import { basename, join } from "path";
+import { basename } from "path";
 
 // The methods being tested here
 import { Reprinter } from "./index";
@@ -18,8 +18,11 @@ interface TestInfo {
 describe("language-json/reprinter", () => {
   let testInfos: TestInfo[];
 
-  let assetsFolderPath = join(__dirname, "test_assets/*.input.json.txt");
-  testInfos = sync(assetsFolderPath).map(filePath => {
+  let assetsFolderPath = FileUtils.globbyJoin(
+    __dirname,
+    "test_assets/*.input.json.txt"
+  );
+  testInfos = sync(assetsFolderPath).map((filePath) => {
     let segments = basename(filePath).split(".");
 
     let cleanedTestName = StringUtils.sentenceCase(
@@ -30,11 +33,11 @@ describe("language-json/reprinter", () => {
       inputFilePath: filePath,
       outputFilePath: filePath.replace(".input.json.txt", ".output.json.txt"),
       parserType: segments[0],
-      testName: cleanedTestName
+      testName: cleanedTestName,
     };
   });
 
-  testInfos.forEach(testInfo => {
+  testInfos.forEach((testInfo) => {
     it(testInfo.testName, () => {
       let input = FileUtils.readFileContents(testInfo.inputFilePath);
       let expected = FileUtils.readFileContents(testInfo.outputFilePath);
@@ -54,5 +57,15 @@ describe("language-json/reprinter", () => {
 
   it("Does not support typescript files", () => {
     expect(new Reprinter().isFileSupported("test.ts")).to.equal(false);
+  });
+
+  it("Throws an error if the file cannot be parsed", () => {
+    expect(() => {
+      new Reprinter().getRewrittenContents(
+        "parse_fail.json",
+        "This shouldn't parse",
+        {}
+      );
+    }).to.throw();
   });
 });

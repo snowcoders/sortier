@@ -34,7 +34,7 @@ export function getContextGroups<
   comments: CommentType[],
   fileContents: string
 ): ContextGroup<NodeType, CommentType>[] {
-  comments = comments.filter(comment => {
+  comments = comments.filter((comment) => {
     // There seems to be bugs with the parsers regarding certain comments
     // https://github.com/eslint/typescript-eslint-parser/issues/450
     return isValidComment(fileContents, comment);
@@ -44,8 +44,8 @@ export function getContextGroups<
     return [
       {
         comments: comments,
-        nodes: nodes
-      }
+        nodes: nodes,
+      },
     ];
   }
 
@@ -82,7 +82,7 @@ export function getContextGroups<
   }
 
   // For performance, shorten the comments array to only the comments that are between what is provided
-  comments = comments.filter(comment => {
+  comments = comments.filter((comment) => {
     if (comment.range != null) {
       return rangeStart <= comment.range[0] && comment.range[0] <= rangeEnd;
     }
@@ -169,13 +169,13 @@ export function getContextGroups<
 
     groupings.push({
       comments: partialComments,
-      nodes: partialNodes
+      nodes: partialNodes,
     });
   }
 
   let partialNodes = nodes.slice(nodeIndex);
   let partialComments: CommentType[] = [];
-  partialNodes.forEach(node => {
+  partialNodes.forEach((node) => {
     let precedingComments = getPrecedingCommentsForSpecifier(
       fileContents,
       comments,
@@ -205,7 +205,7 @@ export function getContextGroups<
   if (commentIndex < comments.length || nodeIndex < nodes.length) {
     groupings.push({
       comments: partialComments,
-      nodes: nodes.slice(nodeIndex)
+      nodes: nodes.slice(nodeIndex),
     });
   }
   return groupings;
@@ -401,7 +401,7 @@ function getPrecedingCommentRangeForSpecifier<
     if (textBetweenCommentAndSpecifier.indexOf("\n") === -1) {
       return [
         firstCommentRange[0],
-        lastCommentRange[1] + textBetweenCommentAndSpecifier.length
+        lastCommentRange[1] + textBetweenCommentAndSpecifier.length,
       ];
     }
   }
@@ -494,7 +494,7 @@ function getPrecedingCommentsForSpecifier<
   comments: CommentType[],
   specifier: NodeType
 ): CommentType[] {
-  comments = comments.filter(comment => {
+  comments = comments.filter((comment) => {
     // There seems to be bugs with the parsers regarding certain comments
     // https://github.com/eslint/typescript-eslint-parser/issues/450
     return isValidComment(fileContents, comment);
@@ -615,7 +615,7 @@ function getSucceedingCommentsForSpecifier<
   comments: CommentType[],
   specifier: NodeType
 ): CommentType[] {
-  comments = comments.filter(comment => {
+  comments = comments.filter((comment) => {
     // There seems to be bugs with the parsers regarding certain comments
     // https://github.com/eslint/typescript-eslint-parser/issues/450
     return isValidComment(fileContents, comment);

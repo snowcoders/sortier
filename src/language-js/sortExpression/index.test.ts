@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { readFileSync } from "fs";
 import { sync } from "globby";
-import { basename, join } from "path";
+import { basename } from "path";
 
 // Parsers
 import { parse as flowParse } from "../parsers/flow";
@@ -11,6 +11,7 @@ import { parse as typescriptParse } from "../parsers/typescript";
 import { sortExpression } from "./index";
 
 // Utilities
+import { FileUtils } from "../../utilities/file-utils";
 import { StringUtils } from "../../utilities/string-utils";
 
 interface TestInfo {
@@ -26,8 +27,11 @@ describe("language-js/sortExpression", () => {
 
   parserTypes = [];
 
-  let assetsFolderPath = join(__dirname, "test_assets/*.input.txt");
-  testInfos = sync(assetsFolderPath).map(filePath => {
+  let assetsFolderPath = FileUtils.globbyJoin(
+    __dirname,
+    "test_assets/*.input.txt"
+  );
+  testInfos = sync(assetsFolderPath).map((filePath) => {
     let segments = basename(filePath).split(".");
 
     if (parserTypes.indexOf(segments[0]) === -1) {
@@ -42,11 +46,11 @@ describe("language-js/sortExpression", () => {
       inputFilePath: filePath,
       outputFilePath: filePath.replace(".input.txt", ".output.txt"),
       parserType: segments[0],
-      testName: cleanedTestName
+      testName: cleanedTestName,
     };
   });
 
-  parserTypes.forEach(fileType => {
+  parserTypes.forEach((fileType) => {
     describe(fileType, () => {
       let parser;
       switch (fileType) {
@@ -65,7 +69,7 @@ describe("language-js/sortExpression", () => {
           );
       }
 
-      testInfos.forEach(testInfo => {
+      testInfos.forEach((testInfo) => {
         if (testInfo.parserType == fileType) {
           it(testInfo.testName, () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
@@ -94,7 +98,7 @@ describe("language-js/sortExpression", () => {
       parsed.comments,
       input,
       {
-        groups: ["null", "undefined"]
+        groups: ["null", "undefined"],
       }
     );
 
@@ -110,7 +114,7 @@ describe("language-js/sortExpression", () => {
       parsed.comments,
       input,
       {
-        groups: undefined
+        groups: undefined,
       }
     );
 

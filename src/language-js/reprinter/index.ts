@@ -7,10 +7,13 @@ import { parse as parseTypescript } from "../parsers/typescript";
 // Types of sorts
 import { sortExpression } from "../sortExpression";
 import {
+  SortImportDeclarationSpecifiersOptions,
+  sortImportDeclarationSpecifiers,
+} from "../sortImportDeclarationSpecifiers";
+import {
+  SortImportDeclarationsOrderOption,
   sortImportDeclarations,
-  SortImportDeclarationsOrderOption
 } from "../sortImportDeclarations";
-import { sortImportDeclarationSpecifiers } from "../sortImportDeclarationSpecifiers";
 import { sortJsxElement } from "../sortJsxElement";
 import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation";
 import { sortSwitchCases } from "../sortSwitchCases";
@@ -18,47 +21,51 @@ import { sortTSPropertySignatures } from "../sortTSPropertySignatures";
 import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation";
 
 // Utils
-import { isArray } from "util";
 import { ILanguage } from "../../language";
-import { ReprinterOptions } from "../../reprinter-options";
+import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options";
 import { ArrayUtils } from "../../utilities/array-utils";
-import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils";
+import { LogUtils, LoggerVerboseOption } from "../../utilities/log-utils";
 import { isIgnored } from "../../utilities/sort-utils";
 import { StringUtils } from "../../utilities/string-utils";
 import {
+  SortClassContentsOptions,
   sortClassContents,
-  SortClassContentsOptions
 } from "../sortClassContents";
 import { TypeAnnotationOption } from "../utilities/sort-utils";
 
-export type ReprinterOptions = Partial<ReprinterOptionsRequired>;
+export type ReprinterOptions = Partial<JsReprinterOptionsRequired>;
 
-export interface ReprinterOptionsRequired {
+interface JsReprinterOptionsRequired {
   // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
   parser?: "flow" | "typescript";
-
-  // Default "source". The order you wish to sort import statements. Source is the path the import comes from. First specifier is the first item imported.
-  sortImportDeclarations: SortImportDeclarationsOrderOption;
-
-  // Default ["undefined", "null", "*", "function"]. The order to sort object types when encountered.
-  sortTypeAnnotations?: TypeAnnotationOption[];
-
   // Default undefined. If defined, class contents will be sorted based on the options provided. Turned off by default because it will sort over blank lines.
   sortClassContents?: SortClassContentsOptions;
+  // Default ["*", "interfaces", "types"] (see SortImportDeclarationSpecifiersOptions)
+  sortImportDeclarationSpecifiers?: SortImportDeclarationSpecifiersOptions;
+  // Default "source". The order you wish to sort import statements. Source is the path the import comes from. First specifier is the first item imported.
+  sortImportDeclarations?: SortImportDeclarationsOrderOption;
+  // Default ["undefined", "null", "*", "function"]. The order to sort object types when encountered.
+  sortTypeAnnotations?: TypeAnnotationOption[];
 }
 
 export class Reprinter implements ILanguage {
-  public static readonly JAVASCRIPT_EXTENSIONS = [".js", ".jsx", ".js.txt"];
+  public static readonly JAVASCRIPT_EXTENSIONS = [
+    ".cjs",
+    ".js",
+    ".js.txt",
+    ".jsx",
+    ".mjs",
+  ];
   public static readonly TYPESCRIPT_EXTENSIONS = [".ts", ".tsx", ".ts.txt"];
 
   private _filename: string;
   private _helpModeHasPrintedFilename: boolean;
-  private _options: ReprinterOptionsRequired;
+  private _options: JsReprinterOptionsRequired;
 
   public getRewrittenContents(
     filename: string,
     fileContents: string,
-    options: ReprinterOptions
+    options: BaseReprinterOptions
   ) {
     this._filename = filename;
     this._options = this.getValidatedOptions(options);
@@ -74,17 +81,14 @@ export class Reprinter implements ILanguage {
   public isFileSupported(filename: string) {
     return StringUtils.stringEndsWithAny(filename, [
       ...Reprinter.JAVASCRIPT_EXTENSIONS,
-      ...Reprinter.TYPESCRIPT_EXTENSIONS
+      ...Reprinter.TYPESCRIPT_EXTENSIONS,
     ]);
   }
 
   private getValidatedOptions(
-    appOptions: ReprinterOptions
-  ): ReprinterOptionsRequired {
-    let partialOptions = {
-      ...appOptions,
-      ...appOptions.js
-    };
+    appOptions: BaseReprinterOptions
+  ): JsReprinterOptionsRequired {
+    let partialOptions = appOptions.js || {};
     let sortTypeAnnotations:
       | undefined
       | Array<TypeAnnotationOption> = undefined;
@@ -94,10 +98,8 @@ export class Reprinter implements ILanguage {
     }
 
     return {
-      parser: partialOptions.parser,
-      sortClassContents: partialOptions.sortClassContents,
-      sortImportDeclarations: partialOptions.sortImportDeclarations || "source",
-      sortTypeAnnotations: sortTypeAnnotations
+      ...partialOptions,
+      sortTypeAnnotations,
     };
   }
 
@@ -139,7 +141,7 @@ export class Reprinter implements ILanguage {
     let nodes = originalNodes.slice();
     while (nodes.length !== 0) {
       let node = nodes.shift();
-      if (isArray(node)) {
+      if (Array.isArray(node)) {
         throw new Error(
           "Unexpected Exception - Array sent as node in rewrite nodes"
         );
@@ -155,9 +157,10 @@ export class Reprinter implements ILanguage {
       try {
         switch (node.type) {
           // From estree.d.ts
-          case "ArrayExpression": {
+          case "ArrayExpression":
+          case "ArrayPattern": {
             fileContents = this.rewriteNodes(
-              node.elements,
+              node.elements.filter((value) => value != null),
               comments,
               fileContents
             );
@@ -180,7 +183,7 @@ export class Reprinter implements ILanguage {
           }
           case "BinaryExpression": {
             fileContents = sortExpression(node, comments, fileContents, {
-              groups: this._options.sortTypeAnnotations
+              groups: this._options.sortTypeAnnotations,
             });
             break;
           }
@@ -193,6 +196,7 @@ export class Reprinter implements ILanguage {
           case "DebuggerStatement":
           case "EmptyStatement":
           case "Literal":
+          case "OptionalMemberExpression":
           case "RestProperty":
           case "SpreadElement":
           case "Super":
@@ -282,7 +286,8 @@ export class Reprinter implements ILanguage {
               fileContents = sortImportDeclarationSpecifiers(
                 node.specifiers,
                 comments,
-                fileContents
+                fileContents,
+                this._options.sortImportDeclarationSpecifiers
               );
             }
             break;
@@ -329,10 +334,17 @@ export class Reprinter implements ILanguage {
             break;
           }
           case "FunctionExpression": {
-            nodes.push(node.body);
+            if (node.body != null) {
+              nodes.push(node.body);
+            }
             break;
           }
-          case "Identifier": {
+          case "Identifier":
+          case "TSParenthesizedType":
+          case "TSPropertySignature":
+          case "TSTypeAliasDeclaration":
+          case "TSTypeAnnotation":
+          case "TypeAnnotation": {
             if (node.typeAnnotation != null) {
               nodes.push(node.typeAnnotation);
             }
@@ -350,7 +362,8 @@ export class Reprinter implements ILanguage {
             fileContents = sortImportDeclarationSpecifiers(
               node.specifiers,
               comments,
-              fileContents
+              fileContents,
+              this._options.sortImportDeclarationSpecifiers
             );
             break;
           }
@@ -384,7 +397,7 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
@@ -487,6 +500,7 @@ export class Reprinter implements ILanguage {
 
           // JSX
           case "JSXElement":
+          case "JSXFragment":
           case "JSXOpeningElement": {
             fileContents = this.rewriteNodes(
               node.children,
@@ -496,6 +510,7 @@ export class Reprinter implements ILanguage {
             fileContents = sortJsxElement(node, comments, fileContents);
             break;
           }
+          case "JSXEmptyExpression":
           case "JSXText": {
             break;
           }
@@ -515,16 +530,19 @@ export class Reprinter implements ILanguage {
           case "TSArrayType":
           case "TSAsExpression":
           case "TSBooleanKeyword":
+          case "TSConditionalType":
           case "TSConstructorType":
           case "TSEnumDeclaration":
-          case "TSIndexedAccessType":
+          case "TSImportType":
           case "TSIndexSignature":
+          case "TSIndexedAccessType":
           case "TSLastTypeNode":
           case "TSLiteralType":
           case "TSMappedType":
           case "TSNonNullExpression":
           case "TSNullKeyword":
           case "TSNumberKeyword":
+          case "TSObjectKeyword":
           case "TSParenthesizedType":
           case "TSStringKeyword":
           case "TSTypeOperator":
@@ -566,7 +584,9 @@ export class Reprinter implements ILanguage {
             break;
           }
           case "TSModuleDeclaration": {
-            nodes.push(node.body);
+            if (node.body != null) {
+              nodes.push(node.body);
+            }
             break;
           }
           case "TSTupleType": {
@@ -577,11 +597,6 @@ export class Reprinter implements ILanguage {
                 fileContents
               );
             }
-            break;
-          }
-          case "TSTypeAliasDeclaration":
-          case "TSTypeAnnotation": {
-            nodes.push(node.typeAnnotation);
             break;
           }
           case "TSTypeLiteral": {
@@ -595,7 +610,7 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
@@ -611,7 +626,7 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
@@ -657,7 +672,7 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
@@ -679,7 +694,7 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
@@ -695,7 +710,7 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
@@ -704,16 +719,24 @@ export class Reprinter implements ILanguage {
             nodes.push(node.body);
             break;
           }
-          case "TSPropertySignature": {
-            nodes.push(node.typeAnnotation);
+          case "TSIntersectionType": {
+            fileContents = this.rewriteNodes(
+              node.types,
+              comments,
+              fileContents
+            );
+            fileContents = sortUnionTypeAnnotation(
+              node,
+              comments,
+              fileContents,
+              {
+                groups: this._options.sortTypeAnnotations,
+              }
+            );
             break;
           }
           case "TypeAlias": {
             nodes.push(node.right);
-            break;
-          }
-          case "TypeAnnotation": {
-            nodes.push(node.typeAnnotation);
             break;
           }
           case "UnionTypeAnnotation": {
@@ -727,7 +750,7 @@ export class Reprinter implements ILanguage {
               comments,
               fileContents,
               {
-                groups: this._options.sortTypeAnnotations
+                groups: this._options.sortTypeAnnotations,
               }
             );
             break;
@@ -748,7 +771,7 @@ export class Reprinter implements ILanguage {
         originalNodes,
         fileContents,
         this._options.sortImportDeclarations && {
-          orderBy: this._options.sortImportDeclarations
+          orderBy: this._options.sortImportDeclarations,
         }
       );
     }

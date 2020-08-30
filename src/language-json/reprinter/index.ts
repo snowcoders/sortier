@@ -11,16 +11,19 @@ export class Reprinter implements ILanguage {
     fileContents: string,
     options: ReprinterOptions
   ) {
-    let prefix = "return ";
-    let temporaryFileContents = prefix + fileContents;
+    let prefix = "export default (";
+    let suffix = ");";
+    let temporaryFileContents = prefix + fileContents + suffix;
     let rewritten = new JavascriptReprinter().getRewrittenContents(
       filename,
       temporaryFileContents,
       {
-        parser: "typescript"
+        js: {
+          parser: "typescript",
+        },
       }
     );
-    return rewritten.substring(prefix.length);
+    return rewritten.substring(prefix.length, rewritten.length - suffix.length);
   }
 
   public isFileSupported(filename: string) {

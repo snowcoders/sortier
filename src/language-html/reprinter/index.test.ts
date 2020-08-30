@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { sync } from "globby";
-import { basename, join } from "path";
+import { basename } from "path";
 
 // The methods being tested here
 import { Reprinter } from "./index";
@@ -18,8 +18,11 @@ interface TestInfo {
 describe("language-html/reprinter", () => {
   let testInfos: TestInfo[];
 
-  let assetsFolderPath = join(__dirname, "test_assets/*.input.html.txt");
-  testInfos = sync(assetsFolderPath).map(filePath => {
+  let assetsFolderPath = FileUtils.globbyJoin(
+    __dirname,
+    "test_assets/*.input.html.txt"
+  );
+  testInfos = sync(assetsFolderPath).map((filePath) => {
     let segments = basename(filePath).split(".");
 
     let cleanedTestName = StringUtils.sentenceCase(
@@ -30,11 +33,11 @@ describe("language-html/reprinter", () => {
       inputFilePath: filePath,
       outputFilePath: filePath.replace(".input.html.txt", ".output.html.txt"),
       parserType: segments[0],
-      testName: cleanedTestName
+      testName: cleanedTestName,
     };
   });
 
-  testInfos.forEach(testInfo => {
+  testInfos.forEach((testInfo) => {
     it(testInfo.testName, () => {
       let input = FileUtils.readFileContents(testInfo.inputFilePath);
       let expected = FileUtils.readFileContents(testInfo.outputFilePath);
@@ -46,5 +49,15 @@ describe("language-html/reprinter", () => {
 
       expect(actual).to.equal(expected);
     });
+  });
+
+  it("Throws an error if the file cannot be parsed", () => {
+    expect(() => {
+      new Reprinter().getRewrittenContents(
+        "parse_fail.html",
+        "<html>This has the wrong closing tag</html2>",
+        {}
+      );
+    }).to.throw();
   });
 });

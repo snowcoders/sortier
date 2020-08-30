@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { readFileSync } from "fs";
 import { sync } from "globby";
-import { basename, join } from "path";
+import { basename } from "path";
 
 // Parsers
 import { parse as flowParse } from "../parsers/flow";
@@ -11,6 +11,7 @@ import { parse as typescriptParse } from "../parsers/typescript";
 import { sortClassContents } from "./index";
 
 // Utilities
+import { FileUtils } from "../../utilities/file-utils";
 import { StringUtils } from "../../utilities/string-utils";
 
 interface TestInfo {
@@ -28,8 +29,11 @@ describe("language-js/sortClassContents", () => {
 
   parserTypes = [];
 
-  let assetsFolderPath = join(__dirname, "test_assets/*.input.txt");
-  testInfos = sync(assetsFolderPath).map(filePath => {
+  let assetsFolderPath = FileUtils.globbyJoin(
+    __dirname,
+    "test_assets/*.input.txt"
+  );
+  testInfos = sync(assetsFolderPath).map((filePath) => {
     let segments = basename(filePath).split(".");
 
     if (parserTypes.indexOf(segments[0]) === -1) {
@@ -50,11 +54,11 @@ describe("language-js/sortClassContents", () => {
       order: order,
       outputFilePath: filePath.replace(".input.txt", ".output.txt"),
       parserType: segments[0],
-      testName: cleanedTestName
+      testName: cleanedTestName,
     };
   });
 
-  parserTypes.forEach(fileType => {
+  parserTypes.forEach((fileType) => {
     describe(fileType, () => {
       let parser;
       switch (fileType) {
@@ -73,11 +77,9 @@ describe("language-js/sortClassContents", () => {
           );
       }
 
-      testInfos.forEach(testInfo => {
+      testInfos.forEach((testInfo) => {
         if (testInfo.parserType == fileType) {
-          it(`${testInfo.order} - ${testInfo.isAscending} - ${
-            testInfo.testName
-          }`, () => {
+          it(`${testInfo.order} - ${testInfo.isAscending} - ${testInfo.testName}`, () => {
             let input = readFileSync(testInfo.inputFilePath, "utf8");
             let expected = readFileSync(testInfo.outputFilePath, "utf8");
             let parsed = parser(input);
@@ -88,7 +90,7 @@ describe("language-js/sortClassContents", () => {
               input,
               {
                 isAscending: testInfo.isAscending === "asc",
-                order: testInfo.order === "usage" ? "usage" : "alpha"
+                order: testInfo.order === "usage" ? "usage" : "alpha",
               }
             );
 
@@ -168,8 +170,8 @@ describe("language-js/sortClassContents", () => {
           "constructor",
           "componentWillUnmount",
           "componentDidUnmount",
-          "render"
-        ]
+          "render",
+        ],
       }
     );
 
@@ -245,8 +247,8 @@ describe("language-js/sortClassContents", () => {
           "constructor",
           "componentWillUnmount",
           "componentDidUnmount",
-          "*"
-        ]
+          "*",
+        ],
       }
     );
 

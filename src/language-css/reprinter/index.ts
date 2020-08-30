@@ -1,13 +1,13 @@
 import { parse as lessParse } from "postcss-less";
 import { parse as scssParse } from "postcss-scss";
 import { ILanguage } from "../../language";
-import { ReprinterOptions } from "../../reprinter-options";
+import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options";
 import { StringUtils } from "../../utilities/string-utils";
-import { sortDeclarations, SortDeclarationsOptions } from "../sortDeclarations";
+import { SortDeclarationsOptions, sortDeclarations } from "../sortDeclarations";
 
-export type ReprinterOptions = Partial<ReprinterOptionsRequired>;
+export type ReprinterOptions = Partial<CssReprinterOptionsRequired>;
 
-export interface ReprinterOptionsRequired {
+export interface CssReprinterOptionsRequired {
   // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
   parser?: "less" | "scss";
 
@@ -21,21 +21,21 @@ export class Reprinter implements ILanguage {
     ".css",
     ".css.txt",
     ".scss",
-    ".scss.txt"
+    ".scss.txt",
   ];
 
-  private options: ReprinterOptionsRequired;
+  private options: CssReprinterOptionsRequired;
 
   public getRewrittenContents(
     filename: string,
     fileContents: string,
-    options: ReprinterOptions
+    options: BaseReprinterOptions
   ) {
     this.options = this.getValidatedOptions(options);
 
     let parser = this.getParser(filename);
     let ast = parser(fileContents, {
-      sourcesContent: true
+      sourcesContent: true,
     });
 
     return this.sortNode(ast, fileContents);
@@ -44,20 +44,20 @@ export class Reprinter implements ILanguage {
   public isFileSupported(filename: string) {
     return StringUtils.stringEndsWithAny(filename, [
       ...Reprinter.SCSS_EXTENSIONS,
-      ...Reprinter.LESS_EXTENSIONS
+      ...Reprinter.LESS_EXTENSIONS,
     ]);
   }
 
   private getValidatedOptions(
-    appOptions: ReprinterOptions
-  ): ReprinterOptionsRequired {
+    appOptions: BaseReprinterOptions
+  ): CssReprinterOptionsRequired {
     let partialOptions = appOptions.css;
 
     return {
       sortDeclarations: {
-        overrides: []
+        overrides: [],
       },
-      ...partialOptions
+      ...partialOptions,
     };
   }
 

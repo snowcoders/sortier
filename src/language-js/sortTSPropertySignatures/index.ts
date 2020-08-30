@@ -3,12 +3,12 @@ import { Comment } from "estree";
 import {
   compare,
   getContextGroups,
-  reorderValues
+  reorderValues,
 } from "../../utilities/sort-utils";
 import {
+  TypeAnnotationOption,
   getObjectTypeRanks,
   getSpreadGroups,
-  TypeAnnotationOption
 } from "../utilities/sort-utils";
 
 export interface SortTSPropertySignaturesOptions {
@@ -30,14 +30,21 @@ export function sortTSPropertySignatures(
   for (let nodes of spreadGroups) {
     let contextGroups = getContextGroups(nodes, comments, fileContents);
 
-    contextGroups.forEach(element => {
+    contextGroups.forEach((element) => {
       let unsorted: any[] = element.nodes;
-      let sorted: any[] = element.nodes.slice().sort((a, b) => {
+      let sorted: any[] = element.nodes.slice().sort((a: any, b: any) => {
         let aGroup = getSortGroupIndex(a, options);
         let bGroup = getSortGroupIndex(b, options);
 
         if (aGroup != bGroup) {
           return aGroup - bGroup;
+        }
+
+        // Certain types should not be sorted against one another
+        // so for these situations, we use their start index to make
+        // sure we maintain their order
+        if (a.type === b.type && a.type === "TSCallSignatureDeclaration") {
+          return a.range[0] - b.range[0];
         }
 
         let aString = getString(a, fileContents);
@@ -69,7 +76,7 @@ function cleanProperties(fileContents: string, properties: any[]) {
 
     return {
       ...property,
-      range: [property.range[0], lastIndex]
+      range: [property.range[0], lastIndex],
     };
   });
 }
@@ -92,12 +99,14 @@ function getSortGroupIndex(
 ): number {
   let ranks = getObjectTypeRanks(options.groups);
 
+  let annotationType = property.typeAnnotation?.typeAnnotation?.type;
   if (
+    property.type === "TSCallSignatureDeclaration" ||
     property.type === "TSMethodSignature" ||
-    property.typeAnnotation.typeAnnotation.type === "TSFunctionType"
+    annotationType === "TSFunctionType"
   ) {
     return ranks.function;
-  } else if (property.typeAnnotation.typeAnnotation.type === "TSTypeLiteral") {
+  } else if (annotationType === "TSTypeLiteral") {
     return ranks.object;
   }
   return ranks.everything;

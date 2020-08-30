@@ -1,4 +1,3 @@
-import { isArray } from "util";
 import { ArrayUtils } from "../../utilities/array-utils";
 import { BaseNode, compare, reorderValues } from "../../utilities/sort-utils";
 
@@ -16,12 +15,12 @@ type SortClassContentsOptionsRequired = {
 enum AccessibilityOption {
   Public,
   Protected,
-  Private
+  Private,
 }
 enum KindOption {
   Property,
   Constructor,
-  Method
+  Method,
 }
 
 interface MinimumSortInformation extends BaseNode {
@@ -73,7 +72,7 @@ class ClassContentsSorter {
                 key: value.key.name,
                 kind: this.getKindOption(value),
                 overrideIndex: this.getOverrideIndex(value),
-                range: value.range
+                range: value.range,
               };
             }
             return null;
@@ -86,7 +85,7 @@ class ClassContentsSorter {
                 key: value.key.name,
                 kind: this.getKindOption(value),
                 overrideIndex: this.getOverrideIndex(value),
-                range: value.range
+                range: value.range,
               };
             }
             return null;
@@ -96,11 +95,11 @@ class ClassContentsSorter {
         }
       }
     );
-    let sortableItems: Array<
-      MinimumSortInformation
-    > = possibleSortableItems.filter(value => {
-      return value != null;
-    }) as any;
+    let sortableItems: Array<MinimumSortInformation> = possibleSortableItems.filter(
+      (value) => {
+        return value != null;
+      }
+    ) as any;
 
     let newFileContents = this.sortItems(
       sortableItems,
@@ -127,7 +126,7 @@ class ClassContentsSorter {
       isAscending:
         partialOptions.isAscending == null ? true : partialOptions.isAscending,
       order: partialOptions.order || "alpha",
-      overrides: overrides
+      overrides: overrides,
     };
   }
 
@@ -405,7 +404,7 @@ class ClassContentsSorter {
           memberExpressionOrder.push(value.property.name);
         } else if (value.type != null) {
           memberExpressionOrder.push(...this.getCalleeOrder([value]));
-        } else if (isArray(value)) {
+        } else if (Array.isArray(value)) {
           memberExpressionOrder.push(...this.getCalleeOrder(value));
         }
       }

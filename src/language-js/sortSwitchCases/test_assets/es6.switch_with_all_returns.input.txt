@@ -1,0 +1,22 @@
+// Originally from https://raw.githubusercontent.com/prettier/prettier/master/src/doc/doc-printer.js
+// https://github.com/snowcoders/sortier/issues/504
+
+function whee() {
+  switch (mode) {
+    // fallthrough
+    case MODE_FLAT:
+      if (!doc.hard) {
+        if (!doc.soft) {
+          out.push(" ");
+
+          width -= 1;
+        }
+
+        break;
+      }
+      return true;
+
+    case MODE_BREAK:
+      return true;
+  }
+}

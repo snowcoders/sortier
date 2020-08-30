@@ -1,0 +1,26 @@
+interface Definition {
+  property: 
+  | PaymentWebsitePostMessageCancelOfflineOrderOption
+  | PaymentWebsitePostMessageCheckOption
+  | PaymentWebsitePostMessageCompleteOfflineOrderOption
+  | PaymentWebsitePostMessageCreateOfflineOrderOption
+  | PaymentWebsitePostMessageCreateOnlineOrderOption
+  | PaymentWebsitePostMessagePaymentTypeChangeOption
+  | PaymentWebsitePostMessageRedirectOption
+  | PaymentWebsitePostMessageResizeOption
+  | PaymentWebsitePostMessageUserInteractionOption
+  | PaymentWebsitePostMessageValidityChangeOption
+  | PaymentWebsitePostMessageWireTransferOption;
+}
+
+export type PaymentWebsitePostMessageCancelOfflineOrderOption = {};
+export type PaymentWebsitePostMessageCheckOption = {};
+export type PaymentWebsitePostMessageCompleteOfflineOrderOption = {};
+export type PaymentWebsitePostMessageCreateOfflineOrderOption = {};
+export type PaymentWebsitePostMessageCreateOnlineOrderOption = {};
+export type PaymentWebsitePostMessagePaymentTypeChangeOption = {};
+export type PaymentWebsitePostMessageRedirectOption = {};
+export type PaymentWebsitePostMessageResizeOption = {};
+export type PaymentWebsitePostMessageUserInteractionOption = {};
+export type PaymentWebsitePostMessageValidityChangeOption = {};
+export type PaymentWebsitePostMessageWireTransferOption = {};

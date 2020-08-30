@@ -1,5 +1,6 @@
-.nyc_output/**
-coverage/**
-dist/**
-node_modules/**
+# Locally generaetd files
+.nyc_output
+coverage
+dist
+node_modules
 *.log

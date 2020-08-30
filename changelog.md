@@ -1,5 +1,111 @@
 ### Unreleased
 
+### 3.1.3
+
+- Fixed support for `.cjs` and `.mjs` file types
+- Do not sort TSCallSignatureDeclaration as their order in TSInterfaceBody is important
+
+### 3.1.2
+
+- Fixed error on sort when typescript module has no body
+
+### 3.1.1
+
+- Moved typescript from dev-dependencies to dependencies as it's needed by the typescript-eslint-parser
+- Added support for typescript definition files
+- Cleaned up ignore files and publish contents
+
+### 3.1.0
+
+- Fixed property moving when changing from object to type or adding utility type
+
+  - Note: This required the default sort order to change from `"undefined", "null", "*", "object" then "function"` to `"undefined", "null", "*" then "function"` which means `object`s are treated in the same sort order as primative properties and anything that doesn't match.
+
+    If you preferred the original functionality modify the `.sortierrc.js` like so:
+
+    ```
+    {
+      js: {
+        sortTypeAnnotations: ["undefined", "null", "*", "object", "function"]
+      }
+    }
+    ```
+
+- Added support for TSCallSignatureDeclaration
+- Fixed TSParenthesizedType's contents not being sorted
+
+### 3.0.2
+
+- Fixed Json sort failure when comment is above the object
+- Fixed invalid output when sorting css, less and scss variables when located at the beginning of a file
+- Fixed css, less and scss variable sorting by preventing it when dependencies are detected
+
+### 3.0.1
+
+- Fixed typescript definition breaks from the 3.7.2 upgrade
+
+### 3.0.0
+
+- Bug fixes
+  - Fixed typescript generics being mistaken for JSX elements
+  - Fixed incorrect sorting of typescript union types
+  - Fixed switch statement bug when there is only one case statement per context group
+  - Fixed switch statement bug where it wouldn't sort if there was a conditional inside the case
+- New support
+  - JSXFragment
+  - ArrayPattern
+  - JSXEmptyExpression
+- Breaking
+
+  - Error handling changes
+    - Non-supported files no longer throw exceptions. Now we only output a dianostic level log message (yay easier glob formats)
+    - Returns non-zero exit code if sorting any one file fails which should force lint-staged to fail via hooks
+  - From the root exports removed `format` in favor of `formatFile`
+  - Updated globby@10.0.0 which [only allows forward slashes in paths](https://github.com/mrmlnc/fast-glob#pattern-syntax)
+    - Fix: If you were running `sortier ".\**\*.ts"` you'll need to update to `sortier "./**/*.ts"`
+  - Configuration file updates
+
+    - Removed `isHelpMode: true` in favor of `logLevel: diagnostic`
+    - Removed javascript options from the root
+
+      - Fix: In the root of your configuration file, if you had any of the javascript specific options you should move them into a js object. For example, migrating from:
+
+        ```
+        {
+          parser: 'typescript',
+          sortClassContents: {},
+          sortImportDeclarationSpecifiers: {},
+          sortImportDeclarations: {},
+          sortTypeAnnotations: {}
+        }
+        ```
+
+        To
+
+        ```
+        {
+          js: {
+            parser: 'typescript',
+            sortClassContents: {},
+            sortImportDeclarationSpecifiers: {},
+            sortImportDeclarations: {},
+            sortTypeAnnotations: {}
+          }
+        }
+        ```
+
+### 2.6.2
+
+- Added `sortImportDeclarationSpecifiers` to the public options (Thanks @abrougher for the bug)
+
+### 2.6.1
+
+- Improved `.sortierignore` file support for monorepos by using the closest .sortierignore file
+
+### 2.6.0
+
+- Added `.sortierignore` file support (Thanks @TikiTDO)
+
 ### 2.5.4
 
 - Moved from `typescript-estree` to `@typescript-eslint/typescript-estree` as the former has been deprecated

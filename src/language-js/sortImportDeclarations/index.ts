@@ -3,14 +3,16 @@ import { compare } from "../../utilities/sort-utils";
 import { StringUtils } from "../../utilities/string-utils";
 
 export type SortImportDeclarationsOrderOption = "first-specifier" | "source";
-export interface SortImportDeclarationsOptions {
+export type SortImportDeclarationsOptions = Partial<
+  SortImportDeclarationsOptionsRequired
+>;
+interface SortImportDeclarationsOptionsRequired {
   orderBy: SortImportDeclarationsOrderOption;
 }
 
 interface SingleImportSource {
   firstSpecifier: string;
   originalIndex: number;
-  source: string;
   originalLocation: {
     end: {
       column: number;
@@ -23,6 +25,7 @@ interface SingleImportSource {
       line: number;
     };
   };
+  source: string;
 }
 
 export function sortImportDeclarations(
@@ -67,15 +70,15 @@ export function sortImportDeclarations(
           end: {
             column: importSource.loc.end.column,
             index: importSource.end,
-            line: importSource.loc.end.line
+            line: importSource.loc.end.line,
           },
           start: {
             column: importSource.loc.start.column,
             index: importSource.start,
-            line: importSource.loc.start.line
-          }
+            line: importSource.loc.start.line,
+          },
         },
-        source: importSource.source.value
+        source: importSource.source.value,
       });
     }
 
@@ -178,8 +181,9 @@ export function sortImportDeclarations(
 
 function ensureOptions(
   options: undefined | null | SortImportDeclarationsOptions
-): SortImportDeclarationsOptions {
+): SortImportDeclarationsOptionsRequired {
   return {
-    orderBy: (options && options.orderBy) || "source"
+    orderBy: "source",
+    ...options,
   };
 }

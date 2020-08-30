@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { readFileSync } from "fs";
 import { sync } from "globby";
-import { basename, join } from "path";
+import { basename } from "path";
 
 // Parsers
 import { parse as flowParse } from "../parsers/flow";
@@ -11,6 +11,7 @@ import { parse as typescriptParse } from "../parsers/typescript";
 import { sortImportDeclarations } from "./index";
 
 // Utilities
+import { FileUtils } from "../../utilities/file-utils";
 import { StringUtils } from "../../utilities/string-utils";
 
 interface TestInfo {
@@ -26,8 +27,11 @@ describe("language-js/sortImportDeclarations", () => {
 
   parserTypes = [];
 
-  let assetsFolderPath = join(__dirname, "test_assets/*.input.txt");
-  testInfos = sync(assetsFolderPath).map(filePath => {
+  let assetsFolderPath = FileUtils.globbyJoin(
+    __dirname,
+    "test_assets/*.input.txt"
+  );
+  testInfos = sync(assetsFolderPath).map((filePath) => {
     let segments = basename(filePath).split(".");
 
     if (parserTypes.indexOf(segments[0]) === -1) {
@@ -42,11 +46,11 @@ describe("language-js/sortImportDeclarations", () => {
       inputFilePath: filePath,
       outputFilePath: filePath.replace(".input.txt", ".output.txt"),
       parserType: segments[0],
-      testName: cleanedTestName
+      testName: cleanedTestName,
     };
   });
 
-  parserTypes.forEach(fileType => {
+  parserTypes.forEach((fileType) => {
     describe(fileType, () => {
       let parser;
       switch (fileType) {
@@ -65,7 +69,7 @@ describe("language-js/sortImportDeclarations", () => {
           );
       }
 
-      testInfos.forEach(testInfo => {
+      testInfos.forEach((testInfo) => {
         if (testInfo.parserType == fileType) {
           describe(testInfo.testName, () => {
             it("Unix line endings", () => {
@@ -98,7 +102,7 @@ describe("language-js/sortImportDeclarations", () => {
   });
 
   describe("es6 - Custom options", () => {
-    it("Sort by first specifier", () => {
+    it("Order by first specifier", () => {
       let input = `import "./styles.scss";
 import "./header.scss";
 import * as React from "react";
@@ -110,7 +114,43 @@ import { Apple } from "./food";
 import * as React from "react";
 import honda from "./cars";`;
       let actual = sortImportDeclarations(flowParse(input).body, input, {
-        orderBy: "first-specifier"
+        orderBy: "first-specifier",
+      });
+
+      expect(actual).to.equal(output);
+    });
+
+    it("Order by source", () => {
+      let input = `import "./styles.scss";
+import "./header.scss";
+import * as React from "react";
+import honda from "./cars";
+import { Apple } from "./food";`;
+      let output = `import * as React from "react";
+import honda from "./cars";
+import { Apple } from "./food";
+import "./header.scss";
+import "./styles.scss";`;
+      let actual = sortImportDeclarations(flowParse(input).body, input, {
+        orderBy: "source",
+      });
+
+      expect(actual).to.equal(output);
+    });
+
+    it("Order by undefined", () => {
+      let input = `import "./styles.scss";
+import "./header.scss";
+import * as React from "react";
+import honda from "./cars";
+import { Apple } from "./food";`;
+      let output = `import * as React from "react";
+import honda from "./cars";
+import { Apple } from "./food";
+import "./header.scss";
+import "./styles.scss";`;
+      let actual = sortImportDeclarations(flowParse(input).body, input, {
+        orderBy: "source",
       });
 
       expect(actual).to.equal(output);

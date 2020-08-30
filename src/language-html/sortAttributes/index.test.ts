@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { readFileSync } from "fs";
 import { sync } from "globby";
-import { basename, join } from "path";
+import { basename } from "path";
 
 // Parsers
 import { parse } from "angular-html-parser";
@@ -10,6 +10,7 @@ import { parse } from "angular-html-parser";
 import { sortAttributes } from "./index";
 
 // Utilities
+import { FileUtils } from "../../utilities/file-utils";
 import { StringUtils } from "../../utilities/string-utils";
 
 interface TestInfo {
@@ -21,8 +22,11 @@ interface TestInfo {
 describe("language-html/sortAttributes", () => {
   let testInfos: TestInfo[];
 
-  let assetsFolderPath = join(__dirname, "test_assets/*.input.html.txt");
-  testInfos = sync(assetsFolderPath).map(filePath => {
+  let assetsFolderPath = FileUtils.globbyJoin(
+    __dirname,
+    "test_assets/*.input.html.txt"
+  );
+  testInfos = sync(assetsFolderPath).map((filePath) => {
     let segments = basename(filePath).split(".");
 
     let cleanedTestName = StringUtils.sentenceCase(
@@ -32,11 +36,11 @@ describe("language-html/sortAttributes", () => {
     return {
       inputFilePath: filePath,
       outputFilePath: filePath.replace(".input.html.txt", ".output.html.txt"),
-      testName: cleanedTestName
+      testName: cleanedTestName,
     };
   });
 
-  testInfos.forEach(testInfo => {
+  testInfos.forEach((testInfo) => {
     it(testInfo.testName, () => {
       let input = readFileSync(testInfo.inputFilePath, "utf8");
       let expected = readFileSync(testInfo.outputFilePath, "utf8");

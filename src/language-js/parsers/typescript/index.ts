@@ -21,7 +21,7 @@ export function parse(text: string /*, parsers, opts*/) {
     }
 
     throw createError(e.message, {
-      start: { column: e.column + 1, line: e.lineNumber }
+      start: { column: e.column + 1, line: e.lineNumber },
     });
   }
 
@@ -34,14 +34,14 @@ function tryParseTypeScript(text: string, jsx: boolean) {
   return parser.parse(text, {
     comment: true,
     errorOnUnknownASTType: false,
-    jsx: true,
+    jsx: jsx,
     loc: true,
     range: true,
     tokens: true,
     useJSXTextNode: false,
     // Override logger function with noop,
     // to avoid unsupported version errors being logged
-    loggerFn: () => {}
+    loggerFn: () => {},
   });
 }
 
@@ -53,7 +53,7 @@ function isProbablyJsx(text: string) {
     [
       "(^[^\"'`]*</)", // Contains "</" when probably not in a string
       "|",
-      "(^[^/]{2}.*/>)" // Contains "/>" on line not starting with "//"
+      "(^[^/]{2}.*/>)", // Contains "/>" on line not starting with "//"
     ].join(""),
     "m"
   ).test(text);

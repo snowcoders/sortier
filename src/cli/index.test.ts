@@ -5,9 +5,9 @@ import * as sinon from "sinon";
 import { run } from "./index";
 
 // Mocks
-import * as cosmiconfig from "cosmiconfig";
+import { cosmiconfigSync } from "cosmiconfig";
 import { Reprinter } from "../reprinter";
-import { LoggerVerboseOption, LogUtils } from "../utilities/log-utils";
+import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils";
 
 describe("cli", () => {
   let logMock: sinon.SinonStubbedInstance<any>;
@@ -47,10 +47,12 @@ describe("cli", () => {
     expect(reprinterMock.lastCall.args[0]).to.contain("/package.json");
   });
 
-  it("Prints error message if rewrite fails", () => {
+  it("Throws exception if rewrite fails", () => {
     reprinterMock.throws("Some error");
 
-    run(["./package.json"]);
+    expect(() => {
+      run(["./package.json"]);
+    }).to.throw();
 
     expect(logMock.lastCall.args[0]).to.equal(LoggerVerboseOption.Normal);
     expect(logMock.lastCall.args[1]).to.contain("Some error");
@@ -64,13 +66,13 @@ describe("cli", () => {
 
     before(() => {
       setVerbosityMock = sinon.stub(LogUtils, "setVerbosity");
-      cosmiconfigMock = sinon.stub(cosmiconfig);
+      cosmiconfigMock = sinon.stub(cosmiconfigSync);
       cosmiconfigMock.returns({
-        searchSync: () => {
+        search: () => {
           return {
-            config: config
+            config: config,
           };
-        }
+        },
       });
     });
 
@@ -84,7 +86,7 @@ describe("cli", () => {
 
     it("Sets log level to diagnostic when set in config", () => {
       config = {
-        logLevel: "diagnostic"
+        logLevel: "diagnostic",
       };
 
       run(["./package.json"]);
@@ -97,7 +99,7 @@ describe("cli", () => {
 
     it("Sets log level to quiet when set in config", () => {
       config = {
-        logLevel: "quiet"
+        logLevel: "quiet",
       };
 
       run(["./package.json"]);
@@ -110,7 +112,7 @@ describe("cli", () => {
 
     it("Sets log level to normal when invalid in config", () => {
       config = {
-        logLevel: "asdfasdf"
+        logLevel: "asdfasdf",
       };
 
       run(["./package.json"]);

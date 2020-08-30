@@ -1,9 +1,9 @@
-import cosmiconfig from "cosmiconfig";
+import { cosmiconfigSync } from "cosmiconfig";
 import { sync } from "globby";
 
 import { Reprinter } from "../reprinter";
 import { ReprinterOptions } from "../reprinter-options";
-import { LoggerVerboseOption, LogUtils } from "../utilities/log-utils";
+import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils";
 
 export function run(args: string[]) {
   {
@@ -16,7 +16,22 @@ export function run(args: string[]) {
     }
 
     let options: null | ReprinterOptions = null;
-    sync(args).map(filePath => {
+    let files = sync(args);
+    let error = null;
+    if (files.length === 0) {
+      if (args[0].indexOf("\\") !== -1) {
+        LogUtils.log(
+          LoggerVerboseOption.Normal,
+          "Sortier no longer supports file paths that contain '\\' (see fast-glob@3.0.0 release notes). Is your glob pattern correct?"
+        );
+      } else {
+        LogUtils.log(
+          LoggerVerboseOption.Normal,
+          "No filepaths found for file pattern"
+        );
+      }
+    }
+    files.map((filePath) => {
       if (options == null) {
         options = getConfig(filePath);
       }
@@ -24,6 +39,7 @@ export function run(args: string[]) {
       try {
         Reprinter.rewriteFile(filePath, options);
       } catch (e) {
+        error = e;
         LogUtils.log(LoggerVerboseOption.Normal, "");
         LogUtils.log(
           LoggerVerboseOption.Normal,
@@ -34,19 +50,21 @@ ${e}`
       }
     });
 
+    if (error != null) {
+      throw error;
+    }
+
     return 0;
   }
 }
 
 function getConfig(filename: string): ReprinterOptions {
-  const explorer = cosmiconfig("sortier");
-  const result = explorer.searchSync(filename);
-  let options = result == null ? {} : (result.config as ReprinterOptions);
+  const explorer = cosmiconfigSync("sortier");
+  const result = explorer.search(filename);
+  let config = result == null ? {} : result.config;
+  let options = config as ReprinterOptions;
 
   // Set the LogUtils verbosity based on options
-  if (options.isHelpMode) {
-    LogUtils.setVerbosity(LoggerVerboseOption.Diagnostic);
-  }
   if (options.logLevel != null) {
     switch (options.logLevel) {
       case "diagnostic":
@@ -58,6 +76,27 @@ function getConfig(filename: string): ReprinterOptions {
       default:
         LogUtils.setVerbosity(LoggerVerboseOption.Normal);
         break;
+    }
+  }
+
+  if (config["isHelpMode"] != null) {
+    LogUtils.log(
+      LoggerVerboseOption.Normal,
+      `Config property 'isHelpMode' has been replaced with 'logLevel'. Please upgrade your config file.`
+    );
+  }
+  for (let removedProperty of [
+    "parser",
+    "sortClassContents",
+    "sortImportDeclarationSpecifiers",
+    "sortImportDeclarations",
+    "sortTypeAnnotations",
+  ]) {
+    if (config[removedProperty] != null) {
+      LogUtils.log(
+        LoggerVerboseOption.Normal,
+        `Config property '${removedProperty}' has been moved in 3.0.0 to the 'js' property. Please upgrade your config file.`
+      );
     }
   }
 

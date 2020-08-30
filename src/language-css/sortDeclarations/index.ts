@@ -3,7 +3,7 @@ import {
   Comment,
   compare,
   getContextGroups,
-  reorderValues
+  reorderValues,
 } from "../../utilities/sort-utils";
 
 export interface SortDeclarationsOptions {
@@ -13,6 +13,7 @@ export interface SortDeclarationsOptions {
 interface AttrInfo extends BaseNode {
   prop: string;
   source: string;
+  value: string;
 }
 
 export function sortDeclarations(
@@ -38,41 +39,42 @@ export function sortDeclarations(
     return fileContents;
   }
 
-  let columnIndexToOffset: number[] = [];
+  let columnIndexToOffset: number[] = [0];
   for (let x = 0; x < fileContents.length; x++) {
     if (fileContents[x] === "\n") {
       columnIndexToOffset.push(x);
     }
   }
   // Get the range locations of all declarations
-  let attributeInfos: AttrInfo[] = declarations.map(value => {
+  let attributeInfos: AttrInfo[] = declarations.map((value) => {
     let startOffset =
-      columnIndexToOffset[value.source.start.line - 2] +
+      columnIndexToOffset[value.source.start.line - 1] +
       value.source.start.column;
     let endOffset =
-      columnIndexToOffset[value.source.end.line - 2] + value.source.end.column;
+      columnIndexToOffset[value.source.end.line - 1] + value.source.end.column;
     let source = fileContents.substring(startOffset, endOffset);
     let result: AttrInfo = {
       prop: value.prop,
       range: [startOffset, endOffset],
-      source: source
+      source: source,
+      value: value.value,
     };
     return result;
   });
   // Get the range locations of all declarations
-  let commentInfos: Comment[] = comments.map(value => {
+  let commentInfos: Comment[] = comments.map((value) => {
     let startOffset =
-      columnIndexToOffset[value.source.start.line - 2] +
+      columnIndexToOffset[value.source.start.line - 1] +
       value.source.start.column;
     let endOffset =
-      columnIndexToOffset[value.source.end.line - 2] +
+      columnIndexToOffset[value.source.end.line - 1] +
       value.source.end.column +
       1;
     let source = fileContents.substring(startOffset, endOffset);
     let isBlock = source.trim().startsWith("/*");
     let result: Comment = {
       range: [startOffset, endOffset],
-      type: isBlock ? "Block" : "Line"
+      type: isBlock ? "Block" : "Line",
     };
     return result;
   });
@@ -87,6 +89,25 @@ export function sortDeclarations(
   // Actual sorting
   let newFileContents = fileContents;
   for (let group of groupedAttributes) {
+    // Check to see if any of the variables defined are used by properties. If so, we shoudn't sort
+    let shouldSkip = false;
+    for (let i = 0; i < group.nodes.length; i++) {
+      for (let j = i + 1; j < group.nodes.length; j++) {
+        let nodeI = group.nodes[i];
+        let nodej = group.nodes[j];
+        if (nodej.value.indexOf(nodeI.prop) !== -1) {
+          shouldSkip = true;
+          break;
+        }
+      }
+      if (shouldSkip) {
+        break;
+      }
+    }
+    if (shouldSkip) {
+      continue;
+    }
+
     let oldOrder = group.nodes;
     let newOrder = oldOrder.slice();
     let propertyToSortableText = new Map();

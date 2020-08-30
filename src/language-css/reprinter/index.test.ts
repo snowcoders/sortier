@@ -16,14 +16,14 @@ interface TestInfo {
 }
 
 describe("language-css/reprinter", () => {
-  ["css", "less"].forEach(cssType => {
+  ["css", "scss", "less"].forEach((cssType) => {
     let testInfos: TestInfo[];
 
-    let assetsFolderPath = join(
+    let assetsFolderPath = FileUtils.globbyJoin(
       __dirname,
       `test_assets/*.input.${cssType}.txt`
     );
-    testInfos = sync(assetsFolderPath).map(filePath => {
+    testInfos = sync(assetsFolderPath).map((filePath) => {
       let segments = basename(filePath).split(".");
 
       let cleanedTestName = StringUtils.sentenceCase(
@@ -34,12 +34,12 @@ describe("language-css/reprinter", () => {
         inputFilePath: filePath,
         outputFilePath: filePath.replace(".input.", ".output."),
         parserType: segments[2],
-        testName: cleanedTestName
+        testName: cleanedTestName,
       };
     });
 
     describe(cssType, () => {
-      testInfos.forEach(testInfo => {
+      testInfos.forEach((testInfo) => {
         it(testInfo.testName, () => {
           let input = FileUtils.readFileContents(testInfo.inputFilePath);
           let expected = FileUtils.readFileContents(testInfo.outputFilePath);
@@ -83,9 +83,9 @@ describe("language-css/reprinter", () => {
         {
           css: {
             sortDeclarations: {
-              overrides: ["*", "right", "bottom", "left"]
-            }
-          }
+              overrides: ["*", "right", "bottom", "left"],
+            },
+          },
         }
       );
 
@@ -105,9 +105,9 @@ describe("language-css/reprinter", () => {
         {
           css: {
             sortDeclarations: {
-              overrides: ["top", "right", "bottom"]
-            }
-          }
+              overrides: ["top", "right", "bottom"],
+            },
+          },
         }
       );
 
@@ -133,8 +133,8 @@ describe("language-css/reprinter", () => {
     `;
       let actual = new Reprinter().getRewrittenContents("example.fake", input, {
         css: {
-          parser: "less"
-        }
+          parser: "less",
+        },
       });
 
       expect(actual).to.equal(expected);
@@ -157,14 +157,14 @@ describe("language-css/reprinter", () => {
     `;
       let actual = new Reprinter().getRewrittenContents("example.fake", input, {
         css: {
-          parser: "scss"
-        }
+          parser: "scss",
+        },
       });
 
       expect(actual).to.equal(expected);
     });
 
-    it("Throws error when unsupported file is provided", () => {
+    it("Throws error if file is not supported", () => {
       let input = `
     .example {
       position: relative;
@@ -174,8 +174,18 @@ describe("language-css/reprinter", () => {
     `;
       expect(() => {
         new Reprinter().getRewrittenContents("example.fake", input, {
-          css: {}
+          css: {},
         });
+      }).to.throw();
+    });
+
+    it("Throws an error if the file cannot be parsed", () => {
+      expect(() => {
+        new Reprinter().getRewrittenContents(
+          "parse_fail.css",
+          "This shouldn't parse",
+          {}
+        );
       }).to.throw();
     });
   });

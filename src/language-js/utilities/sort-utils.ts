@@ -25,8 +25,7 @@ let defaultObjectTypeOrder: TypeAnnotationOption[] = [
   "undefined",
   "null",
   "*",
-  "object",
-  "function"
+  "function",
 ];
 let lastCalculatedRankOptions: undefined | TypeAnnotationOption[] = undefined;
 let lastCalculatedRankMap: undefined | RankMap = undefined;
@@ -72,12 +71,12 @@ export function getObjectTypeRanks(options?: TypeAnnotationOption[]): RankMap {
     function: functionRank,
     null: nullRank,
     object: objectRank,
-    undefined: undefinedRank
+    undefined: undefinedRank,
   };
   return lastCalculatedRankMap;
 }
 
-export function getSpreadGroups<T extends Node>(allNodes: (T)[]) {
+export function getSpreadGroups<T extends Node>(allNodes: T[]) {
   // Any time there is a spread operator, we need to sort around it... moving it could cause functionality changes
   let spreadGroups: T[][] = [];
   let currentStart = 0;

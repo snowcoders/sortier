@@ -16,8 +16,8 @@ module.exports = {
         "componentWillUnmount",
         "componentDidUnmount",
         "render",
-        "*"
-      ]
-    }
-  }
+        "*",
+      ],
+    },
+  },
 };

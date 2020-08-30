@@ -16,39 +16,10 @@ interface TestInfo {
   testName: string;
 }
 
-type Executor = (inputFilePath: string, inputFileContents: string) => string;
-
-export function runTestAssestsTests(folderPath: string, executor: Executor) {
-  const testNodes = getTestAssetsTree(folderPath);
-  if (testNodes.length === 0) {
-    throw new Error("Never expected 0 test nodes");
-  }
-  runNodes(testNodes, executor);
-}
-
-function runNodes(testNodes: Array<TestTreeNode>, executor: Executor) {
-  for (let node of testNodes) {
-    if (node.children.length === 0 && node.tests.length === 0) {
-      throw new Error("Test node must have children and/or tests");
-    }
-
-    describe(StringUtils.sentenceCase(node.name), () => {
-      // Run all the tests
-      node.tests.forEach((testInfo) => {
-        it(StringUtils.sentenceCase(testInfo.testName), () => {
-          let input = FileUtils.readFileContents(testInfo.inputFilePath);
-          let expected = FileUtils.readFileContents(testInfo.outputFilePath);
-          let actual = executor(testInfo.inputFilePath, input);
-
-          expect(actual).to.equal(expected);
-        });
-      });
-
-      // Run all the children
-      runNodes(node.children, executor);
-    });
-  }
-}
+type TestInputTransform = (
+  inputFilePath: string,
+  inputFileContents: string
+) => string;
 
 /**
  * Given a directory, reads all the files from the test_assets folder in that directory and generates
@@ -64,7 +35,46 @@ function runNodes(testNodes: Array<TestTreeNode>, executor: Executor) {
  *  - es6.spread.imports.input.js.txt
  *
  * @param folderPath The directory that contains a test_assets folder
+ * @param transform The reprinting logic to transform the input code and return the output
  */
+export function runTestAssestsTests(
+  folderPath: string,
+  transform: TestInputTransform
+) {
+  const testNodes = getTestAssetsTree(folderPath);
+  if (testNodes.length === 0) {
+    throw new Error("Never expected 0 test nodes");
+  }
+  runNodes(testNodes, transform);
+}
+
+function runNodes(
+  testNodes: Array<TestTreeNode>,
+  transform: TestInputTransform
+) {
+  for (let node of testNodes) {
+    if (node.children.length === 0 && node.tests.length === 0) {
+      throw new Error("Test node must have children and/or tests");
+    }
+
+    describe(StringUtils.sentenceCase(node.name), () => {
+      // Run all the tests
+      node.tests.forEach((testInfo) => {
+        it(StringUtils.sentenceCase(testInfo.testName), () => {
+          let input = FileUtils.readFileContents(testInfo.inputFilePath);
+          let expected = FileUtils.readFileContents(testInfo.outputFilePath);
+          let actual = transform(testInfo.inputFilePath, input);
+
+          expect(actual).to.equal(expected);
+        });
+      });
+
+      // Run all the children
+      runNodes(node.children, transform);
+    });
+  }
+}
+
 function getTestAssetsTree(folderPath: string) {
   let roots: Array<TestTreeNode> = [];
 

@@ -1,0 +1,69 @@
+// sortier-ignore-next-line - All on one line, doesn't sort
+const example = 2 * pi * distance * distance * 5
+
+// sortier-ignore-nodes - All on one line, doesn't sort
+const example = 2 * pi * distance * distance * 5
+
+/* sortier-ignore-next-line - All on one line, doesn't sort */
+const example = 2 * pi * distance * distance * 5
+
+/* sortier-ignore-nodes - All on one line, doesn't sort */
+const example = 2 * pi * distance * distance * 5
+
+// sortier-ignore-next-line - All on multiple lines, sorts because expression is not on the next line
+const example = 
+      2 
+      * 5 
+      * distance * distance 
+      * pi 
+
+// sortier-ignore-nodes - Since this affects the whole node, doesn't sort
+const example = 
+      2
+      * pi
+      * distance * distance
+      * 5
+
+// sortier-ignore-next-line - Doesn't do anything since the case statements aren't on the next line
+switch ("a") {
+      case "a":
+      case "b":
+            console.log("a");
+            break;
+      case "c":
+      case "d":
+            // The ignore statement stops sorting for the whole tree, not just the node above it
+            let {a1, a3} = d;
+            console.log("c");
+            break;
+      default:
+            break;
+}
+
+// sortier-ignore-nodes - Prevents sorting the switch statement along with all nodes inside (e.g. see `a3, a1`)
+switch ("a") {
+      case "c":
+      case "d":
+            // The ignore statement stops sorting for the whole tree, not just the node above it
+            let {a3, a1} = d;
+            console.log("c");
+            break;
+      case "b":
+      case "a":
+            console.log("a");
+            break;
+      default:
+            break;
+}
+
+// sortier-ignore-next-line - Ignores the destructure (all on next line) but the right side is sorted
+const {b, a} = {
+      a: "a",
+      b: "b",
+}
+
+// sortier-ignore-nodes - All are ignored as all nodes start on next line
+const {b, a} = {
+      b: "b",
+      a: "a",
+}

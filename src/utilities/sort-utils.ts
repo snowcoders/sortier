@@ -703,3 +703,28 @@ function isValidComment(fileContents: string, comment: Comment) {
 
   return true;
 }
+
+export function isIgnored<
+  NodeType extends BaseNode,
+  CommentType extends Comment
+>(fileContents: string, comments: CommentType[], node: NodeType) {
+  if (node.range == null) {
+    return false;
+  }
+  let newLineBeforeRange = fileContents.lastIndexOf("\n", node.range[0]);
+  if (newLineBeforeRange === -1) {
+    return false;
+  }
+  let beginningOfLine = fileContents.lastIndexOf("\n", newLineBeforeRange - 1);
+  beginningOfLine = beginningOfLine === -1 ? 0 : beginningOfLine;
+
+  let commentText = fileContents.substring(beginningOfLine, newLineBeforeRange);
+  if (commentText.indexOf("sortier-ignore-nodes") !== -1) {
+    return true;
+  }
+  if (commentText.indexOf("sortier-ignore-next-line") === -1) {
+    return false;
+  }
+  let nodeText = fileContents.substring(node.range[0], node.range[1]);
+  return nodeText.indexOf("\n") === -1;
+}

@@ -1,59 +1,24 @@
 import { expect } from "chai";
-import { sync } from "globby";
-import { basename, join } from "path";
+import { join } from "path";
 
 // The methods being tested here
 import { Reprinter } from "./index";
 
 // Utilities
 import { FileUtils } from "../../utilities/file-utils";
-import { StringUtils } from "../../utilities/string-utils";
-
-interface TestInfo {
-  inputFilePath: string;
-  outputFilePath: string;
-  testName: string;
-}
+import { runTestAssestsTests } from "../../utilities/test-utils";
 
 describe("language-css/reprinter", () => {
-  ["css", "scss", "less"].forEach((cssType) => {
-    let testInfos: TestInfo[];
-
-    let assetsFolderPath = FileUtils.globbyJoin(
-      __dirname,
-      `test_assets/*.input.${cssType}.txt`
-    );
-    testInfos = sync(assetsFolderPath).map((filePath) => {
-      let segments = basename(filePath).split(".");
-
-      let cleanedTestName = StringUtils.sentenceCase(
-        segments[0].replace(/_/g, " ")
+  runTestAssestsTests(
+    __dirname,
+    (inputFilePath: string, inputFileContents: string) => {
+      return new Reprinter().getRewrittenContents(
+        inputFilePath,
+        inputFileContents,
+        {}
       );
-
-      return {
-        inputFilePath: filePath,
-        outputFilePath: filePath.replace(".input.", ".output."),
-        parserType: segments[2],
-        testName: cleanedTestName,
-      };
-    });
-
-    describe(cssType, () => {
-      testInfos.forEach((testInfo) => {
-        it(testInfo.testName, () => {
-          let input = FileUtils.readFileContents(testInfo.inputFilePath);
-          let expected = FileUtils.readFileContents(testInfo.outputFilePath);
-          let actual = new Reprinter().getRewrittenContents(
-            testInfo.inputFilePath,
-            input,
-            {}
-          );
-
-          expect(actual).to.equal(expected);
-        });
-      });
-    });
-  });
+    }
+  );
 
   describe("Default file support", () => {
     it("Supports css", () => {

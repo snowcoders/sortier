@@ -1,8 +1,3 @@
-import { expect } from "chai";
-import { readFileSync } from "fs";
-import { sync } from "globby";
-import { basename } from "path";
-
 // Parsers
 import { parse } from "angular-html-parser";
 
@@ -10,44 +5,15 @@ import { parse } from "angular-html-parser";
 import { sortAttributes } from "./index";
 
 // Utilities
-import { FileUtils } from "../../utilities/file-utils";
-import { StringUtils } from "../../utilities/string-utils";
-
-interface TestInfo {
-  inputFilePath: string;
-  outputFilePath: string;
-  testName: string;
-}
+import { runTestAssestsTests } from "../../utilities/test-utils";
 
 describe("language-html/sortAttributes", () => {
-  let testInfos: TestInfo[];
-
-  let assetsFolderPath = FileUtils.globbyJoin(
+  runTestAssestsTests(
     __dirname,
-    "test_assets/*.input.html.txt"
+    (inputFilePath: string, inputFileContents: string) => {
+      let node = parse(inputFileContents);
+      let actual = sortAttributes(node.rootNodes[0], inputFileContents);
+      return actual;
+    }
   );
-  testInfos = sync(assetsFolderPath).map((filePath) => {
-    let segments = basename(filePath).split(".");
-
-    let cleanedTestName = StringUtils.sentenceCase(
-      segments[0].replace(/_/g, " ")
-    );
-
-    return {
-      inputFilePath: filePath,
-      outputFilePath: filePath.replace(".input.html.txt", ".output.html.txt"),
-      testName: cleanedTestName,
-    };
-  });
-
-  testInfos.forEach((testInfo) => {
-    it(testInfo.testName, () => {
-      let input = readFileSync(testInfo.inputFilePath, "utf8");
-      let expected = readFileSync(testInfo.outputFilePath, "utf8");
-      let node = parse(input);
-      let actual = sortAttributes(node.rootNodes[0], input);
-
-      expect(actual).to.equal(expected);
-    });
-  });
 });

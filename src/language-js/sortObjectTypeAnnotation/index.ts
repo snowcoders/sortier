@@ -22,26 +22,26 @@ export function sortObjectTypeAnnotation(
   options: SortObjectTypeAnnotationOptions
 ) {
   let newFileContents = fileContents.slice();
-  let allNodes: any[] = objectTypeAnnotation.properties;
+  const allNodes: any[] = objectTypeAnnotation.properties;
 
   // Any time there is a spread operator, we need to sort around it... moving it could cause functionality changes
-  let spreadGroups: any[] = getSpreadGroups(allNodes);
+  const spreadGroups: any[] = getSpreadGroups(allNodes);
 
-  for (let nodes of spreadGroups) {
-    let contextGroups = getContextGroups(nodes, comments, fileContents);
+  for (const nodes of spreadGroups) {
+    const contextGroups = getContextGroups(nodes, comments, fileContents);
 
     contextGroups.forEach((element) => {
-      let unsorted: any[] = element.nodes;
-      let sorted: any[] = element.nodes.slice().sort((a, b) => {
-        let aGroup = getSortGroupIndex(a, options);
-        let bGroup = getSortGroupIndex(b, options);
+      const unsorted: any[] = element.nodes;
+      const sorted: any[] = element.nodes.slice().sort((a, b) => {
+        const aGroup = getSortGroupIndex(a, options);
+        const bGroup = getSortGroupIndex(b, options);
 
-        if (aGroup != bGroup) {
+        if (aGroup !== bGroup) {
           return aGroup - bGroup;
         }
 
-        let aKey = getPropertyKey(a, fileContents);
-        let bKey = getPropertyKey(b, fileContents);
+        const aKey = getPropertyKey(a, fileContents);
+        const bKey = getPropertyKey(b, fileContents);
 
         return compare(aKey, bKey);
       });
@@ -74,7 +74,7 @@ function getSortGroupIndex(
   property,
   options: SortObjectTypeAnnotationOptions
 ): number {
-  let ranks = getObjectTypeRanks(options.groups);
+  const ranks = getObjectTypeRanks(options.groups);
 
   if (property.value != null) {
     if (property.value.type === "NullLiteralTypeAnnotation") {

@@ -65,9 +65,9 @@ class ExpressionSorter {
     }
 
     // Check to see if we can actually sort this binary expression
-    let operandStack = [this.expression];
+    const operandStack = [this.expression];
     while (operandStack.length !== 0) {
-      let operand = operandStack.pop();
+      const operand = operandStack.pop();
 
       if (operand.type === "BinaryExpression") {
         if (
@@ -83,15 +83,15 @@ class ExpressionSorter {
       }
     }
 
-    let rebuiltString = this.sortAndFlattenOperandTree(
+    const rebuiltString = this.sortAndFlattenOperandTree(
       this.rebuildVariableDeclarator(this.expression)
     );
 
-    let untouchedBeginning = this.fileContents.slice(
+    const untouchedBeginning = this.fileContents.slice(
       0,
       rebuiltString.values[0].range[0]
     );
-    let untouchedEnd = this.fileContents.slice(
+    const untouchedEnd = this.fileContents.slice(
       rebuiltString.values[0].range[1]
     );
 
@@ -101,7 +101,7 @@ class ExpressionSorter {
   // Recursive depth first search to rebuild the string
   public rebuildVariableDeclarator(operand: any): OperatorInfo {
     if (operand.type !== "BinaryExpression") {
-      let group = this.getGroupIndex(operand);
+      const group = this.getGroupIndex(operand);
       return {
         accumulatedOperator: null,
         values: [
@@ -122,14 +122,14 @@ class ExpressionSorter {
     let right = this.rebuildVariableDeclarator(operand.right);
     if (
       left.accumulatedOperator != null &&
-      left.accumulatedOperator != operand.operator
+      left.accumulatedOperator !== operand.operator
     ) {
       accumulatedOperator = "Mixed";
       left = this.sortAndFlattenOperandTree(left);
     }
     if (
       right.accumulatedOperator != null &&
-      right.accumulatedOperator != operand.operator
+      right.accumulatedOperator !== operand.operator
     ) {
       accumulatedOperator = "Mixed";
       right = this.sortAndFlattenOperandTree(right);
@@ -161,7 +161,7 @@ class ExpressionSorter {
       }
     });
 
-    let unsortedValues = addParenthesis(this.fileContents, operand.values);
+    const unsortedValues = addParenthesis(this.fileContents, operand.values);
     let sortedValues;
     // If we are in a mixed scenario, we can't order because we may change the resulting value
     if (operand.accumulatedOperator === "Mixed") {
@@ -191,14 +191,14 @@ class ExpressionSorter {
   }
 
   public getSortedValues(values: OperandValue[]) {
-    let sortedValues = values.slice(0);
+    const sortedValues = values.slice(0);
 
     // TODO Can these operand values be functions or objects?
     sortedValues.sort((a: OperandValue, b: OperandValue) => {
-      let aRank = a.groupIndex;
-      let bRank = b.groupIndex;
+      const aRank = a.groupIndex;
+      const bRank = b.groupIndex;
 
-      if (aRank == bRank) {
+      if (aRank === bRank) {
         return compare(a.value, b.value);
       }
       return aRank - bRank;
@@ -208,7 +208,7 @@ class ExpressionSorter {
   }
 
   private getGroupIndex(a: any): number {
-    let groupRanks = this.getAllRanks();
+    const groupRanks = this.getAllRanks();
     if (a.type.indexOf("Function") !== -1) {
       return groupRanks.function;
     }

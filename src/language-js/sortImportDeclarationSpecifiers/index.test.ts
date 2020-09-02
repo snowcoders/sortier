@@ -10,7 +10,7 @@ import { sortImportDeclarationSpecifiers } from "./index";
 import { runTestAssestsTests } from "../../utilities/test-utils";
 import { getParser } from "../utilities/test-utils";
 
-let getSortedOverBody = (body, comments, input, options?) => {
+const getSortedOverBody = (body, comments, input, options?) => {
   let actual = input;
   body.forEach((item) => {
     actual = sortImportDeclarationSpecifiers(
@@ -28,9 +28,9 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
     __dirname,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
-      let parsed = parser(inputFileContents);
+      const parsed = parser(inputFileContents);
 
-      let actual = getSortedOverBody(
+      const actual = getSortedOverBody(
         parsed.body,
         parsed.comments,
         inputFileContents
@@ -41,10 +41,11 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
 
   describe("Flow - custom order", () => {
     it("Group by everything then types then interfaces", () => {
-      let input = 'import { type Hi, Something, IInterface } from "module";';
-      let expected = 'import { Something, type Hi, IInterface } from "module";';
-      let parsed = flowParse(input);
-      let output = getSortedOverBody(parsed.body, parsed.comments, input, {
+      const input = 'import { type Hi, Something, IInterface } from "module";';
+      const expected =
+        'import { Something, type Hi, IInterface } from "module";';
+      const parsed = flowParse(input);
+      const output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["*", "types", "interfaces"],
         orderBy: "alpha",
       });
@@ -52,10 +53,11 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
     });
 
     it("Group by everything then types", () => {
-      let input = 'import { type Hi, Something, IInterface } from "module";';
-      let expected = 'import { IInterface, Something, type Hi } from "module";';
-      let parsed = flowParse(input);
-      let output = getSortedOverBody(parsed.body, parsed.comments, input, {
+      const input = 'import { type Hi, Something, IInterface } from "module";';
+      const expected =
+        'import { IInterface, Something, type Hi } from "module";';
+      const parsed = flowParse(input);
+      const output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["*", "types"],
         orderBy: "alpha",
       });
@@ -63,10 +65,11 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
     });
 
     it("Group by everything then interfaces", () => {
-      let input = 'import { type Hi, Something, IInterface } from "module";';
-      let expected = 'import { type Hi, Something, IInterface } from "module";';
-      let parsed = flowParse(input);
-      let output = getSortedOverBody(parsed.body, parsed.comments, input, {
+      const input = 'import { type Hi, Something, IInterface } from "module";';
+      const expected =
+        'import { type Hi, Something, IInterface } from "module";';
+      const parsed = flowParse(input);
+      const output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["*", "interfaces"],
         orderBy: "alpha",
       });
@@ -74,10 +77,11 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
     });
 
     it("Group by interfaces then everything", () => {
-      let input = 'import { type Hi, Something, IInterface } from "module";';
-      let expected = 'import { IInterface, type Hi, Something } from "module";';
-      let parsed = flowParse(input);
-      let output = getSortedOverBody(parsed.body, parsed.comments, input, {
+      const input = 'import { type Hi, Something, IInterface } from "module";';
+      const expected =
+        'import { IInterface, type Hi, Something } from "module";';
+      const parsed = flowParse(input);
+      const output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["interfaces", "*"],
         orderBy: "alpha",
       });
@@ -87,10 +91,10 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
 
   describe("Typescript - custom order", () => {
     it("Group by interfaces then everything", () => {
-      let input = 'import { Hi, Something, IInterface } from "module";';
-      let expected = 'import { IInterface, Hi, Something } from "module";';
-      let parsed = flowParse(input);
-      let output = getSortedOverBody(parsed.body, parsed.comments, input, {
+      const input = 'import { Hi, Something, IInterface } from "module";';
+      const expected = 'import { IInterface, Hi, Something } from "module";';
+      const parsed = flowParse(input);
+      const output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["interfaces", "*"],
         orderBy: "alpha",
       });

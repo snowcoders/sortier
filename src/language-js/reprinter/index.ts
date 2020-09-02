@@ -71,9 +71,9 @@ export class Reprinter implements ILanguage {
     this._options = this.getValidatedOptions(options);
     this._helpModeHasPrintedFilename = false;
 
-    let parser = this.getParser();
-    let ast = parser(fileContents);
-    let comments: Comment[] = ast.comments;
+    const parser = this.getParser();
+    const ast = parser(fileContents);
+    const comments: Comment[] = ast.comments;
 
     return this.rewriteNodes([ast], comments, fileContents);
   }
@@ -88,7 +88,7 @@ export class Reprinter implements ILanguage {
   private getValidatedOptions(
     appOptions: BaseReprinterOptions
   ): JsReprinterOptionsRequired {
-    let partialOptions = appOptions.js || {};
+    const partialOptions = appOptions.js || {};
     let sortTypeAnnotations:
       | undefined
       | Array<TypeAnnotationOption> = undefined;
@@ -113,7 +113,7 @@ export class Reprinter implements ILanguage {
     }
 
     // If the user didn't override the parser type, try to infer it
-    let isTypescript = StringUtils.stringEndsWithAny(
+    const isTypescript = StringUtils.stringEndsWithAny(
       this._filename,
       Reprinter.TYPESCRIPT_EXTENSIONS
     );
@@ -121,7 +121,7 @@ export class Reprinter implements ILanguage {
       return parseTypescript;
     }
 
-    let isJavascript = StringUtils.stringEndsWithAny(
+    const isJavascript = StringUtils.stringEndsWithAny(
       this._filename,
       Reprinter.JAVASCRIPT_EXTENSIONS
     );
@@ -138,9 +138,9 @@ export class Reprinter implements ILanguage {
     fileContents: string
   ) {
     let lastClassName = undefined;
-    let nodes = originalNodes.slice();
+    const nodes = originalNodes.slice();
     while (nodes.length !== 0) {
-      let node = nodes.shift();
+      const node = nodes.shift();
       if (Array.isArray(node)) {
         throw new Error(
           "Unexpected Exception - Array sent as node in rewrite nodes"
@@ -225,7 +225,7 @@ export class Reprinter implements ILanguage {
           case "ClassBody": {
             fileContents = this.rewriteNodes(node.body, comments, fileContents);
 
-            let sortClassContentsOptions = this._options.sortClassContents;
+            const sortClassContentsOptions = this._options.sortClassContents;
             if (sortClassContentsOptions != null) {
               // TODO Fairly sure there is more in a class than just this
               fileContents = sortClassContents(
@@ -543,7 +543,6 @@ export class Reprinter implements ILanguage {
           case "TSNullKeyword":
           case "TSNumberKeyword":
           case "TSObjectKeyword":
-          case "TSParenthesizedType":
           case "TSStringKeyword":
           case "TSTypeOperator":
           case "TSTypeQuery":

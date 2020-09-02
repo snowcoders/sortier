@@ -3,7 +3,7 @@ import { join } from "path";
 
 export class FileUtils {
   public static globbyJoin(...paths: string[]) {
-    let path = join(...paths);
+    const path = join(...paths);
     return path.split("\\").join("/");
   }
 

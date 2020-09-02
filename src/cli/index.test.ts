@@ -62,7 +62,7 @@ describe("cli", () => {
   xdescribe("Cosmiconfig settings", () => {
     let setVerbosityMock: sinon.SinonStubbedInstance<any>;
     let cosmiconfigMock: sinon.SinonStubbedInstance<any>;
-    let config: Object;
+    let config: unknown;
 
     before(() => {
       setVerbosityMock = sinon.stub(LogUtils, "setVerbosity");

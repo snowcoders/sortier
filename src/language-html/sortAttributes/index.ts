@@ -12,36 +12,36 @@ export function sortAttributes(node: any, fileContents: string) {
   if (node == null || node.attrs == null) {
     return fileContents;
   }
-  let attrs: any[] = node.attrs;
+  const attrs: any[] = node.attrs;
   if (attrs.length <= 1) {
     return fileContents;
   }
 
   // Split attributes into context blocks
-  let contextBarrierIndices = StringUtils.getBlankLineLocations(
+  const contextBarrierIndices = StringUtils.getBlankLineLocations(
     fileContents,
     node.sourceSpan.start.offset,
     node.sourceSpan.end.offset
   );
-  let attributeInfos: AttrInfo[] = attrs.map((value) => {
-    let startOffset = value.sourceSpan.start.offset;
-    let endOffset = value.sourceSpan.end.offset;
-    let result: AttrInfo = {
+  const attributeInfos: AttrInfo[] = attrs.map((value) => {
+    const startOffset = value.sourceSpan.start.offset;
+    const endOffset = value.sourceSpan.end.offset;
+    const result: AttrInfo = {
       endOffset,
       source: fileContents.substring(startOffset, endOffset),
       startOffset,
     };
     return result;
   });
-  let groupedAttributes: AttrInfo[][] = [];
+  const groupedAttributes: AttrInfo[][] = [];
   let currentGroup: AttrInfo[] = [];
   while (0 < contextBarrierIndices.length) {
-    let barrierIndex = contextBarrierIndices.shift();
+    const barrierIndex = contextBarrierIndices.shift();
     if (barrierIndex == null) {
       break;
     }
     while (0 < attributeInfos.length) {
-      let attributeInfo = attributeInfos.shift();
+      const attributeInfo = attributeInfos.shift();
       if (attributeInfo == null) {
         break;
       }
@@ -63,8 +63,8 @@ export function sortAttributes(node: any, fileContents: string) {
 
   // Actual sorting
   let newFileContents = fileContents;
-  for (let group of groupedAttributes) {
-    let newOrder = group.slice();
+  for (const group of groupedAttributes) {
+    const newOrder = group.slice();
     newOrder.sort((a, b) => {
       return compare(a.source, b.source);
     });
@@ -89,13 +89,13 @@ function reorderValues(
   let newFileContents = fileContents.slice();
 
   for (let x = 0; x < unsortedTypes.length; x++) {
-    let unsorted = unsortedTypes[x];
-    let sorted = sortedTypes[x];
-    let beginning = newFileContents.slice(
+    const unsorted = unsortedTypes[x];
+    const sorted = sortedTypes[x];
+    const beginning = newFileContents.slice(
       0,
       unsorted.startOffset + offsetCorrection
     );
-    let end = newFileContents.slice(unsorted.endOffset + offsetCorrection);
+    const end = newFileContents.slice(unsorted.endOffset + offsetCorrection);
     newFileContents = beginning + sorted.source + end;
     offsetCorrection +=
       sorted.source.length - (unsorted.endOffset - unsorted.startOffset);

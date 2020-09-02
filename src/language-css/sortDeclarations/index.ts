@@ -21,10 +21,10 @@ export function sortDeclarations(
   fileContents: string,
   options: SortDeclarationsOptions
 ) {
-  let comments: any[] = [];
-  let declarations: any[] = [];
+  const comments: any[] = [];
+  const declarations: any[] = [];
 
-  for (let child of node.nodes) {
+  for (const child of node.nodes) {
     switch (child.type) {
       case "comment":
         comments.push(child);
@@ -39,21 +39,21 @@ export function sortDeclarations(
     return fileContents;
   }
 
-  let columnIndexToOffset: number[] = [0];
+  const columnIndexToOffset: number[] = [0];
   for (let x = 0; x < fileContents.length; x++) {
     if (fileContents[x] === "\n") {
       columnIndexToOffset.push(x);
     }
   }
   // Get the range locations of all declarations
-  let attributeInfos: AttrInfo[] = declarations.map((value) => {
-    let startOffset =
+  const attributeInfos: AttrInfo[] = declarations.map((value) => {
+    const startOffset =
       columnIndexToOffset[value.source.start.line - 1] +
       value.source.start.column;
-    let endOffset =
+    const endOffset =
       columnIndexToOffset[value.source.end.line - 1] + value.source.end.column;
-    let source = fileContents.substring(startOffset, endOffset);
-    let result: AttrInfo = {
+    const source = fileContents.substring(startOffset, endOffset);
+    const result: AttrInfo = {
       prop: value.prop,
       range: [startOffset, endOffset],
       source: source,
@@ -62,17 +62,17 @@ export function sortDeclarations(
     return result;
   });
   // Get the range locations of all declarations
-  let commentInfos: Comment[] = comments.map((value) => {
-    let startOffset =
+  const commentInfos: Comment[] = comments.map((value) => {
+    const startOffset =
       columnIndexToOffset[value.source.start.line - 1] +
       value.source.start.column;
-    let endOffset =
+    const endOffset =
       columnIndexToOffset[value.source.end.line - 1] +
       value.source.end.column +
       1;
-    let source = fileContents.substring(startOffset, endOffset);
-    let isBlock = source.trim().startsWith("/*");
-    let result: Comment = {
+    const source = fileContents.substring(startOffset, endOffset);
+    const isBlock = source.trim().startsWith("/*");
+    const result: Comment = {
       range: [startOffset, endOffset],
       type: isBlock ? "Block" : "Line",
     };
@@ -80,7 +80,7 @@ export function sortDeclarations(
   });
 
   // TODO move getContextGroups up into the root utilities
-  let groupedAttributes = getContextGroups(
+  const groupedAttributes = getContextGroups(
     attributeInfos,
     commentInfos,
     fileContents
@@ -88,13 +88,13 @@ export function sortDeclarations(
 
   // Actual sorting
   let newFileContents = fileContents;
-  for (let group of groupedAttributes) {
+  for (const group of groupedAttributes) {
     // Check to see if any of the variables defined are used by properties. If so, we shoudn't sort
     let shouldSkip = false;
     for (let i = 0; i < group.nodes.length; i++) {
       for (let j = i + 1; j < group.nodes.length; j++) {
-        let nodeI = group.nodes[i];
-        let nodej = group.nodes[j];
+        const nodeI = group.nodes[i];
+        const nodej = group.nodes[j];
         if (nodej.value.indexOf(nodeI.prop) !== -1) {
           shouldSkip = true;
           break;
@@ -108,22 +108,22 @@ export function sortDeclarations(
       continue;
     }
 
-    let oldOrder = group.nodes;
-    let newOrder = oldOrder.slice();
-    let propertyToSortableText = new Map();
-    for (let property of newOrder) {
+    const oldOrder = group.nodes;
+    const newOrder = oldOrder.slice();
+    const propertyToSortableText = new Map();
+    for (const property of newOrder) {
       propertyToSortableText.set(property, getSortableText(property));
     }
     newOrder.sort((a, b) => {
-      let aOverride = getOverrideIndex(a.prop, options.overrides);
-      let bOverride = getOverrideIndex(b.prop, options.overrides);
+      const aOverride = getOverrideIndex(a.prop, options.overrides);
+      const bOverride = getOverrideIndex(b.prop, options.overrides);
 
       if (aOverride !== bOverride) {
         return aOverride - bOverride;
       }
 
-      let aText = propertyToSortableText.get(a) || "";
-      let bText = propertyToSortableText.get(b) || "";
+      const aText = propertyToSortableText.get(a) || "";
+      const bText = propertyToSortableText.get(b) || "";
       return compare(aText, bText);
     });
 
@@ -149,7 +149,7 @@ function getSortableText(a): string {
 }
 
 function getOverrideIndex(prop: string, overrides: string[]) {
-  let index = overrides.indexOf(prop);
+  const index = overrides.indexOf(prop);
   let wildcard = overrides.indexOf("*");
   if (wildcard === -1) {
     wildcard = overrides.length;

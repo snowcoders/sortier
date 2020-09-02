@@ -10,8 +10,8 @@ describe("language-js/sortExpression", () => {
     __dirname,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
-      let parsed = parser(inputFileContents);
-      let actual = sortExpression(
+      const parsed = parser(inputFileContents);
+      const actual = sortExpression(
         parsed.body[0].declarations[0].init,
         parsed.comments,
         inputFileContents,
@@ -22,10 +22,10 @@ describe("language-js/sortExpression", () => {
   );
 
   it("Respects a custom order", () => {
-    let input = `let example = 1 | null | undefined`;
-    let expected = `let example = null | undefined | 1`;
-    let parsed = typescriptParse(input);
-    let actual = sortExpression(
+    const input = `let example = 1 | null | undefined`;
+    const expected = `let example = null | undefined | 1`;
+    const parsed = typescriptParse(input);
+    const actual = sortExpression(
       parsed.body[0].declarations[0].init,
       parsed.comments,
       input,
@@ -38,10 +38,10 @@ describe("language-js/sortExpression", () => {
   });
 
   it("Sets the order if groups is missing from options", () => {
-    let input = `let example = 1 | null | undefined`;
-    let expected = `let example = undefined | null | 1`;
-    let parsed = typescriptParse(input);
-    let actual = sortExpression(
+    const input = `let example = 1 | null | undefined`;
+    const expected = `let example = undefined | null | 1`;
+    const parsed = typescriptParse(input);
+    const actual = sortExpression(
       parsed.body[0].declarations[0].init,
       parsed.comments,
       input,

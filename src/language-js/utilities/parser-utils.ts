@@ -46,7 +46,7 @@ export function addParenthesis(fileContents: string, nodes: any[]) {
     let charAt = "";
 
     // Find all the parenthesis before
-    let startParenStack: number[] = [];
+    const startParenStack: number[] = [];
     for (let startIndex = value.range[0] - 1; 0 < startIndex; startIndex--) {
       charAt = fileContents.charAt(startIndex);
       if (charAt !== "(" && !/\s/.test(charAt)) {
@@ -58,7 +58,7 @@ export function addParenthesis(fileContents: string, nodes: any[]) {
     }
 
     // Find all the parenthesis after
-    let endParenStack: number[] = [];
+    const endParenStack: number[] = [];
     for (
       let endIndex = value.range[1];
       endIndex < fileContents.length;
@@ -81,7 +81,7 @@ export function addParenthesis(fileContents: string, nodes: any[]) {
       startParenStack.pop();
     }
 
-    let newStartIndex = startParenStack.pop();
+    const newStartIndex = startParenStack.pop();
     let newEndIndex = endParenStack.pop();
 
     if (newStartIndex == null || newEndIndex == null) {

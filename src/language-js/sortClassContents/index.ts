@@ -61,7 +61,7 @@ class ClassContentsSorter {
   }
 
   public sort() {
-    let possibleSortableItems: Array<MinimumSortInformation | null> = this.classItems.map(
+    const possibleSortableItems: Array<MinimumSortInformation | null> = this.classItems.map(
       (value): MinimumSortInformation | null => {
         switch (value.type) {
           case "ClassProperty": {
@@ -95,13 +95,13 @@ class ClassContentsSorter {
         }
       }
     );
-    let sortableItems: Array<MinimumSortInformation> = possibleSortableItems.filter(
+    const sortableItems: Array<MinimumSortInformation> = possibleSortableItems.filter(
       (value) => {
         return value != null;
       }
     ) as any;
 
-    let newFileContents = this.sortItems(
+    const newFileContents = this.sortItems(
       sortableItems,
       this.comments,
       this.fileContents
@@ -144,10 +144,10 @@ class ClassContentsSorter {
   }
 
   private getOverrideIndex(node: any) {
-    let itemsToSearch = [node.key.name];
+    const itemsToSearch = [node.key.name];
 
     let index = -1;
-    for (let item of itemsToSearch) {
+    for (const item of itemsToSearch) {
       index = this.options.overrides.indexOf(item);
       if (index !== -1) {
         return index;
@@ -162,24 +162,24 @@ class ClassContentsSorter {
     comments: any,
     fileContents: string
   ) {
-    let isUsage = this.options.order === "usage";
-    let callOrder = this.getClassItemOrder();
+    const isUsage = this.options.order === "usage";
+    const callOrder = this.getClassItemOrder();
 
-    let sortedTypes = classItems.slice();
+    const sortedTypes = classItems.slice();
     sortedTypes.sort((a, b) => {
-      let groupComparison = this.compareGroups(a, b);
+      const groupComparison = this.compareGroups(a, b);
       if (groupComparison !== 0) {
         return groupComparison;
       }
 
-      let overrideComparison = this.compareOverrides(a, b);
+      const overrideComparison = this.compareOverrides(a, b);
       if (overrideComparison !== 0) {
         return overrideComparison;
       }
 
       let callComparison = 0;
-      let isAStaticProperty = a.kind === KindOption.Property;
-      let isBStaticProperty = b.kind === KindOption.Property;
+      const isAStaticProperty = a.kind === KindOption.Property;
+      const isBStaticProperty = b.kind === KindOption.Property;
       if (isUsage || (isAStaticProperty && isBStaticProperty)) {
         callComparison = this.compareMethodCallers(a, b, callOrder);
         if (callComparison !== 0) {
@@ -187,7 +187,7 @@ class ClassContentsSorter {
         }
       }
 
-      let stringComparison = compare(a.key, b.key);
+      const stringComparison = compare(a.key, b.key);
       if (isUsage || this.options.isAscending) {
         return stringComparison;
       } else {
@@ -201,9 +201,9 @@ class ClassContentsSorter {
   private getClassItemOrder() {
     // Split the list into static properties and everything else as static
     // properties cause build failures when depending on one another out of order
-    let properties: any[] = [];
-    let everythingElse: any[] = [];
-    for (let classItem of this.classItems) {
+    const properties: any[] = [];
+    const everythingElse: any[] = [];
+    for (const classItem of this.classItems) {
       if (this.getKindOption(classItem) === KindOption.Property) {
         properties.push(classItem);
       } else {
@@ -212,18 +212,18 @@ class ClassContentsSorter {
     }
 
     // Sort both arrays
-    let comparisonFunction = (a, b) => {
+    const comparisonFunction = (a, b) => {
       return compare(a.key.name, b.key.name);
     };
     properties.sort(comparisonFunction);
     everythingElse.sort(comparisonFunction);
 
     // Determine the order of the items
-    let staticOrder = this.orderItems(properties, true, true);
-    let everythingElseOrder = this.orderItems(everythingElse, false, false);
+    const staticOrder = this.orderItems(properties, true, true);
+    const everythingElseOrder = this.orderItems(everythingElse, false, false);
 
     // Merge and dedupe
-    let totalCallOrder = [...staticOrder, ...everythingElseOrder];
+    const totalCallOrder = [...staticOrder, ...everythingElseOrder];
     ArrayUtils.dedupe(totalCallOrder);
     return totalCallOrder;
   }
@@ -289,14 +289,14 @@ class ClassContentsSorter {
     isProperties: boolean
   ): string[] {
     // Storage of the overall call order as read from top to bottom, left to right
-    let overallCallOrder: string[] = [];
+    const overallCallOrder: string[] = [];
     // Map of method names to parent information
-    let keyToNode = new Map<string, Set<string>>();
+    const keyToNode = new Map<string, Set<string>>();
 
     // Figure out what parents which methods have and break any cycles
-    for (let classItem of sortedClassItems) {
-      let methodName = classItem.key.name;
-      let calls = this.getCalleeOrder([classItem]);
+    for (const classItem of sortedClassItems) {
+      const methodName = classItem.key.name;
+      const calls = this.getCalleeOrder([classItem]);
       if (isSiblingSort) {
         calls.sort();
         if (this.options.order === "alpha" && !this.options.isAscending) {
@@ -304,23 +304,23 @@ class ClassContentsSorter {
         }
       }
       overallCallOrder.push(...calls);
-      for (let call of calls) {
+      for (const call of calls) {
         if (call === methodName) {
           continue;
         }
-        let parents = keyToNode.get(call);
+        const parents = keyToNode.get(call);
         if (parents == null) {
           keyToNode.set(call, new Set([methodName]));
         } else {
           let addToParentList = true;
-          let ancestorStack = [methodName];
+          const ancestorStack = [methodName];
           while (addToParentList && ancestorStack.length !== 0) {
-            let parents = keyToNode.get(ancestorStack.pop());
+            const parents = keyToNode.get(ancestorStack.pop());
             if (parents == null) {
               continue;
             }
 
-            for (let a of parents) {
+            for (const a of parents) {
               if (call === a) {
                 addToParentList = false;
                 break;
@@ -335,7 +335,7 @@ class ClassContentsSorter {
       }
 
       // Create the parent node
-      let parentNode = keyToNode.get(methodName);
+      const parentNode = keyToNode.get(methodName);
       if (parentNode == null) {
         keyToNode.set(methodName, new Set());
       }
@@ -346,19 +346,19 @@ class ClassContentsSorter {
 
     // Now go through all nodes, remove the root nodes and push them into the resulting
     // call order array in order based on overallCallOrder
-    let resultingCallOrder: string[] = [];
+    const resultingCallOrder: string[] = [];
 
     while (keyToNode.size !== 0) {
-      let nextGroup: string[] = [];
-      for (let keyNodePair of keyToNode) {
+      const nextGroup: string[] = [];
+      for (const keyNodePair of keyToNode) {
         if (keyNodePair[1].size === 0) {
           nextGroup.push(keyNodePair[0]);
         }
       }
 
       nextGroup.sort((a, b) => {
-        let aIndex = overallCallOrder.indexOf(a);
-        let bIndex = overallCallOrder.indexOf(b);
+        const aIndex = overallCallOrder.indexOf(a);
+        const bIndex = overallCallOrder.indexOf(b);
         return aIndex - bIndex;
       });
 
@@ -368,10 +368,10 @@ class ClassContentsSorter {
         resultingCallOrder.unshift(...nextGroup);
       }
 
-      for (let key of nextGroup) {
+      for (const key of nextGroup) {
         keyToNode.delete(key);
 
-        for (let parents of keyToNode.values()) {
+        for (const parents of keyToNode.values()) {
           parents.delete(key);
         }
       }
@@ -381,16 +381,16 @@ class ClassContentsSorter {
   }
 
   private getCalleeOrder(nodes: any[]) {
-    let memberExpressionOrder: string[] = [];
-    for (let node of nodes) {
+    const memberExpressionOrder: string[] = [];
+    for (const node of nodes) {
       if (node == null) {
         continue;
       }
-      for (let property in node) {
+      for (const property in node) {
         if (property === "type" || property === "loc" || property === "range") {
           continue;
         }
-        let value = node[property];
+        const value = node[property];
         if (value == null) {
           continue;
         } else if (

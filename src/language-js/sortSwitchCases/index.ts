@@ -18,12 +18,16 @@ enum HasImmediateExitOption {
   False,
 }
 
+// Left in for consistency with other sort functions
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SortSwitchCaseOptions {}
 
 export function sortSwitchCases(
   cases: SwitchCase[],
   comments: Comment[],
   fileContents: string,
+  // Left in for consistency with other sort functions
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   options?: SortSwitchCaseOptions
 ) {
   if (cases.length <= 1) {
@@ -46,11 +50,11 @@ export function sortSwitchCases(
 
   let doesBreakOut = HasImmediateExitOption.Indeterminate;
   let newFileContents = fileContents.slice();
-  let contextGroups = getContextGroups(cases, comments, fileContents);
+  const contextGroups = getContextGroups(cases, comments, fileContents);
 
   for (let x = 0; x < contextGroups.length; x++) {
-    let cases = contextGroups[x].nodes;
-    let comments = contextGroups[x].comments;
+    const cases = contextGroups[x].nodes;
+    const comments = contextGroups[x].comments;
     if (cases.length <= 1) {
       // No need to sort if there's only one case
       continue;
@@ -63,7 +67,7 @@ export function sortSwitchCases(
 
     // Determine where the "break" statements are so we dont' sort through them
     // which would change the logic of the code
-    let switchGroupsWithBreaks: Array<SwitchCase[]> = [];
+    const switchGroupsWithBreaks: Array<SwitchCase[]> = [];
     let switchCaseStart = 0;
     let switchCaseEnd = 0;
     for (switchCaseEnd = 0; switchCaseEnd < cases.length; switchCaseEnd++) {
@@ -91,11 +95,11 @@ export function sortSwitchCases(
     // Within each case group with a break, if there are any case statements that share the same
     // execution block, they need to be sorted
     for (let x = 0; x < switchGroupsWithBreaks.length; x++) {
-      let cases = switchGroupsWithBreaks[x];
+      const cases = switchGroupsWithBreaks[x];
       switchCaseStart = 0;
       switchCaseEnd = 0;
       for (let casesIndex = 0; casesIndex < cases.length; casesIndex++) {
-        let caseStatement = cases[casesIndex];
+        const caseStatement = cases[casesIndex];
         if (
           caseStatement.consequent == null ||
           caseStatement.consequent.length === 0
@@ -103,15 +107,15 @@ export function sortSwitchCases(
           switchCaseEnd++;
         } else if (switchCaseStart < switchCaseEnd) {
           switchCaseEnd++;
-          let unsorted = cases
+          const unsorted = cases
             .slice(switchCaseStart, switchCaseEnd)
             .map((value: SwitchCase) => {
               return value.test;
             })
             .filter((value) => value != null) as BaseExpression[];
-          let sorted = unsorted.slice().sort((a: any, b: any) => {
-            let aText = getSortableText(a, fileContents);
-            let bText = getSortableText(b, fileContents);
+          const sorted = unsorted.slice().sort((a: any, b: any) => {
+            const aText = getSortableText(a, fileContents);
+            const bText = getSortableText(b, fileContents);
             return compare(aText, bText);
           });
 
@@ -133,21 +137,21 @@ export function sortSwitchCases(
     }
 
     // Now sort the actual switch groups
-    let switchGroupsWithBreaksSorted = switchGroupsWithBreaks.slice();
-    let switchGroupToLowestCase = new Map();
-    for (let switchGroupsWithBreak of switchGroupsWithBreaksSorted) {
+    const switchGroupsWithBreaksSorted = switchGroupsWithBreaks.slice();
+    const switchGroupToLowestCase = new Map();
+    for (const switchGroupsWithBreak of switchGroupsWithBreaksSorted) {
       let lowestText: null | string = null;
-      for (let caseStatement of switchGroupsWithBreak) {
-        let test = caseStatement.test;
+      for (const caseStatement of switchGroupsWithBreak) {
+        const test = caseStatement.test;
         if (test == null) {
           continue;
         }
-        let testRange = test.range;
+        const testRange = test.range;
         if (testRange == null) {
           continue;
         }
 
-        let text = fileContents.substring(testRange[0], testRange[1]);
+        const text = fileContents.substring(testRange[0], testRange[1]);
 
         if (lowestText == null || compare(lowestText, text) > 0) {
           lowestText = text;
@@ -158,8 +162,8 @@ export function sortSwitchCases(
       }
     }
     switchGroupsWithBreaksSorted.sort((a: any, b: any) => {
-      let aValue = switchGroupToLowestCase.get(a);
-      let bValue = switchGroupToLowestCase.get(b);
+      const aValue = switchGroupToLowestCase.get(a);
+      const bValue = switchGroupToLowestCase.get(b);
       if (aValue == null) {
         throw new Error("Null value for switch case statement");
       }
@@ -187,7 +191,7 @@ function doesCaseBreakOutOfSwitch(caseStatement: any): HasImmediateExitOption {
 
 function doesHaveImmediateExit(values: any): HasImmediateExitOption {
   let isIndeterminate = false;
-  for (let value of values) {
+  for (const value of values) {
     switch (value.type) {
       case "BlockStatement": {
         return doesHaveImmediateExit(value.body);
@@ -197,7 +201,6 @@ function doesHaveImmediateExit(values: any): HasImmediateExitOption {
       case "ThrowStatement": {
         return HasImmediateExitOption.True;
       }
-      // @ts-ignore - Fallthrough expected
       case "SwitchStatement": {
         // If the last option in the switch statement has an exit, then either
         // all previosu consequents have an exit (e.g. not getting to the last one)
@@ -210,6 +213,7 @@ function doesHaveImmediateExit(values: any): HasImmediateExitOption {
           return HasImmediateExitOption.True;
         }
       }
+      // falls through
       default:
         // There are several types which are a bit more complicated which
         // leaves us in an undeterminate state if we will exit or not
@@ -250,14 +254,14 @@ function caseGroupsToMinimumTypeinformations(
   switchGroupsWithBreaks: SwitchCase[][]
 ) {
   return switchGroupsWithBreaks.map((value) => {
-    let firstNode: BaseNodeWithoutComments = value[0];
+    const firstNode: BaseNodeWithoutComments = value[0];
 
-    let firstRange = firstNode.range;
-    let lastRange = value[value.length - 1].range;
+    const firstRange = firstNode.range;
+    const lastRange = value[value.length - 1].range;
     if (firstRange == null || lastRange == null) {
       throw new Error("Range is null");
     }
-    let result: BaseNode = {
+    const result: BaseNode = {
       range: [firstRange[0], lastRange[1]],
     };
     return result;

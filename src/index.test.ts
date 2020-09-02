@@ -4,14 +4,14 @@ import { FileUtils } from "./utilities/file-utils";
 
 describe("index", () => {
   it("Runs without crashing", () => {
-    let thisFile = FileUtils.globbyJoin(__dirname, "index.test.ts");
+    const thisFile = FileUtils.globbyJoin(__dirname, "index.test.ts");
     formatFile(thisFile, {
       isTestRun: true,
     });
   });
 
   it("Runs formatText without crashing", () => {
-    let result = formatText("ts", "let a = {b: 'b', a: 'a'};", {
+    const result = formatText("ts", "let a = {b: 'b', a: 'a'};", {
       isTestRun: true,
     });
     expect(result).to.equal("let a = {a: 'a', b: 'b'};");
@@ -19,7 +19,7 @@ describe("index", () => {
 
   describe("Validating option overrides", () => {
     it("js.sortImportDeclarationSpecifiers.groups = undefined", () => {
-      let result = formatText("ts", "import { IP, Po } from '@foo';", {
+      const result = formatText("ts", "import { IP, Po } from '@foo';", {
         js: {
           sortImportDeclarationSpecifiers: {
             groups: undefined,
@@ -30,7 +30,7 @@ describe("index", () => {
     });
 
     it("js.sortImportDeclarationSpecifiers.groups = *", () => {
-      let result = formatText("ts", "import { Po, IP } from '@foo';", {
+      const result = formatText("ts", "import { Po, IP } from '@foo';", {
         js: {
           sortImportDeclarationSpecifiers: {
             groups: ["*"],

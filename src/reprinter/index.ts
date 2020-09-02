@@ -24,25 +24,31 @@ export class Reprinter {
     });
     if (ignoreFilePath != null) {
       try {
-        let ignoreText = FileUtils.readFileContents(ignoreFilePath).trim();
+        const ignoreText = FileUtils.readFileContents(ignoreFilePath).trim();
         const relativeFilePath = path.relative(path.resolve("."), filename);
         if (0 < ignoreText.length) {
-          let ig = ignore();
+          const ig = ignore();
           ig.add(ignoreText.split(/\r?\n/));
           if (ig.ignores(relativeFilePath)) {
             return;
           }
         }
-      } catch (readError) {}
+      } catch (readError) {
+        LogUtils.log(
+          LoggerVerboseOption.Normal,
+          `Error reading file ${filename}`,
+          readError
+        );
+      }
     }
 
-    let language = this.getReprinterForFile(filename);
+    const language = this.getReprinterForFile(filename);
     if (language == null) {
       return;
     }
 
-    let originalFileContents = FileUtils.readFileContents(filename);
-    let newFileContents = language.getRewrittenContents(
+    const originalFileContents = FileUtils.readFileContents(filename);
+    const newFileContents = language.getRewrittenContents(
       filename,
       originalFileContents,
       options
@@ -58,13 +64,13 @@ export class Reprinter {
     text: string,
     options: ReprinterOptions
   ) {
-    let fakeFileName = `example.${fileExtension}`;
-    let language = this.getReprinterForFile(fakeFileName);
+    const fakeFileName = `example.${fileExtension}`;
+    const language = this.getReprinterForFile(fakeFileName);
     if (language == null) {
       return;
     }
 
-    let newFileContents = language.getRewrittenContents(
+    const newFileContents = language.getRewrittenContents(
       fakeFileName,
       text,
       options
@@ -74,7 +80,7 @@ export class Reprinter {
   }
 
   private static getReprinterForFile(filename: string) {
-    for (let reprinter of Reprinter.reprinters) {
+    for (const reprinter of Reprinter.reprinters) {
       if (reprinter.isFileSupported(filename)) {
         return reprinter;
       }

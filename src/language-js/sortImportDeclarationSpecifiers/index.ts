@@ -24,7 +24,7 @@ export function sortImportDeclarationSpecifiers(
   fileContents: string,
   options?: SortImportDeclarationSpecifiersOptions
 ) {
-  let cleanedOptions = ensureOptions(options);
+  const cleanedOptions = ensureOptions(options);
 
   fileContents = sortSingleSpecifier(
     specifiers,
@@ -47,14 +47,14 @@ function sortSingleSpecifier(
     return fileContents;
   }
 
-  let unsortedSpecifiers = specifiers.map((specifier) => {
+  const unsortedSpecifiers = specifiers.map((specifier) => {
     {
-      let importedName =
+      const importedName =
         specifier.imported != null
           ? specifier.imported.name
           : specifier.local.name;
       let start = specifier.start || specifier.range[0];
-      let end = specifier.end || specifier.range[1];
+      const end = specifier.end || specifier.range[1];
       if (specifier.importKind != null) {
         start = fileContents.lastIndexOf(specifier.importKind, start);
       }
@@ -69,7 +69,7 @@ function sortSingleSpecifier(
   });
 
   // First create an object to remember all that we care about
-  let sortedSpecifiers = unsortedSpecifiers.slice();
+  const sortedSpecifiers = unsortedSpecifiers.slice();
 
   // Sort them by name
   let everythingRank = options.groups.indexOf("*");
@@ -107,7 +107,7 @@ function sortSingleSpecifier(
       bRank = bRank - options.groups.length;
     }
 
-    if (aRank == bRank) {
+    if (aRank === bRank) {
       return compare(a.importedName, b.importedName);
     }
     return aRank - bRank;

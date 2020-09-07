@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { join } from "path";
 
 // The methods being tested here
@@ -54,7 +53,7 @@ describe("language-css/reprinter", () => {
         }
       );
 
-      expect(actual).to.equal(expected);
+      expect(actual).toEqual(expected);
     });
 
     it("Declaration overrides without wildcard", () => {
@@ -76,7 +75,7 @@ describe("language-css/reprinter", () => {
         }
       );
 
-      expect(actual).to.equal(expected);
+      expect(actual).toEqual(expected);
     });
   });
 
@@ -106,7 +105,7 @@ describe("language-css/reprinter", () => {
         }
       );
 
-      expect(actual).to.equal(expected);
+      expect(actual).toEqual(expected);
     });
 
     it("Uses scss parser when forced", () => {
@@ -134,7 +133,7 @@ describe("language-css/reprinter", () => {
         }
       );
 
-      expect(actual).to.equal(expected);
+      expect(actual).toEqual(expected);
     });
 
     it("Throws error if file is not supported", () => {
@@ -149,7 +148,7 @@ describe("language-css/reprinter", () => {
         new Reprinter().getRewrittenContents("example.fake", input, {
           css: {},
         });
-      }).to.throw();
+      }).toThrow();
     });
 
     it("Throws an error if the file cannot be parsed", () => {
@@ -159,7 +158,7 @@ describe("language-css/reprinter", () => {
           "This shouldn't parse",
           {}
         );
-      }).to.throw();
+      }).toThrow();
     });
   });
 });

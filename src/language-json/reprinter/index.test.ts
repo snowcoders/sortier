@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 // The methods being tested here
 import { Reprinter } from "./index";
 
@@ -19,11 +17,11 @@ describe("language-json/reprinter", () => {
   );
 
   it("Supports json files", () => {
-    expect(new Reprinter().isFileSupported("test.json")).to.equal(true);
+    expect(new Reprinter().isFileSupported("test.json")).toEqual(true);
   });
 
   it("Does not support typescript files", () => {
-    expect(new Reprinter().isFileSupported("test.ts")).to.equal(false);
+    expect(new Reprinter().isFileSupported("test.ts")).toEqual(false);
   });
 
   it("Throws an error if the file cannot be parsed", () => {
@@ -33,6 +31,6 @@ describe("language-json/reprinter", () => {
         "This shouldn't parse",
         {}
       );
-    }).to.throw();
+    }).toThrow();
   });
 });

@@ -58,7 +58,7 @@ export function sortObjectTypeAnnotation(
   return newFileContents;
 }
 
-function getPropertyKey(property, fileContents: string) {
+function getPropertyKey(property: any, fileContents: string) {
   if (property.key != null) {
     if (property.key.value != null) {
       return property.key.value;
@@ -71,7 +71,7 @@ function getPropertyKey(property, fileContents: string) {
 }
 
 function getSortGroupIndex(
-  property,
+  property: any,
   options: SortObjectTypeAnnotationOptions
 ): number {
   const ranks = getObjectTypeRanks(options.groups);

@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 // Parsers
 import { parse as typescriptParse } from "../parsers/typescript";
 
@@ -89,7 +87,9 @@ describe("language-js/sortClassContents", () => {
     }`;
     const parsed = typescriptParse(input);
     const actual = sortClassContents(
+      // @ts-expect-error: Test will already fail if declaration isn't defined
       parsed.body[0].declaration.id.name,
+      // @ts-expect-error: Test will already fail if declaration isn't defined
       parsed.body[0].declaration.body.body,
       parsed.comments,
       input,
@@ -104,7 +104,7 @@ describe("language-js/sortClassContents", () => {
       }
     );
 
-    expect(actual).to.equal(expected);
+    expect(actual).toEqual(expected);
   });
 
   it("Overrides reverse", () => {
@@ -166,7 +166,9 @@ describe("language-js/sortClassContents", () => {
     }`;
     const parsed = typescriptParse(input);
     const actual = sortClassContents(
+      // @ts-expect-error: Test will already fail if declaration isn't defined
       parsed.body[0].declaration.id.name,
+      // @ts-expect-error: Test will already fail if declaration isn't defined
       parsed.body[0].declaration.body.body,
       parsed.comments,
       input,
@@ -181,6 +183,6 @@ describe("language-js/sortClassContents", () => {
       }
     );
 
-    expect(actual).to.equal(expected);
+    expect(actual).toEqual(expected);
   });
 });

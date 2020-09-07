@@ -61,22 +61,20 @@ ${e}`
 function getConfig(filename: string): ReprinterOptions {
   const explorer = cosmiconfigSync("sortier");
   const result = explorer.search(filename);
-  const config = result == null ? {} : result.config;
+  const config = result?.config || {};
   const options = config as ReprinterOptions;
 
   // Set the LogUtils verbosity based on options
-  if (options.logLevel != null) {
-    switch (options.logLevel) {
-      case "diagnostic":
-        LogUtils.setVerbosity(LoggerVerboseOption.Diagnostic);
-        break;
-      case "quiet":
-        LogUtils.setVerbosity(LoggerVerboseOption.Quiet);
-        break;
-      default:
-        LogUtils.setVerbosity(LoggerVerboseOption.Normal);
-        break;
-    }
+  switch (options?.logLevel) {
+    case "diagnostic":
+      LogUtils.setVerbosity(LoggerVerboseOption.Diagnostic);
+      break;
+    case "quiet":
+      LogUtils.setVerbosity(LoggerVerboseOption.Quiet);
+      break;
+    default:
+      LogUtils.setVerbosity(LoggerVerboseOption.Normal);
+      break;
   }
 
   if (config["isHelpMode"] != null) {

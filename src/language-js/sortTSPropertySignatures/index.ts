@@ -81,7 +81,7 @@ function cleanProperties(fileContents: string, properties: any[]) {
   });
 }
 
-function getString(property, fileContents: string) {
+function getString(property: any, fileContents: string) {
   if (property.key != null) {
     if (property.key.value != null) {
       return property.key.value;
@@ -94,7 +94,7 @@ function getString(property, fileContents: string) {
 }
 
 function getSortGroupIndex(
-  property,
+  property: any,
   options: SortTSPropertySignaturesOptions
 ): number {
   const ranks = getObjectTypeRanks(options.groups);

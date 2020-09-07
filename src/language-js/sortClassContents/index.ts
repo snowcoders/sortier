@@ -212,7 +212,7 @@ class ClassContentsSorter {
     }
 
     // Sort both arrays
-    const comparisonFunction = (a, b) => {
+    const comparisonFunction = (a: any, b: any) => {
       return compare(a.key.name, b.key.name);
     };
     properties.sort(comparisonFunction);

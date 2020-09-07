@@ -8,7 +8,7 @@ export interface Comment extends BaseNode {
   type: "Block" | "Line";
 }
 
-export function compare(a: number | string, b: number | string) {
+export function compare(a: number | string, b: number | string): number {
   const aType = typeof a;
   const bType = typeof b;
   if (aType !== bType) {

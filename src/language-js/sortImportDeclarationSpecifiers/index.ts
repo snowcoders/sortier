@@ -47,7 +47,7 @@ function sortSingleSpecifier(
     return fileContents;
   }
 
-  const unsortedSpecifiers = specifiers.map((specifier) => {
+  const unsortedSpecifiers = specifiers.map((specifier: any) => {
     {
       const importedName =
         specifier.imported != null

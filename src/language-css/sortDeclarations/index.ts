@@ -137,7 +137,7 @@ export function sortDeclarations(
   return newFileContents;
 }
 
-function getSortableText(a): string {
+function getSortableText(a: AttrInfo): string {
   if (a.prop != null) {
     return a.prop;
   }

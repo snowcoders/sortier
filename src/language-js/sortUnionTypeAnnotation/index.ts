@@ -1,4 +1,4 @@
-import { compare, reorderValues } from "../../utilities/sort-utils";
+import { compare, reorderValues, Comment } from "../../utilities/sort-utils";
 import { addParenthesis } from "../utilities/parser-utils";
 import {
   TypeAnnotationOption,
@@ -10,8 +10,8 @@ export interface SortUnionTypeAnnotationOptions {
 }
 
 export function sortUnionTypeAnnotation(
-  unionTypeAnnotation,
-  comments,
+  unionTypeAnnotation: any,
+  comments: Array<Comment>,
   fileContents: string,
   options: SortUnionTypeAnnotationOptions
 ) {
@@ -33,14 +33,14 @@ export function sortUnionTypeAnnotation(
 }
 
 class UnionTypeAnnotationSorter {
-  private comments;
+  private comments: Array<Comment>;
   private fileContents: string;
   private options: SortUnionTypeAnnotationOptions;
-  private unionTypeAnnotationTypes;
+  private unionTypeAnnotationTypes: Array<any>;
 
   constructor(
-    unionTypeAnnotation,
-    comments,
+    unionTypeAnnotation: any,
+    comments: Array<Comment>,
     fileContents: string,
     options: SortUnionTypeAnnotationOptions
   ) {
@@ -67,7 +67,7 @@ class UnionTypeAnnotationSorter {
   }
 
   private getSortOrderOfTypes() {
-    const getRank = (value) => {
+    const getRank = (value: any): number => {
       const ranks = getObjectTypeRanks(this.options.groups);
       if (value.type === "TSParenthesizedType") {
         return getRank(value.typeAnnotation);
@@ -94,7 +94,7 @@ class UnionTypeAnnotationSorter {
     };
 
     const newTypes = this.unionTypeAnnotationTypes.slice(0);
-    newTypes.sort((a, b) => {
+    newTypes.sort((a: any, b: any) => {
       // Figure out ranks
       const aRank = getRank(a);
       const bRank = getRank(b);
@@ -129,7 +129,7 @@ class UnionTypeAnnotationSorter {
     return newTypes;
   }
 
-  private getStringToCompare(a) {
+  private getStringToCompare(a: any) {
     if (a.raw != null) {
       return a.raw;
     } else if (a.type === "GenericTypeAnnotation") {

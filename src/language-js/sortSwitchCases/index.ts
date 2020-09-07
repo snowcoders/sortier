@@ -212,8 +212,9 @@ function doesHaveImmediateExit(values: any): HasImmediateExitOption {
         ) {
           return HasImmediateExitOption.True;
         }
+
+        // falls through
       }
-      // falls through
       default:
         // There are several types which are a bit more complicated which
         // leaves us in an undeterminate state if we will exit or not

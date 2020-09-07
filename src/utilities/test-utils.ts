@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { sync } from "globby";
 import { basename } from "path";
 import { FileUtils } from "./file-utils";
@@ -65,7 +64,7 @@ function runNodes(
           const expected = FileUtils.readFileContents(testInfo.outputFilePath);
           const actual = transform(testInfo.inputFilePath, input);
 
-          expect(actual).to.equal(expected);
+          expect(actual).toEqual(expected);
         });
       });
 

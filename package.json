@@ -18,7 +18,7 @@
   "description": "An opionated code sorter",
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "1.0.1",
-    "@snowcoders/renovate-config": "2.0.1",
+    "@snowcoders/renovate-config": "2.0.2",
     "@types/chai": "4.2.12",
     "@types/estree": "0.0.45",
     "@types/globby": "8.0.0",

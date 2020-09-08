@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { formatFile, formatText } from "./index";
 import { FileUtils } from "./utilities/file-utils";
 
@@ -14,7 +13,7 @@ describe("index", () => {
     const result = formatText("ts", "let a = {b: 'b', a: 'a'};", {
       isTestRun: true,
     });
-    expect(result).to.equal("let a = {a: 'a', b: 'b'};");
+    expect(result).toEqual("let a = {a: 'a', b: 'b'};");
   });
 
   describe("Validating option overrides", () => {
@@ -26,7 +25,7 @@ describe("index", () => {
           },
         },
       });
-      expect(result).to.equal("import { Po, IP } from '@foo';");
+      expect(result).toEqual("import { Po, IP } from '@foo';");
     });
 
     it("js.sortImportDeclarationSpecifiers.groups = *", () => {
@@ -37,7 +36,7 @@ describe("index", () => {
           },
         },
       });
-      expect(result).to.equal("import { IP, Po } from '@foo';");
+      expect(result).toEqual("import { IP, Po } from '@foo';");
     });
   });
 });

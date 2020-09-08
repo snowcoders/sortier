@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 // Parsers
 import { parse as flowParse } from "../parsers/flow";
 
@@ -10,9 +8,14 @@ import { sortImportDeclarationSpecifiers } from "./index";
 import { runTestAssestsTests } from "../../utilities/test-utils";
 import { getParser } from "../utilities/test-utils";
 
-const getSortedOverBody = (body, comments, input, options?) => {
+const getSortedOverBody = (
+  body: any,
+  comments: any,
+  input: any,
+  options?: any
+) => {
   let actual = input;
-  body.forEach((item) => {
+  body.forEach((item: any) => {
     actual = sortImportDeclarationSpecifiers(
       item.specifiers,
       comments,
@@ -49,7 +52,7 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
         groups: ["*", "types", "interfaces"],
         orderBy: "alpha",
       });
-      expect(output).to.equal(expected);
+      expect(output).toEqual(expected);
     });
 
     it("Group by everything then types", () => {
@@ -61,7 +64,7 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
         groups: ["*", "types"],
         orderBy: "alpha",
       });
-      expect(output).to.equal(expected);
+      expect(output).toEqual(expected);
     });
 
     it("Group by everything then interfaces", () => {
@@ -73,7 +76,7 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
         groups: ["*", "interfaces"],
         orderBy: "alpha",
       });
-      expect(output).to.equal(expected);
+      expect(output).toEqual(expected);
     });
 
     it("Group by interfaces then everything", () => {
@@ -85,7 +88,7 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
         groups: ["interfaces", "*"],
         orderBy: "alpha",
       });
-      expect(output).to.equal(expected);
+      expect(output).toEqual(expected);
     });
   });
 
@@ -98,7 +101,7 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
         groups: ["interfaces", "*"],
         orderBy: "alpha",
       });
-      expect(output).to.equal(expected);
+      expect(output).toEqual(expected);
     });
   });
 });

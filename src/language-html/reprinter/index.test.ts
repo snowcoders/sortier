@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { runTestAssestsTests } from "../../utilities/test-utils";
 
 // The methods being tested here
@@ -23,6 +22,6 @@ describe("language-html/reprinter", () => {
         "<html>This has the wrong closing tag</html2>",
         {}
       );
-    }).to.throw();
+    }).toThrow();
   });
 });

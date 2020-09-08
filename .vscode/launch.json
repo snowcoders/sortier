@@ -5,24 +5,17 @@
   "configurations": [
     {
       "args": [
-        "-r",
-        "ts-node/register",
-        "-r",
-        "source-map-support/register",
-        "-u",
-        "bdd",
-        "--timeout",
-        "999999",
-        "--colors",
-        "--full-trace",
-        "\"./src/**/*.test.ts\""
+        "--runInBand",
+        "--coverage",
+        "false",
+        "--findRelatedTests",
+        "${relativeFile}"
       ],
       "console": "integratedTerminal",
       "cwd": "${workspaceRoot}",
       "internalConsoleOptions": "neverOpen",
-      "name": "Run Tests",
-      "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
-      "protocol": "inspector",
+      "name": "Debug Relative Jest Tests",
+      "program": "${workspaceRoot}/node_modules/jest/bin/jest",
       "request": "launch",
       "sourceMaps": true,
       "type": "node"

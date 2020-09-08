@@ -58,8 +58,11 @@ export class Reprinter implements ILanguage {
   ];
   public static readonly TYPESCRIPT_EXTENSIONS = [".ts", ".tsx", ".ts.txt"];
 
+  // @ts-expect-error: Need to move to a functional system
   private _filename: string;
+  // @ts-expect-error: Need to move to a functional system
   private _helpModeHasPrintedFilename: boolean;
+  // @ts-expect-error: Need to move to a functional system
   private _options: JsReprinterOptionsRequired;
 
   public getRewrittenContents(
@@ -160,7 +163,7 @@ export class Reprinter implements ILanguage {
           case "ArrayExpression":
           case "ArrayPattern": {
             fileContents = this.rewriteNodes(
-              node.elements.filter((value) => value != null),
+              node.elements.filter((value: any) => value != null),
               comments,
               fileContents
             );
@@ -778,7 +781,7 @@ export class Reprinter implements ILanguage {
     return fileContents;
   }
 
-  private printHelpModeInfo(item, fileContents: string) {
+  private printHelpModeInfo(item: any, fileContents: string) {
     if (!this._helpModeHasPrintedFilename) {
       LogUtils.log(LoggerVerboseOption.Diagnostic, "");
       LogUtils.log(LoggerVerboseOption.Diagnostic, this._filename);

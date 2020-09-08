@@ -1,20 +1,19 @@
-import { expect } from "chai";
 import { addParenthesis, createError, includeShebang } from "./parser-utils";
 
 describe("language-js/parser-utils", () => {
   describe("createError", () => {
     it("Constructors an error", () => {
       const error = createError("message", { start: { column: 3, line: 2 } });
-      expect(error).to.exist;
+      expect(error).toBeDefined();
     });
   });
 
   describe("includeShebang", () => {
     it("Does not modify comments if shebang exists", () => {
-      const array = [];
+      const array: Array<any> = [];
       const ast = { comments: array };
       includeShebang("#!message", ast);
-      expect(ast.comments === array).to.be.true;
+      expect(ast.comments === array).toBe(true);
     });
   });
 
@@ -83,12 +82,12 @@ describe("language-js/parser-utils", () => {
         },
       ];
       const newNodes = addParenthesis(fileContents, nodes);
-      expect(newNodes[0].range[0]).to.equal(nodes[0].range[0]);
-      expect(newNodes[0].range[1]).to.equal(nodes[0].range[1]);
-      expect(newNodes[1].range[0]).to.equal(nodes[1].range[0] - 4);
-      expect(newNodes[1].range[1]).to.equal(nodes[1].range[1] + 1);
-      expect(newNodes[2].range[0]).to.equal(nodes[2].range[0] - 1);
-      expect(newNodes[2].range[1]).to.equal(nodes[2].range[1] + 1);
+      expect(newNodes[0].range[0]).toEqual(nodes[0].range[0]);
+      expect(newNodes[0].range[1]).toEqual(nodes[0].range[1]);
+      expect(newNodes[1].range[0]).toEqual(nodes[1].range[0] - 4);
+      expect(newNodes[1].range[1]).toEqual(nodes[1].range[1] + 1);
+      expect(newNodes[2].range[0]).toEqual(nodes[2].range[0] - 1);
+      expect(newNodes[2].range[1]).toEqual(nodes[2].range[1] + 1);
     });
 
     it("Basic add parenthesis for Typescript", () => {
@@ -164,12 +163,12 @@ describe("language-js/parser-utils", () => {
       ];
       const newNodes = addParenthesis(fileContents, nodes);
       // Typescript takes parenthesis into the AST structure so everything should be good
-      expect(newNodes[0].range[0]).to.equal(nodes[0].range[0]);
-      expect(newNodes[0].range[1]).to.equal(nodes[0].range[1]);
-      expect(newNodes[1].range[0]).to.equal(nodes[1].range[0]);
-      expect(newNodes[1].range[1]).to.equal(nodes[1].range[1]);
-      expect(newNodes[2].range[0]).to.equal(nodes[2].range[0]);
-      expect(newNodes[2].range[1]).to.equal(nodes[2].range[1]);
+      expect(newNodes[0].range[0]).toEqual(nodes[0].range[0]);
+      expect(newNodes[0].range[1]).toEqual(nodes[0].range[1]);
+      expect(newNodes[1].range[0]).toEqual(nodes[1].range[0]);
+      expect(newNodes[1].range[1]).toEqual(nodes[1].range[1]);
+      expect(newNodes[2].range[0]).toEqual(nodes[2].range[0]);
+      expect(newNodes[2].range[1]).toEqual(nodes[2].range[1]);
     });
   });
 });

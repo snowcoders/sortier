@@ -24,21 +24,19 @@ export class Reprinter implements ILanguage {
     ".scss.txt",
   ];
 
-  private options: CssReprinterOptionsRequired;
-
   public getRewrittenContents(
     filename: string,
     fileContents: string,
     options: BaseReprinterOptions
   ) {
-    this.options = this.getValidatedOptions(options);
+    const validatedOptions = this.getValidatedOptions(options);
 
-    const parser = this.getParser(filename);
+    const parser = this.getParser(validatedOptions, filename);
     const ast = parser(fileContents, {
-      sourcesContent: true,
+      // sourcesContent: true,
     });
 
-    return this.sortNode(ast, fileContents);
+    return this.sortNode(validatedOptions, ast, fileContents);
   }
 
   public isFileSupported(filename: string) {
@@ -61,12 +59,12 @@ export class Reprinter implements ILanguage {
     };
   }
 
-  private getParser(filename: string) {
+  private getParser(options: CssReprinterOptionsRequired, filename: string) {
     // If the options overide the parser type
-    if (this.options.parser === "less") {
+    if (options.parser === "less") {
       return lessParse;
     }
-    if (this.options.parser === "scss") {
+    if (options.parser === "scss") {
       return scssParse;
     }
 
@@ -90,7 +88,11 @@ export class Reprinter implements ILanguage {
     throw new Error("File not supported");
   }
 
-  private sortNode(node: /* Document */ any, fileContents: string): string {
+  private sortNode(
+    options: CssReprinterOptionsRequired,
+    node: /* Document */ any,
+    fileContents: string
+  ): string {
     const rules: any[] = [];
 
     for (const child of node.nodes) {
@@ -102,13 +104,13 @@ export class Reprinter implements ILanguage {
     }
 
     for (const rule of rules) {
-      fileContents = this.sortNode(rule, fileContents);
+      fileContents = this.sortNode(options, rule, fileContents);
     }
 
     fileContents = sortDeclarations(
       node,
       fileContents,
-      this.options.sortDeclarations
+      options.sortDeclarations
     );
 
     return fileContents;

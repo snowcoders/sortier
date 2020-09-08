@@ -25,6 +25,7 @@ export function parse(text: string /*, parsers, opts*/) {
     });
   }
 
+  // @ts-expect-error: I forked this from someone else, not changing it unless it breaks
   delete ast.tokens;
   includeShebang(text, ast);
   return ast;

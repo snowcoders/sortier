@@ -12,8 +12,8 @@ export interface SortExpressionOptionsRequired {
 }
 
 export function sortExpression(
-  expression,
-  comments,
+  expression: any,
+  comments: any,
   fileContents: string,
   options: SortExpressionOptions
 ) {
@@ -41,14 +41,14 @@ class ExpressionSorter {
   // https://caligari.dartmouth.edu/doc/ibmcxx/en_US/doc/language/ref/ruclxbin.htm
   static commutativeOperators = ["*", "&", "|", "^"];
 
-  private comments;
-  private expression;
+  private comments: any;
+  private expression: any;
   private fileContents: string;
   private options: SortExpressionOptionsRequired;
 
   constructor(
-    expression,
-    comments,
+    expression: any,
+    comments: any,
     fileContents: string,
     options: SortExpressionOptionsRequired
   ) {

@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { runTestAssestsTests } from "../../utilities/test-utils";
 
 // Parsers
@@ -35,7 +34,7 @@ import honda from "./cars";`;
         orderBy: "first-specifier",
       });
 
-      expect(actual).to.equal(output);
+      expect(actual).toEqual(output);
     });
 
     it("Order by source", () => {
@@ -53,7 +52,7 @@ import "./styles.scss";`;
         orderBy: "source",
       });
 
-      expect(actual).to.equal(output);
+      expect(actual).toEqual(output);
     });
 
     it("Order by undefined", () => {
@@ -71,7 +70,7 @@ import "./styles.scss";`;
         orderBy: "source",
       });
 
-      expect(actual).to.equal(output);
+      expect(actual).toEqual(output);
     });
   });
 });

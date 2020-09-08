@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 // The methods being tested here
 import { Reprinter } from "./index";
 
@@ -15,17 +13,17 @@ describe("reprinter", () => {
       join(__dirname, "test_assets/sortierignore.output.ts.txt")
     );
     // If this expect is hit, then the test files were tampered with before we got here
-    expect(input).to.equal(output);
+    expect(input).toEqual(output);
 
     Reprinter.rewriteFile(inputFilePath, {});
     const newInput = FileUtils.readFileContents(inputFilePath);
-    expect(newInput).to.equal(output);
+    expect(newInput).toEqual(output);
   });
 
   it("Does not throw error for unsupported files", () => {
     const inputFilePath = join(__dirname, "../../readme.md");
     expect(() => {
       Reprinter.rewriteFile(inputFilePath, {});
-    }).to.not.throw();
+    }).not.toThrow();
   });
 });

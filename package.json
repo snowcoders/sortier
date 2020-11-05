@@ -13,7 +13,7 @@
     "globby": "11.0.1",
     "ignore": "5.1.8",
     "postcss-less": "4.0.0",
-    "postcss-scss": "3.0.2",
+    "postcss-scss": "3.0.4",
     "typescript": "4.0.5"
   },
   "description": "An opionated code sorter",

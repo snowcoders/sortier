@@ -1,4 +1,4 @@
-### Unreleased
+### [Unreleased]
 
 - Added `sortier-ignore-next-line` support which disables sorting on all AST nodes that start and end on the next line
 - Added `sortier-ignore-nodes` support which disables sorting on all AST nodes that start on the next line

@@ -25,6 +25,7 @@
     "@types/node": "14.14.7",
     "@typescript-eslint/eslint-plugin": "4.6.1",
     "@typescript-eslint/parser": "4.6.1",
+    "changelog-updater": "2.0.2",
     "coveralls": "3.1.0",
     "eslint": "7.13.0",
     "eslint-config-prettier": "6.15.0",
@@ -64,7 +65,8 @@
     "prepare": "npm run clean && npm run build",
     "start": "npm run build && npm run cli",
     "test": "jest",
-    "test-e2e": "docker build -f e2e_tests.dockerfile ."
+    "test-e2e": "docker build -f e2e_tests.dockerfile .",
+    "version": "changelog-updater && git add ."
   },
   "version": "3.1.3"
 }

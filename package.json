@@ -28,7 +28,7 @@
     "changelog-updater": "2.0.2",
     "coveralls": "3.1.0",
     "eslint": "7.15.0",
-    "eslint-config-prettier": "6.15.0",
+    "eslint-config-prettier": "7.0.0",
     "eslint-plugin-prettier": "3.2.0",
     "husky": "4.3.4",
     "jest": "26.6.3",

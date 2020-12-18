@@ -9,7 +9,7 @@
     "angular-html-parser": "1.7.1",
     "cosmiconfig": "7.0.0",
     "find-up": "5.0.0",
-    "flow-parser": "0.140.0",
+    "flow-parser": "0.141.0",
     "globby": "11.0.1",
     "ignore": "5.1.8",
     "postcss-less": "4.0.0",

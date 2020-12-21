@@ -3,14 +3,13 @@ import { compare } from "../../utilities/sort-utils";
 import { StringUtils } from "../../utilities/string-utils";
 
 export type SortImportDeclarationsOrderOption = "first-specifier" | "source";
-export type SortImportDeclarationsOptions = Partial<
-  SortImportDeclarationsOptionsRequired
->;
+export type SortImportDeclarationsOptions = Partial<SortImportDeclarationsOptionsRequired>;
 interface SortImportDeclarationsOptionsRequired {
   orderBy: SortImportDeclarationsOrderOption;
 }
 
 interface SingleImportSource {
+  type: "import" | "export";
   firstSpecifier: string;
   originalIndex: number;
   originalLocation: {
@@ -43,7 +42,14 @@ export function sortImportDeclarations(
     for (; overallIndex < body.length; overallIndex++) {
       const importSource = body[overallIndex];
 
-      if (importSource.type !== "ImportDeclaration") {
+      // Is this an import/export declaration?
+      if (
+        !(
+          (importSource.type.match(/Export.*Declaration/) ||
+            importSource.type.match(/Import.*Declaration/)) &&
+          importSource.source != null
+        )
+      ) {
         if (sortedImportSources.length !== 0) {
           break;
         } else {
@@ -51,6 +57,7 @@ export function sortImportDeclarations(
         }
       }
 
+      // Is there a line break?
       if (
         sortedImportSources.length !== 0 &&
         importSource.loc.start.line -
@@ -61,10 +68,8 @@ export function sortImportDeclarations(
         break;
       }
       sortedImportSources.push({
-        firstSpecifier:
-          (importSource.specifiers[0] &&
-            importSource.specifiers[0].local.name) ||
-          "",
+        type: importSource.type.indexOf("Import") !== -1 ? "import" : "export",
+        firstSpecifier: importSource?.specifiers?.[0]?.local.name || "",
         originalIndex: overallIndex,
         originalLocation: {
           end: {
@@ -95,6 +100,9 @@ export function sortImportDeclarations(
       }
     };
     sortedImportSources.sort((a: SingleImportSource, b: SingleImportSource) => {
+      if (a.type !== b.type) {
+        return a.type === "export" ? 1 : -1;
+      }
       if (ensuredOptions.orderBy === "first-specifier") {
         const result = sortBySpecifier(a, b);
         if (result !== 0) {

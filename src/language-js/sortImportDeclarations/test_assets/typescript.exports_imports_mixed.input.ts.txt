@@ -1,0 +1,10 @@
+export * from './a';
+export * from './f';
+export * from './u';
+export * from './ap';
+export { e, f } from './d';
+import * as A from './a';
+import * as B from './f';
+import * as C from './u';
+import * as D from './ap';
+import { e, f } from './d';

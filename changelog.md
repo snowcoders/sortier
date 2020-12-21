@@ -1,5 +1,8 @@
 ### [Unreleased]
 
+- Fixed exports not sorting
+- Fixed imports should be above exports when grouped
+
 ## [3.2.0] - 2020-11-15
 
 - Added `sortier-ignore-next-line` support which disables sorting on all AST nodes that start and end on the next line

@@ -2,7 +2,7 @@ import { run } from "./index";
 
 // Mocks
 import * as realCosmiconfig from "cosmiconfig";
-import { mocked } from "ts-jest";
+import { mocked } from "ts-jest/utils";
 import { Reprinter } from "../reprinter";
 import { ReprinterOptions } from "../reprinter-options";
 import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils";

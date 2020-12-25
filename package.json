@@ -68,5 +68,5 @@
     "test-e2e": "docker build -f e2e_tests.dockerfile .",
     "version": "changelog-updater && git add ."
   },
-  "version": "3.2.0"
+  "version": "3.2.1"
 }

@@ -1,5 +1,7 @@
 ### [Unreleased]
 
+## [3.2.1] - 2020-12-25
+
 - Fixed exports not sorting
 - Fixed imports should be above exports when grouped
 

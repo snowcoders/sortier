@@ -1,31 +1,16 @@
 {
-  "author": "Snowcoders",
+  "author": "TODO",
   "bin": {
-    "sortier": "./bin/index.js"
+    "TODO": "./bin/index.js"
   },
-  "dependencies": {
-    "@types/postcss-less": "4.0.0",
-    "@typescript-eslint/typescript-estree": "4.11.0",
-    "angular-html-parser": "1.7.1",
-    "cosmiconfig": "7.0.0",
-    "find-up": "5.0.0",
-    "flow-parser": "0.141.0",
-    "globby": "11.0.1",
-    "ignore": "5.1.8",
-    "postcss-less": "4.0.0",
-    "postcss-scss": "3.0.4",
-    "typescript": "4.1.3"
-  },
-  "description": "An opionated code sorter",
+  "dependencies": {},
+  "description": "TODO",
   "devDependencies": {
     "@snowcoders/renovate-config": "2.0.2",
-    "@types/estree": "0.0.45",
-    "@types/globby": "8.0.0",
     "@types/jest": "26.0.19",
     "@types/node": "14.14.16",
     "@typescript-eslint/eslint-plugin": "4.11.0",
     "@typescript-eslint/parser": "4.11.0",
-    "changelog-updater": "2.0.2",
     "coveralls": "3.1.0",
     "eslint": "7.16.0",
     "eslint-config-prettier": "7.1.0",
@@ -35,38 +20,27 @@
     "lint-staged": "10.5.3",
     "prettier": "2.2.1",
     "rimraf": "3.0.2",
-    "source-map-support": "0.5.19",
     "ts-jest": "26.4.4",
     "ts-node": "9.1.1",
-    "tslint": "6.1.3"
+    "typescript": "4.1.3"
   },
-  "homepage": "https://snowcoders.github.io/sortier",
+  "homepage": "TODO",
   "keywords": [
-    "order",
-    "alphabetize",
-    "sorter",
-    "sort",
-    "sorting",
-    "import",
-    "module"
+    "TODO"
   ],
-  "license": "MIT",
+  "license": "UNLICENSED",
   "main": "./dist/index.js",
-  "name": "@snowcoders/sortier",
-  "repository": "github:snowcoders/sortier",
+  "name": "@snowcoders/scaffold-typescript-cli--circleci",
+  "repository": "TODO",
+  "private": "true",
   "scripts": {
-    "build": "tsc -p ./tsconfig.production.json",
     "build:dev": "tsc -p ./tsconfig.json",
-    "clean": "rimraf .nyc_output coverage dist",
-    "cli": "node bin/index.js",
+    "build": "tsc -p ./tsconfig.production.json",
+    "clean": "rimraf coverage dist",
     "cover": "cat ./coverage/lcov.info | coveralls",
-    "lint": "eslint --fix --debug ./src/**/*.{js,jsx,ts,tsx}",
-    "mocha": "mocha --timeout 5000 --require ts-node/register --require source-map-support/register --recursive --full-trace \"./src/**/*.test.ts\"",
     "prepare": "npm run clean && npm run build",
-    "start": "npm run build && npm run cli",
-    "test": "jest",
-    "test-e2e": "docker build -f e2e_tests.dockerfile .",
-    "version": "changelog-updater && git add ."
+    "start": "npm run build:dev && node bin/index.js",
+    "test": "jest"
   },
-  "version": "3.2.1"
+  "version": "0.0.1"
 }

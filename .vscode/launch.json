@@ -21,7 +21,7 @@
       "type": "node"
     },
     {
-      "args": ["./src/**/*"],
+      "args": [],
       "cwd": "${workspaceRoot}",
       "name": "Debug app",
       "outFiles": [],

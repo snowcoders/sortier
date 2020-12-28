@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "noUnusedLocals": false,
     "outDir": "./dist",
     "rootDir": "./src",
     "sourceMap": true,
+    "noUnusedLocals": false,
     "target": "ES6"
   },
   "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.base.json",

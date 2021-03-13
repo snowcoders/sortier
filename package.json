@@ -18,7 +18,7 @@
   },
   "description": "An opionated code sorter",
   "devDependencies": {
-    "@snowcoders/renovate-config": "2.0.2",
+    "@snowcoders/renovate-config": "2.0.3",
     "@types/estree": "0.0.46",
     "@types/globby": "8.0.0",
     "@types/jest": "26.0.20",

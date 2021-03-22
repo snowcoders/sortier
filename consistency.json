@@ -11,5 +11,21 @@
       "owner": "snowcoders",
       "platform": "github"
     }
-  ]
+  ],
+  "consumer": {
+    "exemptions": [
+      {
+        "glob": "/.eslintrc.js",
+        "reason": "#1175 -Turning off no-explicit-any"
+      },
+      {
+        "glob": "/.lintstagedrc.js",
+        "reason": "Override the node_modules sortier with our local one instead"
+      },
+      {
+        "glob": "/.sortierignore",
+        "reason": "Need to add ignore for our test files - TODO bug on consistency to support this scenario"
+      }
+    ]
+  }
 }

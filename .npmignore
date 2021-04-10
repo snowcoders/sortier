@@ -1,4 +1,24 @@
 # From the .gitignore
+coverage
+node_modules
+*.log
+
+# Github specific folders
+.circleci
+.github
+docs
+
+# Developer Tools
+.vscode
+
+# Source code not needed for package
+.gitattributes
+/src
+/.*ignore
+/*rc.js
+/*rc
+/*.dockerfile
+/*.json# From the .gitignore
 .nyc_output
 coverage
 node_modules

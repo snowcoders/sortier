@@ -38,7 +38,8 @@
     "source-map-support": "0.5.20",
     "ts-jest": "27.0.5",
     "ts-node": "10.2.1",
-    "tslint": "6.1.3"
+    "tslint": "6.1.3",
+    "typescript": "4.2.4"
   },
   "homepage": "https://snowcoders.github.io/sortier",
   "keywords": [
@@ -57,7 +58,7 @@
   "scripts": {
     "build": "tsc -p ./tsconfig.production.json",
     "build:dev": "tsc -p ./tsconfig.json",
-    "clean": "rimraf .nyc_output coverage dist",
+    "clean": "rimraf coverage dist",
     "cli": "node bin/index.js",
     "cover": "cat ./coverage/lcov.info | coveralls",
     "lint": "eslint --fix --debug ./src/**/*.{js,jsx,ts,tsx}",

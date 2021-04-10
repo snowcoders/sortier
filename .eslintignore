@@ -1,4 +1,11 @@
-.nyc_output
+# From the .gitignore
+coverage
+dist
+node_modules
+*.log
+
+# Currently many config files are in commonjs
+*rc.js.nyc_output
 coverage
 dist
 node_modules

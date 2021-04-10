@@ -27,5 +27,6 @@
         "reason": "Need to add ignore for our test files - TODO bug on consistency to support this scenario"
       }
     ]
-  }
+  },
+  "producerHash": "a4438fa36d190a5f85959de31df698a4"
 }

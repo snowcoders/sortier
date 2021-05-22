@@ -1,7 +1,7 @@
 {
   "author": "Snowcoders",
   "bin": {
-    "sortier": "./bin/index.js"
+    "sortier": "bin/index.js"
   },
   "dependencies": {
     "@types/postcss-less": "^4.0.0",
@@ -68,5 +68,5 @@
     "test-e2e": "docker build -f e2e_tests.dockerfile .",
     "version": "changelog-updater && git add ."
   },
-  "version": "3.2.1"
+  "version": "3.3.0"
 }

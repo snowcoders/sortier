@@ -1,5 +1,7 @@
 ### [Unreleased]
 
+## [3.3.0] - 2021-05-22
+
 - Updated `package.json` to use caret range to aid compatability
 - Updated some out-of-date packages with known vulnerabilities
 

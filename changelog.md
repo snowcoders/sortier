@@ -1,5 +1,8 @@
 ### [Unreleased]
 
+- Updated `package.json` to use caret range to aid compatability
+- Updated some out-of-date packages with known vulnerabilities
+
 ## [3.2.1] - 2020-12-25
 
 - Fixed exports not sorting

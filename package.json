@@ -4,17 +4,17 @@
     "sortier": "./bin/index.js"
   },
   "dependencies": {
-    "@types/postcss-less": "4.0.0",
-    "@typescript-eslint/typescript-estree": "4.24.0",
-    "angular-html-parser": "1.8.0",
-    "cosmiconfig": "7.0.0",
-    "find-up": "5.0.0",
-    "flow-parser": "0.151.0",
-    "globby": "11.0.3",
-    "ignore": "5.1.8",
-    "postcss-less": "4.0.1",
-    "postcss-scss": "3.0.5",
-    "typescript": "4.2.4"
+    "@types/postcss-less": "^4.0.0",
+    "@typescript-eslint/typescript-estree": "^4.0.0",
+    "angular-html-parser": "^1.0.0",
+    "cosmiconfig": "^7.0.0",
+    "find-up": "^5.0.0",
+    "flow-parser": "~0.151.0",
+    "globby": "^11.0.0",
+    "ignore": "^5.0.0",
+    "postcss-less": "^4.0.0",
+    "postcss-scss": "^3.0.0",
+    "typescript": "^4.0.0"
   },
   "description": "An opionated code sorter",
   "devDependencies": {

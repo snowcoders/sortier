@@ -2,4 +2,4 @@
 
 "use strict";
 
-require("../dist/cli").run(process.argv.slice(2));
+return require("../dist/cli").run(process.argv.slice(2));

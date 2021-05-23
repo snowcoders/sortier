@@ -1,5 +1,4 @@
-# Locally generaetd files
-.nyc_output
+# Locally generated files
 coverage
 dist
 node_modules

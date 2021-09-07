@@ -22,7 +22,7 @@
     "@types/estree": "0.0.50",
     "@types/globby": "8.0.0",
     "@types/jest": "26.0.24",
-    "@types/node": "16.7.11",
+    "@types/node": "16.7.13",
     "@typescript-eslint/eslint-plugin": "4.29.3",
     "@typescript-eslint/parser": "4.29.3",
     "changelog-updater": "2.0.2",

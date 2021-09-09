@@ -35,7 +35,7 @@
     "lint-staged": "11.1.2",
     "prettier": "2.3.2",
     "rimraf": "3.0.2",
-    "source-map-support": "0.5.19",
+    "source-map-support": "0.5.20",
     "ts-jest": "27.0.4",
     "ts-node": "10.2.1",
     "tslint": "6.1.3"

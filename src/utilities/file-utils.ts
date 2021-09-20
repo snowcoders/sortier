@@ -10,7 +10,7 @@ export class FileUtils {
   public static readFileContents(filename: string) {
     try {
       return fs.readFileSync(filename, "utf8");
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Could not read file: ${filename}\n${error.message}`);
     }
   }
@@ -18,7 +18,7 @@ export class FileUtils {
   public static writeFileContents(filename: string, fileContents: string) {
     try {
       fs.writeFileSync(filename, fileContents, "utf8");
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Could not write file: ${filename}\n${error.message}`);
     }
   }

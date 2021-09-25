@@ -20,7 +20,7 @@
   "devDependencies": {
     "@snowcoders/renovate-config": "2.0.3",
     "@types/estree": "0.0.50",
-    "@types/jest": "26.0.24",
+    "@types/jest": "27.0.2",
     "@types/node": "16.9.0",
     "@typescript-eslint/eslint-plugin": "4.29.3",
     "@typescript-eslint/parser": "4.29.3",

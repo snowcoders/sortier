@@ -1,0 +1,178 @@
+<svg
+  class="sci-sortier-documentation-logo"
+  viewBox="0 0 90 51.5"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+  <style>
+    path {
+      stroke-width: 2px;
+      stroke-linecap: round;
+    }
+    path.clear {
+      stroke: transparent;
+    }
+    path.back-1 {
+      stroke: #a8aacf;
+      /* stroke: var(--theme-color--light-blue); */
+    }
+    path.back-2 {
+      stroke: #fff1c8;
+      /* stroke: var(--theme-color--yellow); */
+    }
+    path.back-3 {
+      stroke: #bba1cb;
+      /* stroke: var(--theme-color--light); */
+    }
+    path.fore {
+      stroke: #2d3073;
+      /* stroke: var(--theme-color--dark-blue); */
+    }
+  </style>
+  <g data-number="1" style="transform: translate(0px, 4.5px)">
+    <path class="clear" d="M4 0 l10 0"></path>
+    <path class="back-1" d="M18 0 l9 0"></path>
+    <path class="back-3" d="M31 0 l0 0"></path>
+    <path class="fore" d="M35 0 l24 0"></path>
+    <path class="back-3" d="M63 0 l2 0"></path>
+    <path class="back-2" d="M69 0 l10 0"></path>
+    <path class="clear" d="M83 0 l7 0"></path>
+  </g>
+  <g data-number="13" style="transform: translate(0px, 46.5px)">
+    <path class="clear" d="M4 0 l7 0"></path>
+    <path class="back-2" d="M15 0 l10 0"></path>
+    <path class="back-3" d="M29 0 l2 0"></path>
+    <path class="fore" d="M35 0 l24 0"></path>
+    <path class="back-3" d="M63 0 l0 0"></path>
+    <path class="back-1" d="M67 0 l9 0"></path>
+    <path class="clear" d="M80 0 l10 0"></path>
+  </g>
+  <g data-number="7" style="transform: translate(0px, 25.5px)">
+    <path class="clear" d="M4 0 l11 0"></path>
+    <path class="back-1" d="M19 0 l10 0"></path>
+    <path class="back-3" d="M33 0 l4 0"></path>
+    <path class="fore" d="M41 0 l12 0"></path>
+    <path class="back-2" d="M57 0 l2 0"></path>
+    <path class="back-3" d="M63 0 l7 0"></path>
+    <path class="back-1" d="M74 0 l4 0"></path>
+    <path class="clear" d="M82 0 l8 0"></path>
+  </g>
+  <g data-number="6" style="transform: translate(0px, 22px)">
+    <path class="clear" d="M4 0 l6 0"></path>
+    <path class="back-3" d="M14 0 l11 0"></path>
+    <path class="back-1" d="M29 0 l3 0"></path>
+    <path class="fore" d="M36 0 l11 0"></path>
+    <path class="back-3" d="M51 0 l9 0"></path>
+    <path class="back-1" d="M64 0 l4 0"></path>
+    <path class="back-3" d="M72 0 l10 0"></path>
+    <path class="clear" d="M86 0 l4 0"></path>
+  </g>
+  <g data-number="8" style="transform: translate(0px, 29px)">
+    <path class="clear" d="M4 0 l4 0"></path>
+    <path class="back-3" d="M12 0 l10 0"></path>
+    <path class="back-1" d="M26 0 l4 0"></path>
+    <path class="back-3" d="M34 0 l9 0"></path>
+    <path class="fore" d="M47 0 l11 0"></path>
+    <path class="back-1" d="M62 0 l3 0"></path>
+    <path class="back-3" d="M69 0 l11 0"></path>
+    <path class="clear" d="M84 0 l6 0"></path>
+  </g>
+  <g data-number="0" style="transform: translate(0px, 1px)">
+    <path class="clear" d="M4 0 l9 0"></path>
+    <path class="back-3" d="M17 0 l10 0"></path>
+    <path class="back-1" d="M31 0 l5 0"></path>
+    <path class="fore" d="M42 0 l10 0"></path>
+    <path class="back-1" d="M58 0 l11 0"></path>
+    <path class="back-2" d="M73 0 l7 0"></path>
+    <path class="clear" d="M84 0 l6 0"></path>
+  </g>
+  <g data-number="14" style="transform: translate(0px, 50px)">
+    <path class="clear" d="M4 0 l6 0"></path>
+    <path class="back-2" d="M14 0 l7 0"></path>
+    <path class="back-1" d="M25 0 l11 0"></path>
+    <path class="fore" d="M42 0 l10 0"></path>
+    <path class="back-1" d="M58 0 l5 0"></path>
+    <path class="back-3" d="M67 0 l10 0"></path>
+    <path class="clear" d="M81 0 l9 0"></path>
+  </g>
+  <g data-number="2" style="transform: translate(0px, 8px)">
+    <path class="clear" d="M4 0 l5 0"></path>
+    <path class="back-2" d="M13 0 l6 0"></path>
+    <path class="back-3" d="M23 0 l5 0"></path>
+    <path class="fore" d="M32 0 l8 0"></path>
+    <path class="back-1" d="M44 0 l10 0"></path>
+    <path class="fore" d="M58 0 l4 0"></path>
+    <path class="back-3" d="M66 0 l10 0"></path>
+    <path class="clear" d="M80 0 l10 0"></path>
+  </g>
+  <g data-number="5" style="transform: translate(0px, 18.5px)">
+    <path class="clear" d="M4 0 l6 0"></path>
+    <path class="back-3" d="M14 0 l6 0"></path>
+    <path class="back-1" d="M24 0 l4 0"></path>
+    <path class="fore" d="M32 0 l7 0"></path>
+    <path class="back-2" d="M43 0 l4 0"></path>
+    <path class="back-3" d="M51 0 l5 0"></path>
+    <path class="back-1" d="M60 0 l10 0"></path>
+    <path class="back-3" d="M74 0 l5 0"></path>
+    <path class="clear" d="M83 0 l7 0"></path>
+  </g>
+  <g data-number="9" style="transform: translate(0px, 32.5px)">
+    <path class="clear" d="M4 0 l7 0"></path>
+    <path class="back-3" d="M15 0 l5 0"></path>
+    <path class="back-1" d="M24 0 l10 0"></path>
+    <path class="back-3" d="M38 0 l5 0"></path>
+    <path class="back-2" d="M47 0 l4 0"></path>
+    <path class="fore" d="M55 0 l7 0"></path>
+    <path class="back-1" d="M66 0 l4 0"></path>
+    <path class="back-3" d="M74 0 l6 0"></path>
+    <path class="clear" d="M84 0 l6 0"></path>
+  </g>
+  <g data-number="3" style="transform: translate(0px, 11.5px)">
+    <path class="clear" d="M4 0 l9 0"></path>
+    <path class="back-2" d="M17 0 l9 0"></path>
+    <path class="fore" d="M30 0 l6 0"></path>
+    <path class="back-2" d="M40 0 l8 0"></path>
+    <path class="back-1" d="M52 0 l5 0"></path>
+    <path class="back-3" d="M61 0 l5 0"></path>
+    <path class="back-1" d="M70 0 l8 0"></path>
+    <path class="clear" d="M82 0 l8 0"></path>
+  </g>
+  <g data-number="4" style="transform: translate(0px, 15px)">
+    <path class="clear" d="M4 0 l9 0"></path>
+    <path class="back-2" d="M17 0 l7 0"></path>
+    <path class="fore" d="M30 0 l6 0"></path>
+    <path class="back-3" d="M40 0 l9 0"></path>
+    <path class="back-1" d="M53 0 l9 0"></path>
+    <path class="back-2" d="M66 0 l9 0"></path>
+    <path class="clear" d="M79 0 l11 0"></path>
+  </g>
+  <g data-number="10" style="transform: translate(0px, 36px)">
+    <path class="clear" d="M4 0 l11 0"></path>
+    <path class="back-2" d="M19 0 l9 0"></path>
+    <path class="back-1" d="M32 0 l9 0"></path>
+    <path class="back-3" d="M45 0 l9 0"></path>
+    <path class="fore" d="M58 0 l6 0"></path>
+    <path class="back-2" d="M70 0 l7 0"></path>
+    <path class="clear" d="M81 0 l9 0"></path>
+  </g>
+  <g data-number="11" style="transform: translate(0px, 39.5px)">
+    <path class="clear" d="M4 0 l8 0"></path>
+    <path class="back-1" d="M16 0 l8 0"></path>
+    <path class="back-3" d="M28 0 l5 0"></path>
+    <path class="back-1" d="M37 0 l5 0"></path>
+    <path class="back-2" d="M46 0 l8 0"></path>
+    <path class="fore" d="M58 0 l6 0"></path>
+    <path class="back-2" d="M68 0 l9 0"></path>
+    <path class="clear" d="M81 0 l9 0"></path>
+  </g>
+  <g data-number="12" style="transform: translate(0px, 43px)">
+    <path class="clear" d="M4 0 l10 0"></path>
+    <path class="back-3" d="M18 0 l10 0"></path>
+    <path class="fore" d="M32 0 l4 0"></path>
+    <path class="back-1" d="M40 0 l10 0"></path>
+    <path class="fore" d="M54 0 l8 0"></path>
+    <path class="back-3" d="M66 0 l5 0"></path>
+    <path class="back-2" d="M75 0 l6 0"></path>
+    <path class="clear" d="M85 0 l5 0"></path>
+  </g>
+</svg>

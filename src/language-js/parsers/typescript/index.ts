@@ -15,7 +15,7 @@ export function parse(text: string /*, parsers, opts*/) {
       /* istanbul ignore next */
       ast = tryParseTypeScript(text, !jsx);
     }
-  } catch (e) /* istanbul ignore next */ {
+  } catch (e: any) /* istanbul ignore next */ {
     if (typeof e.lineNumber === "undefined") {
       throw e;
     }

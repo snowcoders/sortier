@@ -2,7 +2,6 @@
 coverage
 dist
 node_modules
-*.log
 
 # Currently many config files are in commonjs
-*rc.js
+*rc.cjs

@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
+    "lib": ["ES2019"],
     "noUnusedLocals": false,
     "outDir": "./dist",
     "rootDir": "./src",
     "sourceMap": true,
-    "target": "ES6"
+    "target": "ES2019"
   },
-  "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.base.json",
+  "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.json",
   "include": ["./src/**/*.*"]
 }

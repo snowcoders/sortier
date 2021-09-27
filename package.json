@@ -10,7 +10,7 @@
     "cosmiconfig": "^7.0.0",
     "find-up": "^5.0.0",
     "flow-parser": "~0.158.0",
-    "globby": "^11.0.0",
+    "globby": "^12.0.0",
     "ignore": "^5.0.0",
     "postcss-less": "^5.0.0",
     "postcss-scss": "^4.0.0",

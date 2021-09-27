@@ -1,5 +1,7 @@
 ### [Unreleased]
 
+## [1.0.0-beta.0] - 2021-09-27
+
 Breaking from @snowcoders/sortier@3
 
 - JS parsing will now default to using the typescript parser. If you use flow, you'll need to explicitly configure sortier to use flow by setting `js.parser: "flow"` in your config.

@@ -1,5 +1,5 @@
-import { compare } from "../../utilities/sort-utils";
-import { StringUtils } from "../../utilities/string-utils";
+import { compare } from "../../utilities/sort-utils.js";
+import { StringUtils } from "../../utilities/string-utils.js";
 
 interface AttrInfo {
   endOffset: number;

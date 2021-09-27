@@ -1,7 +1,7 @@
 // Mostly taken from Prettier.io - Credit where credit is due!
 
 import * as parser from "@typescript-eslint/typescript-estree";
-import { createError, includeShebang } from "../../utilities/parser-utils";
+import { createError, includeShebang } from "../../utilities/parser-utils.js";
 
 export function parse(text: string /*, parsers, opts*/) {
   const jsx = isProbablyJsx(text);
@@ -15,14 +15,24 @@ export function parse(text: string /*, parsers, opts*/) {
       /* istanbul ignore next */
       ast = tryParseTypeScript(text, !jsx);
     }
-  } catch (e: any) /* istanbul ignore next */ {
-    if (typeof e.lineNumber === "undefined") {
-      throw e;
+  } catch (e) /* istanbul ignore next */ {
+    if (e instanceof Error) {
+      const { message } = e;
+      if ("lineNumber" in e) {
+        const { lineNumber } = e;
+        if ("column" in e) {
+          const { column } = e;
+          throw createError(message, {
+            start: { column: column + 1, line: lineNumber },
+          });
+        }
+        throw createError(message, {
+          start: { column: undefined, line: lineNumber },
+        });
+      }
     }
 
-    throw createError(e.message, {
-      start: { column: e.column + 1, line: e.lineNumber },
-    });
+    throw e;
   }
 
   // @ts-expect-error: I forked this from someone else, not changing it unless it breaks

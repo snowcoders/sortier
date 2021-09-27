@@ -1,8 +1,8 @@
 import { basename } from "path";
 
 // Parsers
-import { parse as flowParse } from "../parsers/flow";
-import { parse as typescriptParse } from "../parsers/typescript";
+import { parse as flowParse } from "../parsers/flow/index.js";
+import { parse as typescriptParse } from "../parsers/typescript/index.js";
 
 export function getParser(inputFilePath: string) {
   const fileName = basename(inputFilePath);

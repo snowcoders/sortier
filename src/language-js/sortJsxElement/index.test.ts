@@ -1,9 +1,9 @@
 // The methods being tested here
-import { sortJsxElement } from "./index";
+import { sortJsxElement } from "./index.js";
 
 // Utilities
-import { runTestAssestsTests } from "../../utilities/test-utils";
-import { getParser } from "../utilities/test-utils";
+import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { getParser } from "../utilities/test-utils.js";
 
 describe("language-js/sortJsxElement", () => {
   runTestAssestsTests(

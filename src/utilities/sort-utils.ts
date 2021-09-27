@@ -1,4 +1,4 @@
-import { StringUtils } from "./string-utils";
+import { StringUtils } from "./string-utils.js";
 
 export interface BaseNode {
   range?: [number, number];
@@ -421,9 +421,8 @@ function getPrecedingCommentRangeForSpecifier<
     indexOfNewLineBeforeSpecifier,
     range[0]
   );
-  let firstIndexOfNonWhitespace = textBetweenLineAndSpecifier.search(
-    /[^(\s)]/gim
-  );
+  let firstIndexOfNonWhitespace =
+    textBetweenLineAndSpecifier.search(/[^(\s)]/gim);
   if (firstIndexOfNonWhitespace === -1) {
     firstIndexOfNonWhitespace = textBetweenLineAndSpecifier.length;
   }
@@ -482,9 +481,8 @@ function getSucceedingCommentRangeForSpecifier<
     range[1],
     firstCommentRange[0]
   );
-  const nonWhiteSpaceMatches = textBetweenSpecifierAndComment.match(
-    /[^(\s)]/gim
-  );
+  const nonWhiteSpaceMatches =
+    textBetweenSpecifierAndComment.match(/[^(\s)]/gim);
   let lastIndexOfNonWhitespace = 0;
   if (nonWhiteSpaceMatches != null && nonWhiteSpaceMatches.length !== 0) {
     lastIndexOfNonWhitespace =

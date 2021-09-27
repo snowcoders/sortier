@@ -1,5 +1,5 @@
-import { formatFile, formatText } from "./index";
-import { FileUtils } from "./utilities/file-utils";
+import { formatFile, formatText } from "./index.js";
+import { FileUtils } from "./utilities/file-utils.js";
 
 describe("index", () => {
   it("Runs without crashing", () => {

@@ -1,8 +1,8 @@
-import { runTestAssestsTests } from "../../utilities/test-utils";
-import { parse as typescriptParse } from "../parsers/typescript";
-import { getParser } from "../utilities/test-utils";
+import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { parse as typescriptParse } from "../parsers/typescript/index.js";
+import { getParser } from "../utilities/test-utils.js";
 // The methods being tested here
-import { sortExpression } from "./index";
+import { sortExpression } from "./index.js";
 
 describe("language-js/sortExpression", () => {
   runTestAssestsTests(

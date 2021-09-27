@@ -4,7 +4,7 @@ import {
   compare,
   getContextGroups,
   reorderValues,
-} from "../../utilities/sort-utils";
+} from "../../utilities/sort-utils.js";
 
 export interface SortDeclarationsOptions {
   overrides: string[];

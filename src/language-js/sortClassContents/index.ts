@@ -1,9 +1,12 @@
-import { ArrayUtils } from "../../utilities/array-utils";
-import { BaseNode, compare, reorderValues } from "../../utilities/sort-utils";
+import { ArrayUtils } from "../../utilities/array-utils.js";
+import {
+  BaseNode,
+  compare,
+  reorderValues,
+} from "../../utilities/sort-utils.js";
 
-export type SortClassContentsOptions = Partial<
-  SortClassContentsOptionsRequired
->;
+export type SortClassContentsOptions =
+  Partial<SortClassContentsOptionsRequired>;
 
 type SortClassContentsOptionsRequired = {
   isAscending: boolean;
@@ -61,8 +64,8 @@ class ClassContentsSorter {
   }
 
   public sort() {
-    const possibleSortableItems: Array<MinimumSortInformation | null> = this.classItems.map(
-      (value): MinimumSortInformation | null => {
+    const possibleSortableItems: Array<MinimumSortInformation | null> =
+      this.classItems.map((value): MinimumSortInformation | null => {
         switch (value.type) {
           case "ClassProperty": {
             if (value.key != null && value.key.name != null) {
@@ -93,13 +96,11 @@ class ClassContentsSorter {
           default:
             return null;
         }
-      }
-    );
-    const sortableItems: Array<MinimumSortInformation> = possibleSortableItems.filter(
-      (value) => {
+      });
+    const sortableItems: Array<MinimumSortInformation> =
+      possibleSortableItems.filter((value) => {
         return value != null;
-      }
-    ) as any;
+      }) as any;
 
     const newFileContents = this.sortItems(
       sortableItems,

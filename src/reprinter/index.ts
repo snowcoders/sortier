@@ -1,14 +1,14 @@
 import findup from "find-up";
 import ignore from "ignore";
 import path from "path";
-import { ILanguage } from "../language";
-import { CssReprinter } from "../language-css";
-import { HtmlReprinter } from "../language-html";
-import { JavascriptReprinter } from "../language-js";
-import { JsonReprinter } from "../language-json";
-import { ReprinterOptions } from "../reprinter-options";
-import { FileUtils } from "../utilities/file-utils";
-import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils";
+import { ILanguage } from "../language.js";
+import { CssReprinter } from "../language-css/index.js";
+import { HtmlReprinter } from "../language-html/index.js";
+import { JavascriptReprinter } from "../language-js/index.js";
+import { JsonReprinter } from "../language-json/index.js";
+import { ReprinterOptions } from "../reprinter-options.js";
+import { FileUtils } from "../utilities/file-utils.js";
+import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils.js";
 
 export class Reprinter {
   private static reprinters: ILanguage[] = [

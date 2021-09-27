@@ -1,7 +1,7 @@
-import { ILanguage } from "../../language";
-import { JavascriptReprinter } from "../../language-js";
-import { ReprinterOptions } from "../../reprinter-options";
-import { StringUtils } from "../../utilities/string-utils";
+import { ILanguage } from "../../language.js";
+import { JavascriptReprinter } from "../../language-js/index.js";
+import { ReprinterOptions } from "../../reprinter-options.js";
+import { StringUtils } from "../../utilities/string-utils.js";
 
 export class Reprinter implements ILanguage {
   public static readonly EXTENSIONS = [".json", ".json.txt"];
@@ -17,7 +17,7 @@ export class Reprinter implements ILanguage {
     const suffix = ");";
     const temporaryFileContents = prefix + fileContents + suffix;
     const rewritten = new JavascriptReprinter().getRewrittenContents(
-      filename,
+      filename + ".ts",
       temporaryFileContents,
       {
         js: {

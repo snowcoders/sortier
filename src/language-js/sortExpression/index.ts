@@ -1,9 +1,9 @@
-import { compare, reorderValues } from "../../utilities/sort-utils";
-import { addParenthesis } from "../utilities/parser-utils";
+import { compare, reorderValues } from "../../utilities/sort-utils.js";
+import { addParenthesis } from "../utilities/parser-utils.js";
 import {
   TypeAnnotationOption,
   getObjectTypeRanks,
-} from "../utilities/sort-utils";
+} from "../utilities/sort-utils.js";
 
 export type SortExpressionOptions = Partial<SortExpressionOptionsRequired>;
 

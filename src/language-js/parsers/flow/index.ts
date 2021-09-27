@@ -2,7 +2,7 @@
 
 // @ts-expect-error: Flow is a competitor to typescript soo it wont have typescript types
 import * as flowParser from "flow-parser";
-import { createError, includeShebang } from "../../utilities/parser-utils";
+import { createError, includeShebang } from "../../utilities/parser-utils.js";
 
 export function parse(text: string /*, parsers, opts*/) {
   const ast = flowParser.parse(text, {

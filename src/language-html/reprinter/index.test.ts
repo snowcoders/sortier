@@ -1,7 +1,7 @@
-import { runTestAssestsTests } from "../../utilities/test-utils";
+import { runTestAssestsTests } from "../../utilities/test-utils.js";
 
 // The methods being tested here
-import { Reprinter } from "./index";
+import { Reprinter } from "./index.js";
 
 describe("language-html/reprinter", () => {
   runTestAssestsTests(

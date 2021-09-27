@@ -1,3 +1,1 @@
-const configs = require("@snowcoders/renovate-config");
-
-module.exports = configs.jest;
+export { jest as default } from "@snowcoders/renovate-config";

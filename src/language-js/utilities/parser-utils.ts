@@ -1,4 +1,4 @@
-import { StringUtils } from "../../utilities/string-utils";
+import { StringUtils } from "../../utilities/string-utils.js";
 
 export function createError(message: string, loc: any) {
   // Construct an error similar to the ones thrown by Babylon.

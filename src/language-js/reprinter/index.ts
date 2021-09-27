@@ -1,37 +1,37 @@
 import { Comment } from "estree";
 
 // Parsers
-import { parse as parseFlow } from "../parsers/flow";
-import { parse as parseTypescript } from "../parsers/typescript";
+import { parse as parseFlow } from "../parsers/flow/index.js";
+import { parse as parseTypescript } from "../parsers/typescript/index.js";
 
 // Types of sorts
-import { sortExpression } from "../sortExpression";
+import { sortExpression } from "../sortExpression/index.js";
 import {
   SortImportDeclarationSpecifiersOptions,
   sortImportDeclarationSpecifiers,
-} from "../sortImportDeclarationSpecifiers";
+} from "../sortImportDeclarationSpecifiers/index.js";
 import {
   SortImportDeclarationsOrderOption,
   sortImportDeclarations,
-} from "../sortImportDeclarations";
-import { sortJsxElement } from "../sortJsxElement";
-import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation";
-import { sortSwitchCases } from "../sortSwitchCases";
-import { sortTSPropertySignatures } from "../sortTSPropertySignatures";
-import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation";
+} from "../sortImportDeclarations/index.js";
+import { sortJsxElement } from "../sortJsxElement/index.js";
+import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation/index.js";
+import { sortSwitchCases } from "../sortSwitchCases/index.js";
+import { sortTSPropertySignatures } from "../sortTSPropertySignatures/index.js";
+import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation/index.js";
 
 // Utils
-import { ILanguage } from "../../language";
-import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options";
-import { ArrayUtils } from "../../utilities/array-utils";
-import { LogUtils, LoggerVerboseOption } from "../../utilities/log-utils";
-import { isIgnored } from "../../utilities/sort-utils";
-import { StringUtils } from "../../utilities/string-utils";
+import { ILanguage } from "../../language.js";
+import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options.js";
+import { ArrayUtils } from "../../utilities/array-utils.js";
+import { LogUtils, LoggerVerboseOption } from "../../utilities/log-utils.js";
+import { isIgnored } from "../../utilities/sort-utils.js";
+import { StringUtils } from "../../utilities/string-utils.js";
 import {
   SortClassContentsOptions,
   sortClassContents,
-} from "../sortClassContents";
-import { TypeAnnotationOption } from "../utilities/sort-utils";
+} from "../sortClassContents/index.js";
+import { TypeAnnotationOption } from "../utilities/sort-utils.js";
 
 export type ReprinterOptions = Partial<JsReprinterOptionsRequired>;
 
@@ -49,14 +49,16 @@ interface JsReprinterOptionsRequired {
 }
 
 export class Reprinter implements ILanguage {
-  public static readonly JAVASCRIPT_EXTENSIONS = [
+  public static readonly EXTENSIONS = [
     ".cjs",
     ".js",
     ".js.txt",
     ".jsx",
     ".mjs",
+    ".ts",
+    ".tsx",
+    ".ts.txt",
   ];
-  public static readonly TYPESCRIPT_EXTENSIONS = [".ts", ".tsx", ".ts.txt"];
 
   // @ts-expect-error: Need to move to a functional system
   private _filename: string;
@@ -82,19 +84,15 @@ export class Reprinter implements ILanguage {
   }
 
   public isFileSupported(filename: string) {
-    return StringUtils.stringEndsWithAny(filename, [
-      ...Reprinter.JAVASCRIPT_EXTENSIONS,
-      ...Reprinter.TYPESCRIPT_EXTENSIONS,
-    ]);
+    return StringUtils.stringEndsWithAny(filename, [...Reprinter.EXTENSIONS]);
   }
 
   private getValidatedOptions(
     appOptions: BaseReprinterOptions
   ): JsReprinterOptionsRequired {
     const partialOptions = appOptions.js || {};
-    let sortTypeAnnotations:
-      | undefined
-      | Array<TypeAnnotationOption> = undefined;
+    let sortTypeAnnotations: undefined | Array<TypeAnnotationOption> =
+      undefined;
     if (partialOptions.sortTypeAnnotations != null) {
       sortTypeAnnotations = partialOptions.sortTypeAnnotations.slice();
       ArrayUtils.dedupe(sortTypeAnnotations);
@@ -108,28 +106,17 @@ export class Reprinter implements ILanguage {
 
   private getParser() {
     // If the options overide the parser type
-    if (this._options.parser === "typescript") {
-      return parseTypescript;
-    }
     if (this._options.parser === "flow") {
       return parseFlow;
     }
 
-    // If the user didn't override the parser type, try to infer it
-    const isTypescript = StringUtils.stringEndsWithAny(
+    // Make sure typescript can handle the extension
+    const isSupportedFileExtension = StringUtils.stringEndsWithAny(
       this._filename,
-      Reprinter.TYPESCRIPT_EXTENSIONS
+      Reprinter.EXTENSIONS
     );
-    if (isTypescript) {
+    if (isSupportedFileExtension) {
       return parseTypescript;
-    }
-
-    const isJavascript = StringUtils.stringEndsWithAny(
-      this._filename,
-      Reprinter.JAVASCRIPT_EXTENSIONS
-    );
-    if (isJavascript) {
-      return parseFlow;
     }
 
     throw new Error("File not supported");
@@ -200,8 +187,6 @@ export class Reprinter implements ILanguage {
           case "EmptyStatement":
           case "Literal":
           case "OptionalMemberExpression":
-          case "RestProperty":
-          case "SpreadElement":
           case "Super":
           case "TaggedTemplateExpression":
           case "TemplateLiteral":
@@ -428,6 +413,7 @@ export class Reprinter implements ILanguage {
             );
             break;
           }
+          case "SpreadElement":
           case "SpreadProperty": {
             nodes.push(node.argument);
             break;
@@ -554,6 +540,7 @@ export class Reprinter implements ILanguage {
           case "TSVoidKeyword": {
             break;
           }
+          case "RestProperty":
           case "RestElement": {
             if (node.argument) {
               nodes.push(node.argument);

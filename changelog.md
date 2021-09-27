@@ -1,5 +1,10 @@
 ### [Unreleased]
 
+Breaking from @snowcoders/sortier@3
+
+- JS parsing will now default to using the typescript parser. If you use flow, you'll need to explicitly configure sortier to use flow by setting `js.parser: "flow"` in your config.
+- Sortier is now written in ESM so only supports Node ^12.20.0 || ^14.13.1 || >=16.0.0
+
 ## [3.3.0] - 2021-05-22
 
 - Updated `package.json` to use caret range to aid compatability

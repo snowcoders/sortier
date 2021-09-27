@@ -1,9 +1,9 @@
 // The methods being tested here
-import { Reprinter } from "./index";
+import { Reprinter } from "./index.js";
 
 // Utilities
 import { join } from "path";
-import { FileUtils } from "../utilities/file-utils";
+import { FileUtils } from "../utilities/file-utils.js";
 
 describe("reprinter", () => {
   it("Does not rewrite sortier ignored files", () => {

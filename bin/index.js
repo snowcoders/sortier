@@ -2,4 +2,6 @@
 
 "use strict";
 
-require("../dist/cli").run(process.argv.slice(2));
+import { run } from "../dist/cli/index.js";
+
+process.exit(run(process.argv.slice(2)));

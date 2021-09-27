@@ -1,6 +1,6 @@
-import { ArrayUtils } from "../../utilities/array-utils";
+import { ArrayUtils } from "../../utilities/array-utils.js";
 
-import { BaseNode } from "../../utilities/sort-utils";
+import { BaseNode } from "../../utilities/sort-utils.js";
 
 export interface Node extends BaseNode {
   type: string;

@@ -1,22 +1,8 @@
-# From the .gitignore
-.nyc_output
-coverage
-node_modules
-*.log
+# Use an allow list system so we don't accidentally publish something we don't mean to
+**
 
-# Github specific folders
-.circleci
-.github
-docs
-
-# Developer Tools
-.vscode
-
-# Source code not needed for package
-.gitattributes
-/src
-/.*ignore
-/*rc.js
-/*rc
-/*.dockerfile
-/*.json
+!/dist/**
+!/bin/**
+!/changelog.md
+!/readme.md
+!/license

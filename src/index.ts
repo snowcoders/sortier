@@ -1,5 +1,5 @@
-import { Reprinter } from "./reprinter";
-import { ReprinterOptions } from "./reprinter-options";
+import { Reprinter } from "./reprinter/index.js";
+import { ReprinterOptions } from "./reprinter-options.js";
 
 export function formatFile(filePath: string, options: ReprinterOptions) {
   Reprinter.rewriteFile(filePath, options);

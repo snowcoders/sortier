@@ -1,9 +1,10 @@
 // Utils
-import { compare } from "../../utilities/sort-utils";
-import { StringUtils } from "../../utilities/string-utils";
+import { compare } from "../../utilities/sort-utils.js";
+import { StringUtils } from "../../utilities/string-utils.js";
 
 export type SortImportDeclarationsOrderOption = "first-specifier" | "source";
-export type SortImportDeclarationsOptions = Partial<SortImportDeclarationsOptionsRequired>;
+export type SortImportDeclarationsOptions =
+  Partial<SortImportDeclarationsOptionsRequired>;
 interface SortImportDeclarationsOptionsRequired {
   orderBy: SortImportDeclarationsOrderOption;
 }

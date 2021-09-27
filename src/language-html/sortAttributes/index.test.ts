@@ -2,10 +2,10 @@
 import { parse } from "angular-html-parser";
 
 // The methods being tested here
-import { sortAttributes } from "./index";
+import { sortAttributes } from "./index.js";
 
 // Utilities
-import { runTestAssestsTests } from "../../utilities/test-utils";
+import { runTestAssestsTests } from "../../utilities/test-utils.js";
 
 describe("language-html/sortAttributes", () => {
   runTestAssestsTests(

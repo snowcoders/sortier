@@ -1,5 +1,5 @@
-import { CssReprinterOptions } from "./language-css";
-import { JavascriptReprinterOptions } from "./language-js";
+import { CssReprinterOptions } from "./language-css/index.js";
+import { JavascriptReprinterOptions } from "./language-js/index.js";
 
 export interface ReprinterOptions {
   // Default "false". If true, sortier will run but not rewrite any files. Great for testing to make sure your code base doesn't have any weird issues before rewriting code.

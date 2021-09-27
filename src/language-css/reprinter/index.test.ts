@@ -1,11 +1,11 @@
 import { join } from "path";
 
 // The methods being tested here
-import { Reprinter } from "./index";
+import { Reprinter } from "./index.js";
 
 // Utilities
-import { FileUtils } from "../../utilities/file-utils";
-import { runTestAssestsTests } from "../../utilities/test-utils";
+import { FileUtils } from "../../utilities/file-utils.js";
+import { runTestAssestsTests } from "../../utilities/test-utils.js";
 
 describe("language-css/reprinter", () => {
   runTestAssestsTests(

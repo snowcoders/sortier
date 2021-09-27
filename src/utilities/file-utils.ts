@@ -10,16 +10,24 @@ export class FileUtils {
   public static readFileContents(filename: string) {
     try {
       return fs.readFileSync(filename, "utf8");
-    } catch (error: any) {
-      throw new Error(`Could not read file: ${filename}\n${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(`Could not read file: ${filename}\n${error.message}`);
+      } else {
+        throw new Error(`Could not read file: ${filename}`);
+      }
     }
   }
 
   public static writeFileContents(filename: string, fileContents: string) {
     try {
       fs.writeFileSync(filename, fileContents, "utf8");
-    } catch (error: any) {
-      throw new Error(`Could not write file: ${filename}\n${error.message}`);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Could not read file: ${filename}\n${error.message}`);
+      } else {
+        throw new Error(`Could not read file: ${filename}`);
+      }
     }
   }
 }

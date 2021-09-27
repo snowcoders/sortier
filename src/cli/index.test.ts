@@ -1,11 +1,11 @@
-import { run } from "./index";
+import { run } from "./index.js";
 
 // Mocks
 import * as realCosmiconfig from "cosmiconfig";
 import { mocked } from "ts-jest/utils";
-import { Reprinter } from "../reprinter";
-import { ReprinterOptions } from "../reprinter-options";
-import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils";
+import { Reprinter } from "../reprinter/index.js";
+import { ReprinterOptions } from "../reprinter-options.js";
+import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils.js";
 
 jest.mock("cosmiconfig");
 

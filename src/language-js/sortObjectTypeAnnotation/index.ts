@@ -4,12 +4,12 @@ import {
   compare,
   getContextGroups,
   reorderValues,
-} from "../../utilities/sort-utils";
+} from "../../utilities/sort-utils.js";
 import {
   TypeAnnotationOption,
   getObjectTypeRanks,
   getSpreadGroups,
-} from "../utilities/sort-utils";
+} from "../utilities/sort-utils.js";
 
 export interface SortObjectTypeAnnotationOptions {
   groups?: TypeAnnotationOption[];

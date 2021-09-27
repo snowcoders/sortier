@@ -1,12 +1,12 @@
 // Parsers
-import { parse as flowParse } from "../parsers/flow";
+import { parse as flowParse } from "../parsers/flow/index.js";
 
 // The methods being tested here
-import { sortImportDeclarationSpecifiers } from "./index";
+import { sortImportDeclarationSpecifiers } from "./index.js";
 
 // Utilities
-import { runTestAssestsTests } from "../../utilities/test-utils";
-import { getParser } from "../utilities/test-utils";
+import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { getParser } from "../utilities/test-utils.js";
 
 const getSortedOverBody = (
   body: any,

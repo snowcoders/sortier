@@ -1,4 +1,4 @@
-import { ReprinterOptions } from "./reprinter-options";
+import { ReprinterOptions } from "./reprinter-options.js";
 
 export interface ILanguage {
   getRewrittenContents(

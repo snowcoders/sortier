@@ -1,9 +1,12 @@
 import { parse as lessParse } from "postcss-less";
 import { parse as scssParse } from "postcss-scss";
-import { ILanguage } from "../../language";
-import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options";
-import { StringUtils } from "../../utilities/string-utils";
-import { SortDeclarationsOptions, sortDeclarations } from "../sortDeclarations";
+import { ILanguage } from "../../language.js";
+import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options.js";
+import { StringUtils } from "../../utilities/string-utils.js";
+import {
+  SortDeclarationsOptions,
+  sortDeclarations,
+} from "../sortDeclarations/index.js";
 
 export type ReprinterOptions = Partial<CssReprinterOptionsRequired>;
 

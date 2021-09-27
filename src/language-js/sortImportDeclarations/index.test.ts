@@ -1,11 +1,11 @@
-import { runTestAssestsTests } from "../../utilities/test-utils";
+import { runTestAssestsTests } from "../../utilities/test-utils.js";
 
 // Parsers
-import { parse as flowParse } from "../parsers/flow";
-import { getParser } from "../utilities/test-utils";
+import { parse as flowParse } from "../parsers/flow/index.js";
+import { getParser } from "../utilities/test-utils.js";
 
 // The methods being tested here
-import { sortImportDeclarations } from "./index";
+import { sortImportDeclarations } from "./index.js";
 
 describe("language-js/sortImportDeclarations", () => {
   runTestAssestsTests(
@@ -23,13 +23,13 @@ describe("language-js/sortImportDeclarations", () => {
       const input = `import "./styles.scss";
 import "./header.scss";
 import * as React from "react";
-import honda from "./cars";
-import { Apple } from "./food";`;
+import honda from "./cars.js";
+import { Apple } from "./food.js";`;
       const output = `import "./header.scss";
 import "./styles.scss";
-import { Apple } from "./food";
+import { Apple } from "./food.js";
 import * as React from "react";
-import honda from "./cars";`;
+import honda from "./cars.js";`;
       const actual = sortImportDeclarations(flowParse(input).body, input, {
         orderBy: "first-specifier",
       });
@@ -41,11 +41,11 @@ import honda from "./cars";`;
       const input = `import "./styles.scss";
 import "./header.scss";
 import * as React from "react";
-import honda from "./cars";
-import { Apple } from "./food";`;
+import honda from "./cars.js";
+import { Apple } from "./food.js";`;
       const output = `import * as React from "react";
-import honda from "./cars";
-import { Apple } from "./food";
+import honda from "./cars.js";
+import { Apple } from "./food.js";
 import "./header.scss";
 import "./styles.scss";`;
       const actual = sortImportDeclarations(flowParse(input).body, input, {
@@ -59,11 +59,11 @@ import "./styles.scss";`;
       const input = `import "./styles.scss";
 import "./header.scss";
 import * as React from "react";
-import honda from "./cars";
-import { Apple } from "./food";`;
+import honda from "./cars.js";
+import { Apple } from "./food.js";`;
       const output = `import * as React from "react";
-import honda from "./cars";
-import { Apple } from "./food";
+import honda from "./cars.js";
+import { Apple } from "./food.js";
 import "./header.scss";
 import "./styles.scss";`;
       const actual = sortImportDeclarations(flowParse(input).body, input, {

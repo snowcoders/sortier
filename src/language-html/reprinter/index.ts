@@ -1,10 +1,10 @@
 import { parse } from "angular-html-parser";
-import { ILanguage } from "../../language";
-import { CssReprinter } from "../../language-css";
-import { JavascriptReprinter } from "../../language-js";
-import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options";
-import { StringUtils } from "../../utilities/string-utils";
-import { sortAttributes } from "../sortAttributes";
+import { ILanguage } from "../../language.js";
+import { CssReprinter } from "../../language-css/index.js";
+import { JavascriptReprinter } from "../../language-js/index.js";
+import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options.js";
+import { StringUtils } from "../../utilities/string-utils.js";
+import { sortAttributes } from "../sortAttributes/index.js";
 
 export class Reprinter implements ILanguage {
   public static readonly EXTENSIONS = [".html", ".html.txt"];

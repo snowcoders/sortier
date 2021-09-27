@@ -1,6 +1,6 @@
 // Parsers
-import { parse as parseFlow } from "./flow";
-import { parse as parseTypescript } from "./typescript";
+import { parse as parseFlow } from "./flow/index.js";
+import { parse as parseTypescript } from "./typescript/index.js";
 
 describe("language-js/parsers", () => {
   let codeThatFailsParse: string;

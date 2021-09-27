@@ -1,4 +1,4 @@
-import { addParenthesis, createError, includeShebang } from "./parser-utils";
+import { addParenthesis, createError, includeShebang } from "./parser-utils.js";
 
 describe("language-js/parser-utils", () => {
   describe("createError", () => {

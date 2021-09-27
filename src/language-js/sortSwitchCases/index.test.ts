@@ -1,9 +1,9 @@
 // The methods being tested here
-import { sortSwitchCases } from "./index";
+import { sortSwitchCases } from "./index.js";
 
 // Utilities
-import { runTestAssestsTests } from "../../utilities/test-utils";
-import { getParser } from "../utilities/test-utils";
+import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { getParser } from "../utilities/test-utils.js";
 
 describe("language-js/sortSwitchCases", () => {
   runTestAssestsTests(

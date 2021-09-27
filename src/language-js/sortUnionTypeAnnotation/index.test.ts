@@ -1,9 +1,9 @@
 // The methods being tested here
-import { sortUnionTypeAnnotation } from "./index";
+import { sortUnionTypeAnnotation } from "./index.js";
 
 // Utilities
-import { runTestAssestsTests } from "../../utilities/test-utils";
-import { getParser } from "../utilities/test-utils";
+import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { getParser } from "../utilities/test-utils.js";
 
 describe("language-js/sortUnionTypeAnnotation", () => {
   runTestAssestsTests(

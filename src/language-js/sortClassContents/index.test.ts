@@ -1,12 +1,12 @@
 // Parsers
-import { parse as typescriptParse } from "../parsers/typescript";
+import { parse as typescriptParse } from "../parsers/typescript/index.js";
 
 // The methods being tested here
-import { sortClassContents } from "./index";
+import { sortClassContents } from "./index.js";
 
 // Utilities
-import { runTestAssestsTests } from "../../utilities/test-utils";
-import { getParser } from "../utilities/test-utils";
+import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { getParser } from "../utilities/test-utils.js";
 
 describe("language-js/sortClassContents", () => {
   runTestAssestsTests(

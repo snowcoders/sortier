@@ -1,7 +1,7 @@
 import { sync } from "globby";
 import { basename } from "path";
-import { FileUtils } from "./file-utils";
-import { StringUtils } from "./string-utils";
+import { FileUtils } from "./file-utils.js";
+import { StringUtils } from "./string-utils.js";
 
 interface TestTreeNode {
   children: TestTreeNode[];

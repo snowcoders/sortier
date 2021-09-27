@@ -10,7 +10,7 @@ import {
   compare,
   getContextGroups,
   reorderValues,
-} from "../../utilities/sort-utils";
+} from "../../utilities/sort-utils.js";
 
 enum HasImmediateExitOption {
   Indeterminate,

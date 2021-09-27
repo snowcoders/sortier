@@ -4,8 +4,8 @@ import {
   compare,
   getContextGroups,
   reorderValues,
-} from "../../utilities/sort-utils";
-import { getSpreadGroups } from "../utilities/sort-utils";
+} from "../../utilities/sort-utils.js";
+import { getSpreadGroups } from "../utilities/sort-utils.js";
 
 // Left in for consistency with other sort functions
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

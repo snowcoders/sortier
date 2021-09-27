@@ -1,11 +1,14 @@
 import { Comment } from "estree";
-import { BaseNode, compare, reorderValues } from "../../utilities/sort-utils";
+import {
+  BaseNode,
+  compare,
+  reorderValues,
+} from "../../utilities/sort-utils.js";
 
 export type SortByExportOptionsGroups = "*" | "interfaces" | "types";
 
-export type SortImportDeclarationSpecifiersOptions = Partial<
-  SortImportDeclarationSpecifiersOptionsRequired
->;
+export type SortImportDeclarationSpecifiersOptions =
+  Partial<SortImportDeclarationSpecifiersOptionsRequired>;
 
 interface SortImportDeclarationSpecifiersOptionsRequired {
   groups: SortByExportOptionsGroups[];

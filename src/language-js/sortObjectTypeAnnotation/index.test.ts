@@ -1,8 +1,8 @@
-import { runTestAssestsTests } from "../../utilities/test-utils";
-import { getParser } from "../utilities/test-utils";
+import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { getParser } from "../utilities/test-utils.js";
 
 // The methods being tested here
-import { sortObjectTypeAnnotation } from "./index";
+import { sortObjectTypeAnnotation } from "./index.js";
 
 describe("language-js/sortObjectTypeAnnotation", () => {
   runTestAssestsTests(

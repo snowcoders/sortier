@@ -1,4 +1,4 @@
-import { TypeAnnotationOption, getObjectTypeRanks } from "./sort-utils";
+import { TypeAnnotationOption, getObjectTypeRanks } from "./sort-utils.js";
 
 describe("language-js/utilities/sort-utils", () => {
   describe("getObjectTypeRanks", () => {

@@ -1,6 +1,6 @@
-import { BaseNode, Comment, getContextGroups } from "./sort-utils";
+import { BaseNode, Comment, getContextGroups } from "./sort-utils.js";
 
-import { parse as flowParse } from "../language-js/parsers/flow";
+import { parse as flowParse } from "../language-js/parsers/flow/index.js";
 
 describe("utilities/sort-utils", () => {
   describe("getContextGroups", () => {

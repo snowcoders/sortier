@@ -1,3 +1,3 @@
-import { Reprinter } from "./reprinter";
+import { Reprinter } from "./reprinter/index.js";
 
 export { Reprinter as HtmlReprinter };

@@ -1,8 +1,8 @@
 // The methods being tested here
-import { Reprinter } from "./index";
+import { Reprinter } from "./index.js";
 
 // Utilities
-import { runTestAssestsTests } from "../../utilities/test-utils";
+import { runTestAssestsTests } from "../../utilities/test-utils.js";
 
 describe("language-json/reprinter", () => {
   runTestAssestsTests(

@@ -1,36 +1,39 @@
 // The methods being tested here
 import { Reprinter } from "./index.js";
+import test from "ava";
 
 // Utilities
 import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
-describe("language-json/reprinter", () => {
-  runTestAssestsTests(
-    __dirname,
-    (inputFilePath: string, inputFileContents: string) => {
-      return new Reprinter().getRewrittenContents(
-        inputFilePath,
-        inputFileContents,
-        {}
-      );
-    }
-  );
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-  it("Supports json files", () => {
-    expect(new Reprinter().isFileSupported("test.json")).toEqual(true);
-  });
+runTestAssestsTests(
+  __dirname,
+  (inputFilePath: string, inputFileContents: string) => {
+    return new Reprinter().getRewrittenContents(
+      inputFilePath,
+      inputFileContents,
+      {}
+    );
+  }
+);
 
-  it("Does not support typescript files", () => {
-    expect(new Reprinter().isFileSupported("test.ts")).toEqual(false);
-  });
+test("Supports json files", (t) => {
+  t.is(new Reprinter().isFileSupported("test.json"), true);
+});
 
-  it("Throws an error if the file cannot be parsed", () => {
-    expect(() => {
-      new Reprinter().getRewrittenContents(
-        "parse_fail.json",
-        "This shouldn't parse",
-        {}
-      );
-    }).toThrow();
+test("Does not support typescript files", (t) => {
+  t.is(new Reprinter().isFileSupported("test.ts"), false);
+});
+
+test("Throws an error if the file cannot be parsed", (t) => {
+  t.throws(() => {
+    new Reprinter().getRewrittenContents(
+      "parse_fail.json",
+      "This shouldn't parse",
+      {}
+    );
   });
 });

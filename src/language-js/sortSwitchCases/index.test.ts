@@ -4,21 +4,23 @@ import { sortSwitchCases } from "./index.js";
 // Utilities
 import { runTestAssestsTests } from "../../utilities/test-utils.js";
 import { getParser } from "../utilities/test-utils.js";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
-describe("language-js/sortSwitchCases", () => {
-  runTestAssestsTests(
-    __dirname,
-    (inputFilePath: string, inputFileContents: string) => {
-      const parser = getParser(inputFilePath);
-      const parsed = parser(inputFileContents);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-      const actual = sortSwitchCases(
-        parsed.body[0].cases || parsed.body[0].body.body[0].cases,
-        parsed.comments,
-        inputFileContents,
-        {}
-      );
-      return actual;
-    }
-  );
-});
+runTestAssestsTests(
+  __dirname,
+  (inputFilePath: string, inputFileContents: string) => {
+    const parser = getParser(inputFilePath);
+    const parsed = parser(inputFileContents);
+
+    const actual = sortSwitchCases(
+      parsed.body[0].cases || parsed.body[0].body.body[0].cases,
+      parsed.comments,
+      inputFileContents,
+      {}
+    );
+    return actual;
+  }
+);

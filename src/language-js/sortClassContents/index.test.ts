@@ -7,108 +7,114 @@ import { sortClassContents } from "./index.js";
 // Utilities
 import { runTestAssestsTests } from "../../utilities/test-utils.js";
 import { getParser } from "../utilities/test-utils.js";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import test from "ava";
 
-describe("language-js/sortClassContents", () => {
-  runTestAssestsTests(
-    __dirname,
-    (inputFilePath: string, inputFileContents: string) => {
-      const parser = getParser(inputFilePath);
-      const parsed = parser(inputFileContents);
-      const actual = sortClassContents(
-        parsed.body[0].declaration.id.name,
-        parsed.body[0].declaration.body.body,
-        parsed.comments,
-        inputFileContents,
-        {
-          isAscending: inputFilePath.indexOf("desc") === -1,
-          order: inputFilePath.indexOf("usage") !== -1 ? "usage" : "alpha",
-        }
-      );
-      return actual;
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+runTestAssestsTests(
+  __dirname,
+  (inputFilePath: string, inputFileContents: string) => {
+    const parser = getParser(inputFilePath);
+    const parsed = parser(inputFileContents);
+    const isAscending = inputFilePath.indexOf("desc") === -1;
+    const order = inputFilePath.indexOf("usage") !== -1 ? "usage" : "alpha";
+    const actual = sortClassContents(
+      parsed.body[0].declaration.id.name,
+      parsed.body[0].declaration.body.body,
+      parsed.comments,
+      inputFileContents,
+      {
+        isAscending,
+        order,
+      }
+    );
+    return actual;
+  }
+);
+
+test("Overrides", (t) => {
+  const input = `
+    export class Clock {
+      constructor(props) {
+        super(props);
+        this.state = {date: new Date()};
+      }
+    
+      someHelperMethod() {
+        return <h2>It is {this.state.date.toLocaleTimeString()}.</h2>;
+      }
+    
+      componentWillUnmount() {
+    
+      }
+    
+      componentDidUnmount() {
+    
+      }
+    
+      render() {
+        return (
+          <div>
+            <h1>Hello, world!</h1>
+            {this.someHelperMethod()}
+          </div>
+        );
+      }
+    }`;
+  const expected = `
+    export class Clock {
+      constructor(props) {
+        super(props);
+        this.state = {date: new Date()};
+      }
+    
+      componentWillUnmount() {
+    
+      }
+    
+      componentDidUnmount() {
+    
+      }
+    
+      render() {
+        return (
+          <div>
+            <h1>Hello, world!</h1>
+            {this.someHelperMethod()}
+          </div>
+        );
+      }
+    
+      someHelperMethod() {
+        return <h2>It is {this.state.date.toLocaleTimeString()}.</h2>;
+      }
+    }`;
+  const parsed = typescriptParse(input);
+  const actual = sortClassContents(
+    // @ts-expect-error: Test will already fail if declaration isn't defined
+    parsed.body[0].declaration.id.name,
+    // @ts-expect-error: Test will already fail if declaration isn't defined
+    parsed.body[0].declaration.body.body,
+    parsed.comments,
+    input,
+    {
+      isAscending: true,
+      overrides: [
+        "constructor",
+        "componentWillUnmount",
+        "componentDidUnmount",
+        "render",
+      ],
     }
   );
 
-  it("Overrides", () => {
-    const input = `
-    export class Clock {
-      constructor(props) {
-        super(props);
-        this.state = {date: new Date()};
-      }
-    
-      someHelperMethod() {
-        return <h2>It is {this.state.date.toLocaleTimeString()}.</h2>;
-      }
-    
-      componentWillUnmount() {
-    
-      }
-    
-      componentDidUnmount() {
-    
-      }
-    
-      render() {
-        return (
-          <div>
-            <h1>Hello, world!</h1>
-            {this.someHelperMethod()}
-          </div>
-        );
-      }
-    }`;
-    const expected = `
-    export class Clock {
-      constructor(props) {
-        super(props);
-        this.state = {date: new Date()};
-      }
-    
-      componentWillUnmount() {
-    
-      }
-    
-      componentDidUnmount() {
-    
-      }
-    
-      render() {
-        return (
-          <div>
-            <h1>Hello, world!</h1>
-            {this.someHelperMethod()}
-          </div>
-        );
-      }
-    
-      someHelperMethod() {
-        return <h2>It is {this.state.date.toLocaleTimeString()}.</h2>;
-      }
-    }`;
-    const parsed = typescriptParse(input);
-    const actual = sortClassContents(
-      // @ts-expect-error: Test will already fail if declaration isn't defined
-      parsed.body[0].declaration.id.name,
-      // @ts-expect-error: Test will already fail if declaration isn't defined
-      parsed.body[0].declaration.body.body,
-      parsed.comments,
-      input,
-      {
-        isAscending: true,
-        overrides: [
-          "constructor",
-          "componentWillUnmount",
-          "componentDidUnmount",
-          "render",
-        ],
-      }
-    );
+  t.is(actual, expected);
+});
 
-    expect(actual).toEqual(expected);
-  });
-
-  it("Overrides reverse", () => {
-    const input = `
+test("Overrides reverse", (t) => {
+  const input = `
     export class Clock {
       constructor(props) {
         super(props);
@@ -136,7 +142,7 @@ describe("language-js/sortClassContents", () => {
         );
       }
     }`;
-    const expected = `
+  const expected = `
     export class Clock {
       constructor(props) {
         super(props);
@@ -164,25 +170,24 @@ describe("language-js/sortClassContents", () => {
         );
       }
     }`;
-    const parsed = typescriptParse(input);
-    const actual = sortClassContents(
-      // @ts-expect-error: Test will already fail if declaration isn't defined
-      parsed.body[0].declaration.id.name,
-      // @ts-expect-error: Test will already fail if declaration isn't defined
-      parsed.body[0].declaration.body.body,
-      parsed.comments,
-      input,
-      {
-        isAscending: false,
-        overrides: [
-          "constructor",
-          "componentWillUnmount",
-          "componentDidUnmount",
-          "*",
-        ],
-      }
-    );
+  const parsed = typescriptParse(input);
+  const actual = sortClassContents(
+    // @ts-expect-error: Test will already fail if declaration isn't defined
+    parsed.body[0].declaration.id.name,
+    // @ts-expect-error: Test will already fail if declaration isn't defined
+    parsed.body[0].declaration.body.body,
+    parsed.comments,
+    input,
+    {
+      isAscending: false,
+      overrides: [
+        "constructor",
+        "componentWillUnmount",
+        "componentDidUnmount",
+        "*",
+      ],
+    }
+  );
 
-    expect(actual).toEqual(expected);
-  });
+  t.is(actual, expected);
 });

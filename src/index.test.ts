@@ -1,42 +1,45 @@
 import { formatFile, formatText } from "./index.js";
 import { FileUtils } from "./utilities/file-utils.js";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import test from "ava";
 
-describe("index", () => {
-  it("Runs without crashing", () => {
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+test("Runs without crashing", (t) => {
+  t.notThrows(() => {
     const thisFile = FileUtils.globbyJoin(__dirname, "index.test.ts");
     formatFile(thisFile, {
       isTestRun: true,
     });
   });
+});
 
-  it("Runs formatText without crashing", () => {
-    const result = formatText("ts", "let a = {b: 'b', a: 'a'};", {
-      isTestRun: true,
-    });
-    expect(result).toEqual("let a = {a: 'a', b: 'b'};");
+test("Runs formatText without crashing", (t) => {
+  const result = formatText("ts", "let a = {b: 'b', a: 'a'};", {
+    isTestRun: true,
   });
+  t.is(result, "let a = {a: 'a', b: 'b'};");
+});
 
-  describe("Validating option overrides", () => {
-    it("js.sortImportDeclarationSpecifiers.groups = undefined", () => {
-      const result = formatText("ts", "import { IP, Po } from '@foo';", {
-        js: {
-          sortImportDeclarationSpecifiers: {
-            groups: undefined,
-          },
-        },
-      });
-      expect(result).toEqual("import { Po, IP } from '@foo';");
-    });
-
-    it("js.sortImportDeclarationSpecifiers.groups = *", () => {
-      const result = formatText("ts", "import { Po, IP } from '@foo';", {
-        js: {
-          sortImportDeclarationSpecifiers: {
-            groups: ["*"],
-          },
-        },
-      });
-      expect(result).toEqual("import { IP, Po } from '@foo';");
-    });
+test("Validating option overrides > js.sortImportDeclarationSpecifiers.groups = undefined", (t) => {
+  const result = formatText("ts", "import { IP, Po } from '@foo';", {
+    js: {
+      sortImportDeclarationSpecifiers: {
+        groups: undefined,
+      },
+    },
   });
+  t.is(result, "import { Po, IP } from '@foo';");
+});
+
+test("Validating option overrides > js.sortImportDeclarationSpecifiers.groups = *", (t) => {
+  const result = formatText("ts", "import { Po, IP } from '@foo';", {
+    js: {
+      sortImportDeclarationSpecifiers: {
+        groups: ["*"],
+      },
+    },
+  });
+  t.is(result, "import { IP, Po } from '@foo';");
 });

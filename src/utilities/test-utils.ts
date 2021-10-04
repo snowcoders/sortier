@@ -2,9 +2,9 @@ import { globbySync } from "globby";
 import { basename } from "path";
 import { FileUtils } from "./file-utils.js";
 import { StringUtils } from "./string-utils.js";
+import test from "ava";
 
 interface TestTreeNode {
-  children: TestTreeNode[];
   name: string;
   tests: TestInfo[];
 }
@@ -52,24 +52,24 @@ function runNodes(
   transform: TestInputTransform
 ) {
   for (const node of testNodes) {
-    if (node.children.length === 0 && node.tests.length === 0) {
+    if (node.tests.length === 0) {
       throw new Error("Test node must have children and/or tests");
     }
 
-    describe(StringUtils.sentenceCase(node.name), () => {
-      // Run all the tests
-      node.tests.forEach((testInfo) => {
-        it(StringUtils.sentenceCase(testInfo.testName), () => {
+    // Run all the tests
+    node.tests.forEach((testInfo) => {
+      test(
+        StringUtils.sentenceCase(node.name) +
+          ` > ` +
+          StringUtils.sentenceCase(testInfo.testName),
+        (t) => {
           const input = FileUtils.readFileContents(testInfo.inputFilePath);
           const expected = FileUtils.readFileContents(testInfo.outputFilePath);
           const actual = transform(testInfo.inputFilePath, input);
 
-          expect(actual).toEqual(expected);
-        });
-      });
-
-      // Run all the children
-      runNodes(node.children, transform);
+          t.is(actual, expected);
+        }
+      );
     });
   }
 }
@@ -93,15 +93,9 @@ function getTestAssetsTree(folderPath: string) {
     let root = getOrInsertNodeInArray(roots, extension);
 
     // Now that we have the root node, setup the categories if needed
-    while (segments.length > 4) {
-      const category = segments.shift();
-      if (category == null) {
-        break;
-      }
-      root = getOrInsertNodeInArray(root.children, category);
-    }
+    let testName = segments.slice(0, segments.length - 3).join(" > ");
 
-    const testName = segments[0].replace(/_/g, " ");
+    testName = testName.replace(/_/g, " ");
 
     root.tests.push({
       inputFilePath: filePath,
@@ -119,7 +113,6 @@ function getOrInsertNodeInArray(array: Array<TestTreeNode>, name: string) {
   });
   if (node == null) {
     node = {
-      children: [],
       name,
       tests: [],
     };

@@ -4,20 +4,22 @@ import { sortJsxElement } from "./index.js";
 // Utilities
 import { runTestAssestsTests } from "../../utilities/test-utils.js";
 import { getParser } from "../utilities/test-utils.js";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
-describe("language-js/sortJsxElement", () => {
-  runTestAssestsTests(
-    __dirname,
-    (inputFilePath: string, inputFileContents: string) => {
-      const parser = getParser(inputFilePath);
-      const parsed = parser(inputFileContents);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-      const actual = sortJsxElement(
-        parsed.body[0].argument,
-        parsed.comments,
-        inputFileContents
-      );
-      return actual;
-    }
-  );
-});
+runTestAssestsTests(
+  __dirname,
+  (inputFilePath: string, inputFileContents: string) => {
+    const parser = getParser(inputFilePath);
+    const parsed = parser(inputFileContents);
+
+    const actual = sortJsxElement(
+      parsed.body[0].argument,
+      parsed.comments,
+      inputFileContents
+    );
+    return actual;
+  }
+);

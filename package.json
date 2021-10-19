@@ -21,7 +21,7 @@
     "@snowcoders/renovate-config": "3.0.0-beta.2",
     "@types/estree": "0.0.50",
     "@types/jest": "27.0.2",
-    "@types/node": "16.11.0",
+    "@types/node": "16.11.1",
     "@typescript-eslint/eslint-plugin": "4.33.0",
     "@typescript-eslint/parser": "4.33.0",
     "changelog-updater": "2.0.2",

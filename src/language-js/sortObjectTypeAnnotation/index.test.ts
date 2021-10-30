@@ -1,12 +1,12 @@
-import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { runTestAssetsTests } from "../../utilities/test-utils.js";
 import { getParser } from "../utilities/test-utils.js";
 
 // The methods being tested here
 import { sortObjectTypeAnnotation } from "./index.js";
 
 describe("language-js/sortObjectTypeAnnotation", () => {
-  runTestAssestsTests(
-    __dirname,
+  runTestAssetsTests(
+    import.meta.url,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
       const parsed = parser(inputFileContents);

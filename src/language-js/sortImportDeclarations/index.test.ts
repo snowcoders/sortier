@@ -1,4 +1,4 @@
-import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { runTestAssetsTests } from "../../utilities/test-utils.js";
 
 // Parsers
 import { parse as flowParse } from "../parsers/flow/index.js";
@@ -8,8 +8,8 @@ import { getParser } from "../utilities/test-utils.js";
 import { sortImportDeclarations } from "./index.js";
 
 describe("language-js/sortImportDeclarations", () => {
-  runTestAssestsTests(
-    __dirname,
+  runTestAssetsTests(
+    import.meta.url,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
       const parsed = parser(inputFileContents);

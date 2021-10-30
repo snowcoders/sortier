@@ -5,11 +5,11 @@ import { parse } from "angular-html-parser";
 import { sortAttributes } from "./index.js";
 
 // Utilities
-import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { runTestAssetsTests } from "../../utilities/test-utils.js";
 
 describe("language-html/sortAttributes", () => {
-  runTestAssestsTests(
-    __dirname,
+  runTestAssetsTests(
+    import.meta.url,
     (inputFilePath: string, inputFileContents: string) => {
       const node = parse(inputFileContents);
       const actual = sortAttributes(node.rootNodes[0], inputFileContents);

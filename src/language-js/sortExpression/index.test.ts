@@ -1,12 +1,12 @@
-import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { runTestAssetsTests } from "../../utilities/test-utils.js";
 import { parse as typescriptParse } from "../parsers/typescript/index.js";
 import { getParser } from "../utilities/test-utils.js";
 // The methods being tested here
 import { sortExpression } from "./index.js";
 
 describe("language-js/sortExpression", () => {
-  runTestAssestsTests(
-    __dirname,
+  runTestAssetsTests(
+    import.meta.url,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
       const parsed = parser(inputFileContents);

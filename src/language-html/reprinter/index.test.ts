@@ -1,11 +1,11 @@
-import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { runTestAssetsTests } from "../../utilities/test-utils.js";
 
 // The methods being tested here
 import { Reprinter } from "./index.js";
 
 describe("language-html/reprinter", () => {
-  runTestAssestsTests(
-    __dirname,
+  runTestAssetsTests(
+    import.meta.url,
     (inputFilePath: string, inputFileContents: string) => {
       return new Reprinter().getRewrittenContents(
         inputFilePath,

@@ -1,4 +1,4 @@
-import { sync } from "globby";
+import { globbySync } from "globby";
 import { basename, dirname } from "path";
 import { FileUtils } from "./file-utils.js";
 import { StringUtils } from "./string-utils.js";
@@ -115,7 +115,7 @@ function getTestAssetsTree(folderPath: string) {
     folderPath,
     `test_assets/*.input.*.txt`
   );
-  const filePaths = sync(assetsFolderPath);
+  const filePaths = globbySync(assetsFolderPath);
   for (const filePath of filePaths) {
     const segments = basename(filePath).split(".");
     if (segments.length < 4) {

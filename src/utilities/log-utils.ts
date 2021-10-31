@@ -17,7 +17,6 @@ export class LogUtils {
       return;
     }
     if (verbosity <= LogUtils.verbosity) {
-      // tslint:disable-next-line:no-console
       console.log(...args);
     }
   }

@@ -1,4 +1,4 @@
-import findup from "find-up";
+import { findUpSync } from "find-up";
 import ignore from "ignore";
 import path from "path";
 import { ILanguage } from "../language.js";
@@ -19,7 +19,7 @@ export class Reprinter {
   ];
   public static rewriteFile(filename: string, options: ReprinterOptions) {
     // Find the nearest sortier ignore file
-    const ignoreFilePath = findup.sync(".sortierignore", {
+    const ignoreFilePath = findUpSync(".sortierignore", {
       cwd: filename,
     });
     if (ignoreFilePath != null) {

@@ -67,25 +67,15 @@ class ClassContentsSorter {
     const possibleSortableItems: Array<MinimumSortInformation | null> =
       this.classItems.map((value): MinimumSortInformation | null => {
         switch (value.type) {
-          case "ClassProperty": {
-            if (value.key != null && value.key.name != null) {
-              return {
-                accessModifier: this.getAccessModifier(value.accessibility),
-                isStatic: value.static || false,
-                key: value.key.name,
-                kind: this.getKindOption(value),
-                overrideIndex: this.getOverrideIndex(value),
-                range: value.range,
-              };
-            }
-            return null;
-          }
+          case "PropertyDefinition":
+          case "ClassProperty":
           case "MethodDefinition": {
-            if (value.key != null && value.key.name != null) {
+            const key = value?.key?.name;
+            if (key != null) {
               return {
                 accessModifier: this.getAccessModifier(value.accessibility),
                 isStatic: value.static || false,
-                key: value.key.name,
+                key: key,
                 kind: this.getKindOption(value),
                 overrideIndex: this.getOverrideIndex(value),
                 range: value.range,
@@ -274,7 +264,7 @@ class ClassContentsSorter {
     if (node.kind === "constructor") {
       return KindOption.Constructor;
     }
-    if (node.type === "ClassProperty") {
+    if (node.type === "ClassProperty" || node.type === "PropertyDefinition") {
       if (node.value != null && node.value.type === "ArrowFunctionExpression") {
         return KindOption.Method;
       } else {

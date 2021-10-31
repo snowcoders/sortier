@@ -5,12 +5,12 @@ import { parse as typescriptParse } from "../parsers/typescript/index.js";
 import { sortClassContents } from "./index.js";
 
 // Utilities
-import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { runTestAssetsTests } from "../../utilities/test-utils.js";
 import { getParser } from "../utilities/test-utils.js";
 
 describe("language-js/sortClassContents", () => {
-  runTestAssestsTests(
-    __dirname,
+  runTestAssetsTests(
+    import.meta.url,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
       const parsed = parser(inputFileContents);

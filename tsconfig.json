@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["ES2019"],
+    "module": "ESNext",
     "outDir": "./dist",
     "rootDir": "./src",
     "sourceMap": true,

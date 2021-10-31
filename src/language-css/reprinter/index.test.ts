@@ -1,15 +1,20 @@
-import { join } from "path";
+import { dirname, join } from "path";
 
 // The methods being tested here
 import { Reprinter } from "./index.js";
 
 // Utilities
 import { FileUtils } from "../../utilities/file-utils.js";
-import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import {
+  getFolderPathFromFileUrl,
+  runTestAssetsTests,
+} from "../../utilities/test-utils.js";
+
+const currentFolderPath = getFolderPathFromFileUrl(import.meta.url);
 
 describe("language-css/reprinter", () => {
-  runTestAssestsTests(
-    __dirname,
+  runTestAssetsTests(
+    import.meta.url,
     (inputFilePath: string, inputFileContents: string) => {
       return new Reprinter().getRewrittenContents(
         inputFilePath,
@@ -36,7 +41,7 @@ describe("language-css/reprinter", () => {
   describe("Overriding sortDeclarations' overrides", () => {
     it("Declaration overrides with wildcard", () => {
       const testFileInputPath = join(
-        __dirname,
+        currentFolderPath,
         `test_assets/context_barrier.input.css.txt`
       );
       const input = FileUtils.readFileContents(testFileInputPath);
@@ -58,7 +63,7 @@ describe("language-css/reprinter", () => {
 
     it("Declaration overrides without wildcard", () => {
       const testFileInputPath = join(
-        __dirname,
+        currentFolderPath,
         `test_assets/context_barrier.input.css.txt`
       );
       const input = FileUtils.readFileContents(testFileInputPath);

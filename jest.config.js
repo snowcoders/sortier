@@ -1,1 +1,6 @@
-export { jest as default } from "@snowcoders/renovate-config";
+import { jest } from "@snowcoders/renovate-config";
+
+export default {
+  ...jest,
+  testURL: undefined,
+};

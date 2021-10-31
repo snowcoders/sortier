@@ -1,10 +1,10 @@
 // The methods being tested here
-import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { runTestAssetsTests } from "../../utilities/test-utils.js";
 import { Reprinter } from "./index.js";
 
 describe("language-js/reprinter", () => {
-  runTestAssestsTests(
-    __dirname,
+  runTestAssetsTests(
+    import.meta.url,
     (inputFilePath: string, inputFileContents: string) => {
       const isFlow = inputFilePath.indexOf("/flow.") !== -1;
       return new Reprinter().getRewrittenContents(

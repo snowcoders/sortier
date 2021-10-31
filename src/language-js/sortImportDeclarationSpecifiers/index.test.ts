@@ -5,7 +5,7 @@ import { parse as flowParse } from "../parsers/flow/index.js";
 import { sortImportDeclarationSpecifiers } from "./index.js";
 
 // Utilities
-import { runTestAssestsTests } from "../../utilities/test-utils.js";
+import { runTestAssetsTests } from "../../utilities/test-utils.js";
 import { getParser } from "../utilities/test-utils.js";
 
 const getSortedOverBody = (
@@ -27,8 +27,8 @@ const getSortedOverBody = (
 };
 
 describe("language-js/sortImportDeclarationSpecifiers", () => {
-  runTestAssestsTests(
-    __dirname,
+  runTestAssetsTests(
+    import.meta.url,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
       const parsed = parser(inputFileContents);

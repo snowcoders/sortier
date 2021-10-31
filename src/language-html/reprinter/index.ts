@@ -1,7 +1,7 @@
 import { parse } from "angular-html-parser";
-import { ILanguage } from "../../language.js";
 import { CssReprinter } from "../../language-css/index.js";
 import { JavascriptReprinter } from "../../language-js/index.js";
+import { ILanguage } from "../../language.js";
 import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options.js";
 import { StringUtils } from "../../utilities/string-utils.js";
 import { sortAttributes } from "../sortAttributes/index.js";

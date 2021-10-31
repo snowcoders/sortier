@@ -1,10 +1,13 @@
+// Imports are ordered by path
+// ImportSpecifiers are also ordered
+
+// c2 import comment
+import { c2 } from "c";
 import { 
-       /*Absolute imports move to the top*/ c2
-} from "c";
-import { 
-        a1, 
-        a2 } 
-        from "./a";
+    /* a1 comment */
+    a1, 
+    /* a2 comment */
+    a2 } from "./a";
 import { b1, b3 } from "./b";
 
 // Blank lines act like context barriers and will divide sorting blocks
@@ -12,9 +15,13 @@ import { b2 } from "b1";
 
 export type Props = {
   // Prop1 comment
-  prop1: number,
+  prop1: number;
   // Prop3 comment
-  prop3: string,
-  callback1(): void,
-  callback2: () => void,
-}
+  prop3: string;
+  callback1(): void;
+  callback2: () => void;
+
+  // Since this is the only comment for this context block, this comment stays where it is
+  prop2: boolean;
+  prop4: boolean;
+};

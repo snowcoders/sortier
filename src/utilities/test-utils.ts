@@ -1,8 +1,8 @@
 import { globbySync } from "globby";
 import { basename, dirname } from "path";
+import { fileURLToPath } from "url";
 import { FileUtils } from "./file-utils.js";
 import { StringUtils } from "./string-utils.js";
-import { fileURLToPath } from "url";
 
 interface TestTreeNode {
   children: TestTreeNode[];

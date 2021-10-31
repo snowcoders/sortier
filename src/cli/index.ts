@@ -1,8 +1,8 @@
 import { cosmiconfigSync } from "cosmiconfig";
 import { globbySync } from "globby";
 
-import { Reprinter } from "../reprinter/index.js";
 import { ReprinterOptions } from "../reprinter-options.js";
+import { Reprinter } from "../reprinter/index.js";
 import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils.js";
 
 export function run(args: string[]) {

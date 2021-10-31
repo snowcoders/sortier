@@ -1,4 +1,4 @@
-import { compare, reorderValues, Comment } from "../../utilities/sort-utils.js";
+import { Comment, compare, reorderValues } from "../../utilities/sort-utils.js";
 import { addParenthesis } from "../utilities/parser-utils.js";
 import {
   TypeAnnotationOption,

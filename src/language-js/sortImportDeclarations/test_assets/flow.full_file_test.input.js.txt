@@ -1,4 +1,5 @@
 // @flow
+
 import * as ReactDOM from "react-dom";
 import * as React from "react"; // Needed to make react work
 

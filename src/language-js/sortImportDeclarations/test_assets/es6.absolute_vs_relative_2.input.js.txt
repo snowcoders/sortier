@@ -1,0 +1,11 @@
+// Imports are ordered by path and the ImportSpecifiers are also ordered
+
+import { 
+    /* a2 comment */
+    a2, 
+    /* a1 comment */
+    a1 } from "./a";
+// c import comment
+import { c2 } from "c";
+// ./b import comment
+import { b3, b1 } from "./b";

@@ -1,5 +1,5 @@
-import { ILanguage } from "../../language.js";
 import { JavascriptReprinter } from "../../language-js/index.js";
+import { ILanguage } from "../../language.js";
 import { ReprinterOptions } from "../../reprinter-options.js";
 import { StringUtils } from "../../utilities/string-utils.js";
 

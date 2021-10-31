@@ -238,8 +238,8 @@ export class Reprinter implements ILanguage {
             }
             break;
           }
-          case "PropertyDefinition":
-          case "ClassProperty": {
+          case "ClassProperty":
+          case "PropertyDefinition": {
             if (node.typeAnnotation != null) {
               nodes.push(node.typeAnnotation);
             }
@@ -393,6 +393,16 @@ export class Reprinter implements ILanguage {
           }
           case "Program": {
             fileContents = this.rewriteNodes(node.body, comments, fileContents);
+
+            // Sort imports after as the previous line will sort the ImportSpecifiers
+            fileContents = sortImportDeclarations(
+              node,
+              comments,
+              fileContents,
+              this._options.sortImportDeclarations && {
+                orderBy: this._options.sortImportDeclarations,
+              }
+            );
             break;
           }
           case "Property": {
@@ -541,8 +551,8 @@ export class Reprinter implements ILanguage {
           case "TSVoidKeyword": {
             break;
           }
-          case "RestProperty":
-          case "RestElement": {
+          case "RestElement":
+          case "RestProperty": {
             if (node.argument) {
               nodes.push(node.argument);
             }
@@ -753,17 +763,6 @@ export class Reprinter implements ILanguage {
         this.printHelpModeInfo(node, fileContents);
         throw e;
       }
-    }
-
-    // Sorts that depend on other things sorting first
-    if (this._options.sortImportDeclarations !== null) {
-      fileContents = sortImportDeclarations(
-        originalNodes,
-        fileContents,
-        this._options.sortImportDeclarations && {
-          orderBy: this._options.sortImportDeclarations,
-        }
-      );
     }
 
     return fileContents;

@@ -1,11 +1,11 @@
 import { findUpSync } from "find-up";
 import ignore from "ignore";
 import path from "path";
-import { ILanguage } from "../language.js";
 import { CssReprinter } from "../language-css/index.js";
 import { HtmlReprinter } from "../language-html/index.js";
 import { JavascriptReprinter } from "../language-js/index.js";
 import { JsonReprinter } from "../language-json/index.js";
+import { ILanguage } from "../language.js";
 import { ReprinterOptions } from "../reprinter-options.js";
 import { FileUtils } from "../utilities/file-utils.js";
 import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils.js";

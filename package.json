@@ -64,7 +64,6 @@
     "clean": "rimraf coverage dist",
     "cover": "cat ./coverage/lcov.info | coveralls",
     "lint": "eslint --fix ./src/**/*.{js,jsx,ts,tsx}",
-    "mocha": "mocha --timeout 5000 --require ts-node/register --require source-map-support/register --recursive --full-trace \"./src/**/*.test.ts\"",
     "prepare": "npm run clean && npm run build",
     "start": "node bin/index.js",
     "start-docs": "docsify serve ./docs",

@@ -238,6 +238,7 @@ export class Reprinter implements ILanguage {
             }
             break;
           }
+          case "PropertyDefinition":
           case "ClassProperty": {
             if (node.typeAnnotation != null) {
               nodes.push(node.typeAnnotation);

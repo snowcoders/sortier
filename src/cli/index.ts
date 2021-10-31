@@ -1,5 +1,5 @@
 import { cosmiconfigSync } from "cosmiconfig";
-import { sync } from "globby";
+import { globbySync } from "globby";
 
 import { Reprinter } from "../reprinter/index.js";
 import { ReprinterOptions } from "../reprinter-options.js";
@@ -16,7 +16,7 @@ export function run(args: string[]) {
     }
 
     let options: null | ReprinterOptions = null;
-    const files = sync(args);
+    const files = globbySync(args);
     let error = null;
     if (files.length === 0) {
       if (args[0].indexOf("\\") !== -1) {

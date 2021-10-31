@@ -1,4 +1,4 @@
-import { dirname, join } from "path";
+import { join } from "path";
 
 // The methods being tested here
 import { Reprinter } from "./index.js";

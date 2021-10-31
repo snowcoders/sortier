@@ -4,8 +4,13 @@
 
 Breaking from @snowcoders/sortier@3
 
-- JS parsing will now default to using the typescript parser. If you use flow, you'll need to explicitly configure sortier to use flow by setting `js.parser: "flow"` in your config.
-- Sortier is now written in ESM so only supports Node ^12.20.0 || ^14.13.1 || >=16.0.0
+- Sortier is now written in ESM which means
+  - We only support node versions "^12.20.0 || ^14.13.1 || >=16.0.0"
+  - You might be required to use the `--experimental-vm-modules` flag
+- JS parsing will now default to using the `typescript` parser. If you use flow, you'll need to explicitly configure sortier to use flow by setting `js.parser: "flow"` in your config.
+- Import/Export declarations was rewritten to handle comments more consistently and now acts very similar to other sorting scenarios.
+  - If there is one comment above the group, it's considered a comment for the whole group
+  - If there are 2+ comments in the group, those comments will be assumed to be tied to the item either below or to the left of the comment
 
 ## [3.3.0] - 2021-05-22
 

@@ -3,8 +3,8 @@ import { run } from "./index.js";
 // Mocks
 import { jest } from "@jest/globals";
 import realCosmiconfig from "cosmiconfig";
-import { Reprinter } from "../reprinter/index.js";
 import { ReprinterOptions } from "../reprinter-options.js";
+import { Reprinter } from "../reprinter/index.js";
 import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils.js";
 
 jest.mock("cosmiconfig");

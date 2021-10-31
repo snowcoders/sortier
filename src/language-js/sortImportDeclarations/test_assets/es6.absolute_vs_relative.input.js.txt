@@ -1,2 +1,2 @@
-import * as Z from "zed";
 import * as A from "./a";
+import * as Z from "zed";

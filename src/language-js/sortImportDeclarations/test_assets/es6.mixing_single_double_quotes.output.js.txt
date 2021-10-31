@@ -1,4 +1,5 @@
 // https://github.com/snowcoders/sci-sort-import-groups/pull/2
+
 import { A } from "../A"; // Double quote and semi-colon
 import { B } from "../B" // Double quote and no semi-colon
 import { C } from '../C'; // Single quote and semi-colon

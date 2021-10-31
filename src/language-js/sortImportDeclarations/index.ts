@@ -1,6 +1,11 @@
 // Utils
-import { compare } from "../../utilities/sort-utils.js";
-import { StringUtils } from "../../utilities/string-utils.js";
+import { ModuleDeclaration, Program } from "estree";
+import {
+  Comment,
+  compare,
+  getContextGroups,
+  reorderValues,
+} from "../../utilities/sort-utils.js";
 
 export type SortImportDeclarationsOrderOption = "first-specifier" | "source";
 export type SortImportDeclarationsOptions =
@@ -9,183 +14,62 @@ interface SortImportDeclarationsOptionsRequired {
   orderBy: SortImportDeclarationsOrderOption;
 }
 
-interface SingleImportSource {
-  type: "import" | "export";
-  firstSpecifier: string;
-  originalIndex: number;
-  originalLocation: {
-    end: {
-      column: number;
-      index: number;
-      line: number;
-    };
-    start: {
-      column: number;
-      index: number;
-      line: number;
-    };
-  };
-  source: string;
-}
-
 export function sortImportDeclarations(
-  body: any,
+  program: Program,
+  comments: Array<Comment>,
   fileContents: string,
   options?: SortImportDeclarationsOptions
 ) {
   const ensuredOptions = ensureOptions(options);
 
-  // First create an object to remember all that we care about
-  let overallIndex = 0;
+  // Get all the import/export nodes
+  const importExportNodes = program.body.filter((node) => {
+    return (
+      node.type.match(/Export.*Declaration/) ||
+      node.type.match(/Import.*Declaration/)
+    );
+  }) as Array<ModuleDeclaration>;
+
+  const contextGroups = getContextGroups(
+    importExportNodes,
+    comments,
+    fileContents
+  );
+
   let newFileContents = fileContents.slice();
-  while (overallIndex < body.length) {
-    const sortedImportSources: SingleImportSource[] = [];
-    for (; overallIndex < body.length; overallIndex++) {
-      const importSource = body[overallIndex];
 
-      // Is this an import/export declaration?
-      if (
-        !(
-          (importSource.type.match(/Export.*Declaration/) ||
-            importSource.type.match(/Import.*Declaration/)) &&
-          importSource.source != null
-        )
-      ) {
-        if (sortedImportSources.length !== 0) {
-          break;
-        } else {
-          continue;
-        }
-      }
-
-      // Is there a line break?
-      if (
-        sortedImportSources.length !== 0 &&
-        importSource.loc.start.line -
-          sortedImportSources[sortedImportSources.length - 1].originalLocation
-            .end.line !==
-          1
-      ) {
-        break;
-      }
-      sortedImportSources.push({
-        type: importSource.type.indexOf("Import") !== -1 ? "import" : "export",
-        firstSpecifier: importSource?.specifiers?.[0]?.local.name || "",
-        originalIndex: overallIndex,
-        originalLocation: {
-          end: {
-            column: importSource.loc.end.column,
-            index: importSource.end,
-            line: importSource.loc.end.line,
-          },
-          start: {
-            column: importSource.loc.start.column,
-            index: importSource.start,
-            line: importSource.loc.start.line,
-          },
-        },
-        source: importSource.source.value,
+  for (const contextGroup of contextGroups) {
+    const { comments: unsortedComments, nodes: unsortedNodes } = contextGroup;
+    const sortedNodes = unsortedNodes
+      .slice()
+      .sort((a: ModuleDeclaration, b: ModuleDeclaration) => {
+        return sortModuleDeclarations(a, b, ensuredOptions);
       });
-    }
 
-    const sortBySpecifier = (a: SingleImportSource, b: SingleImportSource) => {
-      return compare(a.firstSpecifier, b.firstSpecifier);
-    };
-    const sortByPath = (a: SingleImportSource, b: SingleImportSource) => {
-      const aIsRelative = a.source.startsWith(".");
-      const bIsRelative = b.source.startsWith(".");
-      if (aIsRelative === bIsRelative) {
-        return compare(a.source, b.source);
-      } else {
-        return Number(aIsRelative) - Number(bIsRelative);
-      }
-    };
-    sortedImportSources.sort((a: SingleImportSource, b: SingleImportSource) => {
-      if (a.type !== b.type) {
-        return a.type === "export" ? 1 : -1;
-      }
-      if (ensuredOptions.orderBy === "first-specifier") {
-        const result = sortBySpecifier(a, b);
-        if (result !== 0) {
-          return result;
-        }
-        return sortByPath(a, b);
-      } else {
-        const result = sortByPath(a, b);
-        if (result !== 0) {
-          return result;
-        }
-        return sortBySpecifier(a, b);
-      }
-    });
-
-    // Now go through the original specifiers again and if any have moved, switch them
-    let newFileContentIndexCorrection = 0;
-    for (let x = 0; x < sortedImportSources.length; x++) {
-      const oldSpecifier = body[overallIndex - sortedImportSources.length + x];
-
-      let spliceRemoveIndexStart = StringUtils.nthIndexOf(
-        fileContents,
-        "\n",
-        oldSpecifier.loc.start.line - 1
-      );
-      if (spliceRemoveIndexStart === -1) {
-        spliceRemoveIndexStart = 0;
-      } else {
-        spliceRemoveIndexStart++;
-      }
-      let spliceRemoveIndexEnd = StringUtils.nthIndexOf(
-        fileContents,
-        "\n",
-        oldSpecifier.loc.end.line
-      );
-      if (spliceRemoveIndexEnd === -1) {
-        spliceRemoveIndexEnd = fileContents.length;
-      } else if (fileContents[spliceRemoveIndexEnd - 1] === "\r") {
-        spliceRemoveIndexEnd--;
-      }
-
-      const untouchedBeginning = newFileContents.slice(
-        0,
-        spliceRemoveIndexStart + newFileContentIndexCorrection
-      );
-      const untouchedEnd = newFileContents.slice(
-        spliceRemoveIndexEnd + newFileContentIndexCorrection
-      );
-
-      let spliceAddIndexStart = StringUtils.nthIndexOf(
-        fileContents,
-        "\n",
-        sortedImportSources[x].originalLocation.start.line - 1
-      );
-      if (spliceAddIndexStart === -1) {
-        spliceAddIndexStart = 0;
-      } else {
-        spliceAddIndexStart++;
-      }
-      let spliceAddIndexEnd = StringUtils.nthIndexOf(
-        fileContents,
-        "\n",
-        sortedImportSources[x].originalLocation.end.line
-      );
-      if (spliceAddIndexEnd === -1) {
-        spliceAddIndexEnd = fileContents.length;
-      }
-      if (fileContents[spliceAddIndexEnd - 1] === "\r") {
-        spliceAddIndexEnd--;
-      }
-      const stringToInsert = fileContents.substring(
-        spliceAddIndexStart,
-        spliceAddIndexEnd
-      );
-
-      newFileContents = untouchedBeginning + stringToInsert + untouchedEnd;
-      newFileContentIndexCorrection =
-        newFileContents.length - fileContents.length;
-    }
+    newFileContents = reorderValues(
+      newFileContents,
+      unsortedComments,
+      unsortedNodes,
+      sortedNodes
+    );
   }
 
   return newFileContents;
+}
+
+function sortModuleDeclarations(
+  a: ModuleDeclaration,
+  b: ModuleDeclaration,
+  ensuredOptions: SortImportDeclarationsOptionsRequired
+) {
+  // If they both aren't import or both aren't export then order based off import/export
+  if (a.type.substring(0, 4) !== b.type.substring(0, 4)) {
+    return a.type.indexOf("Export") !== -1 ? 1 : -1;
+  }
+  if (ensuredOptions.orderBy === "first-specifier") {
+    return sortBySpecifier(a, b) || sortByPath(a, b);
+  }
+  return sortByPath(a, b) || sortBySpecifier(a, b);
 }
 
 function ensureOptions(
@@ -195,4 +79,60 @@ function ensureOptions(
     orderBy: "source",
     ...options,
   };
+}
+
+function sortBySpecifier(a: ModuleDeclaration, b: ModuleDeclaration) {
+  const firstSpecifier_A = getFirstSpecifier(a);
+  const firstSpecifier_B = getFirstSpecifier(b);
+  return compare(firstSpecifier_A, firstSpecifier_B);
+}
+
+function getFirstSpecifier(declaration: ModuleDeclaration) {
+  switch (declaration.type) {
+    case "ExportAllDeclaration":
+      return "";
+    case "ExportDefaultDeclaration":
+      return "";
+    case "ExportNamedDeclaration":
+    case "ImportDeclaration":
+      return declaration.specifiers[0]?.local.name || "";
+  }
+}
+
+function sortByPath(a: ModuleDeclaration, b: ModuleDeclaration) {
+  const source_A = getSource(a);
+  const source_B = getSource(b);
+
+  if (source_A == null) {
+    if (source_B == null) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+  if (source_B == null) {
+    return 1;
+  }
+
+  const aIsRelative = source_A.startsWith(".");
+  const bIsRelative = source_B.startsWith(".");
+  if (aIsRelative === bIsRelative) {
+    const comparisonResult = compare(source_A, source_B);
+    return comparisonResult;
+  } else {
+    return Number(aIsRelative) - Number(bIsRelative);
+  }
+}
+
+function getSource(declaration: ModuleDeclaration) {
+  switch (declaration.type) {
+    case "ExportAllDeclaration":
+      return declaration.source.value?.toString();
+    case "ExportDefaultDeclaration":
+      return "";
+    case "ExportNamedDeclaration":
+      return declaration.source?.value?.toString();
+    case "ImportDeclaration":
+      return declaration.source.value?.toString();
+  }
 }

@@ -14,7 +14,12 @@ describe("language-js/sortImportDeclarations", () => {
       const parser = getParser(inputFilePath);
       const parsed = parser(inputFileContents);
 
-      return sortImportDeclarations(parsed.body, inputFileContents);
+      const output = sortImportDeclarations(
+        parsed,
+        parsed.comments,
+        inputFileContents
+      );
+      return output;
     }
   );
 
@@ -24,13 +29,17 @@ describe("language-js/sortImportDeclarations", () => {
 import "./header.scss";
 import * as React from "react";
 import honda from "./cars.js";
+import { Banana } from "./food.js";
 import { Apple } from "./food.js";`;
       const output = `import "./header.scss";
 import "./styles.scss";
 import { Apple } from "./food.js";
+import { Banana } from "./food.js";
 import * as React from "react";
 import honda from "./cars.js";`;
-      const actual = sortImportDeclarations(flowParse(input).body, input, {
+
+      const parsed = flowParse(input);
+      const actual = sortImportDeclarations(parsed, parsed.comments, input, {
         orderBy: "first-specifier",
       });
 
@@ -42,13 +51,17 @@ import honda from "./cars.js";`;
 import "./header.scss";
 import * as React from "react";
 import honda from "./cars.js";
+import { Banana } from "./food.js";
 import { Apple } from "./food.js";`;
       const output = `import * as React from "react";
 import honda from "./cars.js";
 import { Apple } from "./food.js";
+import { Banana } from "./food.js";
 import "./header.scss";
 import "./styles.scss";`;
-      const actual = sortImportDeclarations(flowParse(input).body, input, {
+
+      const parsed = flowParse(input);
+      const actual = sortImportDeclarations(parsed, parsed.comments, input, {
         orderBy: "source",
       });
 
@@ -66,7 +79,9 @@ import honda from "./cars.js";
 import { Apple } from "./food.js";
 import "./header.scss";
 import "./styles.scss";`;
-      const actual = sortImportDeclarations(flowParse(input).body, input, {
+
+      const parsed = flowParse(input);
+      const actual = sortImportDeclarations(parsed, parsed.comments, input, {
         orderBy: "source",
       });
 

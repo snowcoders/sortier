@@ -1,5 +1,9 @@
 ### [Unreleased]
 
+## [1.0.0-beta.2] - 2021-11-07
+
+- No changes, testing github actions
+
 ## [1.0.0-beta.1] - 2021-11-07
 
 - Import/Export declarations was rewritten to handle comments more consistently and now acts very similar to other sorting scenarios.

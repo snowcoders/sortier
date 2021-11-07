@@ -27,11 +27,10 @@ jobs:
           dry-run: true
       - name: Git Release
         if: steps.publish.outputs.type != 'none'
-        run:
-          - uses: "marvinpinto/action-automatic-releases@v1"
-            with:
-              repo_token: "${{ secrets.GITHUB_TOKEN }}"
-              automatic_release_tag: "${BRANCH_NAME}"
-              title: "${{ steps.publish.outputs.version }}"
-              prerelease: true
-              draft: true
+        uses: "marvinpinto/action-automatic-releases@v1"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "${BRANCH_NAME}"
+          title: "${{ steps.publish.outputs.version }}"
+          prerelease: true
+          draft: true

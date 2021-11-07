@@ -2,13 +2,16 @@ name: Publish Beta
 
 on:
   push:
-    branches: [beta]
+    branches: [beta, k2snowman69/beta-auto-gittag]
 
 jobs:
   Publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: nelonoel/branch-name@v1
+      - name: Get branch name
+        id: getBranchName
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
@@ -23,14 +26,14 @@ jobs:
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          tag: "${BRANCH_NAME}"
+          tag: "${{ steps.getBranchName.outputs.branch}}"
           dry-run: true
       - name: Git Release
         if: steps.publish.outputs.type != 'none'
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${BRANCH_NAME}"
+          automatic_release_tag: "${{ steps.getBranchName.outputs.branch}}"
           title: "${{ steps.publish.outputs.version }}"
           prerelease: true
           draft: true

@@ -5,28 +5,29 @@ on:
     branches: [beta]
 
 jobs:
-  publish:
+  Publish:
     runs-on: ubuntu-latest
     steps:
-      - id: environment
-        - uses: actions/checkout@v2
-        - uses: actions/setup-node@v2
-          with:
-            node-version: 16
-      - id: install
-        - run: npm install
-        - run: npm test
-      - id: publish
-        - uses: nelonoel/branch-name@v1
-        - run: echo ${BRANCH_NAME}
-        - uses: JS-DevTools/npm-publish@v1
-          with:
-            token: ${{ secrets.NPM_TOKEN }}
-            tag: "${BRANCH_NAME}"
-            dry-run: true
-      - id: gittag
-        - if: steps.publish.outputs.type != 'none'
-          - run: echo ${BRANCH_NAME}
+      - uses: nelonoel/branch-name@v1
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - name: Test
+        id: install
+        run: |
+          npm install  
+          npm test
+      - name: Publish
+        id: publish
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          tag: "${BRANCH_NAME}"
+          dry-run: true
+      - name: Git Release
+        if: steps.publish.outputs.type != 'none'
+        run:
           - uses: "marvinpinto/action-automatic-releases@v1"
             with:
               repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -34,4 +35,3 @@ jobs:
               title: "${{ steps.publish.outputs.version }}"
               prerelease: true
               draft: true
-              

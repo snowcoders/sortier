@@ -30,10 +30,9 @@ jobs:
           dry-run: true
       - name: Git Release
         if: steps.publish.outputs.type != 'none'
-        uses: "marvinpinto/action-automatic-releases@latest"
+        uses: "softprops/action-gh-release@v1"
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ steps.getBranchName.outputs.branch}}"
-          title: "${{ steps.publish.outputs.version }}"
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          tag_name: "${{ steps.getBranchName.outputs.branch}}"
+          name: "${{ steps.publish.outputs.version }}"
           prerelease: true
-          draft: true

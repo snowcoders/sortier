@@ -4,10 +4,8 @@
 name: Node.js CI
 
 on:
-  push:
-    branches: [main, beta]
   pull_request:
-    branches: [main, beta]
+    branches: [main, beta, latest]
 
 jobs:
   build:

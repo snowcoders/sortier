@@ -27,12 +27,11 @@ jobs:
         with:
           token: ${{ secrets.NPM_TOKEN }}
           tag: "${{ steps.getBranchName.outputs.branch}}"
-          dry-run: true
       - name: Git Release
         if: steps.publish.outputs.type != 'none'
         uses: "softprops/action-gh-release@v1"
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
-          tag_name: "${{ steps.getBranchName.outputs.branch}}"
+          tag_name: "${{ steps.publish.outputs.version }}"
           name: "${{ steps.publish.outputs.version }}"
-          prerelease: true
+          prerelease: ${{ steps.publish.outputs.tag != 'latest' }}

@@ -2,7 +2,7 @@ name: Publish Beta
 
 on:
   push:
-    branches: [beta, k2snowman69/beta-auto-gittag]
+    branches: [beta]
 
 jobs:
   Publish:

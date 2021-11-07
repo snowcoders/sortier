@@ -1,5 +1,7 @@
 ### [Unreleased]
 
+## [1.0.0-beta.1] - 2021-11-07
+
 - Import/Export declarations was rewritten to handle comments more consistently and now acts very similar to other sorting scenarios.
   - If there is one comment above the group, it's considered a comment for the whole group
   - If there are 2+ comments in the group, those comments will be assumed to be tied to the item either below or to the left of the comment

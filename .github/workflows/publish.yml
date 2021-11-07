@@ -1,8 +1,8 @@
-name: Publish Beta
+name: Publish
 
 on:
   push:
-    branches: [beta]
+    branches: [beta, latest]
 
 jobs:
   Publish:
@@ -27,6 +27,13 @@ jobs:
         with:
           token: ${{ secrets.NPM_TOKEN }}
           tag: "${{ steps.getBranchName.outputs.branch}}"
+      - name: Get Changelog Entry
+        id: getChangelog
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          validation_depth: 0
+          version: ${{ steps.publish.outputs.version }}
+          path: ./CHANGELOG.md
       - name: Git Release
         if: steps.publish.outputs.type != 'none'
         uses: "softprops/action-gh-release@v1"
@@ -35,3 +42,4 @@ jobs:
           tag_name: "${{ steps.publish.outputs.version }}"
           name: "${{ steps.publish.outputs.version }}"
           prerelease: ${{ steps.publish.outputs.tag != 'latest' }}
+          body: ${{ steps.getChangelog.outputs.changes }}

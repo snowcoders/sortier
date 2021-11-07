@@ -31,7 +31,6 @@ jobs:
         id: getChangelog
         uses: mindsers/changelog-reader-action@v2
         with:
-          validation_depth: 0
           version: ${{ steps.publish.outputs.version }}
           path: ./CHANGELOG.md
       - name: Git Release

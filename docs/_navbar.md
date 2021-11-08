@@ -8,6 +8,7 @@
   - [Configuration](/usage/configuration)
   - [Ignoring nodes](/usage/ignoring)
 - Options
+  - [Configuration File](/options/configuration)
   - [General](/options/general)
   - [Css](/options/css)
   - [Html](/options/html)

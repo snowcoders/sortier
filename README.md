@@ -98,16 +98,20 @@ export type Props = {
 
 ## Options
 
-- [Configuration](https://snowcoders.github.io/sortier/#/configuration)
+- [Configuration](https://snowcoders.github.io/sortier/#/options/configuration)
 
-- [General options](https://snowcoders.github.io/sortier/#/options-general)
+- [General options](https://snowcoders.github.io/sortier/#/options/general)
 
-- [Javascript/Flow/Typescript options](https://snowcoders.github.io/sortier/#/options-js)
+- [Javascript/Flow/Typescript options](https://snowcoders.github.io/sortier/#/options/js)
 
-- [Css/Scss/Less options](https://snowcoders.github.io/sortier/#/options-css)
+- [Css/Scss/Less options](https://snowcoders.github.io/sortier/#/options/css)
 
 And more to come!
 
 ## Pre-commit Hook
 
-See our [Install](https://snowcoders.github.io/sortier/#/install) documentation
+See our [Install](https://snowcoders.github.io/sortier/#/usage/install) documentation
+
+## Contributing
+
+See [./CONTRIBUTING.md](./CONTRIBUTING.md)

@@ -1,5 +1,3 @@
-import { StringUtils } from "../../utilities/string-utils.js";
-
 export function createError(message: string, loc: any) {
   // Construct an error similar to the ones thrown by Babylon.
   const error = new SyntaxError(
@@ -9,7 +7,7 @@ export function createError(message: string, loc: any) {
 }
 
 export function includeShebang(text: string, ast: any) {
-  if (!StringUtils.startsWith(text, "#!")) {
+  if (text.startsWith("#!")) {
     return;
   }
 

@@ -2,24 +2,27 @@ import { globbySync } from "globby";
 import { basename, dirname } from "path";
 import { fileURLToPath } from "url";
 import { FileUtils } from "./file-utils.js";
-import { StringUtils } from "./string-utils.js";
 
-interface TestTreeNode {
-  children: TestTreeNode[];
-  name: string;
-  tests: TestInfo[];
-}
-
-interface TestInfo {
+type TestAssets = {
+  type: "leaf";
   inputFilePath: string;
   outputFilePath: string;
-  testName: string;
-}
+};
+
+type TestTree = {
+  type: "branch";
+  nodes: { [name: string]: TestTree | TestAssets };
+};
 
 type TestInputTransform = (
   inputFilePath: string,
   inputFileContents: string
 ) => string;
+
+function sentenceCase(text: string) {
+  const spacedText = text.replace(/_/g, " ");
+  return spacedText.charAt(0).toUpperCase() + spacedText.slice(1);
+}
 
 /**
  * Given a directory, reads all the files from the test_assets folder in that directory and generates
@@ -43,9 +46,6 @@ export function runTestAssetsTests(
 ) {
   const folderPath = getFolderPathFromFileUrl(testFileUrl);
   const testNodes = getTestAssetsTree(folderPath);
-  if (testNodes.length === 0) {
-    throw new Error("Never expected 0 test nodes");
-  }
   runNodes(testNodes, transform);
 }
 
@@ -75,41 +75,38 @@ export function runTestAssestsTests(
   transform: TestInputTransform
 ) {
   const testNodes = getTestAssetsTree(folderPath);
-  if (testNodes.length === 0) {
-    throw new Error("Never expected 0 test nodes");
-  }
   runNodes(testNodes, transform);
 }
 
-function runNodes(
-  testNodes: Array<TestTreeNode>,
-  transform: TestInputTransform
-) {
-  for (const node of testNodes) {
-    if (node.children.length === 0 && node.tests.length === 0) {
-      throw new Error("Test node must have children and/or tests");
-    }
+function runNodes(testNode: TestTree, transform: TestInputTransform) {
+  const nodes = testNode.nodes;
+  for (const name in nodes) {
+    const testNode = nodes[name];
+    if (testNode.type === "leaf") {
+      const { inputFilePath, outputFilePath } = testNode;
 
-    describe(StringUtils.sentenceCase(node.name), () => {
-      // Run all the tests
-      node.tests.forEach((testInfo) => {
-        it(StringUtils.sentenceCase(testInfo.testName), () => {
-          const input = FileUtils.readFileContents(testInfo.inputFilePath);
-          const expected = FileUtils.readFileContents(testInfo.outputFilePath);
-          const actual = transform(testInfo.inputFilePath, input);
+      it(sentenceCase(name), () => {
+        const input = FileUtils.readFileContents(inputFilePath);
+        const expected = FileUtils.readFileContents(outputFilePath);
+        const actual = transform(inputFilePath, input);
 
-          expect(actual).toEqual(expected);
-        });
+        expect(actual).toEqual(expected);
       });
-
-      // Run all the children
-      runNodes(node.children, transform);
-    });
+    } else if (testNode.type === "branch") {
+      describe(sentenceCase(name), () => {
+        runNodes(testNode, transform);
+      });
+    } else {
+      throw new Error("Unexpected testNode type");
+    }
   }
 }
 
-function getTestAssetsTree(folderPath: string) {
-  const roots: Array<TestTreeNode> = [];
+function getTestAssetsTree(folderPath: string): TestTree {
+  const root: TestTree = {
+    type: "branch",
+    nodes: {},
+  };
 
   const assetsFolderPath = FileUtils.globbyJoin(
     folderPath,
@@ -119,45 +116,41 @@ function getTestAssetsTree(folderPath: string) {
   for (const filePath of filePaths) {
     const segments = basename(filePath).split(".");
     if (segments.length < 4) {
-      console.error(`${filePath} does not match getTestAssetsTree pattern`);
+      throw new Error(
+        `${filePath} does not match getTestAssetsTree pattern. Expected (one_or.more_segments).input.js.txt`
+      );
     }
 
-    // Get the root node based off the extension type
-    const extension = segments[segments.length - 2];
-    let root = getOrInsertNodeInArray(roots, extension);
-
-    // Now that we have the root node, setup the categories if needed
+    // Find or create the path in the tree needed
+    let possibleChildren = root.nodes;
     while (segments.length > 4) {
-      const category = segments.shift();
-      if (category == null) {
+      const name = segments.shift();
+      if (name == null) {
         break;
       }
-      root = getOrInsertNodeInArray(root.children, category);
+      if (!(name in possibleChildren)) {
+        possibleChildren[name] = {
+          type: "branch",
+          nodes: {},
+        };
+      }
+      const nextChild = possibleChildren[name];
+      if (nextChild.type === "branch") {
+        possibleChildren = nextChild.nodes;
+      }
     }
 
-    const testName = segments[0].replace(/_/g, " ");
-
-    root.tests.push({
+    if (possibleChildren[segments[0]] != null) {
+      throw new Error(
+        `${segments[0]} already exists in the test tree, do you have a file naming collision?`
+      );
+    }
+    possibleChildren[segments[0]] = {
+      type: "leaf",
       inputFilePath: filePath,
       outputFilePath: filePath.replace(".input.", ".output."),
-      testName,
-    });
-  }
-
-  return Array.from(roots.values());
-}
-
-function getOrInsertNodeInArray(array: Array<TestTreeNode>, name: string) {
-  let node = array.find((value) => {
-    return value.name === name;
-  });
-  if (node == null) {
-    node = {
-      children: [],
-      name,
-      tests: [],
     };
-    array.push(node);
   }
-  return node;
+
+  return root;
 }

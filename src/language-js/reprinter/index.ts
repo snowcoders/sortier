@@ -5,7 +5,6 @@ import { parse as parseFlow } from "../parsers/flow/index.js";
 import { parse as parseTypescript } from "../parsers/typescript/index.js";
 
 // Types of sorts
-import { sortExpression } from "../sortExpression/index.js";
 import {
   SortImportDeclarationSpecifiersOptions,
   sortImportDeclarationSpecifiers,
@@ -203,12 +202,6 @@ export class Reprinter implements ILanguage {
         }
 
         switch (node.type) {
-          case "BinaryExpression": {
-            fileContents = sortExpression(node, comments, fileContents, {
-              groups: this._options.sortTypeAnnotations,
-            });
-            break;
-          }
           case "ClassBody": {
             const sortClassContentsOptions = this._options.sortClassContents;
             if (sortClassContentsOptions != null) {

@@ -1,10 +1,10 @@
 let x = 0;
 while (x < 100) {
-  let value = null | "1";
+  let value = { '1': 'One', '2': 'Two', "3": 'Three',"4": 'Four' };
   x++;
 }
 
 do {
-  let value = null | "1";
+  let value = { '1': 'One', '2': 'Two', "3": 'Three',"4": 'Four' };
   x++;
 } while (x < 100);

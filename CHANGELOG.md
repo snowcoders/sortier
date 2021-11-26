@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- No longer sort multiplication expressions. We found this confusing since we didn't sort any other mathematical property. We do still sort bitwise and, or and xor.
+- Removed sorting of all BinaryExpressions. Honestly we got a lot of feedback that this wasn't super useful and the risk of bugs was higher than the benefit. We can revisit if others voice alternative opinions.
 - Fixed returnType for TSEmptyBodyFunctionExpression not being sorted
 
 ## [1.0.0-beta.2] - 2021-11-07

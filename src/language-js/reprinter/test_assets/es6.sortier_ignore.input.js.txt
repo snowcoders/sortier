@@ -1,28 +1,28 @@
 // sortier-ignore-next-line - All on one line, doesn't sort
-const example = 2 * pi * distance * distance * 5
+const example = 2 | pi | distance * distance | 5
 
 // sortier-ignore-nodes - All on one line, doesn't sort
-const example = 2 * pi * distance * distance * 5
+const example = 2 | pi | distance * distance | 5
 
 /* sortier-ignore-next-line - All on one line, doesn't sort */
-const example = 2 * pi * distance * distance * 5
+const example = 2 | pi | distance * distance | 5
 
 /* sortier-ignore-nodes - All on one line, doesn't sort */
-const example = 2 * pi * distance * distance * 5
+const example = 2 | pi | distance * distance | 5
 
 // sortier-ignore-next-line - All on multiple lines, sorts because expression is not on the next line
 const example = 
       2 
-      * pi 
-      * distance * distance 
-      * 5 
+      | pi 
+      | distance * distance 
+      | 5 
 
 // sortier-ignore-nodes - Since this affects the whole node, doesn't sort
 const example = 
       2
-      * pi
-      * distance * distance
-      * 5
+      | pi
+      | distance * distance
+      | 5
 
 // sortier-ignore-next-line - Doesn't do anything since the case statements aren't on the next line
 switch ("a") {

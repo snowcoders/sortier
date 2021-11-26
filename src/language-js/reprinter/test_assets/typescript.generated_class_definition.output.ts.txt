@@ -2,7 +2,7 @@ import { ReprinterOptions } from "../reprinter-options";
 export declare class Reprinter {
     private static reprinters;
     static rewriteFile(filename: string, options: ReprinterOptions): void;
-    static rewriteText(fileExtension: string, text: string, options: ReprinterOptions): string | undefined;
+    static rewriteText(fileExtension: string, text: string, options: ReprinterOptions): undefined | string;
     private static getReprinterForFile;
 }
 

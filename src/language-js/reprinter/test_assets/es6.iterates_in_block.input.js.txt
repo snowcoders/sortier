@@ -1,25 +1,25 @@
 {
-  let seven = 4 | 3 | 2 | 1;
+  let seven = { "4": 'Four', "3": 'Three', '2': 'Two','1': 'One' };
 }
 
 export function getValue() {
-  let seven = 4 | 3 | 2 | 1;
+  let seven = { "4": 'Four', "3": 'Three', '2': 'Two','1': 'One' };
   return seven;
 }
 
 export class Value {
   constructor() {
-    let seven = 4 | 3 | 2 | 1;
+    let seven = { "4": 'Four', "3": 'Three', '2': 'Two','1': 'One' };
     return seven;
   }
 
   property = () => {
-    let seven = 4 | 3 | 2 | 1;
+    let seven = { "4": 'Four', "3": 'Three', '2': 'Two','1': 'One' };
     return seven;
   };
 
   getValue() {
-    let seven = 4 | 3 | 2 | 1;
+    let seven = { "4": 'Four', "3": 'Three', '2': 'Two','1': 'One' };
     return seven;
   }
 }

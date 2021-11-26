@@ -1,2 +1,2 @@
 let values = {};
-const value = values?.undefinedValue ?? ("b" | "a");
+const value = values?.undefinedValue ?? ({ "4": 'Four', "3": 'Three', '2': 'Two','1': 'One' });

@@ -1,4 +1,0 @@
-let example = 2 
-      | pi 
-      | distance * distance 
-      | 5;

@@ -1,28 +1,30 @@
 // sortier-ignore-next-line - All on one line, doesn't sort
-const example = 2 | pi | distance * distance | 5
+const example = { "4": 'Four', "3": 'Three', '2': 'Two','1': 'One' }
 
 // sortier-ignore-nodes - All on one line, doesn't sort
-const example = 2 | pi | distance * distance | 5
+const example = { "4": 'Four', "3": 'Three', '2': 'Two','1': 'One' }
 
 /* sortier-ignore-next-line - All on one line, doesn't sort */
-const example = 2 | pi | distance * distance | 5
+const example = { "4": 'Four', "3": 'Three', '2': 'Two','1': 'One' }
 
 /* sortier-ignore-nodes - All on one line, doesn't sort */
-const example = 2 | pi | distance * distance | 5
+const example = { "4": 'Four', "3": 'Three', '2': 'Two','1': 'One' }
 
 // sortier-ignore-next-line - All on multiple lines, sorts because expression is not on the next line
-const example = 
-      2 
-      | 5 
-      | distance * distance 
-      | pi 
+const example = { 
+      '1': 'One',
+      '2': 'Two',
+      "3": 'Three',
+      "4": 'Four'
+}
 
 // sortier-ignore-nodes - Since this affects the whole node, doesn't sort
-const example = 
-      2
-      | pi
-      | distance * distance
-      | 5
+const example = { 
+      "4": 'Four',
+      "3": 'Three',
+      '2': 'Two',
+      '1': 'One'
+}
 
 // sortier-ignore-next-line - Doesn't do anything since the case statements aren't on the next line
 switch ("a") {

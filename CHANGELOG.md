@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.4] - 2021-11-28
+
 - Fixed bug where sorting nodes at the very beginning or very end with comments would result in incorrect output
 
 ## [1.0.0-beta.3] - 2021-11-28

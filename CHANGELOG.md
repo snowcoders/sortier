@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.3] - 2021-11-28
+
 - Removed sorting of all BinaryExpressions. Honestly we got a lot of feedback that this wasn't super useful and the risk of bugs was higher than the benefit. We can revisit if others voice alternative opinions.
 - Fixed returnType for TSEmptyBodyFunctionExpression not being sorted
 

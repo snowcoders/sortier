@@ -414,9 +414,10 @@ function getPrecedingCommentRangeForSpecifier<
       ];
     }
   }
-  const indexOfNewLineBeforeSpecifier = fileContents
-    .substring(0, range[0])
-    .lastIndexOf("\n");
+  const indexOfNewLineBeforeSpecifier = Math.max(
+    0,
+    fileContents.substring(0, range[0]).lastIndexOf("\n")
+  );
   const textBetweenLineAndSpecifier = fileContents.substring(
     indexOfNewLineBeforeSpecifier,
     range[0]
@@ -458,6 +459,9 @@ function getSucceedingCommentRangeForSpecifier<
   let specifierEndOfLine = fileContents.indexOf("\r", range[1]);
   if (specifierEndOfLine === -1) {
     specifierEndOfLine = fileContents.indexOf("\n", range[1]);
+  }
+  if (specifierEndOfLine === -1) {
+    specifierEndOfLine = fileContents.length;
   }
   const specifierComments = getSucceedingCommentsForSpecifier(
     fileContents,

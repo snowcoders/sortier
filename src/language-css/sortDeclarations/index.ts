@@ -79,7 +79,6 @@ export function sortDeclarations(
     return result;
   });
 
-  // TODO move getContextGroups up into the root utilities
   const groupedAttributes = getContextGroups(
     attributeInfos,
     commentInfos,

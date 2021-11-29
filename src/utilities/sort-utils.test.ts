@@ -1,6 +1,21 @@
-import { BaseNode, Comment, getContextGroups } from "./sort-utils.js";
+import {
+  BaseNode,
+  Comment,
+  compare,
+  getContextGroups,
+  reorderValues,
+} from "./sort-utils.js";
 
-import { parse as flowParse } from "../language-js/parsers/flow/index.js";
+import { parse } from "../language-js/parsers/typescript/index.js";
+
+function sortImportDeclarations(input: string) {
+  const ast = parse(input);
+  const astBodySorted = ast.body.slice().sort((a, b) => {
+    // @ts-expect-error We're just assuming everything is an import here
+    return compare(a.source.value, b.source.value);
+  });
+  return reorderValues(input, ast.comments, ast.body, astBodySorted);
+}
 
 describe("utilities/sort-utils", () => {
   describe("getContextGroups", () => {
@@ -24,7 +39,7 @@ describe("utilities/sort-utils", () => {
       console.log("d");
     }
     `;
-      const parsed = flowParse(input);
+      const parsed = parse(input);
       const result = getContextGroups(parsed.body, parsed.comments, input);
 
       expect(result).toHaveLength(1);
@@ -37,7 +52,7 @@ describe("utilities/sort-utils", () => {
         const input = `
       // First
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -49,7 +64,7 @@ describe("utilities/sort-utils", () => {
         const input = `
       log("First");
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -62,7 +77,7 @@ describe("utilities/sort-utils", () => {
       // First
       log("First");
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -76,7 +91,7 @@ describe("utilities/sort-utils", () => {
       // First - 2
       log("First");
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -91,7 +106,7 @@ describe("utilities/sort-utils", () => {
       // Second
       log("Second");
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -105,7 +120,7 @@ describe("utilities/sort-utils", () => {
       log("First");
       log("Second");
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -118,7 +133,7 @@ describe("utilities/sort-utils", () => {
       log("First");
       // Second
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -132,7 +147,7 @@ describe("utilities/sort-utils", () => {
       // Second
       log("Second");
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -144,7 +159,7 @@ describe("utilities/sort-utils", () => {
         const input = `
       log("First")  // First;
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -157,7 +172,7 @@ describe("utilities/sort-utils", () => {
       // First
       log("First")  // First
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -170,7 +185,7 @@ describe("utilities/sort-utils", () => {
       log("First"); // First
       log("Second");
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -183,7 +198,7 @@ describe("utilities/sort-utils", () => {
       log("First"); /* First */
       log("Second");
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -196,7 +211,7 @@ describe("utilities/sort-utils", () => {
       log("First"); // First
       log("Second"); // Second
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -208,7 +223,7 @@ describe("utilities/sort-utils", () => {
         const input = `
       /* First */ log("First"); /* Second */ log("Second");
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -221,7 +236,7 @@ describe("utilities/sort-utils", () => {
       log("First"); // First
       /* Second */ log("Second");
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -239,7 +254,7 @@ describe("utilities/sort-utils", () => {
       // Second
       log("Second");
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(2);
@@ -257,7 +272,7 @@ describe("utilities/sort-utils", () => {
       // Second
       log("Second");
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -276,7 +291,7 @@ describe("utilities/sort-utils", () => {
 
       log("Second");
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(2);
@@ -293,7 +308,7 @@ describe("utilities/sort-utils", () => {
       // Second
       /* Second2 */ log("Second"); // Second-3
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(1);
@@ -309,7 +324,7 @@ describe("utilities/sort-utils", () => {
       // Second
       /* Second2 */ log("Second"); // Second-3
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(2);
@@ -328,7 +343,7 @@ describe("utilities/sort-utils", () => {
       // Second11
       /* Second2 */ log("Second"); // Second-3
       `;
-        const parsed = flowParse(input);
+        const parsed = parse(input);
         const result = getContextGroups(parsed.body, parsed.comments, input);
 
         expect(result).toHaveLength(2);
@@ -336,6 +351,351 @@ describe("utilities/sort-utils", () => {
         expect(result[0].comments).toHaveLength(3);
         expect(result[1].nodes).toHaveLength(1);
         expect(result[1].comments).toHaveLength(4);
+      });
+    });
+  });
+
+  describe("reorderValues", () => {
+    it("reorders values", () => {
+      const input = [
+        "import c from 'c';",
+        "import b from 'b';",
+        "import a from 'a';",
+      ].join("\n");
+      const expectedOutput = [
+        "import a from 'a';",
+        "import b from 'b';",
+        "import c from 'c';",
+      ].join("\n");
+
+      const ast = parse(input);
+      const astBodySorted = ast.body.slice().sort((a, b) => {
+        // @ts-expect-error We're just assuming everything is an import here
+        return compare(a.source.value, b.source.value);
+      });
+      const result = reorderValues(
+        input,
+        ast.comments,
+        ast.body,
+        astBodySorted
+      );
+
+      expect(result).toEqual(expectedOutput);
+    });
+
+    describe("single inline comment", () => {
+      it("preceding first line", () => {
+        const input = [
+          "// Comment 1",
+          "import c from 'c';",
+          "import a from 'a';",
+          "import b from 'b';",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "import b from 'b';",
+          "// Comment 1",
+          "import c from 'c';",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+
+      it("preceding a line", () => {
+        const input = [
+          "import c from 'c';",
+          "import a from 'a';",
+          "// Comment 1",
+          "import b from 'b';",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "// Comment 1",
+          "import b from 'b';",
+          "import c from 'c';",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+
+      it("after a statement", () => {
+        const input = [
+          "import c from 'c';",
+          "import a from 'a';",
+          "import b from 'b'; // Comment 1",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "import b from 'b'; // Comment 1",
+          "import c from 'c';",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+
+      it("succeeding last line", () => {
+        const input = [
+          "import c from 'c';",
+          "import a from 'a';",
+          "import b from 'b';",
+          "// Comment 1",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "import b from 'b';",
+          "import c from 'c';",
+          "// Comment 1",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+    });
+
+    describe("multiple inline comments", () => {
+      it("preceding first line", () => {
+        const input = [
+          "// Comment 1",
+          "// Comment 2",
+          "import c from 'c';",
+          "import a from 'a';",
+          "import b from 'b';",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "import b from 'b';",
+          "// Comment 1",
+          "// Comment 2",
+          "import c from 'c';",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+
+      it("preceding a line", () => {
+        const input = [
+          "import c from 'c';",
+          "import a from 'a';",
+          "// Comment 1",
+          "// Comment 2",
+          "import b from 'b';",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "// Comment 1",
+          "// Comment 2",
+          "import b from 'b';",
+          "import c from 'c';",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+
+      it("succeeding last line", () => {
+        const input = [
+          "import c from 'c';",
+          "import a from 'a';",
+          "import b from 'b';",
+          "// Comment 1",
+          "// Comment 2",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "import b from 'b';",
+          "import c from 'c';",
+          "// Comment 1",
+          "// Comment 2",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+    });
+
+    describe("single block comment", () => {
+      it("preceding first line", () => {
+        const input = [
+          "/* Comment 1 */",
+          "import c from 'c';",
+          "import a from 'a';",
+          "import b from 'b';",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "import b from 'b';",
+          "/* Comment 1 */",
+          "import c from 'c';",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+
+      it("preceding a line", () => {
+        const input = [
+          "import c from 'c';",
+          "import a from 'a';",
+          "/* Comment 1 */",
+          "import b from 'b';",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "/* Comment 1 */",
+          "import b from 'b';",
+          "import c from 'c';",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+
+      it("before a statement", () => {
+        const input = [
+          "import c from 'c';",
+          "import a from 'a';",
+          "/* Comment 1 */ import b from 'b';",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "/* Comment 1 */ import b from 'b';",
+          "import c from 'c';",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+
+      it("after a statement", () => {
+        const input = [
+          "import c from 'c';",
+          "import a from 'a';",
+          "import b from 'b'; /* Comment 1 */",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "import b from 'b'; /* Comment 1 */",
+          "import c from 'c';",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+
+      it("succeeding last line", () => {
+        const input = [
+          "import c from 'c';",
+          "import a from 'a';",
+          "import b from 'b';",
+          "/* Comment 1 */",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "import b from 'b';",
+          "import c from 'c';",
+          "/* Comment 1 */",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+    });
+
+    describe("multiple block comments", () => {
+      it("preceding first line", () => {
+        const input = [
+          "/* Comment 1 */",
+          "/* Comment 2 */",
+          "import c from 'c';",
+          "import a from 'a';",
+          "import b from 'b';",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "import b from 'b';",
+          "/* Comment 1 */",
+          "/* Comment 2 */",
+          "import c from 'c';",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+
+      it("preceding a line", () => {
+        const input = [
+          "import c from 'c';",
+          "import a from 'a';",
+          "/* Comment 1 */",
+          "/* Comment 2 */",
+          "import b from 'b';",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "/* Comment 1 */",
+          "/* Comment 2 */",
+          "import b from 'b';",
+          "import c from 'c';",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+
+      it("before a statement", () => {
+        const input = [
+          "import c from 'c';",
+          "import a from 'a';",
+          "/* Comment 1 */ /* Comment 2 */ import b from 'b';",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "/* Comment 1 */ /* Comment 2 */ import b from 'b';",
+          "import c from 'c';",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+
+      xit("after a statement", () => {
+        const input = [
+          "import c from 'c';",
+          "import a from 'a';",
+          "import b from 'b'; /* Comment 1 */ /* Comment 2 */",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "import b from 'b'; /* Comment 1 */ /* Comment 2 */",
+          "import c from 'c';",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
+      });
+
+      it("succeeding last line", () => {
+        const input = [
+          "import c from 'c';",
+          "import a from 'a';",
+          "import b from 'b';",
+          "/* Comment 1 */",
+          "/* Comment 2 */",
+        ].join("\n");
+        const expectedOutput = [
+          "import a from 'a';",
+          "import b from 'b';",
+          "import c from 'c';",
+          "/* Comment 1 */",
+          "/* Comment 2 */",
+        ].join("\n");
+
+        const result = sortImportDeclarations(input);
+        expect(result).toEqual(expectedOutput);
       });
     });
   });

@@ -2,6 +2,6 @@ import { jest } from "@snowcoders/renovate-config";
 
 export default {
   ...jest,
-  rootDir: "src",
+  projects: ["<rootDir>/src"],
   testURL: undefined,
 };

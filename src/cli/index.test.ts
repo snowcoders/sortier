@@ -3,23 +3,28 @@ import { run } from "./index.js";
 // Mocks
 import { jest } from "@jest/globals";
 import realCosmiconfig from "cosmiconfig";
-import { ReprinterOptions } from "../reprinter-options.js";
-import { Reprinter } from "../reprinter/index.js";
+import { SortierOptions } from "../config/index.js";
+import * as realReprinter from "../reprinter/index.js";
 import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils.js";
 
+jest.mock("../reprinter/index.js");
 jest.mock("cosmiconfig");
 const cosmiconfig = realCosmiconfig as jest.Mocked<typeof realCosmiconfig>;
+const reprinter = realReprinter as jest.Mocked<typeof realReprinter>;
 
 // TODO: #1320 - Jest does't support mocking of ESM imports
 xdescribe("cli", () => {
   let logMock: jest.SpiedFunction<typeof LogUtils["log"]>;
-  let reprinterMock: jest.SpiedFunction<typeof Reprinter["rewriteFile"]>;
+  let reprinterMock: jest.MockInstance<
+    ReturnType<typeof reprinter["formatFile"]>,
+    Parameters<typeof reprinter["formatFile"]>
+  >;
   let setVerbosityMock: jest.SpiedFunction<typeof LogUtils["setVerbosity"]>;
-  let config: ReprinterOptions;
+  let config: SortierOptions;
 
   beforeAll(() => {
     logMock = jest.spyOn(LogUtils, "log") as any;
-    reprinterMock = jest.spyOn(Reprinter, "rewriteFile") as any;
+    reprinterMock = reprinter.formatFile.mockImplementation();
     setVerbosityMock = jest.spyOn(LogUtils, "setVerbosity") as any;
     cosmiconfig.cosmiconfigSync.mockImplementation(() => {
       return {
@@ -86,7 +91,7 @@ xdescribe("cli", () => {
 
   // TODO Figure out how to stub cosmiconfig
   describe("Cosmiconfig settings", () => {
-    it.each<[ReprinterOptions["logLevel"], LoggerVerboseOption]>([
+    it.each<[SortierOptions["logLevel"], LoggerVerboseOption]>([
       ["diagnostic", LoggerVerboseOption.Diagnostic],
       ["quiet", LoggerVerboseOption.Quiet],
       ["asdfasdf" as any, LoggerVerboseOption.Normal],

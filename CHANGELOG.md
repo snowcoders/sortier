@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Made `options` optional on `formatFile`
+- Renamed `ReprinterOptions` to `SortierOptions`
+- Added `resolveOptions` to resolve the options for a given filepath
+
 ## [1.0.0-beta.4] - 2021-11-28
 
 - Fixed bug where sorting nodes at the very beginning or very end with comments would result in incorrect output

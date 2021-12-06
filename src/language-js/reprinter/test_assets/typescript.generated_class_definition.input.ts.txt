@@ -1,8 +1,8 @@
-import { ReprinterOptions } from "../reprinter-options";
+import { SortierOptions } from "../reprinter-options";
 export declare class Reprinter {
     private static reprinters;
-    static rewriteFile(filename: string, options: ReprinterOptions): void;
-    static rewriteText(fileExtension: string, text: string, options: ReprinterOptions): string | undefined;
+    static rewriteFile(filename: string, options: SortierOptions): void;
+    static rewriteText(fileExtension: string, text: string, options: SortierOptions): string | undefined;
     private static getReprinterForFile;
 }
 

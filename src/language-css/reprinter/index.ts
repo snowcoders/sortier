@@ -1,16 +1,16 @@
 import { parse as lessParse } from "postcss-less";
 import { parse as scssParse } from "postcss-scss";
 import { ILanguage } from "../../language.js";
-import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options.js";
+import { SortierOptions as BaseSortierOptions } from "../../config/index.js";
 import { StringUtils } from "../../utilities/string-utils.js";
 import {
   SortDeclarationsOptions,
   sortDeclarations,
 } from "../sortDeclarations/index.js";
 
-export type ReprinterOptions = Partial<CssReprinterOptionsRequired>;
+export type SortierOptions = Partial<CssSortierOptionsRequired>;
 
-export interface CssReprinterOptionsRequired {
+export interface CssSortierOptionsRequired {
   // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
   parser?: "less" | "scss";
 
@@ -30,7 +30,7 @@ export class Reprinter implements ILanguage {
   public getRewrittenContents(
     filename: string,
     fileContents: string,
-    options: BaseReprinterOptions
+    options: BaseSortierOptions
   ) {
     const validatedOptions = this.getValidatedOptions(options);
 
@@ -50,8 +50,8 @@ export class Reprinter implements ILanguage {
   }
 
   private getValidatedOptions(
-    appOptions: BaseReprinterOptions
-  ): CssReprinterOptionsRequired {
+    appOptions: BaseSortierOptions
+  ): CssSortierOptionsRequired {
     const partialOptions = appOptions.css;
 
     return {
@@ -62,7 +62,7 @@ export class Reprinter implements ILanguage {
     };
   }
 
-  private getParser(options: CssReprinterOptionsRequired, filename: string) {
+  private getParser(options: CssSortierOptionsRequired, filename: string) {
     // If the options overide the parser type
     if (options.parser === "less") {
       return lessParse;
@@ -92,7 +92,7 @@ export class Reprinter implements ILanguage {
   }
 
   private sortNode(
-    options: CssReprinterOptionsRequired,
+    options: CssSortierOptionsRequired,
     node: /* Document */ any,
     fileContents: string
   ): string {

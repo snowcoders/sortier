@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.5] - 2021-12-06
+
 - Made `options` optional on `formatFile`
 - Renamed `ReprinterOptions` to `SortierOptions`
 - Added `resolveOptions` to resolve the options for a given filepath

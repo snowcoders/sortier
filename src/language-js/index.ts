@@ -1,4 +1,4 @@
 export {
   Reprinter as JavascriptReprinter,
-  ReprinterOptions as JavascriptReprinterOptions,
+  SortierOptions as JavascriptSortierOptions,
 } from "./reprinter/index.js";

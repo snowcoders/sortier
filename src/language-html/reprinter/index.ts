@@ -2,18 +2,18 @@ import { parse } from "angular-html-parser";
 import { CssReprinter } from "../../language-css/index.js";
 import { JavascriptReprinter } from "../../language-js/index.js";
 import { ILanguage } from "../../language.js";
-import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options.js";
+import { SortierOptions as BaseSortierOptions } from "../../config/index.js";
 import { StringUtils } from "../../utilities/string-utils.js";
 import { sortAttributes } from "../sortAttributes/index.js";
 
 export class Reprinter implements ILanguage {
   public static readonly EXTENSIONS = [".html", ".html.txt"];
-  // private options: BaseReprinterOptions;
+  // private options: BaseSortierOptions;
 
   public getRewrittenContents(
     filename: string,
     fileContents: string,
-    options: BaseReprinterOptions
+    options: BaseSortierOptions
   ) {
     const ast = parse(fileContents, { canSelfClose: true });
 
@@ -35,7 +35,7 @@ export class Reprinter implements ILanguage {
   }
 
   private sortNode(
-    options: BaseReprinterOptions,
+    options: BaseSortierOptions,
     node: /* Document */ any,
     fileContents: string
   ): string {
@@ -58,7 +58,7 @@ export class Reprinter implements ILanguage {
   }
 
   private sortStyleTagContents(
-    options: BaseReprinterOptions,
+    options: BaseSortierOptions,
     node: any,
     fileContents: string
   ) {
@@ -82,7 +82,7 @@ export class Reprinter implements ILanguage {
   }
 
   private sortScriptTagContents(
-    options: BaseReprinterOptions,
+    options: BaseSortierOptions,
     node: any,
     fileContents: string
   ) {

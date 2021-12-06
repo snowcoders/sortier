@@ -1,5 +1,5 @@
 // The methods being tested here
-import { Reprinter } from "./index.js";
+import { formatFile } from "./index.js";
 
 // Utilities
 import { join } from "path";
@@ -21,7 +21,7 @@ describe("reprinter", () => {
     // If this expect is hit, then the test files were tampered with before we got here
     expect(input).toEqual(output);
 
-    Reprinter.rewriteFile(inputFilePath, {});
+    formatFile(inputFilePath, {});
     const newInput = FileUtils.readFileContents(inputFilePath);
     expect(newInput).toEqual(output);
   });
@@ -29,7 +29,7 @@ describe("reprinter", () => {
   it("Does not throw error for unsupported files", () => {
     const inputFilePath = join(currentFolderPath, "../../readme.md");
     expect(() => {
-      Reprinter.rewriteFile(inputFilePath, {});
+      formatFile(inputFilePath, {});
     }).not.toThrow();
   });
 });

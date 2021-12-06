@@ -21,7 +21,7 @@ import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation/index.js";
 
 // Utils
 import { ILanguage } from "../../language.js";
-import { ReprinterOptions as BaseReprinterOptions } from "../../reprinter-options.js";
+import { SortierOptions as BaseSortierOptions } from "../../config/index.js";
 import { ArrayUtils } from "../../utilities/array-utils.js";
 import { LogUtils, LoggerVerboseOption } from "../../utilities/log-utils.js";
 import { isIgnored } from "../../utilities/sort-utils.js";
@@ -32,9 +32,9 @@ import {
 } from "../sortClassContents/index.js";
 import { TypeAnnotationOption } from "../utilities/sort-utils.js";
 
-export type ReprinterOptions = Partial<JsReprinterOptionsRequired>;
+export type SortierOptions = Partial<JsSortierOptionsRequired>;
 
-interface JsReprinterOptionsRequired {
+interface JsSortierOptionsRequired {
   // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
   parser?: "flow" | "typescript";
   // Default undefined. If defined, class contents will be sorted based on the options provided. Turned off by default because it will sort over blank lines.
@@ -64,12 +64,12 @@ export class Reprinter implements ILanguage {
   // @ts-expect-error: Need to move to a functional system
   private _helpModeHasPrintedFilename: boolean;
   // @ts-expect-error: Need to move to a functional system
-  private _options: JsReprinterOptionsRequired;
+  private _options: JsSortierOptionsRequired;
 
   public getRewrittenContents(
     filename: string,
     fileContents: string,
-    options: BaseReprinterOptions
+    options: BaseSortierOptions
   ) {
     this._filename = filename;
     this._options = this.getValidatedOptions(options);
@@ -87,8 +87,8 @@ export class Reprinter implements ILanguage {
   }
 
   private getValidatedOptions(
-    appOptions: BaseReprinterOptions
-  ): JsReprinterOptionsRequired {
+    appOptions: BaseSortierOptions
+  ): JsSortierOptionsRequired {
     const partialOptions = appOptions.js || {};
     let sortTypeAnnotations: undefined | Array<TypeAnnotationOption> =
       undefined;

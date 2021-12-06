@@ -1,6 +1,6 @@
 import { JavascriptReprinter } from "../../language-js/index.js";
 import { ILanguage } from "../../language.js";
-import { ReprinterOptions } from "../../reprinter-options.js";
+import { SortierOptions } from "../../config/index.js";
 import { StringUtils } from "../../utilities/string-utils.js";
 
 export class Reprinter implements ILanguage {
@@ -11,7 +11,7 @@ export class Reprinter implements ILanguage {
     fileContents: string,
     // Left in for consistency with other sort functions
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    options: ReprinterOptions
+    options: SortierOptions
   ) {
     const prefix = "export default (";
     const suffix = ");";

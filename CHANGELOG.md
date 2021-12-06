@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.6] - 2021-12-06
+
+- Fixed exports path in package.json
+
 ## [1.0.0-beta.5] - 2021-12-06
 
 - Made `options` optional on `formatFile`

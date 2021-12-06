@@ -43,7 +43,7 @@
   "engines": {
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
   },
-  "exports": "./dist/lib/index.js",
+  "exports": "./dist/index.js",
   "homepage": "https://snowcoders.github.io/sortier",
   "keywords": [
     "order",

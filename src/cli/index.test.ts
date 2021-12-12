@@ -4,10 +4,10 @@ import { run } from "./index.js";
 import { jest } from "@jest/globals";
 import realCosmiconfig from "cosmiconfig";
 import { SortierOptions } from "../config/index.js";
-import * as realReprinter from "../reprinter/index.js";
+import * as realReprinter from "../lib/format-file/index.js";
 import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils.js";
 
-jest.mock("../reprinter/index.js");
+jest.mock("../lib/format-file/index.js");
 jest.mock("cosmiconfig");
 const cosmiconfig = realCosmiconfig as jest.Mocked<typeof realCosmiconfig>;
 const reprinter = realReprinter as jest.Mocked<typeof realReprinter>;

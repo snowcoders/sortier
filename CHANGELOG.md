@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added `sortier/format-file`, `sortier/format-text`, `sortier/resolve-options`, and `sortier/is-ignored` for easier treeshaking for sortier-vscode
+- Removed default export so `import {} from "sortier"` will no longer work. Instead import using the nested import.
+
 ## [1.0.0-beta.7] - 2021-12-06
 
 - Fixed missing TypeScript types

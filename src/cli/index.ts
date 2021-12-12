@@ -1,5 +1,5 @@
 import { globbySync } from "globby";
-import { formatFile } from "../reprinter/index.js";
+import { formatFile } from "../lib/format-file/index.js";
 import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils.js";
 
 export function run(args: string[]) {

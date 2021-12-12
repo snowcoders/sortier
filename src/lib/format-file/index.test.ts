@@ -3,8 +3,8 @@ import { formatFile } from "./index.js";
 
 // Utilities
 import { join } from "path";
-import { FileUtils } from "../utilities/file-utils.js";
-import { getFolderPathFromFileUrl } from "../utilities/test-utils.js";
+import { FileUtils } from "../../utilities/file-utils.js";
+import { getFolderPathFromFileUrl } from "../../utilities/test-utils.js";
 
 const currentFolderPath = getFolderPathFromFileUrl(import.meta.url);
 

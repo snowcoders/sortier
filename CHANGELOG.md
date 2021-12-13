@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.8] - 2021-12-13
+
 - Added `sortier/format-file`, `sortier/format-text`, `sortier/resolve-options`, and `sortier/is-ignored` for easier treeshaking for sortier-vscode
 - Removed default export so `import {} from "sortier"` will no longer work. Instead import using the nested import.
 

@@ -26,10 +26,10 @@ describe("reprinter", () => {
     expect(newInput).toEqual(output);
   });
 
-  it("Does not throw error for unsupported files", () => {
+  it("Does throw error for unsupported files", () => {
     const inputFilePath = join(currentFolderPath, "../../readme.md");
     expect(() => {
       formatFile(inputFilePath, {});
-    }).not.toThrow();
+    }).toThrow();
   });
 });

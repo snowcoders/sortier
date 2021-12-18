@@ -7,6 +7,14 @@ it("Runs formatText without crashing", () => {
   expect(result).toEqual("let a = {a: 'a', b: 'b'};");
 });
 
+it("Throws error if file isn't supported", () => {
+  expect(() => {
+    formatText("aa", "let a = {b: 'b', a: 'a'};", {
+      isTestRun: true,
+    });
+  }).toThrowError();
+});
+
 describe("Validating option overrides", () => {
   it("js.sortImportDeclarationSpecifiers.groups = undefined", () => {
     const result = formatText("ts", "import { IP, Po } from '@foo';", {

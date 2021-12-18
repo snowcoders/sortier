@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Functions `formatFile` and `formatText` both now throw errors if a file does not have a supported parser.
+- Improved error output for cli
+
 ## [1.0.0-beta.10] - 2021-12-18
 
 - Fixed exported types

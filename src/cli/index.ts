@@ -1,4 +1,5 @@
 import { globbySync } from "globby";
+import { UnsupportedExtensionError } from "../error/unsupported-extension-error.js";
 import { formatFile } from "../lib/format-file/index.js";
 import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils.js";
 
@@ -32,20 +33,34 @@ export function run(args: string[]) {
         formatFile(filePath);
       } catch (e) {
         error = e;
-        LogUtils.log(LoggerVerboseOption.Normal, "");
         LogUtils.log(
-          LoggerVerboseOption.Normal,
-          `Sorting ${filePath} has failed!
-If this is an issue with sortier please provide an issue in Github with minimal source code to reproduce the issue
-${e}`
+          getVerbosityForError(e),
+          `Sorting ${filePath} has failed: ${getStringFromError(e)}`
         );
       }
     });
 
     if (error != null) {
-      throw error;
+      return -1;
     }
 
     return 0;
   }
+}
+
+function getVerbosityForError(e: unknown) {
+  // Decrease verbosity if the file is an extension we don't support
+  return e instanceof UnsupportedExtensionError
+    ? LoggerVerboseOption.Diagnostic
+    : LoggerVerboseOption.Normal;
+}
+
+function getStringFromError(e: unknown) {
+  if (e instanceof Error) {
+    const { message } = e;
+    return message;
+  } else if (typeof e === "string") {
+    return e;
+  }
+  return e;
 }

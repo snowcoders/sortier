@@ -1,6 +1,7 @@
 import { findUpSync } from "find-up";
 import path from "path";
 import { resolveOptions, SortierOptions } from "../../config/index.js";
+import { UnsupportedExtensionError } from "../../error/unsupported-extension-error.js";
 import { getReprinterForFile } from "../../language.js";
 import { FileUtils } from "../../utilities/file-utils.js";
 import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils.js";
@@ -23,16 +24,19 @@ export function formatFile(
       }
     } catch (readError) {
       LogUtils.log(
-        LoggerVerboseOption.Normal,
+        LoggerVerboseOption.Diagnostic,
         `Error reading file ${filename}`,
         readError
       );
+      throw readError;
     }
   }
 
   const language = getReprinterForFile(filename);
   if (language == null) {
-    return;
+    throw new UnsupportedExtensionError(
+      `File ${filename} has an file extension which is not supported`
+    );
   }
 
   const originalFileContents = FileUtils.readFileContents(filename);
@@ -43,6 +47,15 @@ export function formatFile(
   );
 
   if (options.isTestRun == null || !options.isTestRun) {
-    FileUtils.writeFileContents(filename, newFileContents);
+    try {
+      FileUtils.writeFileContents(filename, newFileContents);
+    } catch (writeError) {
+      LogUtils.log(
+        LoggerVerboseOption.Diagnostic,
+        `Error writing file ${filename}`,
+        writeError
+      );
+      throw writeError;
+    }
   }
 }

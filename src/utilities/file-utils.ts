@@ -11,11 +11,7 @@ export class FileUtils {
     try {
       return fs.readFileSync(filename, "utf8");
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`Could not read file: ${filename}\n${error.message}`);
-      } else {
-        throw new Error(`Could not read file: ${filename}`);
-      }
+      throw new Error(`Could not read file: ${filename}`);
     }
   }
 
@@ -23,11 +19,7 @@ export class FileUtils {
     try {
       fs.writeFileSync(filename, fileContents, "utf8");
     } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(`Could not read file: ${filename}\n${error.message}`);
-      } else {
-        throw new Error(`Could not read file: ${filename}`);
-      }
+      throw new Error(`Could not write file: ${filename}`);
     }
   }
 }

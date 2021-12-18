@@ -20,6 +20,7 @@ export function formatFile(
       const ignoreText = FileUtils.readFileContents(ignoreFilePath).trim();
       const relativeFilePath = path.relative(path.resolve("."), filename);
       if (isIgnored(ignoreText, relativeFilePath)) {
+        LogUtils.log(LoggerVerboseOption.Diagnostic, `${filename} is ignored`);
         return;
       }
     } catch (readError) {

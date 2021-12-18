@@ -29,10 +29,12 @@ export function run(args: string[]) {
       }
     }
     files.map((filePath) => {
+      LogUtils.log(LoggerVerboseOption.Diagnostic, `${filePath} - Starting`);
+      const start = Date.now();
       try {
         formatFile(filePath);
       } catch (e) {
-        const message = `Sorting ${filePath} has failed: ${getStringFromError(
+        const message = `${filePath} - Sorting has failed: ${getStringFromError(
           e
         )}`;
 
@@ -43,6 +45,13 @@ export function run(args: string[]) {
           error = e;
           LogUtils.log(LoggerVerboseOption.Normal, message);
         }
+      } finally {
+        const end = Date.now();
+        const total = end - start;
+        LogUtils.log(
+          LoggerVerboseOption.Diagnostic,
+          `${filePath} - End - ${total}ms`
+        );
       }
     });
 

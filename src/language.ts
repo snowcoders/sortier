@@ -30,7 +30,7 @@ export function getReprinterForFile(filename: string) {
 
   LogUtils.log(
     LoggerVerboseOption.Diagnostic,
-    "Could not find language support for file - " + filename
+    `${filename} - Could not find language support for file`
   );
   return null;
 }

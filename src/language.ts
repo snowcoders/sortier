@@ -1,9 +1,9 @@
+import { SortierOptions } from "./config/index.js";
 import { CssReprinter } from "./language-css/index.js";
 import { HtmlReprinter } from "./language-html/index.js";
 import { JavascriptReprinter } from "./language-js/index.js";
 import { JsonReprinter } from "./language-json/index.js";
-import { LoggerVerboseOption, LogUtils } from "./utilities/log-utils.js";
-import { SortierOptions } from "./config/index.js";
+import { LogUtils, LoggerVerboseOption } from "./utilities/log-utils.js";
 
 export interface ILanguage {
   getRewrittenContents(

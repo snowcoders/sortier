@@ -64,8 +64,8 @@ class ClassContentsSorter {
   }
 
   public sort() {
-    const possibleSortableItems: Array<MinimumSortInformation | null> =
-      this.classItems.map((value): MinimumSortInformation | null => {
+    const possibleSortableItems: Array<null | MinimumSortInformation> =
+      this.classItems.map((value): null | MinimumSortInformation => {
         switch (value.type) {
           case "ClassProperty":
           case "MethodDefinition":

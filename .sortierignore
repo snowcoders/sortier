@@ -4,6 +4,7 @@ coverage
 dist
 node_modules
 *.log
+package-lock.json
 
 # Our test files
 **/test_assets

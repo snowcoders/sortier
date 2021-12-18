@@ -1,1 +1,1 @@
-export { resolveOptions, SortierOptions } from "../../config/index.js";
+export { SortierOptions, resolveOptions } from "../../config/index.js";

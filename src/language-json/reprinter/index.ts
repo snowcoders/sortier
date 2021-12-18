@@ -1,6 +1,6 @@
+import { SortierOptions } from "../../config/index.js";
 import { JavascriptReprinter } from "../../language-js/index.js";
 import { ILanguage } from "../../language.js";
-import { SortierOptions } from "../../config/index.js";
 import { StringUtils } from "../../utilities/string-utils.js";
 
 export class Reprinter implements ILanguage {

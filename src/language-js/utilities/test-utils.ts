@@ -9,12 +9,12 @@ export function getParser(inputFilePath: string) {
   const fileType = fileName.substring(0, fileName.indexOf("."));
   let parser;
   switch (fileType) {
-    case "flow":
-      parser = flowParse;
-      break;
     case "es6":
     case "typescript":
       parser = typescriptParse;
+      break;
+    case "flow":
+      parser = flowParse;
       break;
     default:
       throw new Error(

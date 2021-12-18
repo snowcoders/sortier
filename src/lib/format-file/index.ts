@@ -1,10 +1,10 @@
 import { findUpSync } from "find-up";
 import path from "path";
-import { resolveOptions, SortierOptions } from "../../config/index.js";
+import { SortierOptions, resolveOptions } from "../../config/index.js";
 import { UnsupportedExtensionError } from "../../error/unsupported-extension-error.js";
 import { getReprinterForFile } from "../../language.js";
 import { FileUtils } from "../../utilities/file-utils.js";
-import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils.js";
+import { LogUtils, LoggerVerboseOption } from "../../utilities/log-utils.js";
 import { isIgnored } from "../is-ignored/index.js";
 
 export function formatFile(

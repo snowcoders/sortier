@@ -4,14 +4,14 @@ import { fileURLToPath } from "url";
 import { FileUtils } from "./file-utils.js";
 
 type TestAssets = {
-  type: "leaf";
   inputFilePath: string;
   outputFilePath: string;
+  type: "leaf";
 };
 
 type TestTree = {
+  nodes: { [name: string]: TestAssets | TestTree };
   type: "branch";
-  nodes: { [name: string]: TestTree | TestAssets };
 };
 
 type TestInputTransform = (
@@ -104,8 +104,8 @@ function runNodes(testNode: TestTree, transform: TestInputTransform) {
 
 function getTestAssetsTree(folderPath: string): TestTree {
   const root: TestTree = {
-    type: "branch",
     nodes: {},
+    type: "branch",
   };
 
   const assetsFolderPath = FileUtils.globbyJoin(
@@ -130,8 +130,8 @@ function getTestAssetsTree(folderPath: string): TestTree {
       }
       if (!(name in possibleChildren)) {
         possibleChildren[name] = {
-          type: "branch",
           nodes: {},
+          type: "branch",
         };
       }
       const nextChild = possibleChildren[name];
@@ -146,9 +146,9 @@ function getTestAssetsTree(folderPath: string): TestTree {
       );
     }
     possibleChildren[segments[0]] = {
-      type: "leaf",
       inputFilePath: filePath,
       outputFilePath: filePath.replace(".input.", ".output."),
+      type: "leaf",
     };
   }
 

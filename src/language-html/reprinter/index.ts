@@ -1,8 +1,8 @@
 import { parse } from "angular-html-parser";
+import { SortierOptions as BaseSortierOptions } from "../../config/index.js";
 import { CssReprinter } from "../../language-css/index.js";
 import { JavascriptReprinter } from "../../language-js/index.js";
 import { ILanguage } from "../../language.js";
-import { SortierOptions as BaseSortierOptions } from "../../config/index.js";
 import { StringUtils } from "../../utilities/string-utils.js";
 import { sortAttributes } from "../sortAttributes/index.js";
 

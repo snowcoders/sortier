@@ -20,8 +20,8 @@ import { sortTSPropertySignatures } from "../sortTSPropertySignatures/index.js";
 import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation/index.js";
 
 // Utils
-import { ILanguage } from "../../language.js";
 import { SortierOptions as BaseSortierOptions } from "../../config/index.js";
+import { ILanguage } from "../../language.js";
 import { ArrayUtils } from "../../utilities/array-utils.js";
 import { LogUtils, LoggerVerboseOption } from "../../utilities/log-utils.js";
 import { isIgnored } from "../../utilities/sort-utils.js";
@@ -222,8 +222,8 @@ export class Reprinter implements ILanguage {
             }
             break;
           }
-          case "ImportDeclaration":
-          case "ExportNamedDeclaration": {
+          case "ExportNamedDeclaration":
+          case "ImportDeclaration": {
             if (node.specifiers.length > 1) {
               fileContents = sortImportDeclarationSpecifiers(
                 node.specifiers,
@@ -234,9 +234,29 @@ export class Reprinter implements ILanguage {
             }
             break;
           }
-          case "ObjectTypeAnnotation":
+          case "IntersectionTypeAnnotation":
+          case "TSIntersectionType":
+          case "TSUnionType":
+          case "UnionTypeAnnotation": {
+            fileContents = sortUnionTypeAnnotation(
+              node,
+              comments,
+              fileContents,
+              {
+                groups: this._options.sortTypeAnnotations,
+              }
+            );
+            break;
+          }
+          case "JSXElement":
+          case "JSXFragment":
+          case "JSXOpeningElement": {
+            fileContents = sortJsxElement(node, comments, fileContents);
+            break;
+          }
           case "ObjectExpression":
-          case "ObjectPattern": {
+          case "ObjectPattern":
+          case "ObjectTypeAnnotation": {
             fileContents = sortObjectTypeAnnotation(
               node,
               comments,
@@ -262,40 +282,20 @@ export class Reprinter implements ILanguage {
             fileContents = sortSwitchCases(node.cases, comments, fileContents);
             break;
           }
-          case "JSXElement":
-          case "JSXFragment":
-          case "JSXOpeningElement": {
-            fileContents = sortJsxElement(node, comments, fileContents);
+          case "TSInterfaceBody": {
+            fileContents = sortTSPropertySignatures(
+              node.body,
+              comments,
+              fileContents,
+              {
+                groups: this._options.sortTypeAnnotations,
+              }
+            );
             break;
           }
           case "TSTypeLiteral": {
             fileContents = sortTSPropertySignatures(
               node.members,
-              comments,
-              fileContents,
-              {
-                groups: this._options.sortTypeAnnotations,
-              }
-            );
-            break;
-          }
-          case "TSIntersectionType":
-          case "IntersectionTypeAnnotation":
-          case "UnionTypeAnnotation":
-          case "TSUnionType": {
-            fileContents = sortUnionTypeAnnotation(
-              node,
-              comments,
-              fileContents,
-              {
-                groups: this._options.sortTypeAnnotations,
-              }
-            );
-            break;
-          }
-          case "TSInterfaceBody": {
-            fileContents = sortTSPropertySignatures(
-              node.body,
               comments,
               fileContents,
               {

@@ -1,7 +1,7 @@
 import { parse as lessParse } from "postcss-less";
 import { parse as scssParse } from "postcss-scss";
-import { ILanguage } from "../../language.js";
 import { SortierOptions as BaseSortierOptions } from "../../config/index.js";
+import { ILanguage } from "../../language.js";
 import { StringUtils } from "../../utilities/string-utils.js";
 import {
   SortDeclarationsOptions,

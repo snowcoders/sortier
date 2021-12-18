@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.12] - 2021-12-18
+
 - Fix exit code not 0 when encountering unsupported file types (instead we should just skip them)
 
 ## [1.0.0-beta.11] - 2021-12-18

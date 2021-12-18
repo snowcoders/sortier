@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Reverted all changes in beta.8
+
 ## [1.0.0-beta.8] - 2021-12-13
 
 - Added `sortier/format-file`, `sortier/format-text`, `sortier/resolve-options`, and `sortier/is-ignored` for easier treeshaking for sortier-vscode

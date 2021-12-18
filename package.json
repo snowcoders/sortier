@@ -44,10 +44,7 @@
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
   },
   "exports": {
-    "./format-file": "./dist/lib/format-file/index.js",
-    "./format-text": "./dist/lib/format-text/index.js",
-    "./is-ignored": "./dist/lib/is-ignored/index.js",
-    "./resolve-options": "./dist/lib/resolve-options/index.js"
+    ".": "./dist/lib/index.js"
   },
   "homepage": "https://snowcoders.github.io/sortier",
   "keywords": [

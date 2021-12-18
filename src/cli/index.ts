@@ -32,11 +32,17 @@ export function run(args: string[]) {
       try {
         formatFile(filePath);
       } catch (e) {
-        error = e;
-        LogUtils.log(
-          getVerbosityForError(e),
-          `Sorting ${filePath} has failed: ${getStringFromError(e)}`
-        );
+        const message = `Sorting ${filePath} has failed: ${getStringFromError(
+          e
+        )}`;
+
+        // Decrease verbosity if the file is an extension we don't support
+        if (e instanceof UnsupportedExtensionError) {
+          LogUtils.log(LoggerVerboseOption.Diagnostic, message);
+        } else {
+          error = e;
+          LogUtils.log(LoggerVerboseOption.Normal, message);
+        }
       }
     });
 
@@ -46,13 +52,6 @@ export function run(args: string[]) {
 
     return 0;
   }
-}
-
-function getVerbosityForError(e: unknown) {
-  // Decrease verbosity if the file is an extension we don't support
-  return e instanceof UnsupportedExtensionError
-    ? LoggerVerboseOption.Diagnostic
-    : LoggerVerboseOption.Normal;
 }
 
 function getStringFromError(e: unknown) {

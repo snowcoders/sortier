@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Fix exit code not 0 when encountering unsupported file types (instead we should just skip them)
+
 ## [1.0.0-beta.11] - 2021-12-18
 
 - Functions `formatFile` and `formatText` both now throw errors if a file does not have a supported parser.

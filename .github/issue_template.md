@@ -5,16 +5,22 @@ about: Create a report to help us improve
 
 # Language
 
-<Typescript/Flow/JavaScript>
+Typescript | Flow | JavaScript | CSS | other
 
 # Sample input source code
 
-<Insert input code>
+```
+TODO
+```
 
 # Expected output
 
-<Insert expected output>
+```
+TODO
+```
 
 # Actual output (or error message)
 
-<Insert actual output>
+```
+TODO
+```

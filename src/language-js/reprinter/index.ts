@@ -18,6 +18,7 @@ import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation/index.js";
 import { sortSwitchCases } from "../sortSwitchCases/index.js";
 import { sortTSPropertySignatures } from "../sortTSPropertySignatures/index.js";
 import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation/index.js";
+import { SortContentsOptions, sortContents } from "../sortContents/index.js";
 
 // Utils
 import { SortierOptions as BaseSortierOptions } from "../../config/index.js";
@@ -26,10 +27,6 @@ import { ArrayUtils } from "../../utilities/array-utils.js";
 import { LogUtils, LoggerVerboseOption } from "../../utilities/log-utils.js";
 import { isIgnored } from "../../utilities/sort-utils.js";
 import { StringUtils } from "../../utilities/string-utils.js";
-import {
-  SortClassContentsOptions,
-  sortClassContents,
-} from "../sortClassContents/index.js";
 import { TypeAnnotationOption } from "../utilities/sort-utils.js";
 
 export type SortierOptions = Partial<JsSortierOptionsRequired>;
@@ -38,7 +35,7 @@ interface JsSortierOptionsRequired {
   // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
   parser?: "flow" | "typescript";
   // Default undefined. If defined, class contents will be sorted based on the options provided. Turned off by default because it will sort over blank lines.
-  sortClassContents?: SortClassContentsOptions;
+  sortContents?: SortContentsOptions;
   // Default ["*", "interfaces", "types"] (see SortImportDeclarationSpecifiersOptions)
   sortImportDeclarationSpecifiers?: SortImportDeclarationSpecifiersOptions;
   // Default "source". The order you wish to sort import statements. Source is the path the import comes from. First specifier is the first item imported.
@@ -203,14 +200,14 @@ export class Reprinter implements ILanguage {
 
         switch (node.type) {
           case "ClassBody": {
-            const sortClassContentsOptions = this._options.sortClassContents;
-            if (sortClassContentsOptions != null) {
-              fileContents = sortClassContents(
+            const sortContentsOptions = this._options.sortContents;
+            if (sortContentsOptions != null) {
+              fileContents = sortContents(
                 lastClassName,
                 node.body,
                 comments,
                 fileContents,
-                sortClassContentsOptions
+                sortContentsOptions
               );
             }
             break;

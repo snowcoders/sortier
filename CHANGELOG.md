@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Changed `options.js.sortClassContents` to `options.js.sortContents`. In the future we might support sorting functions within a file and they will share the same sort criteria.
+
 ## [1.0.0-beta.12] - 2021-12-18
 
 - Fix exit code not 0 when encountering unsupported file types (instead we should just skip them)

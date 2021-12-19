@@ -5,10 +5,9 @@ import {
   reorderValues,
 } from "../../utilities/sort-utils.js";
 
-export type SortClassContentsOptions =
-  Partial<SortClassContentsOptionsRequired>;
+export type SortContentsOptions = Partial<SortContentsOptionsRequired>;
 
-type SortClassContentsOptionsRequired = {
+type SortContentsOptionsRequired = {
   isAscending: boolean;
   order: "alpha" | "usage";
   // Overrides for the order within each group of static methods, properties, methods and access modifiers
@@ -34,12 +33,12 @@ interface MinimumSortInformation extends BaseNode {
   overrideIndex: number;
 }
 
-export function sortClassContents(
+export function sortContents(
   className: undefined | string,
   classItems: any[],
   comments: any,
   fileContents: string,
-  options: SortClassContentsOptions
+  options: SortContentsOptions
 ): string {
   return new ClassContentsSorter(
     className || "",
@@ -51,14 +50,14 @@ export function sortClassContents(
 }
 
 class ClassContentsSorter {
-  private options: SortClassContentsOptionsRequired;
+  private options: SortContentsOptionsRequired;
 
   constructor(
     private className: string,
     private classItems: any[],
     private comments: any,
     private fileContents: string,
-    options: SortClassContentsOptions
+    options: SortContentsOptions
   ) {
     this.options = this.getValidatedOptions(options);
   }
@@ -102,8 +101,8 @@ class ClassContentsSorter {
   }
 
   private getValidatedOptions(
-    partialOptions: SortClassContentsOptions
-  ): SortClassContentsOptionsRequired {
+    partialOptions: SortContentsOptions
+  ): SortContentsOptionsRequired {
     let overrides = ["*"];
     if (partialOptions.overrides != null) {
       overrides = partialOptions.overrides;

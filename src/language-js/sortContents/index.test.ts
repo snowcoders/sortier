@@ -2,19 +2,19 @@
 import { parse as typescriptParse } from "../parsers/typescript/index.js";
 
 // The methods being tested here
-import { sortClassContents } from "./index.js";
+import { sortContents } from "./index.js";
 
 // Utilities
 import { runTestAssetsTests } from "../../utilities/test-utils.js";
 import { getParser } from "../utilities/test-utils.js";
 
-describe("language-js/sortClassContents", () => {
+describe("language-js/sortContents", () => {
   runTestAssetsTests(
     import.meta.url,
     (inputFilePath: string, inputFileContents: string) => {
       const parser = getParser(inputFilePath);
       const parsed = parser(inputFileContents);
-      const actual = sortClassContents(
+      const actual = sortContents(
         parsed.body[0].declaration.id.name,
         parsed.body[0].declaration.body.body,
         parsed.comments,
@@ -86,7 +86,7 @@ describe("language-js/sortClassContents", () => {
       }
     }`;
     const parsed = typescriptParse(input);
-    const actual = sortClassContents(
+    const actual = sortContents(
       // @ts-expect-error: Test will already fail if declaration isn't defined
       parsed.body[0].declaration.id.name,
       // @ts-expect-error: Test will already fail if declaration isn't defined
@@ -165,7 +165,7 @@ describe("language-js/sortClassContents", () => {
       }
     }`;
     const parsed = typescriptParse(input);
-    const actual = sortClassContents(
+    const actual = sortContents(
       // @ts-expect-error: Test will already fail if declaration isn't defined
       parsed.body[0].declaration.id.name,
       // @ts-expect-error: Test will already fail if declaration isn't defined

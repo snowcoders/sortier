@@ -2,7 +2,7 @@
 
 An opinionated Code Sorter
 
-[![npm (scoped)](https://img.shields.io/npm/v/sortier.svg)](https://www.npmjs.com/package/@snowcoders/sortier) [![Coverage Status](https://coveralls.io/repos/github/sortier/badge.svg?branch=master)](https://coveralls.io/github/snowcoders/sortier?branch=master)
+[![npm (scoped)](https://img.shields.io/npm/v/sortier.svg)](https://www.npmjs.com/package/sortier)
 
 Sortier is an opinionated code sorter similar to how Prettier is a opinionated code formatter. Given a file, it parses then sorts and rearranges source code in a consistent way.
 

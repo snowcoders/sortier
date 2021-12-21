@@ -1,0 +1,13 @@
+// See https://github.com/snowcoders/sortier/issues/1491
+import { Executor, ExecutorContext } from "@nrwl/devkit"
+
+interface TscExecutorOptions {
+  isApp?: boolean
+}
+
+const tscExecutor: Executor<TscExecutorOptions> = async ({ isApp }, context: ExecutorContext) => {
+  console.log(`isApp? ${isApp}`, context)
+  return { success: true }
+}
+
+export default tscExecutor

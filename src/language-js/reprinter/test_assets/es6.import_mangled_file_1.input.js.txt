@@ -1,0 +1,27 @@
+// See https://github.com/snowcoders/sortier/issues/1488
+import Document, { Html, Head, Main, NextScript } from 'next/document';
+
+class AppDocument extends Document {
+  static async getInitialProps(ctx) {
+    const initialProps = await Document.getInitialProps(ctx);
+    return { ...initialProps };
+  }
+
+  render() {
+    return (
+      <Html lang="en-US">
+        <Head>
+          <link rel="icon" href="/favicon.ico" />
+          <meta name="twitter:card" content="summary" />
+        </Head>
+
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
+}
+
+export default AppDocument;

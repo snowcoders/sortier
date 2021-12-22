@@ -16,7 +16,8 @@ interface SortImportDeclarationSpecifiersOptionsRequired {
 }
 
 interface SingleSpecifier extends BaseNode {
-  importKind: null | string;
+  // Null is the same as "value"
+  importKind: null | "value" | "type" | "typeof";
   importedName: string;
   isDefaultImportType: boolean;
   isInterface: boolean;
@@ -58,21 +59,38 @@ function sortSingleSpecifier(
         : specifier.local.name;
     let start = specifier.start || specifier.range[0];
     const end = specifier.end || specifier.range[1];
-    if (specifier.importKind === "type") {
-      // Flow doesn't provide us the range from "type <Specifier>", they only provide
-      // the range of "<specifier>" so we're going to be a bit safe here and do some checks
-      const possibleNewStart = fileContents.lastIndexOf("type", start);
-      const textBetweenOldStartAndNewStart = fileContents.substring(
-        possibleNewStart + 4,
-        start
-      );
-      const isNonWhitespaceBetweenOldStartAndNewStart =
-        textBetweenOldStartAndNewStart.match(/\S/) != null;
-      if (isNonWhitespaceBetweenOldStartAndNewStart) {
-        return null;
+
+    // Modify start based on the importKind if needed
+    switch (specifier.importKind) {
+      case "typeof":
+      case "type": {
+        // Flow doesn't provide us the range from "type <Specifier>", they only provide
+        // the range of "<specifier>" so we're going to be a bit safe here and do some checks
+        const possibleNewStart = fileContents.lastIndexOf(
+          specifier.importKind,
+          start
+        );
+        const textBetweenOldStartAndNewStart = fileContents.substring(
+          possibleNewStart + specifier.importKind.length,
+          start
+        );
+        const isNonWhitespaceBetweenOldStartAndNewStart =
+          textBetweenOldStartAndNewStart.match(/\S/) != null;
+        if (isNonWhitespaceBetweenOldStartAndNewStart) {
+          return null;
+        }
+        start = possibleNewStart;
+        break;
       }
-      start = possibleNewStart;
+      case "value":
+      case undefined:
+      case null:
+        break;
+      default:
+        // If it's a type we haven't encountered, return null so we don't sort
+        return null;
     }
+
     return {
       importKind: specifier.importKind,
       importedName: importedName,
@@ -112,7 +130,7 @@ function sortSingleSpecifier(
     if (a.isInterface) {
       aRank = interfaceRank;
     }
-    if (a.importKind != null) {
+    if (a.importKind === "type" || a.importKind === "typeof") {
       aRank = typeRanking;
     }
     if (a.isDefaultImportType) {
@@ -123,7 +141,7 @@ function sortSingleSpecifier(
     if (b.isInterface) {
       bRank = interfaceRank;
     }
-    if (b.importKind != null) {
+    if (b.importKind === "type" || b.importKind === "typeof") {
       bRank = typeRanking;
     }
     if (b.isDefaultImportType) {

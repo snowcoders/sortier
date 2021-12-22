@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Fixed bug where imports would be mangled intermittently (depends on version of parser that is installed)
+
 ## [1.0.0] - 2021-12-19
 
 ### Breaking from @snowcoders/sortier@3

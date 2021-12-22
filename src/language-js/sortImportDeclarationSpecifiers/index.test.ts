@@ -1,5 +1,6 @@
 // Parsers
 import { parse as flowParse } from "../parsers/flow/index.js";
+import { parse as typescriptParse } from "../parsers/typescript/index.js";
 
 // The methods being tested here
 import { sortImportDeclarationSpecifiers } from "./index.js";
@@ -96,7 +97,7 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
     it("Group by interfaces then everything", () => {
       const input = 'import { Hi, Something, IInterface } from "module";';
       const expected = 'import { IInterface, Hi, Something } from "module";';
-      const parsed = flowParse(input);
+      const parsed = typescriptParse(input);
       const output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["interfaces", "*"],
         orderBy: "alpha",

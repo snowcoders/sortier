@@ -76,5 +76,5 @@
   "sideEffects": false,
   "type": "module",
   "types": "./dist/lib/index.d.ts",
-  "version": "1.0.1-beta.0"
+  "version": "1.0.1"
 }

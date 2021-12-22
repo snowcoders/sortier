@@ -1,0 +1,2 @@
+import { Po, IP } from '@foo';
+import Document, { Head, Html, Main, NextScript } from 'next/document';

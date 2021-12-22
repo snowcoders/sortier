@@ -5,7 +5,6 @@
 - Usage
   - [Install](/usage/install)
   - [Running](/usage/running)
-  - [Configuration](/usage/configuration)
   - [Ignoring nodes](/usage/ignoring)
 - Options
   - [Configuration File](/options/configuration)

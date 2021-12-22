@@ -1,4 +1,5 @@
 import { Comment } from "estree";
+import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils.js";
 import {
   BaseNode,
   compare,
@@ -51,25 +52,44 @@ function sortSingleSpecifier(
   }
 
   const unsortedSpecifiers = specifiers.map((specifier: any) => {
-    {
-      const importedName =
-        specifier.imported != null
-          ? specifier.imported.name
-          : specifier.local.name;
-      let start = specifier.start || specifier.range[0];
-      const end = specifier.end || specifier.range[1];
-      if (specifier.importKind != null) {
-        start = fileContents.lastIndexOf(specifier.importKind, start);
+    const importedName =
+      specifier.imported != null
+        ? specifier.imported.name
+        : specifier.local.name;
+    let start = specifier.start || specifier.range[0];
+    const end = specifier.end || specifier.range[1];
+    if (specifier.importKind === "type") {
+      // Flow doesn't provide us the range from "type <Specifier>", they only provide
+      // the range of "<specifier>" so we're going to be a bit safe here and do some checks
+      const possibleNewStart = fileContents.lastIndexOf("type", start);
+      const textBetweenOldStartAndNewStart = fileContents.substring(
+        possibleNewStart + 4,
+        start
+      );
+      const isNonWhitespaceBetweenOldStartAndNewStart =
+        textBetweenOldStartAndNewStart.match(/\S/) != null;
+      if (isNonWhitespaceBetweenOldStartAndNewStart) {
+        return null;
       }
-      return {
-        importKind: specifier.importKind,
-        importedName: importedName,
-        isDefaultImportType: specifier.type.indexOf("Default") !== -1,
-        isInterface: nameIsLikelyInterface(importedName),
-        range: [start, end],
-      };
+      start = possibleNewStart;
     }
+    return {
+      importKind: specifier.importKind,
+      importedName: importedName,
+      isDefaultImportType: specifier.type.indexOf("Default") !== -1,
+      isInterface: nameIsLikelyInterface(importedName),
+      range: [start, end],
+    };
   });
+
+  if (unsortedSpecifiers.includes(null)) {
+    // If something weird happened when parsing the specifiers, exit without sorting
+    LogUtils.log(
+      LoggerVerboseOption.Diagnostic,
+      "Encountered issue parsing import specifiers, skipping sorting this node"
+    );
+    return fileContents;
+  }
 
   // First create an object to remember all that we care about
   const sortedSpecifiers = unsortedSpecifiers.slice();

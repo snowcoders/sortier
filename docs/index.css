@@ -68,7 +68,7 @@ h6 {
 /* Page layout */
 body {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: 200px auto;
   grid-template-rows: auto;
   grid-template-areas:
     "header header"

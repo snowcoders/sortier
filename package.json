@@ -13,7 +13,7 @@
     "flow-parser": "~0.169.0",
     "globby": "^12.0.2",
     "ignore": "^5.0.0",
-    "postcss-less": "^5.0.0",
+    "postcss-less": "^6.0.0",
     "postcss-scss": "^4.0.0",
     "typescript": "^4.0.0"
   },

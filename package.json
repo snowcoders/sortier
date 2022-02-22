@@ -25,6 +25,7 @@
     "@typescript-eslint/eslint-plugin": "5.15.0",
     "@typescript-eslint/parser": "5.15.0",
     "changelog-updater": "2.0.2",
+    "concurrently": "7.0.0",
     "coveralls": "3.1.1",
     "docsify-cli": "4.4.4",
     "eslint": "8.11.0",
@@ -68,7 +69,9 @@
     "lint": "eslint --fix ./src/**/*.{js,jsx,ts,tsx}",
     "prepare": "npm run clean && npm run build && husky install",
     "start": "node bin/index.js",
-    "start-docs": "docsify serve ./docs",
+    "start:docs": "concurrently \"npm:start:docs-*\"",
+    "start:docs-static": "docsify serve ./docs",
+    "start:docs-playground": "cd docs && cd playground-src && npm run watch",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test-e2e": "docker build -f e2e_tests.dockerfile .",
     "version": "changelog-updater && git add ."

@@ -6,8 +6,8 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "build:dev": "webpack --mode=development",
-    "build:prod": "webpack --mode=production",
+    "build:dev": "rimraf ../playground && webpack --mode=development",
+    "build:prod": "rimraf ../playground && webpack --mode=production",
     "start": "webpack serve --mode=development",
     "watch": "webpack --watch --mode=development",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -27,6 +27,7 @@
     "postcss-loader": "6.2.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "rimraf": "3.0.2",
     "sortier": "file:..",
     "ts-loader": "9.2.6",
     "ts-node": "^10.5.0",

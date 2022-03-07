@@ -1,0 +1,1 @@
+(()=>{"use strict";onmessage=function(t){const{data:e}=t;if(null==e)return;const{text:s}=e;postMessage({text:`Formatted text: ${s}`})}})();

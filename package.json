@@ -64,6 +64,7 @@
   "scripts": {
     "build": "tsc -p ./tsconfig.production.json",
     "build:dev": "tsc -p ./tsconfig.json",
+    "build:docs-playground": "cd docs && cd playground-src && npm run build:prod",
     "clean": "rimraf coverage dist",
     "cover": "cat ./coverage/lcov.info | coveralls",
     "lint": "eslint --fix ./src/**/*.{js,jsx,ts,tsx}",

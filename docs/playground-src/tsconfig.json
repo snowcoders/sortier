@@ -3,6 +3,7 @@
     "declaration": false,
     "esModuleInterop": true,
     "importHelpers": true,
+    "lib": ["WebWorker", "DOM", "ES2020"],
     "jsx": "react",
     "module": "ES2020",
     "moduleResolution": "Node",

@@ -3,6 +3,7 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import path from "path";
 import * as webpack from "webpack";
 import "webpack-dev-server";
+import ResolveTypeScriptPlugin from "resolve-typescript-plugin";
 
 /**
     @type {webpack.Configuration}
@@ -14,6 +15,9 @@ const config = (env, argv) => {
   return {
     devServer: {
       port: 3001,
+    },
+    node: {
+      global: false,
     },
     entry: { app: "./src/index" },
     module: {
@@ -52,6 +56,11 @@ const config = (env, argv) => {
       }),
     ],
     resolve: {
+      plugins: [new ResolveTypeScriptPlugin()],
+      alias: {
+        cosmiconfig: false,
+        "find-up": false,
+      },
       extensions: [".ts", ".tsx", ".js", ".jsx", ".html"],
       fallback: {
         "fast-glob": false,
@@ -65,6 +74,15 @@ const config = (env, argv) => {
         util: false,
         events: false,
         constants: false,
+        "node:fs": false,
+        "node:browser": false,
+        "node:os": false,
+        "node:path": false,
+        "node:process": false,
+        "node:stream": false,
+        "node:util": false,
+        "node:events": false,
+        "node:constants": false,
       },
     },
     target: "web",

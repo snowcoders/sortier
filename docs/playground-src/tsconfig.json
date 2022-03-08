@@ -8,7 +8,7 @@
     "module": "ES2020",
     "moduleResolution": "Node",
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDirs": ["./src", "../../../src"],
     "sourceMap": true,
     "target": "ES2020"
   },

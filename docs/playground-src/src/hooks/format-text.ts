@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { SortierWorkerData } from "../worker";
+import { SortierWorkerData } from "../format-workers/css";
 
-export function useFormatText(inputText: string) {
-  const [outputText, setOutputText] = useState(inputText);
+export function useFormatCss(inputText: string) {
+  const [outputText, setOutputText] = useState("Loading formatter");
   const [worker, setWorker] = useState<Worker | null>();
 
   useEffect(() => {
-    const worker = new Worker(new URL("../worker", import.meta.url));
+    const worker = new Worker(
+      new URL("../format-workers/css", import.meta.url)
+    );
     worker.onmessage = (e: MessageEvent<SortierWorkerData>) => {
       const { data } = e;
       setOutputText(data.text);
@@ -21,6 +23,7 @@ export function useFormatText(inputText: string) {
     (inputText: string) => {
       worker?.postMessage({
         text: inputText,
+        options: {},
       });
     },
     [worker]

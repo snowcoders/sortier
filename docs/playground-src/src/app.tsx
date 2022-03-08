@@ -1,8 +1,8 @@
 import React from "react";
-import { useFormatText } from "./hooks/format-text";
+import { useFormatCss } from "./hooks/format-text";
 
 export function App() {
-  const [text, setText] = useFormatText("");
+  const [text, setText] = useFormatCss("");
 
   const onChange: React.DetailedHTMLProps<
     React.TextareaHTMLAttributes<HTMLTextAreaElement>,
@@ -12,9 +12,9 @@ export function App() {
   };
 
   return (
-    <div>
+    <div className="site--playground">
       <textarea onChange={onChange} name="text" />
-      <div>{text}</div>
+      <textarea name="text" readOnly value={text} />
     </div>
   );
 }

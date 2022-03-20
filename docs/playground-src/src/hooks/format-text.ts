@@ -1,33 +1,61 @@
 import React, { useEffect, useState } from "react";
-import { SortierWorkerData } from "../format-workers/css";
+import {
+  SortierWorkerInputData,
+  SortierWorkerOutputData,
+} from "../format-workers/types";
 
-export function useFormatCss(inputText: string) {
-  const [outputText, setOutputText] = useState("Loading formatter");
+function getWorker(fileType: SortierWorkerInputData["type"]) {
+  switch (fileType) {
+    case "js":
+    case "jsx":
+    case "tsx":
+    case "ts":
+      return new Worker(
+        new URL("../format-workers/javascript", import.meta.url)
+      );
+    case "css":
+      return new Worker(new URL("../format-workers/css", import.meta.url));
+    case "html":
+      return new Worker(new URL("../format-workers/html", import.meta.url));
+    default:
+      throw new Error(`File type ${fileType} not supported`);
+  }
+}
+
+const loadingFormatterMessage = "Loading formatter";
+
+export function useSortier(initialInput: SortierWorkerInputData) {
+  const [outputText, setOutputText] = useState(loadingFormatterMessage);
   const [worker, setWorker] = useState<Worker | null>();
+  const [input, setInput] = useState<SortierWorkerInputData>(initialInput);
+  const [type, setType] = useState<SortierWorkerInputData["type"]>(
+    initialInput.type
+  );
 
   useEffect(() => {
-    const worker = new Worker(
-      new URL("../format-workers/css", import.meta.url)
-    );
-    worker.onmessage = (e: MessageEvent<SortierWorkerData>) => {
+    worker?.terminate();
+
+    const newWorker = getWorker(input.type);
+    newWorker.onmessage = (e: MessageEvent<SortierWorkerOutputData>) => {
       const { data } = e;
       setOutputText(data.text);
     };
-    worker.postMessage({
-      text: inputText,
-    });
-    setWorker(worker);
-  }, []);
+    newWorker.postMessage(input);
+    setWorker(newWorker);
+  }, [type]);
 
   const formatInputText = React.useCallback(
-    (inputText: string) => {
-      worker?.postMessage({
-        text: inputText,
-        options: {},
-      });
+    (newInput: SortierWorkerInputData) => {
+      setInput(newInput);
+      if (newInput.type !== input.type) {
+        setOutputText(loadingFormatterMessage);
+        setType(newInput.type);
+      } else {
+        worker?.postMessage(newInput);
+      }
     },
     [worker]
   );
 
-  return [outputText, formatInputText] as const;
+  return [{ ...input, outputText }, formatInputText] as const;
 }

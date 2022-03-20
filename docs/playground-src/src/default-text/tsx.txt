@@ -1,0 +1,11 @@
+type Options = {
+  sleep?: number;
+  write?: boolean;
+  logLevel?: "quiet" | "normal" | "diagnostic";
+};
+
+const options: Options = {
+  sleep: 30,
+  write: true,
+  logLevel: "diagnostic",
+};

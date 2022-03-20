@@ -1,23 +1,18 @@
-import HTMLWebpackPlugin from "html-webpack-plugin";
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import path from "path";
-import * as webpack from "webpack";
-import "webpack-dev-server";
-import ResolveTypeScriptPlugin from "resolve-typescript-plugin";
+const HTMLWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const path = require("path");
+const ResolveTypeScriptPlugin = require("resolve-typescript-plugin");
+const webpack = require("webpack");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 
-/**
-    @type {webpack.Configuration}
-*/
 const config = (env, argv) => {
+  const isWebpackServe = !!argv.env.WEBPACK_SERVE;
   const isProduction = argv.mode === "production";
   const fileName = isProduction ? "[name].[contenthash]" : "[name]";
 
   return {
     devServer: {
       port: 3001,
-    },
-    node: {
-      global: false,
     },
     entry: { app: "./src/index" },
     module: {
@@ -35,13 +30,27 @@ const config = (env, argv) => {
             },
           ],
         },
+        {
+          test: /\.txt/,
+          type: "asset/source",
+        },
+        {
+          test: /\.json/,
+          type: "asset/source",
+        },
       ],
+    },
+    node: {
+      global: false,
+    },
+    optimization: {
+      chunkIds: isProduction ? undefined : "named",
     },
     output: {
       chunkFilename: `${fileName}.js`,
       filename: `${fileName}.js`,
       path: path.resolve("../playground"),
-      publicPath: "/playground/",
+      publicPath: isWebpackServe ? "/" : "/playground/",
     },
     plugins: [
       new MiniCssExtractPlugin({
@@ -54,39 +63,60 @@ const config = (env, argv) => {
         filename: "index.html",
         template: "./src/index.html",
       }),
+      // new BundleAnalyzerPlugin({
+      //   openAnalyzer: false,
+      // }),
     ],
     resolve: {
-      plugins: [new ResolveTypeScriptPlugin()],
       alias: {
+        // npm packages we have no use for in the browser
         cosmiconfig: false,
         "find-up": false,
+
+        // Low usage for flow, I'm not including it
+        "flow-parser": false,
+        "fast-glob": false,
+
+        // Reducing typescript-eslint because it's huge
+        "./create-program/createWatchProgram": false,
+        "./create-program/createIsolatedProgram": false,
+        "./create-program/createProjectProgram": false,
+
+        // Mock out typescript because it's 10mb
+        typescript: path.resolve(".", "mocks", "typescript.js"),
+        semver$: path.resolve(".", "mocks", "semver.ts"),
+        path: path.resolve(".", "mocks", "path.ts"),
+        "semver-satisfies": "semver/functions/satisfies",
+        "semver-major": "semver/functions/major",
+        globby: false,
       },
       extensions: [".ts", ".tsx", ".js", ".jsx", ".html"],
       fallback: {
-        "fast-glob": false,
-        fs: false,
+        // Node specific overrides
         browser: false,
+        constants: false,
+        events: false,
+        fs: false,
+        "node:browser": false,
+        "node:constants": false,
+        "node:events": false,
+        "node:fs": false,
+        "node:os": false,
+        "node:path": false,
+        "node:process": false,
+        "node:stream": false,
+        "node:util": false,
         os: false,
         "os-browserify": false,
         path: false,
         process: false,
         stream: false,
         util: false,
-        events: false,
-        constants: false,
-        "node:fs": false,
-        "node:browser": false,
-        "node:os": false,
-        "node:path": false,
-        "node:process": false,
-        "node:stream": false,
-        "node:util": false,
-        "node:events": false,
-        "node:constants": false,
       },
+      plugins: [new ResolveTypeScriptPlugin()],
     },
     target: "web",
   };
 };
 
-export default config;
+module.exports = config;

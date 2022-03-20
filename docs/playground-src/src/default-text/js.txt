@@ -1,0 +1,5 @@
+const options = {
+  sleep: 30,
+  write: true,
+  logLevel: "diagnostic",
+};

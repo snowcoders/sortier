@@ -1,4 +1,4 @@
-import { CssReprinter } from "../../../../src/language-css/index";
+import { JavascriptReprinter } from "../../../../src/language-js/index";
 import { getErrorString } from "../utilities/get-error-string";
 import { SortierWorkerInputData, SortierWorkerOutputData } from "./types";
 
@@ -10,7 +10,7 @@ onmessage = function (e: MessageEvent<SortierWorkerInputData>) {
 
   const { type, text, options } = data;
 
-  const reprinter = new CssReprinter();
+  const reprinter = new JavascriptReprinter();
   try {
     const result = reprinter.getRewrittenContents(
       `test.${type}`,

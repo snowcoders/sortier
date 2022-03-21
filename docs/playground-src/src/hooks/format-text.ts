@@ -6,17 +6,17 @@ import {
 
 function getWorker(fileType: SortierWorkerInputData["type"]) {
   switch (fileType) {
-    case "js":
-    case "jsx":
-    case "tsx":
-    case "ts":
-      return new Worker(
-        new URL("../format-workers/javascript", import.meta.url)
-      );
     case "css":
       return new Worker(new URL("../format-workers/css", import.meta.url));
     case "html":
       return new Worker(new URL("../format-workers/html", import.meta.url));
+    case "js":
+    case "jsx":
+    case "ts":
+    case "tsx":
+      return new Worker(
+        new URL("../format-workers/javascript", import.meta.url)
+      );
     default:
       throw new Error(`File type ${fileType} not supported`);
   }
@@ -26,7 +26,7 @@ const loadingFormatterMessage = "Loading formatter";
 
 export function useSortier(initialInput: SortierWorkerInputData) {
   const [outputText, setOutputText] = useState(loadingFormatterMessage);
-  const [worker, setWorker] = useState<Worker | null>();
+  const [worker, setWorker] = useState<null | Worker>();
   const [input, setInput] = useState<SortierWorkerInputData>(initialInput);
   const [type, setType] = useState<SortierWorkerInputData["type"]>(
     initialInput.type

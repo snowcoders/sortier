@@ -1,19 +1,10 @@
 {
-  "browser": {},
-  "name": "sortier-playground",
-  "version": "0.0.0",
-  "description": "Browser compatible sortier functionality",
-  "main": "index.js",
-  "private": true,
-  "scripts": {
-    "build:dev": "rimraf ../playground && webpack --mode=development",
-    "build:prod": "rimraf ../playground && webpack --mode=production",
-    "start": "webpack serve --mode=development",
-    "watch": "webpack --watch --mode=development",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "",
-  "license": "MIT",
+  "browser": {},
+  "dependencies": {
+    "esbuild": "^0.14.21"
+  },
+  "description": "Browser compatible sortier functionality",
   "devDependencies": {
     "@snowcoders/renovate-config": "2.0.3",
     "@types/node": "^17.0.17",
@@ -39,9 +30,18 @@
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "4.7.4"
   },
-  "type": "commonjs",
-  "dependencies": {
-    "esbuild": "^0.14.21"
+  "license": "MIT",
+  "main": "index.js",
+  "name": "sortier-playground",
+  "private": true,
+  "scripts": {
+    "build:dev": "rimraf ../playground && webpack --mode=development",
+    "build:prod": "rimraf ../playground && webpack --mode=production",
+    "start": "webpack serve --mode=development",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --watch --mode=development"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "type": "commonjs",
+  "version": "0.0.0"
 }

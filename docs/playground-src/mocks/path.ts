@@ -1,3 +1,4 @@
+/* eslint-disable */
 // @ts-nocheck
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -213,16 +214,16 @@ export function extname(path) {
 }
 
 export default {
-  extname: extname,
   basename: basename,
-  dirname: dirname,
-  sep: sep,
   delimiter: delimiter,
-  relative: relative,
-  join: join,
+  dirname: dirname,
+  extname: extname,
   isAbsolute: isAbsolute,
+  join: join,
   normalize: normalize,
+  relative: relative,
   resolve: resolve,
+  sep: sep,
 };
 
 function filter(xs, f) {

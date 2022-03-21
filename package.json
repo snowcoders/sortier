@@ -62,6 +62,7 @@
   "name": "sortier",
   "repository": "github:snowcoders/sortier",
   "scripts": {
+    "build:all": "npm run build:prod && npm run build:docs-playground",
     "build": "tsc -p ./tsconfig.production.json",
     "build:dev": "tsc -p ./tsconfig.json",
     "build:docs-playground": "cd docs && cd playground-src && npm run build:prod",
@@ -69,6 +70,7 @@
     "cover": "cat ./coverage/lcov.info | coveralls",
     "lint": "eslint --fix ./src/**/*.{js,jsx,ts,tsx}",
     "prepare": "npm run clean && npm run build && husky install",
+    "install:docs": "cd docs && cd playground-src && npm install",
     "start": "node bin/index.js",
     "start:docs": "concurrently \"npm:start:docs-*\"",
     "start:docs-static": "docsify serve ./docs",

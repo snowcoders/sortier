@@ -8,7 +8,7 @@ onmessage = function (e: MessageEvent<SortierWorkerInputData>) {
     return;
   }
 
-  const { type, text, options } = data;
+  const { options, text, type } = data;
 
   const reprinter = new HtmlReprinter();
   try {

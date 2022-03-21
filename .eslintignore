@@ -4,4 +4,7 @@ dist
 node_modules
 
 # Currently many config files are in commonjs
-*rc.cjs
+*rc.cjs
+
+# Generated code
+docs/playground/**

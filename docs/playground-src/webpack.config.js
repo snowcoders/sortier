@@ -1,3 +1,4 @@
+/* eslint-disable */
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
@@ -74,21 +75,21 @@ const config = (env, argv) => {
         "find-up": false,
 
         // Low usage for flow, I'm not including it
-        "flow-parser": false,
         "fast-glob": false,
+        "flow-parser": false,
 
         // Reducing typescript-eslint because it's huge
-        "./create-program/createWatchProgram": false,
         "./create-program/createIsolatedProgram": false,
         "./create-program/createProjectProgram": false,
+        "./create-program/createWatchProgram": false,
 
         // Mock out typescript because it's 10mb
-        typescript: path.resolve(".", "mocks", "typescript.js"),
-        semver$: path.resolve(".", "mocks", "semver.ts"),
-        path: path.resolve(".", "mocks", "path.ts"),
-        "semver-satisfies": "semver/functions/satisfies",
-        "semver-major": "semver/functions/major",
         globby: false,
+        path: path.resolve(".", "mocks", "path.ts"),
+        semver$: path.resolve(".", "mocks", "semver.ts"),
+        "semver-major": "semver/functions/major",
+        "semver-satisfies": "semver/functions/satisfies",
+        typescript: path.resolve(".", "mocks", "typescript.js"),
       },
       extensions: [".ts", ".tsx", ".js", ".jsx", ".html"],
       fallback: {

@@ -8,10 +8,10 @@
 :root {
   --header-height: 50px;
   --header-padding-vertical: 20px;
-  --theme-color--dark-blue: #2d3073;
   --theme-color--dark: #52246f;
-  --theme-color--light-blue: #a8aacf;
+  --theme-color--dark-blue: #2d3073;
   --theme-color--light: #bba1cb;
+  --theme-color--light-blue: #a8aacf;
   --theme-color--text: #000;
   --theme-color--yellow: #fff1c8;
 }
@@ -129,10 +129,10 @@ main {
 /* Playground */
 
 .site--mount.full-page {
-  width: 100vw;
-  height: calc(100vh - var(--header-height) - var(--header-padding-vertical));
   display: flex;
   flex-direction: column;
+  height: calc(100vh - var(--header-height) - var(--header-padding-vertical));
+  width: 100vw;
 }
 
 .site--mount.full-page > * {

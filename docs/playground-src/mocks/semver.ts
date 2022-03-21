@@ -1,6 +1,7 @@
+/* eslint-disable */
 // @ts-nocheck
-import satisfies from "semver-satisfies";
 import major from "semver-major";
+import satisfies from "semver-satisfies";
 
-export { satisfies, major };
-export default { satisfies, major };
+export { major, satisfies };
+export default { major, satisfies };

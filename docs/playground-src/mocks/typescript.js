@@ -1,11 +1,12 @@
+/* eslint-disable */
 // @ts-nocheck
 const packageJson = require("../node_modules/typescript/package.json");
 
 if (self.process == null) {
   // @ts-ignore
   self.process = {
-    cwd: () => ".",
     env: {},
+    cwd: () => ".",
   };
 }
 

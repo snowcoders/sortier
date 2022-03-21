@@ -6,24 +6,24 @@
 
 /* Variables to use through the whole app */
 :root {
-  --theme-color--text: #000;
   --theme-color--dark: #52246f;
+  --theme-color--dark-blue: #2d3073;
   --theme-color--light: #bba1cb;
   --theme-color--light-blue: #a8aacf;
-  --theme-color--dark-blue: #2d3073;
+  --theme-color--text: #000;
   --theme-color--yellow: #fff1c8;
 }
 
 /* Basic css overrides */
 body {
-  margin: 0px;
   font-family: "Segoe UI Web (West European)", Segoe UI, -apple-system,
     BlinkMacSystemFont, Roboto, Helvetica Neue, sans-serif;
   font-size: 16px;
+  margin: 0px;
 }
 a {
-  text-decoration: none;
   color: var(--theme-color--dark);
+  text-decoration: none;
 }
 a:visited {
   color: var(--theme-color--dark);
@@ -37,8 +37,8 @@ h3,
 h4,
 h5,
 h6 {
-  padding: 0px;
   margin: 0px;
+  padding: 0px;
 }
 h1 {
   font-size: 32px;
@@ -68,11 +68,11 @@ h6 {
 /* Page layout */
 body {
   display: grid;
-  grid-template-columns: 200px auto;
-  grid-template-rows: auto;
   grid-template-areas:
     "header header"
     "app-nav main";
+  grid-template-columns: 200px auto;
+  grid-template-rows: auto;
 }
 
 .header {
@@ -100,8 +100,8 @@ main {
   background-color: var(--theme-color--dark);
 }
 .header a {
-  text-decoration: none;
   color: var(--theme-color--light);
+  text-decoration: none;
 }
 .header a:visited {
   color: var(--theme-color--light);
@@ -130,8 +130,8 @@ nav ul {
   padding: 5px 14px;
 }
 nav > ul {
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 nav li {
   padding: 5px 0px;
@@ -141,11 +141,11 @@ nav li a.active {
 }
 
 .sidebar-toggle {
-  position: fixed;
   bottom: 0;
-  left: 0;
-  width: 50px;
   height: 50px;
+  left: 0;
+  position: fixed;
+  width: 50px;
 }
 
 .sidebar-toggle-button span {
@@ -154,11 +154,11 @@ nav li a.active {
 
 /* Source code styling */
 pre {
+  background: #fafafa;
+  color: #383a42;
   display: block;
   overflow-x: auto;
   padding: 0.5em;
-  color: #383a42;
-  background: #fafafa;
 }
 pre .comment,
 pre .quote {
@@ -232,8 +232,8 @@ pre .link {
   transition: transform 0.5s;
 }
 .sci-sortier-documentation-logo > g > path {
-  stroke-width: 2px;
   stroke-linecap: round;
+  stroke-width: 2px;
 }
 .sci-sortier-documentation-logo > g > path.clear {
   stroke: transparent;

@@ -8,9 +8,9 @@ jobs:
   Publish:
     runs-on: ubuntu-latest
     steps:
-      - name: get-npm-version
+      - name: Get current package version
+        uses: martinbeentjes/npm-get-version-action@v1.1.0
         id: package-version
-        uses: martinbeentjes/npm-get-version-action@1.1.0
       - name: Parse npm version
         id: semver
         uses: odinr/action-npm-semver@v1

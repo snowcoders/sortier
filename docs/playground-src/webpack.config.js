@@ -36,7 +36,7 @@ const config = (env, argv) => {
       chunkFilename: `${fileName}.js`,
       filename: `${fileName}.js`,
       path: path.resolve("../playground"),
-      publicPath: isWebpackServe ? "/" : "/playground/",
+      publicPath: isWebpackServe ? "/" : "/sortier/playground/",
     },
     plugins: [
       new HTMLWebpackPlugin({

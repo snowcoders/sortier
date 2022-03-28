@@ -6,12 +6,7 @@ Simply clone down the repo, `npm install` and you should be good to go. You can 
 
 ## Branch design
 
-Sortier has two key branches
-
-- beta - Where all new code changes go
-- latest - Once Beta is stable, a release PR is made from Beta to Latest. No PRs other than PRs from Beta to Latest will be accepted.
-
-Basically, if you're making a minor or patch update, it should go into beta
+Sortier uses a single branch for everything; the `main` branch
 
 ## Testing
 
@@ -49,22 +44,23 @@ This is testing all the asset files in the test_asset folder next to the test fi
 
 ### Beta
 
-1. Pull down the latest of the beta branch
+1. Pull down the latest of the main branch
 1. Create a release branch (e.g. `release-beta`)
 1. Run `npm version <version number here>`
 1. Cleanup the changelog in anyway you might need to and amend it to the last commit using `git commit --amend --no-edit`
 1. Push the new branch to the server (e.g. `git push`)
-1. Create a PR from your release branch into `beta`
+1. Create a PR from your release branch into `main`
 1. Get it merged
 1. The actual publish, git tag and git release is all automated. You can monitor it's progress via the [Github Actions](https://github.com/snowcoders/sortier/actions/workflows/publish.yml) section.
 
 ### Latest
 
-1. Pull down the latest of the beta branch
+1. Pull down the latest of the main
 1. Create a release branch (e.g. `release-latest`)
 1. Run `npm version <version number here>`
-1. Cleanup the changelog in anyway you might need to and amend it to the last commit using `git commit --amend --no-edit`
+1. Merge all the beta versions for the current version number into one changelog entry
+1. Commit using `git commit -a --amend --no-edit`
 1. Push the new branch to the server (e.g. `git push`)
-1. Create a PR from your release branch into `latest`
+1. Create a PR from your release branch into `main`
 1. Get it merged
 1. The actual publish, git tag and git release is all automated. You can monitor it's progress via the [Github Actions](https://github.com/snowcoders/sortier/actions/workflows/publish.yml) section.

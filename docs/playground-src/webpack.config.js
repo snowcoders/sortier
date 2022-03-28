@@ -1,10 +1,7 @@
 /* eslint-disable */
 const HTMLWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
 const ResolveTypeScriptPlugin = require("resolve-typescript-plugin");
-const webpack = require("webpack");
-const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 
 const config = (env, argv) => {
   const isWebpackServe = !!argv.env.WEBPACK_SERVE;
@@ -18,19 +15,7 @@ const config = (env, argv) => {
     entry: { app: "./src/index" },
     module: {
       rules: [
-        { test: /\.svg$/, type: "asset" },
         { test: /\.tsx?$/, use: "ts-loader" },
-        {
-          sideEffects: true,
-          test: /\.css$/,
-          use: [
-            MiniCssExtractPlugin.loader,
-            "css-loader",
-            {
-              loader: "postcss-loader",
-            },
-          ],
-        },
         {
           test: /\.txt/,
           type: "asset/source",
@@ -54,13 +39,8 @@ const config = (env, argv) => {
       publicPath: isWebpackServe ? "/" : "/playground/",
     },
     plugins: [
-      new MiniCssExtractPlugin({
-        chunkFilename: `${fileName}.css`,
-        filename: `${fileName}.css`,
-      }),
       new HTMLWebpackPlugin({
         chunks: "app",
-        favicon: "../favicon.svg",
         filename: "index.html",
         template: "./src/index.html",
       }),

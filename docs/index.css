@@ -127,7 +127,6 @@ main {
 }
 
 /* Playground */
-
 .site--mount.full-page {
   display: flex;
   flex-direction: column;
@@ -148,6 +147,7 @@ main {
 .site--playground > * {
   flex: 1 1 0;
 }
+
 /* Left nav */
 nav ul {
   list-style: none;

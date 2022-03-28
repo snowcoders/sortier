@@ -5,8 +5,10 @@ const ResolveTypeScriptPlugin = require("resolve-typescript-plugin");
 
 const config = (env, argv) => {
   const isWebpackServe = !!argv.env.WEBPACK_SERVE;
+  const isWebpackWatch = !!argv.env.WEBPACK_WATCH;
   const isProduction = argv.mode === "production";
   const fileName = isProduction ? "[name].[contenthash]" : "[name]";
+  const docSiteRoot = isWebpackServe || isWebpackWatch ? "/" : "/sortier/";
 
   return {
     devServer: {
@@ -36,13 +38,17 @@ const config = (env, argv) => {
       chunkFilename: `${fileName}.js`,
       filename: `${fileName}.js`,
       path: path.resolve("../playground"),
-      publicPath: isWebpackServe ? "/" : "/sortier/playground/",
+      publicPath: `${docSiteRoot}playground/`,
     },
     plugins: [
       new HTMLWebpackPlugin({
         chunks: "app",
         filename: "index.html",
         template: "./src/index.html",
+        templateParameters: {
+          docSiteAssetRelativePath: "..",
+          docSiteRoot: docSiteRoot,
+        },
       }),
       // new BundleAnalyzerPlugin({
       //   openAnalyzer: false,

@@ -8,11 +8,14 @@ jobs:
   Publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Get release tag
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@1.1.0
+      - name: Parse npm version
         id: semver
         uses: odinr/action-npm-semver@v1
         with:
-          version: current
+          version: "${{ steps.package-version.outputs.current-version }}"
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
@@ -27,7 +30,7 @@ jobs:
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          tag: "${{ steps.semver.outputs.prerelease}}"
+          tag: "${{ steps.semver.outputs.prerelease }}"
       - name: Get Changelog Entry
         id: getChangelog
         uses: mindsers/changelog-reader-action@v2

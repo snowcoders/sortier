@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Get release tag
         id: semver
-        uses: odinr/action-npm-semver
+        uses: odinr/action-npm-semver@v1
         with:
           version: current
       - uses: actions/checkout@v3

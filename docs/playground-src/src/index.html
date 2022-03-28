@@ -9,12 +9,19 @@
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
       name="viewport"
     />
-    <link href="../index.css" rel="stylesheet" />
-    <link href="../favicon.svg" rel="icon" sizes="any" type="image/svg+xml" />
+    <link href="<%= docSiteAssetRelativePath %>/index.css" rel="stylesheet" />
+    <link
+      href="<%= docSiteAssetRelativePath %>/favicon.svg"
+      rel="icon"
+      sizes="any"
+      type="image/svg+xml"
+    />
   </head>
   <body>
     <div class="header">
-      <div class="app-title"><a href="/">Sortier</a></div>
+      <div class="app-title">
+        <a href="<%= docSiteRoot %>">Sortier</a>
+      </div>
     </div>
     <div class="site--mount full-page"></div>
   </body>

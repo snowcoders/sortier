@@ -2,16 +2,17 @@ name: Publish
 
 on:
   push:
-    branches: [beta, latest]
+    branches: [main]
 
 jobs:
   Publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Get branch name
-        id: getBranchName
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      - name: Get release tag
+        id: semver
+        uses: odinr/action-npm-semver
+        with:
+          version: current
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
@@ -26,7 +27,7 @@ jobs:
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          tag: "${{ steps.getBranchName.outputs.branch}}"
+          tag: "${{ steps.semver.outputs.prerelease}}"
       - name: Get Changelog Entry
         id: getChangelog
         uses: mindsers/changelog-reader-action@v2

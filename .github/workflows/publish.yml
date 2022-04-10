@@ -13,13 +13,13 @@ jobs:
         with:
           node-version: 16
       - name: Get current package version
-        uses: martinbeentjes/npm-get-version-action@v1.1.0
+        uses: stevenbenitez/get-package-version-action@v1
         id: package-version
       - name: Parse npm version
         id: semver
         uses: odinr/action-npm-semver@v1
         with:
-          version: "${{ steps.package-version.outputs.current-version }}"
+          version: "${{ steps.package-version.outputs.version }}"
       - name: Test
         id: install
         run: |

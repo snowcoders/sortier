@@ -8,6 +8,10 @@ jobs:
   Publish:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - name: Get current package version
         uses: martinbeentjes/npm-get-version-action@v1.1.0
         id: package-version
@@ -16,10 +20,6 @@ jobs:
         uses: odinr/action-npm-semver@v1
         with:
           version: "${{ steps.package-version.outputs.current-version }}"
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
       - name: Test
         id: install
         run: |

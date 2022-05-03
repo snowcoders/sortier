@@ -33,12 +33,12 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-prettier": "4.0.0",
     "husky": "7.0.4",
-    "jest": "27.5.1",
+    "jest": "28.0.3",
     "lint-staged": "12.4.1",
     "prettier": "2.6.2",
     "rimraf": "3.0.2",
     "source-map-support": "0.5.21",
-    "ts-jest": "27.1.4",
+    "ts-jest": "28.0.0",
     "ts-node": "10.7.0"
   },
   "engines": {

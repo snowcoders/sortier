@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
-import {
-  SortierWorkerInputData,
-  SortierWorkerOutputData,
-} from "../format-workers/types";
+import { SortierWorkerInputData, SortierWorkerOutputData } from "./types";
 
 function getWorker(fileType: SortierWorkerInputData["type"]) {
   switch (fileType) {
     case "css":
-      return new Worker(new URL("../format-workers/css", import.meta.url));
+      return new Worker(new URL("./format-workers/css", import.meta.url));
     case "html":
-      return new Worker(new URL("../format-workers/html", import.meta.url));
+      return new Worker(new URL("./format-workers/html", import.meta.url));
     case "js":
     case "jsx":
     case "ts":
     case "tsx":
       return new Worker(
-        new URL("../format-workers/javascript", import.meta.url)
+        new URL("./format-workers/javascript", import.meta.url)
       );
     default:
       throw new Error(`File type ${fileType} not supported`);

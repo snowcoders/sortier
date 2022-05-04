@@ -1,4 +1,4 @@
-import { SortierOptions } from "../../../../src/config";
+import { SortierOptions } from "../../../../../src/config";
 
 export type SortierWorkerInputData = {
   options: SortierOptions;

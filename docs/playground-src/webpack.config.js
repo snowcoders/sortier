@@ -26,6 +26,11 @@ const config = (env, argv) => {
           test: /\.json/,
           type: "asset/source",
         },
+        {
+          sideEffects: true,
+          test: /\.css/,
+          use: ["style-loader", "css-loader"],
+        },
       ],
     },
     node: {

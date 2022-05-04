@@ -1,0 +1,24 @@
+/* Playground */
+.site--mount.full-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--header-height) - var(--header-padding-vertical));
+  width: 100vw;
+}
+
+.site--mount.full-page > * {
+  flex: 1 1 0;
+}
+
+.site--playground {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.site--playground > * {
+  flex: 1 1 0;
+}
+.site--playground > .options {
+  flex: 0 0 150px;
+}

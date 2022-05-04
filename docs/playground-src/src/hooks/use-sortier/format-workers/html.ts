@@ -1,6 +1,6 @@
-import { HtmlReprinter } from "../../../../src/language-html/index";
-import { getErrorString } from "../utilities/get-error-string";
-import { SortierWorkerInputData, SortierWorkerOutputData } from "./types";
+import { HtmlReprinter } from "../../../../../../src/language-html/index";
+import { getErrorString } from "../../../utilities/get-error-string";
+import { SortierWorkerInputData, SortierWorkerOutputData } from "../types";
 
 onmessage = function (e: MessageEvent<SortierWorkerInputData>) {
   const { data } = e;

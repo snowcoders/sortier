@@ -1,0 +1,9 @@
+.site--diff-editor {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.site--diff-editor > * {
+  flex: 1 0 300px;
+}

@@ -1,6 +1,6 @@
-import { JavascriptReprinter } from "../../../../src/language-js/index";
-import { getErrorString } from "../utilities/get-error-string";
-import { SortierWorkerInputData, SortierWorkerOutputData } from "./types";
+import { CssReprinter } from "../../../../../../src/language-css/index";
+import { getErrorString } from "../../../utilities/get-error-string";
+import { SortierWorkerInputData, SortierWorkerOutputData } from "../types";
 
 onmessage = function (e: MessageEvent<SortierWorkerInputData>) {
   const { data } = e;
@@ -10,7 +10,7 @@ onmessage = function (e: MessageEvent<SortierWorkerInputData>) {
 
   const { options, text, type } = data;
 
-  const reprinter = new JavascriptReprinter();
+  const reprinter = new CssReprinter();
   try {
     const result = reprinter.getRewrittenContents(
       `test.${type}`,

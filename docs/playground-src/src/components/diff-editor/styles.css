@@ -6,4 +6,7 @@
 
 .site--diff-editor > * {
   flex: 1 0 300px;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }

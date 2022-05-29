@@ -2,7 +2,14 @@
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 const ResolveTypeScriptPlugin = require("resolve-typescript-plugin");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
+/**
+ *
+ * @param {*} env
+ * @param {*} argv
+ * @returns {import("webpack-dev-server").WebpackConfiguration}
+ */
 const config = (env, argv) => {
   const isWebpackServe = !!argv.env.WEBPACK_SERVE;
   const isWebpackWatch = !!argv.env.WEBPACK_WATCH;
@@ -11,25 +18,38 @@ const config = (env, argv) => {
   const docSiteRoot = isWebpackServe || isWebpackWatch ? "/" : "/sortier/";
 
   return {
+    devtool: isProduction ? false : "inline-source-map",
     devServer: {
       port: 3001,
     },
     entry: { app: "./src/index" },
     module: {
       rules: [
-        { test: /\.tsx?$/, use: "ts-loader" },
         {
-          test: /\.txt/,
+          test: /\.tsx?$/,
+          loader: "ts-loader",
+          options: {
+            compilerOptions: {
+              sourceMap: !isProduction,
+            },
+          },
+        },
+        {
+          test: /\.txt$/,
           type: "asset/source",
         },
         {
-          test: /\.json/,
+          test: /\.json$/,
           type: "asset/source",
         },
         {
           sideEffects: true,
-          test: /\.css/,
+          test: /\.css$/,
           use: ["style-loader", "css-loader"],
+        },
+        {
+          test: /\.ttf$/,
+          type: "asset/resource",
         },
       ],
     },
@@ -46,6 +66,7 @@ const config = (env, argv) => {
       publicPath: `${docSiteRoot}playground/`,
     },
     plugins: [
+      new MonacoWebpackPlugin(),
       new HTMLWebpackPlugin({
         chunks: "app",
         filename: "index.html",

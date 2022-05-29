@@ -1,11 +1,24 @@
-type Options = {
+import React from "react";
+
+export type OptionsProps = {
   sleep?: number;
   write?: boolean;
   logLevel?: "quiet" | "normal" | "diagnostic";
 };
 
-const options: Options = {
-  sleep: 30,
-  write: true,
-  logLevel: "diagnostic",
-};
+export function OptionsViewer(props: OptionsProps) {
+  const { logLevel, sleep, write } = props;
+
+  return (
+    <div>
+      <dl>
+        <dt>Log Level</dt>
+        <dl>{logLevel}</dl>
+        <dt>Sleep</dt>
+        <dl>{sleep}</dl>
+        <dt>Write</dt>
+        <dl>{write}</dl>
+      </dl>
+    </div>
+  );
+}

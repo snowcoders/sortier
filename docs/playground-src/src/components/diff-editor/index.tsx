@@ -1,5 +1,6 @@
-import React, { ChangeEvent } from "react";
+import React from "react";
 import { SortierWorkerInputData } from "../../hooks/use-sortier";
+import { CodeEditor } from "./code-editor";
 import "./styles.css";
 
 export type DiffEditorProps = {
@@ -10,24 +11,24 @@ export type DiffEditorProps = {
 };
 
 export function DiffEditor(props: DiffEditorProps) {
-  const { inputText, onInputTextChange, outputText } = props;
+  const { inputText, onInputTextChange, outputText, fileType } = props;
 
   const onTextChange = React.useCallback(
-    (e: ChangeEvent<HTMLTextAreaElement>) => {
-      onInputTextChange(e.currentTarget.value);
+    (e: string) => {
+      onInputTextChange(e);
     },
     [onInputTextChange]
   );
 
   return (
     <div className="site--diff-editor">
-      <textarea
+      <CodeEditor
+        fileType={fileType}
         className="input"
-        name="text"
         onChange={onTextChange}
         value={inputText}
       />
-      <textarea className="output" name="text" readOnly value={outputText} />
+      <CodeEditor fileType={fileType} className="output" value={outputText} />
     </div>
   );
 }

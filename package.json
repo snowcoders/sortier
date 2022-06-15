@@ -25,7 +25,7 @@
     "@typescript-eslint/eslint-plugin": "5.28.0",
     "@typescript-eslint/parser": "5.28.0",
     "changelog-updater": "2.0.2",
-    "concurrently": "7.2.1",
+    "concurrently": "7.2.2",
     "coveralls": "3.1.1",
     "docsify-cli": "4.4.4",
     "eslint": "8.17.0",

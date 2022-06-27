@@ -1,3 +1,4 @@
+import { JSONSchemaType } from "ajv";
 import {
   BaseNode,
   Comment,
@@ -9,6 +10,21 @@ import {
 export interface SortDeclarationsOptions {
   overrides: string[];
 }
+
+export const sortDeclarationsOptionsSchema: JSONSchemaType<SortDeclarationsOptions> =
+  {
+    type: "object",
+    properties: {
+      overrides: {
+        type: "array",
+        items: {
+          type: "string",
+        },
+        default: [],
+      },
+    },
+    required: [],
+  };
 
 interface AttrInfo extends BaseNode {
   prop: string;

@@ -1,3 +1,4 @@
+import { JSONSchemaType } from "ajv";
 import { Comment } from "estree";
 import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils.js";
 import {
@@ -6,14 +7,38 @@ import {
   reorderValues,
 } from "../../utilities/sort-utils.js";
 
-export type SortByExportOptionsGroups = "*" | "interfaces" | "types";
+const sortByExportOptionsGroups = ["*", "interfaces", "types"] as const;
+export type SortByExportOptionsGroups =
+  typeof sortByExportOptionsGroups[number];
 
-export type SortImportDeclarationSpecifiersOptions =
-  Partial<SortImportDeclarationSpecifiersOptionsRequired>;
-
-interface SortImportDeclarationSpecifiersOptionsRequired {
+export interface SortImportDeclarationSpecifiersOptions {
+  /**
+   * @default ["*", "interfaces", "types"]
+   */
   groups: SortByExportOptionsGroups[];
 }
+
+export const sortImportDeclarationSpecifiersOptionsSchema: JSONSchemaType<SortImportDeclarationSpecifiersOptions> =
+  {
+    type: "object",
+    properties: {
+      groups: {
+        type: "array",
+        items: {
+          type: "string",
+          enum: sortByExportOptionsGroups,
+        },
+        uniqueItems: true,
+        nullable: true,
+        contains: {
+          type: "string",
+          const: "*",
+        },
+        default: [...sortByExportOptionsGroups],
+      },
+    },
+    required: [],
+  };
 
 interface SingleSpecifier extends BaseNode {
   // Null is the same as "value"
@@ -27,25 +52,7 @@ export function sortImportDeclarationSpecifiers(
   specifiers: any,
   comments: Comment[],
   fileContents: string,
-  options?: SortImportDeclarationSpecifiersOptions
-) {
-  const cleanedOptions = ensureOptions(options);
-
-  fileContents = sortSingleSpecifier(
-    specifiers,
-    comments,
-    fileContents,
-    cleanedOptions
-  );
-
-  return fileContents;
-}
-
-function sortSingleSpecifier(
-  specifiers: any,
-  comments: Comment[],
-  fileContents: string,
-  options: SortImportDeclarationSpecifiersOptionsRequired
+  options: SortImportDeclarationSpecifiersOptions
 ): string {
   // If there is one or less specifiers, there is not anything to sort
   if (specifiers.length <= 1) {
@@ -166,18 +173,4 @@ function nameIsLikelyInterface(name: string) {
   return (
     name.length >= 2 && name[0] === "I" && "A" <= name[1] && name[1] <= "Z"
   );
-}
-
-function ensureOptions(
-  options?: null | SortImportDeclarationSpecifiersOptions
-): SortImportDeclarationSpecifiersOptionsRequired {
-  if (options == null) {
-    return {
-      groups: ["*", "interfaces", "types"],
-    };
-  }
-
-  return {
-    groups: options.groups || ["*", "interfaces", "types"],
-  };
 }

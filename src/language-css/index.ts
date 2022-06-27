@@ -1,3 +1,11 @@
-import { Reprinter, SortierOptions } from "./reprinter/index.js";
+import {
+  Reprinter,
+  SortierOptions,
+  sortierOptionsSchema,
+} from "./reprinter/index.js";
 
-export { Reprinter as CssReprinter, SortierOptions as CssSortierOptions };
+export {
+  Reprinter as CssReprinter,
+  SortierOptions as CssSortierOptions,
+  sortierOptionsSchema as cssSortierOptionsSchema,
+};

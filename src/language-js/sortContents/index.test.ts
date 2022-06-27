@@ -22,6 +22,7 @@ describe("language-js/sortContents", () => {
         {
           isAscending: inputFilePath.indexOf("desc") === -1,
           order: inputFilePath.indexOf("usage") !== -1 ? "usage" : "alpha",
+          overrides: [],
         }
       );
       return actual;
@@ -95,6 +96,7 @@ describe("language-js/sortContents", () => {
       input,
       {
         isAscending: true,
+        order: "alpha",
         overrides: [
           "constructor",
           "componentWillUnmount",
@@ -174,6 +176,7 @@ describe("language-js/sortContents", () => {
       input,
       {
         isAscending: false,
+        order: "alpha",
         overrides: [
           "constructor",
           "componentWillUnmount",

@@ -1,3 +1,4 @@
+import Ajv from "ajv";
 import { runTestAssetsTests } from "../../utilities/test-utils.js";
 
 // Parsers
@@ -5,7 +6,76 @@ import { parse as flowParse } from "../parsers/flow/index.js";
 import { getParser } from "../utilities/test-utils.js";
 
 // The methods being tested here
-import { sortImportDeclarations } from "./index.js";
+import {
+  sortImportDeclarations,
+  sortImportDeclarationsOptionsSchema,
+} from "./index.js";
+
+function getSchemaValidator() {
+  const ajv = new Ajv({
+    useDefaults: true,
+    allErrors: true,
+  });
+  const optionsValidator = ajv.compile(sortImportDeclarationsOptionsSchema);
+  return optionsValidator;
+}
+
+describe("language-js/sortImportDeclarationsOptionsSchema", () => {
+  it("is a valid schema", () => {
+    const ajv = new Ajv();
+
+    const isValid = ajv.validateSchema(sortImportDeclarationsOptionsSchema);
+    expect(isValid).toBe(true);
+  });
+
+  it("succeeds an empty object", () => {
+    const validator = getSchemaValidator();
+    const isValid = validator({});
+    expect(isValid).toBe(true);
+  });
+
+  it("succeeds when there is an unknown property as it's ignored", () => {
+    const validator = getSchemaValidator();
+    const isValid = validator({
+      not: "valid",
+    });
+    expect(isValid).toBe(true);
+  });
+
+  describe("orderBy", () => {
+    it("succeeds when value is source", () => {
+      const validator = getSchemaValidator();
+      const isValid = validator({
+        orderBy: "source",
+      });
+      expect(isValid).toBe(true);
+    });
+
+    it("succeeds when value is first-specifier", () => {
+      const validator = getSchemaValidator();
+      const isValid = validator({
+        orderBy: "first-specifier",
+      });
+      expect(isValid).toBe(true);
+    });
+
+    it("fails when value is invalid", () => {
+      const validator = getSchemaValidator();
+      const isValid = validator({
+        orderBy: "invalid",
+      });
+      expect(isValid).toBe(false);
+    });
+
+    it("fails when value is an empty array", () => {
+      const validator = getSchemaValidator();
+      const isValid = validator({
+        orderBy: [],
+      });
+      expect(isValid).toBe(false);
+    });
+  });
+});
 
 describe("language-js/sortImportDeclarations", () => {
   runTestAssetsTests(
@@ -17,7 +87,10 @@ describe("language-js/sortImportDeclarations", () => {
       const output = sortImportDeclarations(
         parsed,
         parsed.comments,
-        inputFileContents
+        inputFileContents,
+        {
+          orderBy: "source",
+        }
       );
       return output;
     }

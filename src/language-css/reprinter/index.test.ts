@@ -9,6 +9,7 @@ import {
   getFolderPathFromFileUrl,
   runTestAssetsTests,
 } from "../../utilities/test-utils.js";
+import { validateOptions } from "../../config/validate-options.js";
 
 const currentFolderPath = getFolderPathFromFileUrl(import.meta.url);
 
@@ -19,7 +20,7 @@ describe("language-css/reprinter", () => {
       return new Reprinter().getRewrittenContents(
         inputFilePath,
         inputFileContents,
-        {}
+        validateOptions({})
       );
     }
   );
@@ -49,13 +50,13 @@ describe("language-css/reprinter", () => {
       const actual = new Reprinter().getRewrittenContents(
         testFileInputPath,
         input,
-        {
+        validateOptions({
           css: {
             sortDeclarations: {
               overrides: ["*", "right", "bottom", "left"],
             },
           },
-        }
+        })
       );
 
       expect(actual).toEqual(expected);
@@ -71,13 +72,13 @@ describe("language-css/reprinter", () => {
       const actual = new Reprinter().getRewrittenContents(
         testFileInputPath,
         input,
-        {
+        validateOptions({
           css: {
             sortDeclarations: {
               overrides: ["top", "right", "bottom"],
             },
           },
-        }
+        })
       );
 
       expect(actual).toEqual(expected);
@@ -103,11 +104,11 @@ describe("language-css/reprinter", () => {
       const actual = new Reprinter().getRewrittenContents(
         "example.fake",
         input,
-        {
+        validateOptions({
           css: {
             parser: "less",
           },
-        }
+        })
       );
 
       expect(actual).toEqual(expected);
@@ -131,11 +132,11 @@ describe("language-css/reprinter", () => {
       const actual = new Reprinter().getRewrittenContents(
         "example.fake",
         input,
-        {
+        validateOptions({
           css: {
             parser: "scss",
           },
-        }
+        })
       );
 
       expect(actual).toEqual(expected);
@@ -150,9 +151,13 @@ describe("language-css/reprinter", () => {
     }
     `;
       expect(() => {
-        new Reprinter().getRewrittenContents("example.fake", input, {
-          css: {},
-        });
+        new Reprinter().getRewrittenContents(
+          "example.fake",
+          input,
+          validateOptions({
+            css: {},
+          })
+        );
       }).toThrow();
     });
 
@@ -161,7 +166,7 @@ describe("language-css/reprinter", () => {
         new Reprinter().getRewrittenContents(
           "parse_fail.css",
           "This shouldn't parse",
-          {}
+          validateOptions({})
         );
       }).toThrow();
     });

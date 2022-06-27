@@ -3,6 +3,7 @@ import { Reprinter } from "./index.js";
 
 // Utilities
 import { runTestAssetsTests } from "../../utilities/test-utils.js";
+import { validateOptions } from "../../config/validate-options.js";
 
 describe("language-json/reprinter", () => {
   runTestAssetsTests(
@@ -11,7 +12,7 @@ describe("language-json/reprinter", () => {
       return new Reprinter().getRewrittenContents(
         inputFilePath,
         inputFileContents,
-        {}
+        validateOptions({})
       );
     }
   );
@@ -29,7 +30,7 @@ describe("language-json/reprinter", () => {
       new Reprinter().getRewrittenContents(
         "parse_fail.json",
         "This shouldn't parse",
-        {}
+        validateOptions({})
       );
     }).toThrow();
   });

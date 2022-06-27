@@ -3,17 +3,24 @@ import { parse as flowParse } from "../parsers/flow/index.js";
 import { parse as typescriptParse } from "../parsers/typescript/index.js";
 
 // The methods being tested here
-import { sortImportDeclarationSpecifiers } from "./index.js";
+import {
+  sortImportDeclarationSpecifiers,
+  SortImportDeclarationSpecifiersOptions,
+  sortImportDeclarationSpecifiersOptionsSchema,
+} from "./index.js";
 
 // Utilities
 import { runTestAssetsTests } from "../../utilities/test-utils.js";
 import { getParser } from "../utilities/test-utils.js";
+import Ajv from "ajv";
 
 const getSortedOverBody = (
   body: any,
   comments: any,
   input: any,
-  options?: any
+  options: SortImportDeclarationSpecifiersOptions = {
+    groups: ["*", "interfaces", "types"],
+  }
 ) => {
   let actual = input;
   body.forEach((item: any) => {
@@ -26,6 +33,84 @@ const getSortedOverBody = (
   });
   return actual;
 };
+
+function getSchemaValidator() {
+  const ajv = new Ajv({
+    useDefaults: true,
+    allErrors: true,
+  });
+  const optionsValidator = ajv.compile(
+    sortImportDeclarationSpecifiersOptionsSchema
+  );
+  return optionsValidator;
+}
+
+describe("language-js/sortImportDeclarationSpecifiersOptionsSchema", () => {
+  it("is a valid schema", () => {
+    const ajv = new Ajv();
+
+    const isValid = ajv.validateSchema(
+      sortImportDeclarationSpecifiersOptionsSchema
+    );
+    expect(isValid).toBe(true);
+  });
+
+  it("succeeds an empty object", () => {
+    const validator = getSchemaValidator();
+    const isValid = validator({});
+    expect(isValid).toBe(true);
+  });
+
+  it("succeeds when there is an unknown property as it's ignored", () => {
+    const validator = getSchemaValidator();
+    const isValid = validator({
+      not: "valid",
+    });
+    expect(isValid).toBe(true);
+  });
+
+  describe("groups", () => {
+    it("succeeds when expected values are used", () => {
+      const validator = getSchemaValidator();
+      const isValid = validator({
+        groups: ["*", "types"],
+      });
+      expect(isValid).toBe(true);
+    });
+
+    it("fails if wildcard isn't provided", () => {
+      const validator = getSchemaValidator();
+      const isValid = validator({
+        groups: ["types"],
+      });
+      expect(isValid).toBe(false);
+    });
+
+    it("fails if groups contains unknown value", () => {
+      const validator = getSchemaValidator();
+      const isValid = validator({
+        groups: ["types", "invalid"],
+      });
+      expect(isValid).toBe(false);
+    });
+
+    it("fails if groups are empty", () => {
+      const validator = getSchemaValidator();
+      const isValid = validator({
+        groups: [],
+      });
+      expect(isValid).toBe(false);
+    });
+
+    it("fails if groups is a string", () => {
+      const validator = getSchemaValidator();
+      const isValid = validator({
+        groups: "invalid",
+      });
+      expect(isValid).toBe(false);
+    });
+  });
+});
 
 describe("language-js/sortImportDeclarationSpecifiers", () => {
   runTestAssetsTests(
@@ -51,7 +136,6 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
       const parsed = flowParse(input);
       const output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["*", "types", "interfaces"],
-        orderBy: "alpha",
       });
       expect(output).toEqual(expected);
     });
@@ -63,7 +147,6 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
       const parsed = flowParse(input);
       const output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["*", "types"],
-        orderBy: "alpha",
       });
       expect(output).toEqual(expected);
     });
@@ -75,7 +158,6 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
       const parsed = flowParse(input);
       const output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["*", "interfaces"],
-        orderBy: "alpha",
       });
       expect(output).toEqual(expected);
     });
@@ -87,7 +169,6 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
       const parsed = flowParse(input);
       const output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["interfaces", "*"],
-        orderBy: "alpha",
       });
       expect(output).toEqual(expected);
     });
@@ -100,7 +181,6 @@ describe("language-js/sortImportDeclarationSpecifiers", () => {
       const parsed = typescriptParse(input);
       const output = getSortedOverBody(parsed.body, parsed.comments, input, {
         groups: ["interfaces", "*"],
-        orderBy: "alpha",
       });
       expect(output).toEqual(expected);
     });

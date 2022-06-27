@@ -7,10 +7,12 @@ import { parse as parseTypescript } from "../parsers/typescript/index.js";
 // Types of sorts
 import {
   SortImportDeclarationSpecifiersOptions,
+  sortImportDeclarationSpecifiersOptionsSchema,
   sortImportDeclarationSpecifiers,
 } from "../sortImportDeclarationSpecifiers/index.js";
 import {
-  SortImportDeclarationsOrderOption,
+  SortImportDeclarationsOptions,
+  sortImportDeclarationsOptionsSchema,
   sortImportDeclarations,
 } from "../sortImportDeclarations/index.js";
 import { sortJsxElement } from "../sortJsxElement/index.js";
@@ -18,31 +20,72 @@ import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation/index.js";
 import { sortSwitchCases } from "../sortSwitchCases/index.js";
 import { sortTSPropertySignatures } from "../sortTSPropertySignatures/index.js";
 import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation/index.js";
-import { SortContentsOptions, sortContents } from "../sortContents/index.js";
+import {
+  SortContentsOptions,
+  sortContentsOptionsSchema,
+  sortContents,
+} from "../sortContents/index.js";
 
 // Utils
 import { SortierOptions as BaseSortierOptions } from "../../config/index.js";
 import { ILanguage } from "../../language.js";
-import { ArrayUtils } from "../../utilities/array-utils.js";
 import { LogUtils, LoggerVerboseOption } from "../../utilities/log-utils.js";
 import { isIgnored } from "../../utilities/sort-utils.js";
 import { StringUtils } from "../../utilities/string-utils.js";
-import { TypeAnnotationOption } from "../utilities/sort-utils.js";
+import {
+  TypeAnnotationOption,
+  typeAnnotationOptionSchema,
+} from "../utilities/sort-utils.js";
+import { JSONSchemaType } from "ajv";
 
-export type SortierOptions = Partial<JsSortierOptionsRequired>;
+const jsSortierParserOptions = ["flow", "typescript"] as const;
 
-interface JsSortierOptionsRequired {
-  // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
-  parser?: "flow" | "typescript";
-  // Default undefined. If defined, class contents will be sorted based on the options provided. Turned off by default because it will sort over blank lines.
-  sortContents?: SortContentsOptions;
-  // Default ["*", "interfaces", "types"] (see SortImportDeclarationSpecifiersOptions)
-  sortImportDeclarationSpecifiers?: SortImportDeclarationSpecifiersOptions;
-  // Default "source". The order you wish to sort import statements. Source is the path the import comes from. First specifier is the first item imported.
-  sortImportDeclarations?: SortImportDeclarationsOrderOption;
-  // Default ["undefined", "null", "*", "function"]. The order to sort object types when encountered.
-  sortTypeAnnotations?: TypeAnnotationOption[];
+export interface SortierOptions {
+  /**
+   * The parser to use. If undefined, sortier will determine the parser to use based on the file extension
+   * @default undefined
+   */
+  parser?: typeof jsSortierParserOptions[number];
+  sortContents: SortContentsOptions;
+  sortImportDeclarationSpecifiers: SortImportDeclarationSpecifiersOptions;
+  sortImportDeclarations: SortImportDeclarationsOptions;
+  sortTypeAnnotations: TypeAnnotationOption[];
 }
+
+export const sortierOptionsSchema: JSONSchemaType<SortierOptions> = {
+  type: "object",
+  properties: {
+    parser: {
+      type: "string",
+      enum: [...jsSortierParserOptions],
+      nullable: true,
+      default: "typescript",
+    },
+    sortContents: { ...sortContentsOptionsSchema, nullable: true },
+    sortImportDeclarationSpecifiers: {
+      ...sortImportDeclarationSpecifiersOptionsSchema,
+      // Filled in by ajv
+      default: {} as any,
+    },
+    sortImportDeclarations: {
+      ...sortImportDeclarationsOptionsSchema,
+      // Filled in by ajv
+      default: {} as any,
+    },
+    sortTypeAnnotations: {
+      type: "array",
+      items: typeAnnotationOptionSchema,
+      nullable: true,
+      uniqueItems: true,
+      contains: {
+        type: "string",
+        const: "*",
+      },
+      default: ["undefined", "null", "*", "function"],
+    },
+  },
+  required: [],
+};
 
 export class Reprinter implements ILanguage {
   public static readonly EXTENSIONS = [
@@ -61,7 +104,7 @@ export class Reprinter implements ILanguage {
   // @ts-expect-error: Need to move to a functional system
   private _helpModeHasPrintedFilename: boolean;
   // @ts-expect-error: Need to move to a functional system
-  private _options: JsSortierOptionsRequired;
+  private _options: SortierOptions;
 
   public getRewrittenContents(
     filename: string,
@@ -69,7 +112,7 @@ export class Reprinter implements ILanguage {
     options: BaseSortierOptions
   ) {
     this._filename = filename;
-    this._options = this.getValidatedOptions(options);
+    this._options = options.js;
     this._helpModeHasPrintedFilename = false;
 
     const parser = this.getParser();
@@ -81,23 +124,6 @@ export class Reprinter implements ILanguage {
 
   public isFileSupported(filename: string) {
     return StringUtils.stringEndsWithAny(filename, [...Reprinter.EXTENSIONS]);
-  }
-
-  private getValidatedOptions(
-    appOptions: BaseSortierOptions
-  ): JsSortierOptionsRequired {
-    const partialOptions = appOptions.js || {};
-    let sortTypeAnnotations: undefined | Array<TypeAnnotationOption> =
-      undefined;
-    if (partialOptions.sortTypeAnnotations != null) {
-      sortTypeAnnotations = partialOptions.sortTypeAnnotations.slice();
-      ArrayUtils.dedupe(sortTypeAnnotations);
-    }
-
-    return {
-      ...partialOptions,
-      sortTypeAnnotations,
-    };
   }
 
   private getParser() {
@@ -269,9 +295,7 @@ export class Reprinter implements ILanguage {
               node,
               comments,
               fileContents,
-              this._options.sortImportDeclarations && {
-                orderBy: this._options.sortImportDeclarations,
-              }
+              this._options.sortImportDeclarations
             );
             break;
           }

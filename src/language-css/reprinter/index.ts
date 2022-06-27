@@ -1,22 +1,39 @@
+import { JSONSchemaType } from "ajv";
 import { parse as lessParse } from "postcss-less";
 import { parse as scssParse } from "postcss-scss";
 import { SortierOptions as BaseSortierOptions } from "../../config/index.js";
 import { ILanguage } from "../../language.js";
 import { StringUtils } from "../../utilities/string-utils.js";
 import {
+  sortDeclarationsOptionsSchema,
   SortDeclarationsOptions,
   sortDeclarations,
 } from "../sortDeclarations/index.js";
 
-export type SortierOptions = Partial<CssSortierOptionsRequired>;
+export const sortierOptionsSchema: JSONSchemaType<SortierOptions> = {
+  type: "object",
+  properties: {
+    parser: {
+      type: "string",
+      enum: ["less", "scss", null],
+      default: null,
+      nullable: true,
+    },
+    sortDeclarations: {
+      ...sortDeclarationsOptionsSchema,
+      // Filled in by ajv
+      default: {} as any,
+    },
+  },
+  required: [],
+};
 
-export interface CssSortierOptionsRequired {
+export type SortierOptions = {
   // Default undefined. The parser to use. If undefined, sortier will determine the parser to use based on the file extension
   parser?: "less" | "scss";
-
   // Default undefined. If defined, this will override the default sort and these properties will be ordered as found in the list.
   sortDeclarations: SortDeclarationsOptions;
-}
+};
 
 export class Reprinter implements ILanguage {
   public static readonly LESS_EXTENSIONS = [".less", ".less.txt"];
@@ -32,7 +49,7 @@ export class Reprinter implements ILanguage {
     fileContents: string,
     options: BaseSortierOptions
   ) {
-    const validatedOptions = this.getValidatedOptions(options);
+    const validatedOptions = options.css;
 
     const parser = this.getParser(validatedOptions, filename);
     const ast = parser(fileContents, {
@@ -49,20 +66,7 @@ export class Reprinter implements ILanguage {
     ]);
   }
 
-  private getValidatedOptions(
-    appOptions: BaseSortierOptions
-  ): CssSortierOptionsRequired {
-    const partialOptions = appOptions.css;
-
-    return {
-      sortDeclarations: {
-        overrides: [],
-      },
-      ...partialOptions,
-    };
-  }
-
-  private getParser(options: CssSortierOptionsRequired, filename: string) {
+  private getParser(options: SortierOptions, filename: string) {
     // If the options overide the parser type
     if (options.parser === "less") {
       return lessParse;
@@ -92,7 +96,7 @@ export class Reprinter implements ILanguage {
   }
 
   private sortNode(
-    options: CssSortierOptionsRequired,
+    options: SortierOptions,
     node: /* Document */ any,
     fileContents: string
   ): string {

@@ -5,7 +5,8 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "sourceMap": true,
-    "target": "ES2019"
+    "target": "ES2019",
+    "resolveJsonModule": true
   },
   "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.json",
   "include": ["./src/**/*"]

@@ -1,3 +1,4 @@
+import { JSONSchemaType } from "ajv";
 import { ArrayUtils } from "../../utilities/array-utils.js";
 import {
   BaseNode,
@@ -5,13 +6,51 @@ import {
   reorderValues,
 } from "../../utilities/sort-utils.js";
 
-export type SortContentsOptions = Partial<SortContentsOptionsRequired>;
+const sortContentsOrderOptions = ["alpha", "usage"] as const;
 
-type SortContentsOptionsRequired = {
+export type SortContentsOptions = {
+  /**
+   * @default true
+   */
   isAscending: boolean;
-  order: "alpha" | "usage";
-  // Overrides for the order within each group of static methods, properties, methods and access modifiers
+  /**
+   * @default "alpha"
+   */
+  order: typeof sortContentsOrderOptions[number];
+  /**
+   * Overrides for the order within each group of static methods, properties, methods and access modifiers
+   * @default ["*"]
+   */
   overrides: Array<string>;
+};
+
+export const sortContentsOptionsSchema: JSONSchemaType<SortContentsOptions> = {
+  type: "object",
+  properties: {
+    isAscending: {
+      type: "boolean",
+      nullable: true,
+      default: true,
+    },
+    order: {
+      type: "string",
+      enum: sortContentsOrderOptions,
+      nullable: true,
+      default: "alpha",
+    },
+    overrides: {
+      type: "array",
+      items: { type: "string" },
+      nullable: true,
+      default: ["*"],
+      uniqueItems: true,
+      contains: {
+        type: "string",
+        const: "*",
+      },
+    },
+  },
+  required: [],
 };
 
 enum AccessibilityOption {
@@ -50,17 +89,13 @@ export function sortContents(
 }
 
 class ClassContentsSorter {
-  private options: SortContentsOptionsRequired;
-
   constructor(
     private className: string,
     private classItems: any[],
     private comments: any,
     private fileContents: string,
-    options: SortContentsOptions
-  ) {
-    this.options = this.getValidatedOptions(options);
-  }
+    private options: SortContentsOptions
+  ) {}
 
   public sort() {
     const possibleSortableItems: Array<null | MinimumSortInformation> =
@@ -100,26 +135,6 @@ class ClassContentsSorter {
     return newFileContents;
   }
 
-  private getValidatedOptions(
-    partialOptions: SortContentsOptions
-  ): SortContentsOptionsRequired {
-    let overrides = ["*"];
-    if (partialOptions.overrides != null) {
-      overrides = partialOptions.overrides;
-      if (overrides.indexOf("*") === -1) {
-        overrides = overrides.slice();
-        overrides.push("*");
-      }
-    }
-
-    return {
-      isAscending:
-        partialOptions.isAscending == null ? true : partialOptions.isAscending,
-      order: partialOptions.order || "alpha",
-      overrides: overrides,
-    };
-  }
-
   private getAccessModifier(accessibility: string) {
     switch (accessibility) {
       case "private":
@@ -144,7 +159,11 @@ class ClassContentsSorter {
       }
     }
 
-    return this.options.overrides.indexOf("*");
+    index = this.options.overrides.indexOf("*");
+    if (index !== -1) {
+      return index;
+    }
+    return this.options.overrides.length;
   }
 
   private sortItems(

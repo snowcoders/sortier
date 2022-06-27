@@ -1,3 +1,4 @@
+import { JSONSchemaType } from "ajv";
 import { ArrayUtils } from "../../utilities/array-utils.js";
 
 import { BaseNode } from "../../utilities/sort-utils.js";
@@ -6,12 +7,20 @@ export interface Node extends BaseNode {
   type: string;
 }
 
-export type TypeAnnotationOption =
-  | "*"
-  | "function"
-  | "null"
-  | "object"
-  | "undefined";
+const typeAnnotationOptions = [
+  "*",
+  "function",
+  "null",
+  "object",
+  "undefined",
+] as const;
+
+export type TypeAnnotationOption = typeof typeAnnotationOptions[number];
+export const typeAnnotationOptionSchema: JSONSchemaType<TypeAnnotationOption> =
+  {
+    type: "string",
+    enum: typeAnnotationOptions,
+  };
 
 type RankMap = {
   everything: number;

@@ -6,6 +6,7 @@ import realCosmiconfig from "cosmiconfig";
 import { SortierOptions } from "../config/index.js";
 import * as realReprinter from "../lib/format-file/index.js";
 import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils.js";
+import { validateOptions } from "../config/validate-options.js";
 
 jest.mock("../lib/format-file/index.js");
 jest.mock("cosmiconfig");
@@ -97,9 +98,9 @@ xdescribe("cli", () => {
       ["asdfasdf" as any, LoggerVerboseOption.Normal],
       [undefined, LoggerVerboseOption.Normal],
     ])(`Sets log level to "%s" when set in config`, (logLevel, expected) => {
-      config = {
+      config = validateOptions({
         logLevel: logLevel,
-      };
+      });
 
       run(["./package.json"]);
 

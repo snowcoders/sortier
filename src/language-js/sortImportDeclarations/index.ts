@@ -1,4 +1,5 @@
 // Utils
+import { JSONSchemaType } from "ajv";
 import { ModuleDeclaration, Program } from "estree";
 import {
   Comment,
@@ -7,21 +8,39 @@ import {
   reorderValues,
 } from "../../utilities/sort-utils.js";
 
-export type SortImportDeclarationsOrderOption = "first-specifier" | "source";
-export type SortImportDeclarationsOptions =
-  Partial<SortImportDeclarationsOptionsRequired>;
-interface SortImportDeclarationsOptionsRequired {
+const sortImportDeclarationsOrderOptions = [
+  "first-specifier",
+  "source",
+] as const;
+type SortImportDeclarationsOrderOption =
+  typeof sortImportDeclarationsOrderOptions[number];
+export interface SortImportDeclarationsOptions {
+  /**
+   * @default "source"
+   */
   orderBy: SortImportDeclarationsOrderOption;
 }
+
+export const sortImportDeclarationsOptionsSchema: JSONSchemaType<SortImportDeclarationsOptions> =
+  {
+    type: "object",
+    properties: {
+      orderBy: {
+        type: "string",
+        enum: sortImportDeclarationsOrderOptions,
+        nullable: true,
+        default: "source",
+      },
+    },
+    required: [],
+  };
 
 export function sortImportDeclarations(
   program: Program,
   comments: Array<Comment>,
   fileContents: string,
-  options?: SortImportDeclarationsOptions
+  options: SortImportDeclarationsOptions
 ) {
-  const ensuredOptions = ensureOptions(options);
-
   // Get all the import/export nodes
   const importExportNodes = program.body.filter((node) => {
     return (
@@ -43,7 +62,7 @@ export function sortImportDeclarations(
     const sortedNodes = unsortedNodes
       .slice()
       .sort((a: ModuleDeclaration, b: ModuleDeclaration) => {
-        return sortModuleDeclarations(a, b, ensuredOptions);
+        return sortModuleDeclarations(a, b, options);
       });
 
     newFileContents = reorderValues(
@@ -60,7 +79,7 @@ export function sortImportDeclarations(
 function sortModuleDeclarations(
   a: ModuleDeclaration,
   b: ModuleDeclaration,
-  ensuredOptions: SortImportDeclarationsOptionsRequired
+  ensuredOptions: SortImportDeclarationsOptions
 ) {
   // If they both aren't import or both aren't export then order based off import/export
   if (a.type.substring(0, 4) !== b.type.substring(0, 4)) {
@@ -70,15 +89,6 @@ function sortModuleDeclarations(
     return sortBySpecifier(a, b) || sortByPath(a, b);
   }
   return sortByPath(a, b) || sortBySpecifier(a, b);
-}
-
-function ensureOptions(
-  options: undefined | null | SortImportDeclarationsOptions
-): SortImportDeclarationsOptionsRequired {
-  return {
-    orderBy: "source",
-    ...options,
-  };
 }
 
 function sortBySpecifier(a: ModuleDeclaration, b: ModuleDeclaration) {

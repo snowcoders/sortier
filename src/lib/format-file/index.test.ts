@@ -5,6 +5,7 @@ import { formatFile } from "./index.js";
 import { join } from "path";
 import { FileUtils } from "../../utilities/file-utils.js";
 import { getFolderPathFromFileUrl } from "../../utilities/test-utils.js";
+import { validateOptions } from "../../config/validate-options.js";
 
 const currentFolderPath = getFolderPathFromFileUrl(import.meta.url);
 
@@ -21,7 +22,7 @@ describe("reprinter", () => {
     // If this expect is hit, then the test files were tampered with before we got here
     expect(input).toEqual(output);
 
-    formatFile(inputFilePath, {});
+    formatFile(inputFilePath, validateOptions({}));
     const newInput = FileUtils.readFileContents(inputFilePath);
     expect(newInput).toEqual(output);
   });
@@ -29,7 +30,7 @@ describe("reprinter", () => {
   it("Does throw error for unsupported files", () => {
     const inputFilePath = join(currentFolderPath, "../../readme.md");
     expect(() => {
-      formatFile(inputFilePath, {});
+      formatFile(inputFilePath, validateOptions({}));
     }).toThrow();
   });
 });

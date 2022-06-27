@@ -1,4 +1,5 @@
 // The methods being tested here
+import { validateOptions } from "../../config/validate-options.js";
 import { runTestAssetsTests } from "../../utilities/test-utils.js";
 import { Reprinter } from "./index.js";
 
@@ -10,18 +11,22 @@ describe("language-js/reprinter", () => {
       return new Reprinter().getRewrittenContents(
         inputFilePath,
         inputFileContents,
-        {
+        validateOptions({
           js: {
             parser: isFlow ? "flow" : undefined,
           },
-        }
+        })
       );
     }
   );
 
   it("Throws error if file is not supported", () => {
     expect(() => {
-      new Reprinter().getRewrittenContents("./readme.md", "", {});
+      new Reprinter().getRewrittenContents(
+        "./readme.md",
+        "",
+        validateOptions({})
+      );
     }).toThrow();
   });
 
@@ -30,7 +35,7 @@ describe("language-js/reprinter", () => {
       new Reprinter().getRewrittenContents(
         "parse_fail.js",
         "This shouldn't parse",
-        {}
+        validateOptions({})
       );
     }).toThrow();
   });

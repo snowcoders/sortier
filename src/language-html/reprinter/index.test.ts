@@ -1,3 +1,4 @@
+import { validateOptions } from "../../config/validate-options.js";
 import { runTestAssetsTests } from "../../utilities/test-utils.js";
 
 // The methods being tested here
@@ -10,7 +11,7 @@ describe("language-html/reprinter", () => {
       return new Reprinter().getRewrittenContents(
         inputFilePath,
         inputFileContents,
-        {}
+        validateOptions({})
       );
     }
   );
@@ -20,7 +21,7 @@ describe("language-html/reprinter", () => {
       new Reprinter().getRewrittenContents(
         "parse_fail.html",
         "<html>This has the wrong closing tag</html2>",
-        {}
+        validateOptions({})
       );
     }).toThrow();
   });

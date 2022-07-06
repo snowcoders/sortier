@@ -19,7 +19,7 @@
   "devDependencies": {
     "@snowcoders/renovate-config": "2.0.3",
     "@types/node": "18.0.2",
-    "@types/react": "18.0.14",
+    "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",
     "@types/webpack": "5.28.0",
     "css-loader": "6.7.1",

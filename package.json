@@ -4,7 +4,7 @@
     "sortier": "./bin/index.js"
   },
   "dependencies": {
-    "@types/estree": "~0.0.50",
+    "@types/estree": "~1.0.0",
     "@types/postcss-less": "^4.0.0",
     "@typescript-eslint/typescript-estree": "^5.8.0",
     "angular-html-parser": "^1.0.0",

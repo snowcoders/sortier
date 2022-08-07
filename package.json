@@ -28,7 +28,7 @@
     "concurrently": "7.3.0",
     "coveralls": "3.1.1",
     "docsify-cli": "4.4.4",
-    "eslint": "8.18.0",
+    "eslint": "8.21.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-prettier": "4.2.1",

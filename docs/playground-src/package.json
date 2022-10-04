@@ -29,7 +29,7 @@
     "react-dom": "18.2.0",
     "resolve-typescript-plugin": "1.2.0",
     "rimraf": "3.0.2",
-    "semver-mine": "npm:semver@7.3.7",
+    "semver-mine": "npm:semver@7.3.8",
     "style-loader": "3.3.1",
     "ts-loader": "9.4.1",
     "ts-node": "10.9.1",

@@ -6,12 +6,7 @@ export interface Node extends BaseNode {
   type: string;
 }
 
-export type TypeAnnotationOption =
-  | "*"
-  | "function"
-  | "null"
-  | "object"
-  | "undefined";
+export type TypeAnnotationOption = "*" | "function" | "null" | "object" | "undefined";
 
 type RankMap = {
   everything: number;
@@ -21,12 +16,7 @@ type RankMap = {
   undefined: number;
 };
 
-const defaultObjectTypeOrder: TypeAnnotationOption[] = [
-  "undefined",
-  "null",
-  "*",
-  "function",
-];
+const defaultObjectTypeOrder: TypeAnnotationOption[] = ["undefined", "null", "*", "function"];
 let lastCalculatedRankOptions: undefined | TypeAnnotationOption[] = undefined;
 let lastCalculatedRankMap: undefined | RankMap = undefined;
 export function getObjectTypeRanks(options?: TypeAnnotationOption[]): RankMap {
@@ -81,10 +71,7 @@ export function getSpreadGroups<T extends Node>(allNodes: T[]) {
   const spreadGroups: T[][] = [];
   let currentStart = 0;
   for (let x = 0; x < allNodes.length; x++) {
-    if (
-      allNodes[x].type.includes("Spread") ||
-      allNodes[x].type.includes("Rest")
-    ) {
+    if (allNodes[x].type.includes("Spread") || allNodes[x].type.includes("Rest")) {
       if (currentStart !== x) {
         spreadGroups.push(allNodes.slice(currentStart, x));
       }

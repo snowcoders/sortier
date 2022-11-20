@@ -1,10 +1,4 @@
-import {
-  BaseNode,
-  Comment,
-  compare,
-  getContextGroups,
-  reorderValues,
-} from "../../utilities/sort-utils.js";
+import { BaseNode, Comment, compare, getContextGroups, reorderValues } from "../../utilities/sort-utils.js";
 
 export interface SortDeclarationsOptions {
   overrides: string[];
@@ -16,11 +10,7 @@ interface AttrInfo extends BaseNode {
   value: string;
 }
 
-export function sortDeclarations(
-  node: any,
-  fileContents: string,
-  options: SortDeclarationsOptions
-) {
+export function sortDeclarations(node: any, fileContents: string, options: SortDeclarationsOptions) {
   const comments: any[] = [];
   const declarations: any[] = [];
 
@@ -47,11 +37,8 @@ export function sortDeclarations(
   }
   // Get the range locations of all declarations
   const attributeInfos: AttrInfo[] = declarations.map((value) => {
-    const startOffset =
-      columnIndexToOffset[value.source.start.line - 1] +
-      value.source.start.column;
-    const endOffset =
-      columnIndexToOffset[value.source.end.line - 1] + value.source.end.column;
+    const startOffset = columnIndexToOffset[value.source.start.line - 1] + value.source.start.column;
+    const endOffset = columnIndexToOffset[value.source.end.line - 1] + value.source.end.column;
     const source = fileContents.substring(startOffset, endOffset);
     const result: AttrInfo = {
       prop: value.prop,
@@ -63,13 +50,8 @@ export function sortDeclarations(
   });
   // Get the range locations of all declarations
   const commentInfos: Comment[] = comments.map((value) => {
-    const startOffset =
-      columnIndexToOffset[value.source.start.line - 1] +
-      value.source.start.column;
-    const endOffset =
-      columnIndexToOffset[value.source.end.line - 1] +
-      value.source.end.column +
-      1;
+    const startOffset = columnIndexToOffset[value.source.start.line - 1] + value.source.start.column;
+    const endOffset = columnIndexToOffset[value.source.end.line - 1] + value.source.end.column + 1;
     const source = fileContents.substring(startOffset, endOffset);
     const isBlock = source.trim().startsWith("/*");
     const result: Comment = {
@@ -79,11 +61,7 @@ export function sortDeclarations(
     return result;
   });
 
-  const groupedAttributes = getContextGroups(
-    attributeInfos,
-    commentInfos,
-    fileContents
-  );
+  const groupedAttributes = getContextGroups(attributeInfos, commentInfos, fileContents);
 
   // Actual sorting
   let newFileContents = fileContents;
@@ -126,12 +104,7 @@ export function sortDeclarations(
       return compare(aText, bText);
     });
 
-    newFileContents = reorderValues(
-      newFileContents,
-      group.comments,
-      oldOrder,
-      newOrder
-    );
+    newFileContents = reorderValues(newFileContents, group.comments, oldOrder, newOrder);
   }
   return newFileContents;
 }

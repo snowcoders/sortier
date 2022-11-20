@@ -1,15 +1,9 @@
 // Utils
 import { ModuleDeclaration, Program } from "estree";
-import {
-  Comment,
-  compare,
-  getContextGroups,
-  reorderValues,
-} from "../../utilities/sort-utils.js";
+import { Comment, compare, getContextGroups, reorderValues } from "../../utilities/sort-utils.js";
 
 export type SortImportDeclarationsOrderOption = "first-specifier" | "source";
-export type SortImportDeclarationsOptions =
-  Partial<SortImportDeclarationsOptionsRequired>;
+export type SortImportDeclarationsOptions = Partial<SortImportDeclarationsOptionsRequired>;
 interface SortImportDeclarationsOptionsRequired {
   orderBy: SortImportDeclarationsOrderOption;
 }
@@ -24,34 +18,20 @@ export function sortImportDeclarations(
 
   // Get all the import/export nodes
   const importExportNodes = program.body.filter((node) => {
-    return (
-      node.type.match(/Export.*Declaration/) ||
-      node.type.match(/Import.*Declaration/)
-    );
+    return node.type.match(/Export.*Declaration/) || node.type.match(/Import.*Declaration/);
   }) as Array<ModuleDeclaration>;
 
-  const contextGroups = getContextGroups(
-    importExportNodes,
-    comments,
-    fileContents
-  );
+  const contextGroups = getContextGroups(importExportNodes, comments, fileContents);
 
   let newFileContents = fileContents.slice();
 
   for (const contextGroup of contextGroups) {
     const { comments: unsortedComments, nodes: unsortedNodes } = contextGroup;
-    const sortedNodes = unsortedNodes
-      .slice()
-      .sort((a: ModuleDeclaration, b: ModuleDeclaration) => {
-        return sortModuleDeclarations(a, b, ensuredOptions);
-      });
+    const sortedNodes = unsortedNodes.slice().sort((a: ModuleDeclaration, b: ModuleDeclaration) => {
+      return sortModuleDeclarations(a, b, ensuredOptions);
+    });
 
-    newFileContents = reorderValues(
-      newFileContents,
-      unsortedComments,
-      unsortedNodes,
-      sortedNodes
-    );
+    newFileContents = reorderValues(newFileContents, unsortedComments, unsortedNodes, sortedNodes);
   }
 
   return newFileContents;

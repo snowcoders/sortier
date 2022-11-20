@@ -1,8 +1,6 @@
 export function createError(message: string, loc: any) {
   // Construct an error similar to the ones thrown by Babylon.
-  const error = new SyntaxError(
-    message + " (" + loc.start.line + ":" + loc.start.column + ")"
-  );
+  const error = new SyntaxError(message + " (" + loc.start.line + ":" + loc.start.column + ")");
   return error;
 }
 
@@ -57,11 +55,7 @@ export function addParenthesis(fileContents: string, nodes: any[]) {
 
     // Find all the parenthesis after
     const endParenStack: number[] = [];
-    for (
-      let endIndex = value.range[1];
-      endIndex < fileContents.length;
-      endIndex++
-    ) {
+    for (let endIndex = value.range[1]; endIndex < fileContents.length; endIndex++) {
       charAt = fileContents.charAt(endIndex);
       if (charAt !== ")" && !/\s/.test(charAt)) {
         break;

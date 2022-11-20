@@ -8,20 +8,13 @@ import { getParser } from "../utilities/test-utils.js";
 import { sortImportDeclarations } from "./index.js";
 
 describe("language-js/sortImportDeclarations", () => {
-  runTestAssetsTests(
-    import.meta.url,
-    (inputFilePath: string, inputFileContents: string) => {
-      const parser = getParser(inputFilePath);
-      const parsed = parser(inputFileContents);
+  runTestAssetsTests(import.meta.url, (inputFilePath: string, inputFileContents: string) => {
+    const parser = getParser(inputFilePath);
+    const parsed = parser(inputFileContents);
 
-      const output = sortImportDeclarations(
-        parsed,
-        parsed.comments,
-        inputFileContents
-      );
-      return output;
-    }
-  );
+    const output = sortImportDeclarations(parsed, parsed.comments, inputFileContents);
+    return output;
+  });
 
   describe("es6 - Custom options", () => {
     it("Order by first specifier", () => {

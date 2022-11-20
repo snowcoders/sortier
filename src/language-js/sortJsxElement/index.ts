@@ -1,10 +1,6 @@
 import { Comment } from "estree";
 
-import {
-  compare,
-  getContextGroups,
-  reorderValues,
-} from "../../utilities/sort-utils.js";
+import { compare, getContextGroups, reorderValues } from "../../utilities/sort-utils.js";
 import { getSpreadGroups } from "../utilities/sort-utils.js";
 
 // Left in for consistency with other sort functions
@@ -48,12 +44,7 @@ export function sortJsxElement(
         return compare(a.name.name, b.name.name);
       });
 
-      newFileContents = reorderValues(
-        newFileContents,
-        element.comments,
-        unsorted,
-        sorted
-      );
+      newFileContents = reorderValues(newFileContents, element.comments, unsorted, sorted);
     });
   }
 

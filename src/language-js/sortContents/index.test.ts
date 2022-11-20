@@ -9,24 +9,21 @@ import { runTestAssetsTests } from "../../utilities/test-utils.js";
 import { getParser } from "../utilities/test-utils.js";
 
 describe("language-js/sortContents", () => {
-  runTestAssetsTests(
-    import.meta.url,
-    (inputFilePath: string, inputFileContents: string) => {
-      const parser = getParser(inputFilePath);
-      const parsed = parser(inputFileContents);
-      const actual = sortContents(
-        parsed.body[0].declaration.id.name,
-        parsed.body[0].declaration.body.body,
-        parsed.comments,
-        inputFileContents,
-        {
-          isAscending: inputFilePath.indexOf("desc") === -1,
-          order: inputFilePath.indexOf("usage") !== -1 ? "usage" : "alpha",
-        }
-      );
-      return actual;
-    }
-  );
+  runTestAssetsTests(import.meta.url, (inputFilePath: string, inputFileContents: string) => {
+    const parser = getParser(inputFilePath);
+    const parsed = parser(inputFileContents);
+    const actual = sortContents(
+      parsed.body[0].declaration.id.name,
+      parsed.body[0].declaration.body.body,
+      parsed.comments,
+      inputFileContents,
+      {
+        isAscending: inputFilePath.indexOf("desc") === -1,
+        order: inputFilePath.indexOf("usage") !== -1 ? "usage" : "alpha",
+      }
+    );
+    return actual;
+  });
 
   it("Overrides", () => {
     const input = `
@@ -95,12 +92,7 @@ describe("language-js/sortContents", () => {
       input,
       {
         isAscending: true,
-        overrides: [
-          "constructor",
-          "componentWillUnmount",
-          "componentDidUnmount",
-          "render",
-        ],
+        overrides: ["constructor", "componentWillUnmount", "componentDidUnmount", "render"],
       }
     );
 
@@ -174,12 +166,7 @@ describe("language-js/sortContents", () => {
       input,
       {
         isAscending: false,
-        overrides: [
-          "constructor",
-          "componentWillUnmount",
-          "componentDidUnmount",
-          "*",
-        ],
+        overrides: ["constructor", "componentWillUnmount", "componentDidUnmount", "*"],
       }
     );
 

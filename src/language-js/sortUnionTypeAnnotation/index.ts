@@ -1,9 +1,6 @@
 import { Comment, compare, reorderValues } from "../../utilities/sort-utils.js";
 import { addParenthesis } from "../utilities/parser-utils.js";
-import {
-  TypeAnnotationOption,
-  getObjectTypeRanks,
-} from "../utilities/sort-utils.js";
+import { TypeAnnotationOption, getObjectTypeRanks } from "../utilities/sort-utils.js";
 
 export interface SortUnionTypeAnnotationOptions {
   groups?: TypeAnnotationOption[];
@@ -21,12 +18,7 @@ export function sortUnionTypeAnnotation(
     unionTypeAnnotation.type === "IntersectionTypeAnnotation" ||
     unionTypeAnnotation.type === "TSUnionType"
   ) {
-    fileContents = new UnionTypeAnnotationSorter(
-      unionTypeAnnotation,
-      comments,
-      fileContents,
-      options
-    ).sort();
+    fileContents = new UnionTypeAnnotationSorter(unionTypeAnnotation, comments, fileContents, options).sort();
   }
 
   return fileContents;
@@ -44,10 +36,7 @@ class UnionTypeAnnotationSorter {
     fileContents: string,
     options: SortUnionTypeAnnotationOptions
   ) {
-    this.unionTypeAnnotationTypes = addParenthesis(
-      fileContents,
-      unionTypeAnnotation.types
-    );
+    this.unionTypeAnnotationTypes = addParenthesis(fileContents, unionTypeAnnotation.types);
     this.comments = comments;
     this.fileContents = fileContents;
     this.options = options;
@@ -56,12 +45,7 @@ class UnionTypeAnnotationSorter {
   public sort() {
     const sortedTypes = this.getSortOrderOfTypes();
 
-    const newFileContents = reorderValues(
-      this.fileContents,
-      this.comments,
-      this.unionTypeAnnotationTypes,
-      sortedTypes
-    );
+    const newFileContents = reorderValues(this.fileContents, this.comments, this.unionTypeAnnotationTypes, sortedTypes);
 
     return newFileContents;
   }
@@ -71,23 +55,16 @@ class UnionTypeAnnotationSorter {
       const ranks = getObjectTypeRanks(this.options.groups);
       if (value.type === "TSParenthesizedType") {
         return getRank(value.typeAnnotation);
-      } else if (
-        value.type === "NullLiteralTypeAnnotation" ||
-        value.type === "TSNullKeyword"
-      ) {
+      } else if (value.type === "NullLiteralTypeAnnotation" || value.type === "TSNullKeyword") {
         return ranks.null;
       } else if (
-        (value.type === "GenericTypeAnnotation" &&
-          value.id.name === "undefined") ||
+        (value.type === "GenericTypeAnnotation" && value.id.name === "undefined") ||
         value.type === "TSUndefinedKeyword"
       ) {
         return ranks.undefined;
       } else if (value.type === "ObjectTypeAnnotation") {
         return ranks.object;
-      } else if (
-        value.type === "FunctionTypeAnnotation" ||
-        value.type === "ArrowFunctionExpression"
-      ) {
+      } else if (value.type === "FunctionTypeAnnotation" || value.type === "ArrowFunctionExpression") {
         return ranks.function;
       }
       return ranks.everything;
@@ -104,12 +81,8 @@ class UnionTypeAnnotationSorter {
         return aRank - bRank;
       }
 
-      const isALiteral =
-        a.type.indexOf("Literal") !== -1 ||
-        a.type.indexOf("TSLastTypeNode") !== -1;
-      const isBLiteral =
-        b.type.indexOf("Literal") !== -1 ||
-        b.type.indexOf("TSLastTypeNode") !== -1;
+      const isALiteral = a.type.indexOf("Literal") !== -1 || a.type.indexOf("TSLastTypeNode") !== -1;
+      const isBLiteral = b.type.indexOf("Literal") !== -1 || b.type.indexOf("TSLastTypeNode") !== -1;
 
       if (isALiteral && isBLiteral) {
         if (a.type !== b.type) {

@@ -1,15 +1,7 @@
 import { Comment } from "estree";
 
-import {
-  compare,
-  getContextGroups,
-  reorderValues,
-} from "../../utilities/sort-utils.js";
-import {
-  TypeAnnotationOption,
-  getObjectTypeRanks,
-  getSpreadGroups,
-} from "../utilities/sort-utils.js";
+import { compare, getContextGroups, reorderValues } from "../../utilities/sort-utils.js";
+import { TypeAnnotationOption, getObjectTypeRanks, getSpreadGroups } from "../utilities/sort-utils.js";
 
 export interface SortObjectTypeAnnotationOptions {
   groups?: TypeAnnotationOption[];
@@ -46,12 +38,7 @@ export function sortObjectTypeAnnotation(
         return compare(aKey, bKey);
       });
 
-      newFileContents = reorderValues(
-        newFileContents,
-        element.comments,
-        unsorted,
-        sorted
-      );
+      newFileContents = reorderValues(newFileContents, element.comments, unsorted, sorted);
     });
   }
 
@@ -70,24 +57,15 @@ function getPropertyKey(property: any, fileContents: string) {
   return fileContents.substring(property.range[0], property.range[1]);
 }
 
-function getSortGroupIndex(
-  property: any,
-  options: SortObjectTypeAnnotationOptions
-): number {
+function getSortGroupIndex(property: any, options: SortObjectTypeAnnotationOptions): number {
   const ranks = getObjectTypeRanks(options.groups);
 
   if (property.value != null) {
     if (property.value.type === "NullLiteralTypeAnnotation") {
       return ranks.null;
-    } else if (
-      property.value.type === "GenericTypeAnnotation" &&
-      property.value.id.name === "undefined"
-    ) {
+    } else if (property.value.type === "GenericTypeAnnotation" && property.value.id.name === "undefined") {
       return ranks.undefined;
-    } else if (
-      property.value.type === "FunctionTypeAnnotation" ||
-      property.value.type === "ArrowFunctionExpression"
-    ) {
+    } else if (property.value.type === "FunctionTypeAnnotation" || property.value.type === "ArrowFunctionExpression") {
       return ranks.function;
     }
     // Note: We purposefully skip objects in this situation as sorting them

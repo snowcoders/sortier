@@ -1,16 +1,6 @@
-import {
-  BaseExpression,
-  BaseNodeWithoutComments,
-  Comment,
-  SwitchCase,
-} from "estree";
+import { BaseExpression, BaseNodeWithoutComments, Comment, SwitchCase } from "estree";
 
-import {
-  BaseNode,
-  compare,
-  getContextGroups,
-  reorderValues,
-} from "../../utilities/sort-utils.js";
+import { BaseNode, compare, getContextGroups, reorderValues } from "../../utilities/sort-utils.js";
 
 enum HasImmediateExitOption {
   Indeterminate,
@@ -80,16 +70,12 @@ export function sortSwitchCases(
         continue;
       }
 
-      switchGroupsWithBreaks.push(
-        cases.slice(switchCaseStart, switchCaseEnd + 1)
-      );
+      switchGroupsWithBreaks.push(cases.slice(switchCaseStart, switchCaseEnd + 1));
 
       switchCaseStart = switchCaseEnd + 1;
     }
     if (switchCaseStart < switchCaseEnd) {
-      switchGroupsWithBreaks.push(
-        cases.slice(switchCaseStart, switchCaseEnd + 1)
-      );
+      switchGroupsWithBreaks.push(cases.slice(switchCaseStart, switchCaseEnd + 1));
     }
 
     // Within each case group with a break, if there are any case statements that share the same
@@ -100,10 +86,7 @@ export function sortSwitchCases(
       switchCaseEnd = 0;
       for (let casesIndex = 0; casesIndex < cases.length; casesIndex++) {
         const caseStatement = cases[casesIndex];
-        if (
-          caseStatement.consequent == null ||
-          caseStatement.consequent.length === 0
-        ) {
+        if (caseStatement.consequent == null || caseStatement.consequent.length === 0) {
           switchCaseEnd++;
         } else if (switchCaseStart < switchCaseEnd) {
           switchCaseEnd++;
@@ -119,12 +102,7 @@ export function sortSwitchCases(
             return compare(aText, bText);
           });
 
-          newFileContents = reorderValues(
-            newFileContents,
-            comments,
-            unsorted,
-            sorted
-          );
+          newFileContents = reorderValues(newFileContents, comments, unsorted, sorted);
           switchCaseStart = switchCaseEnd;
         }
       }
@@ -205,11 +183,7 @@ function doesHaveImmediateExit(values: any): HasImmediateExitOption {
         // If the last option in the switch statement has an exit, then either
         // all previosu consequents have an exit (e.g. not getting to the last one)
         // or they all fall through to the last one which means we exit
-        if (
-          doesHaveImmediateExit(
-            value.cases[value.cases.length - 1].consequent
-          ) === HasImmediateExitOption.True
-        ) {
+        if (doesHaveImmediateExit(value.cases[value.cases.length - 1].consequent) === HasImmediateExitOption.True) {
           return HasImmediateExitOption.True;
         }
 
@@ -230,9 +204,7 @@ function doesHaveImmediateExit(values: any): HasImmediateExitOption {
         }
     }
   }
-  return isIndeterminate
-    ? HasImmediateExitOption.Indeterminate
-    : HasImmediateExitOption.False;
+  return isIndeterminate ? HasImmediateExitOption.Indeterminate : HasImmediateExitOption.False;
 }
 
 function getSortableText(a: any, fileContents: string) {
@@ -251,9 +223,7 @@ function getSortableText(a: any, fileContents: string) {
   return fileContents.substring(a.range[0], a.range[1]);
 }
 
-function caseGroupsToMinimumTypeinformations(
-  switchGroupsWithBreaks: SwitchCase[][]
-) {
+function caseGroupsToMinimumTypeinformations(switchGroupsWithBreaks: SwitchCase[][]) {
   return switchGroupsWithBreaks.map((value) => {
     const firstNode: BaseNodeWithoutComments = value[0];
 

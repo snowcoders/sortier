@@ -3,10 +3,7 @@ import { parse as scssParse } from "postcss-scss";
 import { SortierOptions as BaseSortierOptions } from "../../config/index.js";
 import { ILanguage } from "../../language.js";
 import { StringUtils } from "../../utilities/string-utils.js";
-import {
-  SortDeclarationsOptions,
-  sortDeclarations,
-} from "../sortDeclarations/index.js";
+import { SortDeclarationsOptions, sortDeclarations } from "../sortDeclarations/index.js";
 
 export type SortierOptions = Partial<CssSortierOptionsRequired>;
 
@@ -20,18 +17,9 @@ export interface CssSortierOptionsRequired {
 
 export class Reprinter implements ILanguage {
   public static readonly LESS_EXTENSIONS = [".less", ".less.txt"];
-  public static readonly SCSS_EXTENSIONS = [
-    ".css",
-    ".css.txt",
-    ".scss",
-    ".scss.txt",
-  ];
+  public static readonly SCSS_EXTENSIONS = [".css", ".css.txt", ".scss", ".scss.txt"];
 
-  public getRewrittenContents(
-    filename: string,
-    fileContents: string,
-    options: BaseSortierOptions
-  ) {
+  public getRewrittenContents(filename: string, fileContents: string, options: BaseSortierOptions) {
     const validatedOptions = this.getValidatedOptions(options);
 
     const parser = this.getParser(validatedOptions, filename);
@@ -43,15 +31,10 @@ export class Reprinter implements ILanguage {
   }
 
   public isFileSupported(filename: string) {
-    return StringUtils.stringEndsWithAny(filename, [
-      ...Reprinter.SCSS_EXTENSIONS,
-      ...Reprinter.LESS_EXTENSIONS,
-    ]);
+    return StringUtils.stringEndsWithAny(filename, [...Reprinter.SCSS_EXTENSIONS, ...Reprinter.LESS_EXTENSIONS]);
   }
 
-  private getValidatedOptions(
-    appOptions: BaseSortierOptions
-  ): CssSortierOptionsRequired {
+  private getValidatedOptions(appOptions: BaseSortierOptions): CssSortierOptionsRequired {
     const partialOptions = appOptions.css;
 
     return {
@@ -72,18 +55,12 @@ export class Reprinter implements ILanguage {
     }
 
     // If the user didn't override the parser type, try to infer it
-    const isLess = StringUtils.stringEndsWithAny(
-      filename,
-      Reprinter.LESS_EXTENSIONS
-    );
+    const isLess = StringUtils.stringEndsWithAny(filename, Reprinter.LESS_EXTENSIONS);
     if (isLess) {
       return lessParse;
     }
 
-    const isScss = StringUtils.stringEndsWithAny(
-      filename,
-      Reprinter.SCSS_EXTENSIONS
-    );
+    const isScss = StringUtils.stringEndsWithAny(filename, Reprinter.SCSS_EXTENSIONS);
     if (isScss) {
       return scssParse;
     }
@@ -91,11 +68,7 @@ export class Reprinter implements ILanguage {
     throw new Error("File not supported");
   }
 
-  private sortNode(
-    options: CssSortierOptionsRequired,
-    node: /* Document */ any,
-    fileContents: string
-  ): string {
+  private sortNode(options: CssSortierOptionsRequired, node: /* Document */ any, fileContents: string): string {
     const rules: any[] = [];
 
     for (const child of node.nodes) {
@@ -110,11 +83,7 @@ export class Reprinter implements ILanguage {
       fileContents = this.sortNode(options, rule, fileContents);
     }
 
-    fileContents = sortDeclarations(
-      node,
-      fileContents,
-      options.sortDeclarations
-    );
+    fileContents = sortDeclarations(node, fileContents, options.sortDeclarations);
 
     return fileContents;
   }

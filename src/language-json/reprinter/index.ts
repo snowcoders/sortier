@@ -16,15 +16,11 @@ export class Reprinter implements ILanguage {
     const prefix = "export default (";
     const suffix = ");";
     const temporaryFileContents = prefix + fileContents + suffix;
-    const rewritten = new JavascriptReprinter().getRewrittenContents(
-      filename + ".ts",
-      temporaryFileContents,
-      {
-        js: {
-          parser: "typescript",
-        },
-      }
-    );
+    const rewritten = new JavascriptReprinter().getRewrittenContents(filename + ".ts", temporaryFileContents, {
+      js: {
+        parser: "typescript",
+      },
+    });
     return rewritten.substring(prefix.length, rewritten.length - suffix.length);
   }
 

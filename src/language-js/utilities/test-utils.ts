@@ -17,9 +17,7 @@ export function getParser(inputFilePath: string) {
       parser = flowParse;
       break;
     default:
-      throw new Error(
-        `Unknown parser passed - ${fileType}. Expected 'flow', 'typescript' or 'es6'.`
-      );
+      throw new Error(`Unknown parser passed - ${fileType}. Expected 'flow', 'typescript' or 'es6'.`);
   }
   return parser;
 }

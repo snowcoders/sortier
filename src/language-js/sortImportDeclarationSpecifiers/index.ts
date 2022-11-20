@@ -1,15 +1,10 @@
 import { Comment } from "estree";
 import { LoggerVerboseOption, LogUtils } from "../../utilities/log-utils.js";
-import {
-  BaseNode,
-  compare,
-  reorderValues,
-} from "../../utilities/sort-utils.js";
+import { BaseNode, compare, reorderValues } from "../../utilities/sort-utils.js";
 
 export type SortByExportOptionsGroups = "*" | "interfaces" | "types";
 
-export type SortImportDeclarationSpecifiersOptions =
-  Partial<SortImportDeclarationSpecifiersOptionsRequired>;
+export type SortImportDeclarationSpecifiersOptions = Partial<SortImportDeclarationSpecifiersOptionsRequired>;
 
 interface SortImportDeclarationSpecifiersOptionsRequired {
   groups: SortByExportOptionsGroups[];
@@ -31,12 +26,7 @@ export function sortImportDeclarationSpecifiers(
 ) {
   const cleanedOptions = ensureOptions(options);
 
-  fileContents = sortSingleSpecifier(
-    specifiers,
-    comments,
-    fileContents,
-    cleanedOptions
-  );
+  fileContents = sortSingleSpecifier(specifiers, comments, fileContents, cleanedOptions);
 
   return fileContents;
 }
@@ -53,10 +43,7 @@ function sortSingleSpecifier(
   }
 
   const unsortedSpecifiers = specifiers.map((specifier: any) => {
-    const importedName =
-      specifier.imported != null
-        ? specifier.imported.name
-        : specifier.local.name;
+    const importedName = specifier.imported != null ? specifier.imported.name : specifier.local.name;
     let start = specifier.start || specifier.range[0];
     const end = specifier.end || specifier.range[1];
 
@@ -66,16 +53,12 @@ function sortSingleSpecifier(
       case "type": {
         // Flow doesn't provide us the range from "type <Specifier>", they only provide
         // the range of "<specifier>" so we're going to be a bit safe here and do some checks
-        const possibleNewStart = fileContents.lastIndexOf(
-          specifier.importKind,
-          start
-        );
+        const possibleNewStart = fileContents.lastIndexOf(specifier.importKind, start);
         const textBetweenOldStartAndNewStart = fileContents.substring(
           possibleNewStart + specifier.importKind.length,
           start
         );
-        const isNonWhitespaceBetweenOldStartAndNewStart =
-          textBetweenOldStartAndNewStart.match(/\S/) != null;
+        const isNonWhitespaceBetweenOldStartAndNewStart = textBetweenOldStartAndNewStart.match(/\S/) != null;
         if (isNonWhitespaceBetweenOldStartAndNewStart) {
           return null;
         }
@@ -154,18 +137,11 @@ function sortSingleSpecifier(
     return aRank - bRank;
   });
 
-  return reorderValues(
-    fileContents,
-    comments,
-    unsortedSpecifiers,
-    sortedSpecifiers
-  );
+  return reorderValues(fileContents, comments, unsortedSpecifiers, sortedSpecifiers);
 }
 
 function nameIsLikelyInterface(name: string) {
-  return (
-    name.length >= 2 && name[0] === "I" && "A" <= name[1] && name[1] <= "Z"
-  );
+  return name.length >= 2 && name[0] === "I" && "A" <= name[1] && name[1] <= "Z";
 }
 
 function ensureOptions(

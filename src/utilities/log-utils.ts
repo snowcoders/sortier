@@ -9,10 +9,7 @@ export enum LoggerVerboseOption {
 export class LogUtils {
   private static verbosity: LoggerVerboseOption = LoggerVerboseOption.Normal;
 
-  public static log(
-    verbosity: LoggerVerboseOption,
-    ...args: ArgumentType<typeof console.log>
-  ) {
+  public static log(verbosity: LoggerVerboseOption, ...args: ArgumentType<typeof console.log>) {
     if (verbosity === LoggerVerboseOption.Quiet) {
       return;
     }

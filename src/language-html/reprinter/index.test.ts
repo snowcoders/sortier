@@ -1,3 +1,4 @@
+import { describe, it, expect } from "@jest/globals";
 import { runTestAssetsTests } from "../../utilities/test-utils.js";
 
 // The methods being tested here

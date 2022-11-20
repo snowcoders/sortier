@@ -1,3 +1,4 @@
+import { describe, it, expect } from "@jest/globals";
 import { formatText } from "./index.js";
 
 it("Runs formatText without crashing", () => {

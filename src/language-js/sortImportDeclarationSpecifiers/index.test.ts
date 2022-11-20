@@ -1,3 +1,5 @@
+import { describe, it, expect } from "@jest/globals";
+
 // Parsers
 import { parse as flowParse } from "../parsers/flow/index.js";
 import { parse as typescriptParse } from "../parsers/typescript/index.js";

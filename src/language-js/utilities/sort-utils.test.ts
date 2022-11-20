@@ -1,3 +1,4 @@
+import { describe, it, expect } from "@jest/globals";
 import { TypeAnnotationOption, getObjectTypeRanks } from "./sort-utils.js";
 
 describe("language-js/utilities/sort-utils", () => {

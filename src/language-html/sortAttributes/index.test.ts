@@ -1,3 +1,5 @@
+import { describe } from "@jest/globals";
+
 // Parsers
 import { parse } from "angular-html-parser";
 

@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "lib": ["ES2019"],
-    "module": "ES2020",
     "outDir": "./dist",
     "rootDir": "./src",
     "sourceMap": true,
-    "target": "ES2019"
+    "module": "ESNext",
+    "target": "ES2018"
   },
-  "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.json",
+  "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.library.esm.json",
   "include": ["./src/**/*"]
 }

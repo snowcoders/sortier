@@ -1,75 +1,53 @@
-import { run } from "./index.js";
+// Imports - non-mocked dependencies
+import { expect, it, jest, xdescribe, afterEach } from "@jest/globals";
 
-// Mocks
-import { jest } from "@jest/globals";
-import realCosmiconfig from "cosmiconfig";
-import { SortierOptions } from "../config/index.js";
-import * as realReprinter from "../lib/format-file/index.js";
-import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils.js";
+// Imports - Mocked imports
+jest.unstable_mockModule("../lib/format-file/index.js", () => ({
+  formatFile: jest.fn(),
+}));
 
-jest.mock("../lib/format-file/index.js");
-jest.mock("cosmiconfig");
-const cosmiconfig = realCosmiconfig as jest.Mocked<typeof realCosmiconfig>;
-const reprinter = realReprinter as jest.Mocked<typeof realReprinter>;
+enum MockLoggerVerboseOption {
+  Quiet = 0,
+  Normal = 1,
+  Diagnostic = 2,
+}
+jest.unstable_mockModule("../utilities/log-utils.js", () => {
+  return {
+    LogUtils: {
+      log: jest.fn(),
+      setVerbosity: jest.fn(),
+    },
+    LoggerVerboseOption: MockLoggerVerboseOption,
+  };
+});
+const reprinter = jest.mocked(await import("../lib/format-file/index.js"));
+const logUtils = jest.mocked(await import("../utilities/log-utils.js"));
+
+// Imports - File to run tests on
+const { run } = await import("./index.js");
 
 // TODO: #1320 - Jest does't support mocking of ESM imports
 xdescribe("cli", () => {
-  let logMock: jest.SpiedFunction<typeof LogUtils["log"]>;
-  let reprinterMock: jest.MockInstance<
-    ReturnType<typeof reprinter["formatFile"]>,
-    Parameters<typeof reprinter["formatFile"]>
-  >;
-  let setVerbosityMock: jest.SpiedFunction<typeof LogUtils["setVerbosity"]>;
-  let config: SortierOptions;
-
-  beforeAll(() => {
-    logMock = jest.spyOn(LogUtils, "log") as any;
-    reprinterMock = reprinter.formatFile.mockImplementation();
-    setVerbosityMock = jest.spyOn(LogUtils, "setVerbosity") as any;
-    cosmiconfig.cosmiconfigSync.mockImplementation(() => {
-      return {
-        search: () => {
-          return {
-            config: config,
-          };
-        },
-      } as any;
-    });
-  });
-
-  beforeEach(() => {
-    logMock.mockReset();
-    reprinterMock.mockReset();
-    setVerbosityMock.mockReset();
-  });
-
   afterEach(() => {
-    logMock.mockReset();
-    reprinterMock.mockReset();
-    setVerbosityMock.mockReset();
-  });
-
-  afterAll(() => {
-    logMock.mockRestore();
-    reprinterMock.mockRestore();
-    cosmiconfig.cosmiconfigSync.mockRestore();
+    logUtils.LogUtils.log.mockReset();
+    logUtils.LogUtils.setVerbosity.mockReset();
   });
 
   it("Prints message when 0 arguments given", () => {
     run([]);
 
-    expect(logMock).toHaveBeenLastCalledWith(LoggerVerboseOption.Normal, expect.anything());
+    expect(logUtils.LogUtils.log).toHaveBeenLastCalledWith(MockLoggerVerboseOption.Normal, expect.anything());
   });
 
   it("Does not message when 0 arguments given", () => {
     run(["./package.json"]);
 
-    expect(logMock).not.toHaveBeenCalled();
-    expect(reprinterMock).toHaveBeenLastCalledWith("./package.json", expect.anything());
+    expect(logUtils.LogUtils.log).not.toHaveBeenCalled();
+    expect(reprinter.formatFile).toHaveBeenLastCalledWith("./package.json", expect.anything());
   });
 
   it("Throws exception if rewrite fails", () => {
-    reprinterMock.mockImplementationOnce(() => {
+    reprinter.formatFile.mockImplementationOnce(() => {
       throw new Error("Some error");
     });
 
@@ -77,25 +55,9 @@ xdescribe("cli", () => {
       run(["./package.json"]);
     }).toThrow();
 
-    expect(logMock).toHaveBeenLastCalledWith(LoggerVerboseOption.Normal, expect.stringContaining("Some error"));
-  });
-
-  // TODO Figure out how to stub cosmiconfig
-  describe("Cosmiconfig settings", () => {
-    it.each<[SortierOptions["logLevel"], LoggerVerboseOption]>([
-      ["diagnostic", LoggerVerboseOption.Diagnostic],
-      ["quiet", LoggerVerboseOption.Quiet],
-      ["asdfasdf" as any, LoggerVerboseOption.Normal],
-      [undefined, LoggerVerboseOption.Normal],
-    ])(`Sets log level to "%s" when set in config`, (logLevel, expected) => {
-      config = {
-        logLevel: logLevel,
-      };
-
-      run(["./package.json"]);
-
-      expect(setVerbosityMock).toHaveBeenCalledTimes(1);
-      expect(setVerbosityMock).toHaveBeenCalledWith(expected);
-    });
+    expect(logUtils.LogUtils.log).toHaveBeenLastCalledWith(
+      MockLoggerVerboseOption.Normal,
+      expect.stringContaining("Some error")
+    );
   });
 });

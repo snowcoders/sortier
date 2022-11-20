@@ -74,11 +74,7 @@ export function sortAttributes(node: any, fileContents: string) {
   return newFileContents;
 }
 
-function reorderValues(
-  fileContents: string,
-  unsortedTypes: AttrInfo[],
-  sortedTypes: AttrInfo[]
-) {
+function reorderValues(fileContents: string, unsortedTypes: AttrInfo[], sortedTypes: AttrInfo[]) {
   if (unsortedTypes.length !== sortedTypes.length) {
     throw new Error(
       "Sortier ran into a problem - Expected the same number of unsorted types and sorted types to be provided"
@@ -91,14 +87,10 @@ function reorderValues(
   for (let x = 0; x < unsortedTypes.length; x++) {
     const unsorted = unsortedTypes[x];
     const sorted = sortedTypes[x];
-    const beginning = newFileContents.slice(
-      0,
-      unsorted.startOffset + offsetCorrection
-    );
+    const beginning = newFileContents.slice(0, unsorted.startOffset + offsetCorrection);
     const end = newFileContents.slice(unsorted.endOffset + offsetCorrection);
     newFileContents = beginning + sorted.source + end;
-    offsetCorrection +=
-      sorted.source.length - (unsorted.endOffset - unsorted.startOffset);
+    offsetCorrection += sorted.source.length - (unsorted.endOffset - unsorted.startOffset);
   }
 
   return newFileContents;

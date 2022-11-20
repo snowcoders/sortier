@@ -58,20 +58,14 @@ xdescribe("cli", () => {
   it("Prints message when 0 arguments given", () => {
     run([]);
 
-    expect(logMock).toHaveBeenLastCalledWith(
-      LoggerVerboseOption.Normal,
-      expect.anything()
-    );
+    expect(logMock).toHaveBeenLastCalledWith(LoggerVerboseOption.Normal, expect.anything());
   });
 
   it("Does not message when 0 arguments given", () => {
     run(["./package.json"]);
 
     expect(logMock).not.toHaveBeenCalled();
-    expect(reprinterMock).toHaveBeenLastCalledWith(
-      "./package.json",
-      expect.anything()
-    );
+    expect(reprinterMock).toHaveBeenLastCalledWith("./package.json", expect.anything());
   });
 
   it("Throws exception if rewrite fails", () => {
@@ -83,10 +77,7 @@ xdescribe("cli", () => {
       run(["./package.json"]);
     }).toThrow();
 
-    expect(logMock).toHaveBeenLastCalledWith(
-      LoggerVerboseOption.Normal,
-      expect.stringContaining("Some error")
-    );
+    expect(logMock).toHaveBeenLastCalledWith(LoggerVerboseOption.Normal, expect.stringContaining("Some error"));
   });
 
   // TODO Figure out how to stub cosmiconfig

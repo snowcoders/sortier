@@ -9,10 +9,7 @@ import {
   SortImportDeclarationSpecifiersOptions,
   sortImportDeclarationSpecifiers,
 } from "../sortImportDeclarationSpecifiers/index.js";
-import {
-  SortImportDeclarationsOrderOption,
-  sortImportDeclarations,
-} from "../sortImportDeclarations/index.js";
+import { SortImportDeclarationsOrderOption, sortImportDeclarations } from "../sortImportDeclarations/index.js";
 import { sortJsxElement } from "../sortJsxElement/index.js";
 import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation/index.js";
 import { sortSwitchCases } from "../sortSwitchCases/index.js";
@@ -45,16 +42,7 @@ interface JsSortierOptionsRequired {
 }
 
 export class Reprinter implements ILanguage {
-  public static readonly EXTENSIONS = [
-    ".cjs",
-    ".js",
-    ".js.txt",
-    ".jsx",
-    ".mjs",
-    ".ts",
-    ".tsx",
-    ".ts.txt",
-  ];
+  public static readonly EXTENSIONS = [".cjs", ".js", ".js.txt", ".jsx", ".mjs", ".ts", ".tsx", ".ts.txt"];
 
   // @ts-expect-error: Need to move to a functional system
   private _filename: string;
@@ -63,11 +51,7 @@ export class Reprinter implements ILanguage {
   // @ts-expect-error: Need to move to a functional system
   private _options: JsSortierOptionsRequired;
 
-  public getRewrittenContents(
-    filename: string,
-    fileContents: string,
-    options: BaseSortierOptions
-  ) {
+  public getRewrittenContents(filename: string, fileContents: string, options: BaseSortierOptions) {
     this._filename = filename;
     this._options = this.getValidatedOptions(options);
     this._helpModeHasPrintedFilename = false;
@@ -83,12 +67,9 @@ export class Reprinter implements ILanguage {
     return StringUtils.stringEndsWithAny(filename, [...Reprinter.EXTENSIONS]);
   }
 
-  private getValidatedOptions(
-    appOptions: BaseSortierOptions
-  ): JsSortierOptionsRequired {
+  private getValidatedOptions(appOptions: BaseSortierOptions): JsSortierOptionsRequired {
     const partialOptions = appOptions.js || {};
-    let sortTypeAnnotations: undefined | Array<TypeAnnotationOption> =
-      undefined;
+    let sortTypeAnnotations: undefined | Array<TypeAnnotationOption> = undefined;
     if (partialOptions.sortTypeAnnotations != null) {
       sortTypeAnnotations = partialOptions.sortTypeAnnotations.slice();
       ArrayUtils.dedupe(sortTypeAnnotations);
@@ -107,10 +88,7 @@ export class Reprinter implements ILanguage {
     }
 
     // Make sure typescript can handle the extension
-    const isSupportedFileExtension = StringUtils.stringEndsWithAny(
-      this._filename,
-      Reprinter.EXTENSIONS
-    );
+    const isSupportedFileExtension = StringUtils.stringEndsWithAny(this._filename, Reprinter.EXTENSIONS);
     if (isSupportedFileExtension) {
       return parseTypescript;
     }
@@ -118,19 +96,13 @@ export class Reprinter implements ILanguage {
     throw new Error("File not supported");
   }
 
-  private rewriteNodes(
-    originalNodes: any[],
-    comments: Comment[],
-    fileContents: string
-  ) {
+  private rewriteNodes(originalNodes: any[], comments: Comment[], fileContents: string) {
     let lastClassName = undefined;
     const nodes = originalNodes.slice();
     while (nodes.length !== 0) {
       const node = nodes.shift();
       if (Array.isArray(node)) {
-        throw new Error(
-          "Unexpected Exception - Array sent as node in rewrite nodes"
-        );
+        throw new Error("Unexpected Exception - Array sent as node in rewrite nodes");
       }
       if (node == null) {
         throw new Error("Unexpected Exception - Node received is null");
@@ -180,35 +152,21 @@ export class Reprinter implements ILanguage {
         ];
         for (const diveProperty of diveProperties) {
           const value = node[diveProperty];
-          const unFilteredPropertyArray = Array.isArray(value)
-            ? value
-            : [value];
-          const actionablePropertyArray = unFilteredPropertyArray.filter(
-            (value: any) => {
-              return value != null && value.type != null;
-            }
-          );
+          const unFilteredPropertyArray = Array.isArray(value) ? value : [value];
+          const actionablePropertyArray = unFilteredPropertyArray.filter((value: any) => {
+            return value != null && value.type != null;
+          });
           if (actionablePropertyArray.length === 0) {
             continue;
           }
-          fileContents = this.rewriteNodes(
-            actionablePropertyArray,
-            comments,
-            fileContents
-          );
+          fileContents = this.rewriteNodes(actionablePropertyArray, comments, fileContents);
         }
 
         switch (node.type) {
           case "ClassBody": {
             const sortContentsOptions = this._options.sortContents;
             if (sortContentsOptions != null) {
-              fileContents = sortContents(
-                lastClassName,
-                node.body,
-                comments,
-                fileContents,
-                sortContentsOptions
-              );
+              fileContents = sortContents(lastClassName, node.body, comments, fileContents, sortContentsOptions);
             }
             break;
           }
@@ -235,14 +193,9 @@ export class Reprinter implements ILanguage {
           case "TSIntersectionType":
           case "TSUnionType":
           case "UnionTypeAnnotation": {
-            fileContents = sortUnionTypeAnnotation(
-              node,
-              comments,
-              fileContents,
-              {
-                groups: this._options.sortTypeAnnotations,
-              }
-            );
+            fileContents = sortUnionTypeAnnotation(node, comments, fileContents, {
+              groups: this._options.sortTypeAnnotations,
+            });
             break;
           }
           case "JSXElement":
@@ -254,14 +207,9 @@ export class Reprinter implements ILanguage {
           case "ObjectExpression":
           case "ObjectPattern":
           case "ObjectTypeAnnotation": {
-            fileContents = sortObjectTypeAnnotation(
-              node,
-              comments,
-              fileContents,
-              {
-                groups: this._options.sortTypeAnnotations,
-              }
-            );
+            fileContents = sortObjectTypeAnnotation(node, comments, fileContents, {
+              groups: this._options.sortTypeAnnotations,
+            });
             break;
           }
           case "Program": {
@@ -280,25 +228,15 @@ export class Reprinter implements ILanguage {
             break;
           }
           case "TSInterfaceBody": {
-            fileContents = sortTSPropertySignatures(
-              node.body,
-              comments,
-              fileContents,
-              {
-                groups: this._options.sortTypeAnnotations,
-              }
-            );
+            fileContents = sortTSPropertySignatures(node.body, comments, fileContents, {
+              groups: this._options.sortTypeAnnotations,
+            });
             break;
           }
           case "TSTypeLiteral": {
-            fileContents = sortTSPropertySignatures(
-              node.members,
-              comments,
-              fileContents,
-              {
-                groups: this._options.sortTypeAnnotations,
-              }
-            );
+            fileContents = sortTSPropertySignatures(node.members, comments, fileContents, {
+              groups: this._options.sortTypeAnnotations,
+            });
             break;
           }
         }
@@ -319,13 +257,8 @@ export class Reprinter implements ILanguage {
 
     LogUtils.log(
       LoggerVerboseOption.Diagnostic,
-      ` - ${item.type} - ${JSON.stringify(item.loc.start)} - ${JSON.stringify(
-        item.loc.end
-      )}`
+      ` - ${item.type} - ${JSON.stringify(item.loc.start)} - ${JSON.stringify(item.loc.end)}`
     );
-    LogUtils.log(
-      LoggerVerboseOption.Diagnostic,
-      fileContents.substring(item.range[0], item.range[1])
-    );
+    LogUtils.log(LoggerVerboseOption.Diagnostic, fileContents.substring(item.range[0], item.range[1]));
   }
 }

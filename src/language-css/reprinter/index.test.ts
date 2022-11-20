@@ -5,24 +5,14 @@ import { Reprinter } from "./index.js";
 
 // Utilities
 import { FileUtils } from "../../utilities/file-utils.js";
-import {
-  getFolderPathFromFileUrl,
-  runTestAssetsTests,
-} from "../../utilities/test-utils.js";
+import { getFolderPathFromFileUrl, runTestAssetsTests } from "../../utilities/test-utils.js";
 
 const currentFolderPath = getFolderPathFromFileUrl(import.meta.url);
 
 describe("language-css/reprinter", () => {
-  runTestAssetsTests(
-    import.meta.url,
-    (inputFilePath: string, inputFileContents: string) => {
-      return new Reprinter().getRewrittenContents(
-        inputFilePath,
-        inputFileContents,
-        {}
-      );
-    }
-  );
+  runTestAssetsTests(import.meta.url, (inputFilePath: string, inputFileContents: string) => {
+    return new Reprinter().getRewrittenContents(inputFilePath, inputFileContents, {});
+  });
 
   describe("Default file support", () => {
     it("Supports css", () => {
@@ -40,45 +30,31 @@ describe("language-css/reprinter", () => {
 
   describe("Overriding sortDeclarations' overrides", () => {
     it("Declaration overrides with wildcard", () => {
-      const testFileInputPath = join(
-        currentFolderPath,
-        `test_assets/context_barrier.input.css.txt`
-      );
+      const testFileInputPath = join(currentFolderPath, `test_assets/context_barrier.input.css.txt`);
       const input = FileUtils.readFileContents(testFileInputPath);
       const expected = input.slice();
-      const actual = new Reprinter().getRewrittenContents(
-        testFileInputPath,
-        input,
-        {
-          css: {
-            sortDeclarations: {
-              overrides: ["*", "right", "bottom", "left"],
-            },
+      const actual = new Reprinter().getRewrittenContents(testFileInputPath, input, {
+        css: {
+          sortDeclarations: {
+            overrides: ["*", "right", "bottom", "left"],
           },
-        }
-      );
+        },
+      });
 
       expect(actual).toEqual(expected);
     });
 
     it("Declaration overrides without wildcard", () => {
-      const testFileInputPath = join(
-        currentFolderPath,
-        `test_assets/context_barrier.input.css.txt`
-      );
+      const testFileInputPath = join(currentFolderPath, `test_assets/context_barrier.input.css.txt`);
       const input = FileUtils.readFileContents(testFileInputPath);
       const expected = input.slice();
-      const actual = new Reprinter().getRewrittenContents(
-        testFileInputPath,
-        input,
-        {
-          css: {
-            sortDeclarations: {
-              overrides: ["top", "right", "bottom"],
-            },
+      const actual = new Reprinter().getRewrittenContents(testFileInputPath, input, {
+        css: {
+          sortDeclarations: {
+            overrides: ["top", "right", "bottom"],
           },
-        }
-      );
+        },
+      });
 
       expect(actual).toEqual(expected);
     });
@@ -100,15 +76,11 @@ describe("language-css/reprinter", () => {
       top: 0px;
     }
     `;
-      const actual = new Reprinter().getRewrittenContents(
-        "example.fake",
-        input,
-        {
-          css: {
-            parser: "less",
-          },
-        }
-      );
+      const actual = new Reprinter().getRewrittenContents("example.fake", input, {
+        css: {
+          parser: "less",
+        },
+      });
 
       expect(actual).toEqual(expected);
     });
@@ -128,15 +100,11 @@ describe("language-css/reprinter", () => {
       top: 0px;
     }
     `;
-      const actual = new Reprinter().getRewrittenContents(
-        "example.fake",
-        input,
-        {
-          css: {
-            parser: "scss",
-          },
-        }
-      );
+      const actual = new Reprinter().getRewrittenContents("example.fake", input, {
+        css: {
+          parser: "scss",
+        },
+      });
 
       expect(actual).toEqual(expected);
     });
@@ -158,11 +126,7 @@ describe("language-css/reprinter", () => {
 
     it("Throws an error if the file cannot be parsed", () => {
       expect(() => {
-        new Reprinter().getRewrittenContents(
-          "parse_fail.css",
-          "This shouldn't parse",
-          {}
-        );
+        new Reprinter().getRewrittenContents("parse_fail.css", "This shouldn't parse", {});
       }).toThrow();
     });
   });

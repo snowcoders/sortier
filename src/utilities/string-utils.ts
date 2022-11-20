@@ -1,9 +1,5 @@
 export class StringUtils {
-  public static getBlankLineLocations(
-    string: string,
-    rangeStart = 0,
-    rangeEnd: number = string.length
-  ) {
+  public static getBlankLineLocations(string: string, rangeStart = 0, rangeEnd: number = string.length) {
     const regex = /\n\s*\n/gim;
     let result: null | RegExpExecArray;
     const contextBarrierIndices: number[] = [];

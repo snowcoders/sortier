@@ -4,24 +4,13 @@ import { runTestAssetsTests } from "../../utilities/test-utils.js";
 import { Reprinter } from "./index.js";
 
 describe("language-html/reprinter", () => {
-  runTestAssetsTests(
-    import.meta.url,
-    (inputFilePath: string, inputFileContents: string) => {
-      return new Reprinter().getRewrittenContents(
-        inputFilePath,
-        inputFileContents,
-        {}
-      );
-    }
-  );
+  runTestAssetsTests(import.meta.url, (inputFilePath: string, inputFileContents: string) => {
+    return new Reprinter().getRewrittenContents(inputFilePath, inputFileContents, {});
+  });
 
   it("Throws an error if the file cannot be parsed", () => {
     expect(() => {
-      new Reprinter().getRewrittenContents(
-        "parse_fail.html",
-        "<html>This has the wrong closing tag</html2>",
-        {}
-      );
+      new Reprinter().getRewrittenContents("parse_fail.html", "<html>This has the wrong closing tag</html2>", {});
     }).toThrow();
   });
 });

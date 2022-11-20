@@ -14,10 +14,7 @@ type TestTree = {
   type: "branch";
 };
 
-type TestInputTransform = (
-  inputFilePath: string,
-  inputFileContents: string
-) => string;
+type TestInputTransform = (inputFilePath: string, inputFileContents: string) => string;
 
 function sentenceCase(text: string) {
   const spacedText = text.replace(/_/g, " ");
@@ -40,10 +37,7 @@ function sentenceCase(text: string) {
  * @param testFileUrl The test file that has a test_assets folder as a sibling
  * @param transform The reprinting logic to transform the input code and return the output
  */
-export function runTestAssetsTests(
-  testFileUrl: string,
-  transform: TestInputTransform
-) {
+export function runTestAssetsTests(testFileUrl: string, transform: TestInputTransform) {
   const folderPath = getFolderPathFromFileUrl(testFileUrl);
   const testNodes = getTestAssetsTree(folderPath);
   runNodes(testNodes, transform);
@@ -70,10 +64,7 @@ export function getFolderPathFromFileUrl(filePath: string) {
  * @param transform The reprinting logic to transform the input code and return the output
  * @deprecated use runTestAssetsTests instead
  */
-export function runTestAssestsTests(
-  folderPath: string,
-  transform: TestInputTransform
-) {
+export function runTestAssestsTests(folderPath: string, transform: TestInputTransform) {
   const testNodes = getTestAssetsTree(folderPath);
   runNodes(testNodes, transform);
 }
@@ -108,10 +99,7 @@ function getTestAssetsTree(folderPath: string): TestTree {
     type: "branch",
   };
 
-  const assetsFolderPath = FileUtils.globbyJoin(
-    folderPath,
-    `test_assets/*.input.*.txt`
-  );
+  const assetsFolderPath = FileUtils.globbyJoin(folderPath, `test_assets/*.input.*.txt`);
   const filePaths = globbySync(assetsFolderPath);
   for (const filePath of filePaths) {
     const segments = basename(filePath).split(".");
@@ -141,9 +129,7 @@ function getTestAssetsTree(folderPath: string): TestTree {
     }
 
     if (possibleChildren[segments[0]] != null) {
-      throw new Error(
-        `${segments[0]} already exists in the test tree, do you have a file naming collision?`
-      );
+      throw new Error(`${segments[0]} already exists in the test tree, do you have a file naming collision?`);
     }
     possibleChildren[segments[0]] = {
       inputFilePath: filePath,

@@ -1,9 +1,5 @@
 import { ArrayUtils } from "../../utilities/array-utils.js";
-import {
-  BaseNode,
-  compare,
-  reorderValues,
-} from "../../utilities/sort-utils.js";
+import { BaseNode, compare, reorderValues } from "../../utilities/sort-utils.js";
 
 export type SortContentsOptions = Partial<SortContentsOptionsRequired>;
 
@@ -40,13 +36,7 @@ export function sortContents(
   fileContents: string,
   options: SortContentsOptions
 ): string {
-  return new ClassContentsSorter(
-    className || "",
-    classItems,
-    comments,
-    fileContents,
-    options
-  ).sort();
+  return new ClassContentsSorter(className || "", classItems, comments, fileContents, options).sort();
 }
 
 class ClassContentsSorter {
@@ -63,8 +53,8 @@ class ClassContentsSorter {
   }
 
   public sort() {
-    const possibleSortableItems: Array<null | MinimumSortInformation> =
-      this.classItems.map((value): null | MinimumSortInformation => {
+    const possibleSortableItems: Array<null | MinimumSortInformation> = this.classItems.map(
+      (value): null | MinimumSortInformation => {
         switch (value.type) {
           case "ClassProperty":
           case "MethodDefinition":
@@ -85,24 +75,18 @@ class ClassContentsSorter {
           default:
             return null;
         }
-      });
-    const sortableItems: Array<MinimumSortInformation> =
-      possibleSortableItems.filter((value) => {
-        return value != null;
-      }) as any;
-
-    const newFileContents = this.sortItems(
-      sortableItems,
-      this.comments,
-      this.fileContents
+      }
     );
+    const sortableItems: Array<MinimumSortInformation> = possibleSortableItems.filter((value) => {
+      return value != null;
+    }) as any;
+
+    const newFileContents = this.sortItems(sortableItems, this.comments, this.fileContents);
 
     return newFileContents;
   }
 
-  private getValidatedOptions(
-    partialOptions: SortContentsOptions
-  ): SortContentsOptionsRequired {
+  private getValidatedOptions(partialOptions: SortContentsOptions): SortContentsOptionsRequired {
     let overrides = ["*"];
     if (partialOptions.overrides != null) {
       overrides = partialOptions.overrides;
@@ -113,8 +97,7 @@ class ClassContentsSorter {
     }
 
     return {
-      isAscending:
-        partialOptions.isAscending == null ? true : partialOptions.isAscending,
+      isAscending: partialOptions.isAscending == null ? true : partialOptions.isAscending,
       order: partialOptions.order || "alpha",
       overrides: overrides,
     };
@@ -147,11 +130,7 @@ class ClassContentsSorter {
     return this.options.overrides.indexOf("*");
   }
 
-  private sortItems(
-    classItems: MinimumSortInformation[],
-    comments: any,
-    fileContents: string
-  ) {
+  private sortItems(classItems: MinimumSortInformation[], comments: any, fileContents: string) {
     const isUsage = this.options.order === "usage";
     const callOrder = this.getClassItemOrder();
 
@@ -218,10 +197,7 @@ class ClassContentsSorter {
     return totalCallOrder;
   }
 
-  private compareGroups(
-    a: MinimumSortInformation,
-    b: MinimumSortInformation
-  ): number {
+  private compareGroups(a: MinimumSortInformation, b: MinimumSortInformation): number {
     // Static methods
     if (a.isStatic !== b.isStatic) {
       if (a.isStatic) {
@@ -244,18 +220,11 @@ class ClassContentsSorter {
     return 0;
   }
 
-  private compareOverrides(
-    a: MinimumSortInformation,
-    b: MinimumSortInformation
-  ): number {
+  private compareOverrides(a: MinimumSortInformation, b: MinimumSortInformation): number {
     return a.overrideIndex - b.overrideIndex;
   }
 
-  private compareMethodCallers(
-    a: MinimumSortInformation,
-    b: MinimumSortInformation,
-    methodToCallers: string[]
-  ) {
+  private compareMethodCallers(a: MinimumSortInformation, b: MinimumSortInformation, methodToCallers: string[]) {
     return methodToCallers.indexOf(a.key) - methodToCallers.indexOf(b.key);
   }
 
@@ -273,11 +242,7 @@ class ClassContentsSorter {
     return KindOption.Method;
   }
 
-  private orderItems(
-    sortedClassItems: any[],
-    isSiblingSort: boolean,
-    isProperties: boolean
-  ): string[] {
+  private orderItems(sortedClassItems: any[], isSiblingSort: boolean, isProperties: boolean): string[] {
     // Storage of the overall call order as read from top to bottom, left to right
     const overallCallOrder: string[] = [];
     // Map of method names to parent information
@@ -386,8 +351,7 @@ class ClassContentsSorter {
         } else if (
           value != null &&
           value.object != null &&
-          (value.object.type === "ThisExpression" ||
-            value.object.name === this.className) &&
+          (value.object.type === "ThisExpression" || value.object.name === this.className) &&
           value.type === "MemberExpression" &&
           value.property.name != null
         ) {

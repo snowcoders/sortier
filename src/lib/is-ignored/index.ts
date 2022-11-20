@@ -1,9 +1,6 @@
 import ignore from "ignore";
 
-export function isIgnored(
-  ignoreFileContents: string,
-  relativeFilePath: string
-): boolean {
+export function isIgnored(ignoreFileContents: string, relativeFilePath: string): boolean {
   if (ignoreFileContents.length === 0) {
     return false;
   }

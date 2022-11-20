@@ -1,15 +1,7 @@
 import { Comment } from "estree";
 
-import {
-  compare,
-  getContextGroups,
-  reorderValues,
-} from "../../utilities/sort-utils.js";
-import {
-  TypeAnnotationOption,
-  getObjectTypeRanks,
-  getSpreadGroups,
-} from "../utilities/sort-utils.js";
+import { compare, getContextGroups, reorderValues } from "../../utilities/sort-utils.js";
+import { TypeAnnotationOption, getObjectTypeRanks, getSpreadGroups } from "../utilities/sort-utils.js";
 
 export interface SortTSPropertySignaturesOptions {
   groups?: TypeAnnotationOption[];
@@ -53,12 +45,7 @@ export function sortTSPropertySignatures(
         return compare(aString, bString);
       });
 
-      newFileContents = reorderValues(
-        newFileContents,
-        element.comments,
-        unsorted,
-        sorted
-      );
+      newFileContents = reorderValues(newFileContents, element.comments, unsorted, sorted);
     });
   }
 
@@ -93,10 +80,7 @@ function getString(property: any, fileContents: string) {
   return fileContents.substring(property.range[0], property.range[1]);
 }
 
-function getSortGroupIndex(
-  property: any,
-  options: SortTSPropertySignaturesOptions
-): number {
+function getSortGroupIndex(property: any, options: SortTSPropertySignaturesOptions): number {
   const ranks = getObjectTypeRanks(options.groups);
 
   const annotationType = property.typeAnnotation?.typeAnnotation?.type;

@@ -7,10 +7,7 @@ import { FileUtils } from "../../utilities/file-utils.js";
 import { LogUtils, LoggerVerboseOption } from "../../utilities/log-utils.js";
 import { isIgnored } from "../is-ignored/index.js";
 
-export function formatFile(
-  filename: string,
-  options: SortierOptions = resolveOptions(filename)
-) {
+export function formatFile(filename: string, options: SortierOptions = resolveOptions(filename)) {
   // Find the nearest sortier ignore file
   const ignoreFilePath = findUpSync(".sortierignore", {
     cwd: filename,
@@ -24,38 +21,24 @@ export function formatFile(
         return;
       }
     } catch (readError) {
-      LogUtils.log(
-        LoggerVerboseOption.Diagnostic,
-        `Error reading file ${filename}`,
-        readError
-      );
+      LogUtils.log(LoggerVerboseOption.Diagnostic, `Error reading file ${filename}`, readError);
       throw readError;
     }
   }
 
   const language = getReprinterForFile(filename);
   if (language == null) {
-    throw new UnsupportedExtensionError(
-      `File ${filename} has an file extension which is not supported`
-    );
+    throw new UnsupportedExtensionError(`File ${filename} has an file extension which is not supported`);
   }
 
   const originalFileContents = FileUtils.readFileContents(filename);
-  const newFileContents = language.getRewrittenContents(
-    filename,
-    originalFileContents,
-    options
-  );
+  const newFileContents = language.getRewrittenContents(filename, originalFileContents, options);
 
   if (options.isTestRun == null || !options.isTestRun) {
     try {
       FileUtils.writeFileContents(filename, newFileContents);
     } catch (writeError) {
-      LogUtils.log(
-        LoggerVerboseOption.Diagnostic,
-        `Error writing file ${filename}`,
-        writeError
-      );
+      LogUtils.log(LoggerVerboseOption.Diagnostic, `Error writing file ${filename}`, writeError);
       throw writeError;
     }
   }

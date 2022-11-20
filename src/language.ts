@@ -6,11 +6,7 @@ import { JsonReprinter } from "./language-json/index.js";
 import { LogUtils, LoggerVerboseOption } from "./utilities/log-utils.js";
 
 export interface ILanguage {
-  getRewrittenContents(
-    filename: string,
-    fileContents: string,
-    options: SortierOptions
-  ): string;
+  getRewrittenContents(filename: string, fileContents: string, options: SortierOptions): string;
   isFileSupported(filename: string): boolean;
 }
 
@@ -28,9 +24,6 @@ export function getReprinterForFile(filename: string) {
     }
   }
 
-  LogUtils.log(
-    LoggerVerboseOption.Diagnostic,
-    `${filename} - Could not find language support for file`
-  );
+  LogUtils.log(LoggerVerboseOption.Diagnostic, `${filename} - Could not find language support for file`);
   return null;
 }

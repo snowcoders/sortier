@@ -10,11 +10,7 @@ export class Reprinter implements ILanguage {
   public static readonly EXTENSIONS = [".html", ".html.txt"];
   // private options: BaseSortierOptions;
 
-  public getRewrittenContents(
-    filename: string,
-    fileContents: string,
-    options: BaseSortierOptions
-  ) {
+  public getRewrittenContents(filename: string, fileContents: string, options: BaseSortierOptions) {
     const ast = parse(fileContents, { canSelfClose: true });
 
     if (ast.errors.length > 0) {
@@ -34,11 +30,7 @@ export class Reprinter implements ILanguage {
     return StringUtils.stringEndsWithAny(filename, Reprinter.EXTENSIONS);
   }
 
-  private sortNode(
-    options: BaseSortierOptions,
-    node: /* Document */ any,
-    fileContents: string
-  ): string {
+  private sortNode(options: BaseSortierOptions, node: /* Document */ any, fileContents: string): string {
     fileContents = sortAttributes(node, fileContents);
 
     if (node.children != null) {
@@ -57,14 +49,8 @@ export class Reprinter implements ILanguage {
     return fileContents;
   }
 
-  private sortStyleTagContents(
-    options: BaseSortierOptions,
-    node: any,
-    fileContents: string
-  ) {
-    const isCssType = this.cantFindOrMatchesAttributeKeyValue(node, "type", [
-      "text/css",
-    ]);
+  private sortStyleTagContents(options: BaseSortierOptions, node: any, fileContents: string) {
+    const isCssType = this.cantFindOrMatchesAttributeKeyValue(node, "type", ["text/css"]);
     if (!isCssType) {
       return fileContents;
     }
@@ -74,23 +60,17 @@ export class Reprinter implements ILanguage {
         fileContents,
         child.sourceSpan.start.offset,
         child.sourceSpan.end.offset,
-        (text: string) =>
-          new CssReprinter().getRewrittenContents("example.css", text, options)
+        (text: string) => new CssReprinter().getRewrittenContents("example.css", text, options)
       );
     }
     return fileContents;
   }
 
-  private sortScriptTagContents(
-    options: BaseSortierOptions,
-    node: any,
-    fileContents: string
-  ) {
-    const isJavascriptType = this.cantFindOrMatchesAttributeKeyValue(
-      node,
-      "type",
-      ["text/javascript", "application/javascript"]
-    );
+  private sortScriptTagContents(options: BaseSortierOptions, node: any, fileContents: string) {
+    const isJavascriptType = this.cantFindOrMatchesAttributeKeyValue(node, "type", [
+      "text/javascript",
+      "application/javascript",
+    ]);
     if (!isJavascriptType) {
       return fileContents;
     }
@@ -100,22 +80,13 @@ export class Reprinter implements ILanguage {
         fileContents,
         child.sourceSpan.start.offset,
         child.sourceSpan.end.offset,
-        (text: string) =>
-          new JavascriptReprinter().getRewrittenContents(
-            "example.js",
-            text,
-            options
-          )
+        (text: string) => new JavascriptReprinter().getRewrittenContents("example.js", text, options)
       );
     }
     return fileContents;
   }
 
-  private cantFindOrMatchesAttributeKeyValue(
-    node: any,
-    key: string,
-    value: Array<string>
-  ) {
+  private cantFindOrMatchesAttributeKeyValue(node: any, key: string, value: Array<string>) {
     const typeAttrs = node.attrs.filter((attr: any) => {
       return attr.name === key;
     });
@@ -126,12 +97,7 @@ export class Reprinter implements ILanguage {
     }
   }
 
-  private sortSubstring(
-    fileContents: string,
-    start: number,
-    end: number,
-    sortFunc: (text: string) => string
-  ) {
+  private sortSubstring(fileContents: string, start: number, end: number, sortFunc: (text: string) => string) {
     const textBefore = fileContents.substring(0, start);
     const textToSort = fileContents.substring(start, end);
     const textAfter = fileContents.substring(end);

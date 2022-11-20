@@ -10,14 +10,9 @@ const currentFolderPath = getFolderPathFromFileUrl(import.meta.url);
 
 describe("reprinter", () => {
   it("Does not rewrite sortier ignored files", () => {
-    const inputFilePath = join(
-      currentFolderPath,
-      "test_assets/sortierignore.input.ts"
-    );
+    const inputFilePath = join(currentFolderPath, "test_assets/sortierignore.input.ts");
     const input = FileUtils.readFileContents(inputFilePath);
-    const output = FileUtils.readFileContents(
-      join(currentFolderPath, "test_assets/sortierignore.output.ts.txt")
-    );
+    const output = FileUtils.readFileContents(join(currentFolderPath, "test_assets/sortierignore.output.ts.txt"));
     // If this expect is hit, then the test files were tampered with before we got here
     expect(input).toEqual(output);
 

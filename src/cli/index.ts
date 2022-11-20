@@ -22,10 +22,7 @@ export function run(args: string[]) {
           "Sortier no longer supports file paths that contain '\\' (see fast-glob@3.0.0 release notes). Is your glob pattern correct?"
         );
       } else {
-        LogUtils.log(
-          LoggerVerboseOption.Normal,
-          "No filepaths found for file pattern"
-        );
+        LogUtils.log(LoggerVerboseOption.Normal, "No filepaths found for file pattern");
       }
     }
     files.map((filePath) => {
@@ -34,9 +31,7 @@ export function run(args: string[]) {
       try {
         formatFile(filePath);
       } catch (e) {
-        const message = `${filePath} - Sorting has failed: ${getStringFromError(
-          e
-        )}`;
+        const message = `${filePath} - Sorting has failed: ${getStringFromError(e)}`;
 
         // Decrease verbosity if the file is an extension we don't support
         if (e instanceof UnsupportedExtensionError) {
@@ -48,10 +43,7 @@ export function run(args: string[]) {
       } finally {
         const end = Date.now();
         const total = end - start;
-        LogUtils.log(
-          LoggerVerboseOption.Diagnostic,
-          `${filePath} - End - ${total}ms`
-        );
+        LogUtils.log(LoggerVerboseOption.Diagnostic, `${filePath} - End - ${total}ms`);
       }
     });
 

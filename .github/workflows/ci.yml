@@ -9,6 +9,8 @@ on:
 
 jobs:
   build:
+    env:
+      HUSKY: 0
     runs-on: ubuntu-latest
 
     strategy:

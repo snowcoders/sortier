@@ -1,3 +1,5 @@
+import { describe } from "@jest/globals";
+
 import { runTestAssetsTests } from "../../utilities/test-utils.js";
 import { getParser } from "../utilities/test-utils.js";
 

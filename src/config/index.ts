@@ -1,6 +1,6 @@
 import { cosmiconfigSync } from "cosmiconfig";
-import { CssSortierOptions } from "../language-css/index.js";
-import { JavascriptSortierOptions } from "../language-js/index.js";
+import type { CssSortierOptions } from "../language-css/index.js";
+import type { JavascriptSortierOptions } from "../language-js/index.js";
 import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils.js";
 
 export interface SortierOptions {

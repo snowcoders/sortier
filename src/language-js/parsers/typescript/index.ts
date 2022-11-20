@@ -20,11 +20,13 @@ export function parse(text: string /*, parsers, opts*/) {
       const { message } = e;
       if ("lineNumber" in e) {
         const { lineNumber } = e;
-        if ("column" in e) {
+        if (typeof lineNumber === "number" && "column" in e) {
           const { column } = e;
-          throw createError(message, {
-            start: { column: column + 1, line: lineNumber },
-          });
+          if (typeof column === "number") {
+            throw createError(message, {
+              start: { column: column + 1, line: lineNumber },
+            });
+          }
         }
         throw createError(message, {
           start: { column: undefined, line: lineNumber },

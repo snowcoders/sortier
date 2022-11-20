@@ -1,3 +1,5 @@
+import { describe, it, expect } from "@jest/globals";
+
 // The methods being tested here
 import { Reprinter } from "./index.js";
 

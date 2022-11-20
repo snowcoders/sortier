@@ -1,3 +1,4 @@
+import { describe, it, expect } from "@jest/globals";
 import { addParenthesis, createError, includeShebang } from "./parser-utils.js";
 
 describe("language-js/parser-utils", () => {

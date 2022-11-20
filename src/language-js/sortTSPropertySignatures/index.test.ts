@@ -1,3 +1,5 @@
+import { describe } from "@jest/globals";
+
 // The methods being tested here
 import { sortTSPropertySignatures } from "./index.js";
 

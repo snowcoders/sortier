@@ -1,3 +1,4 @@
+import { describe, it, expect } from "@jest/globals";
 import { globbySync } from "globby";
 import { basename, dirname } from "path";
 import { fileURLToPath } from "url";

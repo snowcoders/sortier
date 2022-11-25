@@ -34,7 +34,7 @@
     "eslint-plugin-prettier": "4.2.1",
     "husky": "8.0.2",
     "jest": "28.1.2",
-    "lint-staged": "13.0.3",
+    "lint-staged": "13.0.4",
     "prettier": "2.8.0",
     "rimraf": "3.0.2",
     "source-map-support": "0.5.21",

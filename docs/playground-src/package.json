@@ -6,7 +6,7 @@
     "@types/estree": "~1.0.0",
     "@types/postcss-less": "^4.0.0",
     "@typescript-eslint/typescript-estree": "^5.8.0",
-    "angular-html-parser": "^1.0.0",
+    "angular-html-parser": "^3.0.0",
     "cosmiconfig": "^8.0.0",
     "find-up": "^6.2.0",
     "flow-parser": "~0.194.0",

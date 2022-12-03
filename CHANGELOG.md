@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Breaking
+  - Dropped support for node 12 and 14
+
 ## [1.0.1] - 2021-12-22
 
 - Fixed bug where imports would be mangled intermittently (depends on version of parser that is installed)

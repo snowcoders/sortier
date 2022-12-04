@@ -44,7 +44,10 @@
     "node": ">=16.0.0"
   },
   "exports": {
-    ".": "./dist/lib/index.js"
+    ".": {
+      "import": "./dist/lib/index.js",
+      "require": "./dist-cjs/lib/index.js"
+    }
   },
   "homepage": "https://snowcoders.github.io/sortier",
   "keywords": [
@@ -59,13 +62,16 @@
   ],
   "license": "MIT",
   "name": "sortier",
+  "main": "./dist-cjs/lib/index.js",
   "repository": "github:snowcoders/sortier",
   "scripts": {
-    "build": "tsc -p ./tsconfig.production.json",
+    "build": "concurrently \"npm:build:esm\" \"npm:build:cjs\"",
+    "build:esm": "tsc -p ./tsconfig.esm.json",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
     "build:all": "npm run build && npm run build:docs-playground",
     "build:dev": "tsc -p ./tsconfig.json",
     "build:docs-playground": "cd docs && cd playground-src && npm run build:prod",
-    "clean": "rimraf coverage dist",
+    "clean": "rimraf coverage dist dist-cjs",
     "cover": "cat ./coverage/lcov.info | coveralls",
     "husky:commit-msg": "echo 'No commitlint installed'",
     "husky:pre-commit": "npx --no lint-staged",

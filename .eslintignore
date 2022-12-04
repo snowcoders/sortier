@@ -1,6 +1,7 @@
 # From the .gitignore
 coverage
 dist
+dist-cjs
 node_modules
 
 # Currently many config files are in commonjs

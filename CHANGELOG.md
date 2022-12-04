@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added CommonJS output for those who aren't migrated to CJS
 - Breaking
   - Dropped support for node 12 and 14
 

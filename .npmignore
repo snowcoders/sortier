@@ -2,7 +2,8 @@
 **
 
 !/dist/**
+!/dist-cjs/**
 !/bin/**
 !/changelog.md
+!/license
 !/readme.md
-!/license

@@ -3,5 +3,5 @@
     "sourceMap": false
   },
   "extends": "./tsconfig.json",
-  "exclude": ["./src/**/*test"]
+  "exclude": ["./src/**/*.test.ts"]
 }

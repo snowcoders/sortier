@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@snowcoders/renovate-config": "2.0.3",
-    "@types/node": "18.11.11",
+    "@types/node": "18.11.12",
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.9",
     "@types/webpack": "5.28.0",

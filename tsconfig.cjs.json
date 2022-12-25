@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist-cjs",
+    "rootDir": "./src"
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["./src/**/*.test.ts"],
+  "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.library.cjs.json"
+}

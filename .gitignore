@@ -1,5 +1,6 @@
 # Locally generated files
 coverage
 dist
+dist-cjs
 node_modules
 *.log

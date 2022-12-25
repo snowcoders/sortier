@@ -1,11 +1,9 @@
 {
   "compilerOptions": {
+    "noUnusedLocals": false,
     "outDir": "./dist",
-    "rootDir": "./src",
-    "sourceMap": true,
-    "module": "ESNext",
-    "target": "ES2018"
+    "rootDir": "./src"
   },
-  "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.library.esm.json",
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*"],
+  "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.library.json"
 }

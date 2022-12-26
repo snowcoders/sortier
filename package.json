@@ -19,6 +19,7 @@
   },
   "description": "An opinionated code sorter",
   "devDependencies": {
+    "@release-it/keep-a-changelog": "3.1.0",
     "@snowcoders/renovate-config": "3.0.0-beta.7",
     "@types/node": "18.11.17",
     "@typescript-eslint/eslint-plugin": "5.47.0",
@@ -26,6 +27,7 @@
     "changelog-updater": "2.0.3",
     "concurrently": "7.6.0",
     "coveralls": "3.1.1",
+    "cpy-cli": "4.2.0",
     "docsify-cli": "4.4.4",
     "eslint": "8.30.0",
     "eslint-config-prettier": "8.5.0",
@@ -35,8 +37,8 @@
     "jest": "29.3.1",
     "lint-staged": "13.1.0",
     "prettier": "2.8.1",
+    "release-it": "15.5.1",
     "rimraf": "3.0.2",
-    "source-map-support": "0.5.21",
     "ts-jest": "29.0.3",
     "ts-node": "10.9.1"
   },
@@ -44,7 +46,11 @@
     "node": ">=16.0.0"
   },
   "exports": {
-    ".": "./dist/lib/index.js"
+    ".": {
+      "import": "./dist/lib/index.js",
+      "require": "./dist-cjs/lib/index.js"
+    },
+    "./package.json": "./package.json"
   },
   "homepage": "https://snowcoders.github.io/sortier",
   "keywords": [
@@ -58,24 +64,24 @@
     "module"
   ],
   "license": "MIT",
+  "main": "./dist-cjs/lib/index.js",
   "name": "sortier",
   "repository": "github:snowcoders/sortier",
   "scripts": {
-    "build": "tsc -p ./tsconfig.production.json",
-    "build:all": "npm run build && npm run build:docs-playground",
-    "build:dev": "tsc -p ./tsconfig.json",
-    "build:docs-playground": "cd docs && cd playground-src && npm run build:prod",
-    "clean": "rimraf coverage dist",
+    "build": "concurrently \"npm:build:*\"",
+    "build:cjs": "tsc -p tsconfig.cjs.json && cpy ./src/cjs-package.json.txt ./dist-cjs --flat --rename=package.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "clean": "rimraf coverage dist dist-cjs",
     "cover": "cat ./coverage/lcov.info | coveralls",
     "husky:commit-msg": "echo 'No commitlint installed'",
     "husky:pre-commit": "npx --no lint-staged",
     "husky:pre-push": "npm test",
-    "install:docs": "cd docs && cd playground-src && npm install",
     "lint": "eslint --fix ./src/**/*.{js,jsx,ts,tsx}",
     "prepare": "npm run clean && npm run build && npx --no-install husky install",
-    "start": "node bin/index.js",
+    "start": "npm run start:cli",
+    "start:cli": "node bin/index.js",
     "start:docs": "concurrently \"npm:start:docs-*\"",
-    "start:docs-playground": "cd docs && cd playground-src && npm run watch",
+    "start:docs-playground": "npm run watch -w=src-playground",
     "start:docs-static": "docsify serve ./docs",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test-e2e": "docker build -f e2e_tests.dockerfile .",
@@ -84,5 +90,9 @@
   "sideEffects": false,
   "type": "module",
   "types": "./dist/lib/index.d.ts",
-  "version": "1.0.1"
+  "version": "1.0.1",
+  "workspaces": [
+    ".",
+    "src-playground"
+  ]
 }

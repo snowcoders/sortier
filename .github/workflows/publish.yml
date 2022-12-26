@@ -1,50 +1,42 @@
-name: Publish
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: NPM Publish
 
 on:
   push:
-    branches: [main]
+    branches: ["main"]
 
 jobs:
-  Publish:
-    env:
-      HUSKY: 0
+  publish:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js lts
+        uses: actions/setup-node@v3
         with:
-          node-version: 16
-      - name: Get current package version
-        uses: stevenbenitez/get-package-version-action@v1
-        id: package-version
-      - name: Parse npm version
-        id: semver
-        uses: odinr/action-npm-semver@v1
-        with:
-          version: "${{ steps.package-version.outputs.version }}"
-      - name: Test
-        id: install
+          node-version: lts/*
+          cache: "npm"
+
+      - name: Git config
         run: |
-          npm install  
-          npm test
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Install
+        run: npm ci --ignore-scripts
+
+      - name: Build
+        run: npm run build --if-present
+
+      - name: Test
+        run: npm test
+
       - name: Publish
-        id: publish
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          tag: "${{ steps.semver.outputs.prerelease }}"
-      - name: Get Changelog Entry
-        id: getChangelog
-        uses: mindsers/changelog-reader-action@v2
-        with:
-          version: ${{ steps.publish.outputs.version }}
-          path: ./CHANGELOG.md
-      - name: Git Release
-        if: steps.publish.outputs.type != 'none'
-        uses: "softprops/action-gh-release@v1"
-        with:
-          token: "${{ secrets.GITHUB_TOKEN }}"
-          tag_name: "${{ steps.publish.outputs.version }}"
-          name: "${{ steps.publish.outputs.version }}"
-          prerelease: ${{ steps.publish.outputs.tag != 'latest' }}
-          body: ${{ steps.getChangelog.outputs.changes }}
+        run: npx --no release-it -- --ci
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

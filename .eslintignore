@@ -1,10 +1,10 @@
 # From the .gitignore
 coverage
 dist
+dist-cjs
+docs
 node_modules
+*.log
 
 # Currently many config files are in commonjs
-*rc.cjs
-
-# Generated code
-docs/playground/**
+*.cjs

@@ -26,12 +26,6 @@ jobs:
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
-      - name: NPM config
-        run: |
-          npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Install
         run: npm ci --ignore-scripts
 

@@ -42,7 +42,9 @@ jobs:
         run: npm test
 
       - name: Revert docs
-        run: git checkout ./docs
+        run: |
+          git checkout ./docs
+          git status
 
       - name: Publish
         run: npx --no release-it -- --ci

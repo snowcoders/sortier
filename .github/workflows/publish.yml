@@ -32,9 +32,6 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Remove src-playground
-        run: rm -rf ./src-playground
-
       - name: Install
         run: npm ci --ignore-scripts
 
@@ -43,6 +40,9 @@ jobs:
 
       - name: Test
         run: npm test
+
+      - name: Revert docs
+        run: git checkout ./docs
 
       - name: Publish
         run: npx --no release-it -- --ci

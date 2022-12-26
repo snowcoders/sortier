@@ -1,7 +1,9 @@
 {
-  "author": "",
+  "author": "Snowcoders",
   "browser": {},
-  "description": "Browser compatible sortier functionality",
+  "bugs": {
+    "url": "https://github.com/snowcoders/sortier/issues"
+  },
   "dependencies": {
     "@types/estree": "~1.0.0",
     "@types/postcss-less": "^4.0.0",
@@ -16,6 +18,7 @@
     "postcss-scss": "^4.0.0",
     "typescript": "^4.0.0"
   },
+  "description": "Browser compatible sortier functionality",
   "devDependencies": {
     "@snowcoders/renovate-config": "2.0.3",
     "@types/node": "18.11.17",
@@ -39,13 +42,17 @@
     "webpack-cli": "5.0.1",
     "webpack-dev-server": "4.11.1"
   },
+  "homepage": "https://github.com/snowcoders/sortier#readme",
   "license": "MIT",
   "main": "index.js",
   "name": "sortier-playground",
   "private": true,
   "scripts": {
-    "build:dev": "rimraf ../playground && webpack --mode=development",
-    "build:prod": "rimraf ../playground && webpack --mode=production",
+    "build": "npm run build:prod",
+    "build:dev": "webpack --mode=development",
+    "build:prod": "webpack --mode=production",
+    "clean": "rimraf ../docs/playground",
+    "prepare": "npm run clean && npm run build",
     "start": "webpack serve --mode=development",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack --watch --mode=development"

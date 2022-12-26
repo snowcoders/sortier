@@ -42,7 +42,7 @@ const config = (env, argv) => {
     output: {
       chunkFilename: `${fileName}.js`,
       filename: `${fileName}.js`,
-      path: path.resolve("../playground"),
+      path: path.resolve("../docs/playground"),
       publicPath: `${docSiteRoot}playground/`,
     },
     plugins: [

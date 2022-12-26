@@ -1,4 +1,4 @@
-import { HtmlReprinter } from "../../../../../../src/language-html/index";
+import { JavascriptReprinter } from "../../../../../src/language-js/index";
 import { getErrorString } from "../../../utilities/get-error-string";
 import { SortierWorkerInputData, SortierWorkerOutputData } from "../types";
 
@@ -10,13 +10,9 @@ onmessage = function (e: MessageEvent<SortierWorkerInputData>) {
 
   const { options, text, type } = data;
 
-  const reprinter = new HtmlReprinter();
+  const reprinter = new JavascriptReprinter();
   try {
-    const result = reprinter.getRewrittenContents(
-      `test.${type}`,
-      text,
-      options
-    );
+    const result = reprinter.getRewrittenContents(`test.${type}`, text, options);
 
     const output: SortierWorkerOutputData = { text: result };
     postMessage(output);

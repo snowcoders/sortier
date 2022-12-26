@@ -71,18 +71,16 @@
     "build": "concurrently \"npm:build:*\"",
     "build:cjs": "tsc -p tsconfig.cjs.json && cpy ./src/cjs-package.json.txt ./dist-cjs --flat --rename=package.json",
     "build:esm": "tsc -p tsconfig.esm.json",
-    "build:docs-playground": "cd docs && cd playground-src && npm run build:prod",
     "clean": "rimraf coverage dist dist-cjs",
     "cover": "cat ./coverage/lcov.info | coveralls",
     "husky:commit-msg": "echo 'No commitlint installed'",
     "husky:pre-commit": "npx --no lint-staged",
     "husky:pre-push": "npm test",
-    "install:docs": "cd docs && cd playground-src && npm install",
     "lint": "eslint --fix ./src/**/*.{js,jsx,ts,tsx}",
     "prepare": "npm run clean && npm run build && npx --no-install husky install",
     "start": "node bin/index.js",
     "start:docs": "concurrently \"npm:start:docs-*\"",
-    "start:docs-playground": "cd docs && cd playground-src && npm run watch",
+    "start:docs-playground": "npm run watch -w=src-playground",
     "start:docs-static": "docsify serve ./docs",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test-e2e": "docker build -f e2e_tests.dockerfile .",
@@ -91,5 +89,9 @@
   "sideEffects": false,
   "type": "module",
   "types": "./dist/lib/index.d.ts",
-  "version": "1.0.1"
+  "version": "1.0.1",
+  "workspaces": [
+    ".",
+    "src-playground"
+  ]
 }

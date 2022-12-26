@@ -42,22 +42,9 @@ This is testing all the asset files in the test_asset folder next to the test fi
 
 ## Releases
 
-### Beta
-
-1. Pull down the latest of the main branch
-1. Create a release branch (e.g. `release-beta`)
-1. Run `npm version <version number here>`
-1. Cleanup the changelog in anyway you might need to and amend it to the last commit using `git commit --amend --no-edit`
-1. Push the new branch to the server (e.g. `git push`)
-1. Create a PR from your release branch into `main`
-1. Get it merged
-1. The actual publish, git tag and git release is all automated. You can monitor it's progress via the [Github Actions](https://github.com/snowcoders/sortier/actions/workflows/publish.yml) section.
-
-### Latest
-
 1. Pull down the latest of the main
 1. Create a release branch (e.g. `release-latest`)
-1. Run `npm version <version number here>`
+1. Run `npm version <version number here>` (beta or otherwise)
 1. Merge all the beta versions for the current version number into one changelog entry
 1. Commit using `git commit -a --amend --no-edit`
 1. Push the new branch to the server (e.g. `git push`)

@@ -1,7 +1,6 @@
 /* eslint-disable */
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
-const ResolveTypeScriptPlugin = require("resolve-typescript-plugin");
 
 const config = (env, argv) => {
   const isWebpackServe = !!argv.env.WEBPACK_SERVE;
@@ -83,6 +82,10 @@ const config = (env, argv) => {
         typescript: path.resolve(".", "mocks", "typescript.js"),
       },
       extensions: [".ts", ".tsx", ".js", ".jsx", ".html"],
+      extensionAlias: {
+        ".js": [".ts", ".js"],
+        ".mjs": [".mts", ".mjs"],
+      },
       fallback: {
         // Node specific overrides
         browser: false,
@@ -105,7 +108,6 @@ const config = (env, argv) => {
         stream: false,
         util: false,
       },
-      plugins: [new ResolveTypeScriptPlugin()],
     },
     target: "web",
   };

@@ -12,6 +12,6 @@
     "sourceMap": true,
     "target": "ES2020"
   },
-  "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.base.json",
+  "extends": "../node_modules/@snowcoders/renovate-config/tsconfig.website.browser.prod.json",
   "include": ["src", "mocks"]
 }

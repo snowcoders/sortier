@@ -43,8 +43,8 @@ jobs:
 
       - name: Revert docs
         run: |
-          git checkout ./docs
           git status
+          git checkout .
 
       - name: Publish
         run: npx --no release-it -- --ci

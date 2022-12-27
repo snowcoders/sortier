@@ -30,11 +30,13 @@ jobs:
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
-      - name: NPM config
-        run: npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
-
       - name: Install
         run: npm ci --ignore-scripts
+
+      - name: Revert docs
+        run: |
+          git status
+          git checkout .
 
       - name: Build
         run: npm run build --if-present
@@ -42,10 +44,8 @@ jobs:
       - name: Test
         run: npm test
 
-      - name: Revert docs
-        run: |
-          git status
-          git checkout .
+      - name: NPM config
+        run: npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
 
       - name: Publish
         run: npx --no release-it -- --ci

@@ -18,7 +18,7 @@ describe("reprinter", () => {
     // If this expect is hit, then the test files were tampered with before we got here
     expect(input).toEqual(output);
 
-    formatFile(inputFilePath, {});
+    expect(() => formatFile(inputFilePath, {})).toThrow();
     const newInput = FileUtils.readFileContents(inputFilePath);
     expect(newInput).toEqual(output);
   });

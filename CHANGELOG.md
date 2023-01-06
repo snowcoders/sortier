@@ -7,7 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added `--ignore-unknown` flag support so sortier can return an exit code of 0 on files it doesn't support. For those using lint-staged, your config can be simplified to something like:
+  ```json
+  {
+    "*": ["prettier --ignore-unknown --write", "sortier --ignore-unknown"]
+  }
+  ```
+- Better console output now prints each matched file, any errors if encountered, and the time it takes to sort that file. For example running `sortier "*{package,sortier}*"` in this repository prints:
+  ```
+  .sortierignore - No parser could be inferred - 2ms
+  .sortierrc.cjs - 28ms
+  package.json - 23ms
+  ```
 - Breaking
+  - Fixed dot files being skipped
+  - `formatFile` throws an error when run on an ignored filepath
   - Dropped support for node 12 and 14
 
 ## [1.0.1] - 2021-12-22

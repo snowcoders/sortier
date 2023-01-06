@@ -6,7 +6,7 @@ export function formatText(fileExtension: string, text: string, options: Sortier
   const fakeFileName = `example.${fileExtension}`;
   const language = getReprinterForFile(fakeFileName);
   if (language == null) {
-    throw new UnsupportedExtensionError(`File extension ${fileExtension} is not supported`);
+    throw new UnsupportedExtensionError(`*.${fileExtension}`);
   }
 
   const newFileContents = language.getRewrittenContents(fakeFileName, text, options);

@@ -39,7 +39,7 @@
     "prettier": "2.8.2",
     "release-it": "15.6.0",
     "rimraf": "3.0.2",
-    "ts-jest": "29.0.3",
+    "ts-jest": "29.0.4",
     "ts-node": "10.9.1"
   },
   "engines": {

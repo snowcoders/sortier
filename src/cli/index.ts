@@ -15,7 +15,7 @@ export function run(args: string[]) {
       LoggerVerboseOption.Normal,
       "Must provide a file pattern to run sortier over (e.g. `sortier --ignore-unknown './**/*.ts'`)"
     );
-    return -1;
+    return 1;
   }
 
   const files = globbySync(context.filepatterns, {
@@ -33,7 +33,7 @@ export function run(args: string[]) {
         `No filepaths found for file pattern(s) ${context.filepatterns.map((value) => `"${value}"`).join(" ")}`
       );
     }
-    return -1;
+    return 1;
   }
 
   let error = null;
@@ -64,7 +64,7 @@ export function run(args: string[]) {
   });
 
   if (error != null) {
-    return -1;
+    return 1;
   }
 
   return 0;

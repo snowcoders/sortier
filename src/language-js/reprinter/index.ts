@@ -5,6 +5,7 @@ import { parse as parseFlow } from "../parsers/flow/index.js";
 import { parse as parseTypescript } from "../parsers/typescript/index.js";
 
 // Types of sorts
+import { SortContentsOptions, sortContents } from "../sortContents/index.js";
 import {
   SortImportDeclarationSpecifiersOptions,
   sortImportDeclarationSpecifiers,
@@ -15,7 +16,6 @@ import { sortObjectTypeAnnotation } from "../sortObjectTypeAnnotation/index.js";
 import { sortSwitchCases } from "../sortSwitchCases/index.js";
 import { sortTSPropertySignatures } from "../sortTSPropertySignatures/index.js";
 import { sortUnionTypeAnnotation } from "../sortUnionTypeAnnotation/index.js";
-import { SortContentsOptions, sortContents } from "../sortContents/index.js";
 
 // Utils
 import { SortierOptions as BaseSortierOptions } from "../../config/index.js";
@@ -113,45 +113,8 @@ export class Reprinter implements ILanguage {
       }
       // Now go through and push any bodies in the current context to the stack
       try {
-        const diveProperties = [
-          "alternate",
-          "argument",
-          "arguments",
-          "block",
-          "body",
-          "callee",
-          "cases",
-          "children",
-          "consequent",
-          "declaration",
-          "declarations",
-          "discriminant",
-          "elements",
-          "elementTypes",
-          "expression",
-          "expressions",
-          "finalizer",
-          "handler",
-          "id",
-          "init",
-          "key",
-          "left",
-          "members",
-          "object",
-          "params",
-          "properties",
-          "property",
-          "returnType",
-          "right",
-          "test",
-          "typeAnnotation",
-          "typeParameters",
-          "types",
-          "update",
-          "value",
-        ];
-        for (const diveProperty of diveProperties) {
-          const value = node[diveProperty];
+        const nodeValues = Object.values(node);
+        for (const value of nodeValues) {
           const unFilteredPropertyArray = Array.isArray(value) ? value : [value];
           const actionablePropertyArray = unFilteredPropertyArray.filter((value: any) => {
             return value != null && value.type != null;

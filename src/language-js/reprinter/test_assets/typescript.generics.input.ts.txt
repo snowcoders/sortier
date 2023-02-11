@@ -1,0 +1,27 @@
+function testA<
+  T extends {
+    b: string;
+    a: string;
+  }
+>() {}
+
+function testB<
+  T = {
+    b: string;
+    a: string;
+  }
+>() {}
+
+const testC = <
+  T extends {
+    b: string;
+    a: string;
+  }
+>() => {};
+
+const testD = <
+  T = {
+    b: string;
+    a: string;
+  }
+>() => {};

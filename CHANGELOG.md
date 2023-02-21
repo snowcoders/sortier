@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Fixed generics not being sorted
+
 ## [2.0.0] - 2023-02-10
 
 - Added `--ignore-unknown` flag support so sortier can return an exit code of 0 on files it doesn't support. For those using lint-staged, your config can be simplified to something like:

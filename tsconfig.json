@@ -2,8 +2,9 @@
   "compilerOptions": {
     "noUnusedLocals": false,
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "typeRoots": ["./node_modules", "./src-playground/node_modules"]
   },
-  "include": ["./src/**/*"],
-  "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.library.json"
+  "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.library.json",
+  "include": ["./src/**/*"]
 }

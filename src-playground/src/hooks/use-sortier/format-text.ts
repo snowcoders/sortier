@@ -11,9 +11,7 @@ function getWorker(fileType: SortierWorkerInputData["type"]) {
     case "jsx":
     case "ts":
     case "tsx":
-      return new Worker(
-        new URL("./format-workers/javascript", import.meta.url)
-      );
+      return new Worker(new URL("./format-workers/javascript", import.meta.url));
     default:
       throw new Error(`File type ${fileType} not supported`);
   }
@@ -22,12 +20,10 @@ function getWorker(fileType: SortierWorkerInputData["type"]) {
 const loadingFormatterMessage = "Loading formatter";
 
 export function useSortier(initialInput: SortierWorkerInputData) {
-  const [outputText, setOutputText] = useState(loadingFormatterMessage);
+  const [outputText, setOutputText] = React.useState(loadingFormatterMessage);
   const [worker, setWorker] = useState<null | Worker>();
   const [input, setInput] = useState<SortierWorkerInputData>(initialInput);
-  const [type, setType] = useState<SortierWorkerInputData["type"]>(
-    initialInput.type
-  );
+  const [type, setType] = useState<SortierWorkerInputData["type"]>(initialInput.type);
 
   useEffect(() => {
     worker?.terminate();
@@ -43,11 +39,13 @@ export function useSortier(initialInput: SortierWorkerInputData) {
 
   const formatInputText = React.useCallback(
     (newInput: SortierWorkerInputData) => {
-      setInput(newInput);
       if (newInput.type !== input.type) {
+        worker?.terminate();
+        setInput(newInput);
         setOutputText(loadingFormatterMessage);
         setType(newInput.type);
       } else {
+        setInput(newInput);
         worker?.postMessage(newInput);
       }
     },

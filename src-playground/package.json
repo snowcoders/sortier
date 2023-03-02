@@ -57,6 +57,6 @@
     "watch": "webpack --watch --mode=development"
   },
   "sideEffects": false,
-  "type": "commonjs",
+  "type": "module",
   "version": "0.0.0"
 }

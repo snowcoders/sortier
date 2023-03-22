@@ -30,7 +30,7 @@
     "html-webpack-plugin": "5.5.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "rimraf": "4.4.0",
+    "rimraf": "4.4.1",
     "semver-mine": "npm:semver@7.3.8",
     "style-loader": "3.3.2",
     "ts-loader": "9.4.2",

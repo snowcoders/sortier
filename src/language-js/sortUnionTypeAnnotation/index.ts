@@ -53,18 +53,22 @@ class UnionTypeAnnotationSorter {
   private getSortOrderOfTypes() {
     const getRank = (value: any): number => {
       const ranks = getObjectTypeRanks(this.options.groups);
-      if (value.type === "TSParenthesizedType") {
-        return getRank(value.typeAnnotation);
-      } else if (value.type === "NullLiteralTypeAnnotation" || value.type === "TSNullKeyword") {
+      const { id, type, typeAnnotation } = value;
+      if (type === "TSParenthesizedType") {
+        return getRank(typeAnnotation);
+      } else if (type === "NullLiteralTypeAnnotation" || type === "TSNullKeyword") {
         return ranks.null;
       } else if (
-        (value.type === "GenericTypeAnnotation" && value.id.name === "undefined") ||
-        value.type === "TSUndefinedKeyword"
+        // Flow<=0.197.0
+        (type === "GenericTypeAnnotation" && id.name === "undefined") ||
+        // Flow>0.197.0
+        type === "UndefinedTypeAnnotation" ||
+        type === "TSUndefinedKeyword"
       ) {
         return ranks.undefined;
-      } else if (value.type === "ObjectTypeAnnotation") {
+      } else if (type === "ObjectTypeAnnotation") {
         return ranks.object;
-      } else if (value.type === "FunctionTypeAnnotation" || value.type === "ArrowFunctionExpression") {
+      } else if (type === "FunctionTypeAnnotation" || type === "ArrowFunctionExpression") {
         return ranks.function;
       }
       return ranks.everything;

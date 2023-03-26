@@ -16,7 +16,7 @@
     "ignore": "^5.0.0",
     "postcss-less": "^6.0.0",
     "postcss-scss": "^4.0.0",
-    "typescript": "^4.0.0"
+    "typescript": "^5.0.0"
   },
   "description": "Browser compatible sortier functionality",
   "devDependencies": {
@@ -35,7 +35,7 @@
     "style-loader": "3.3.2",
     "ts-loader": "9.4.2",
     "ts-node": "10.9.1",
-    "typescript": "4.9.5",
+    "typescript": "5.0.2",
     "webpack": "5.76.3",
     "webpack-bundle-analyzer": "4.8.0",
     "webpack-cli": "5.0.1",

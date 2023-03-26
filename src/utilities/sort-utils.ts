@@ -415,7 +415,7 @@ function getPrecedingCommentsForSpecifier<NodeType extends BaseNode, CommentType
     const isCommentOwnedByPreviousLine =
       !isTextBetweenStartOfLineAndCommentWhitespace && textBetweenCommentAndSpecifier.indexOf("\n") !== -1;
     const isTextBetweenCommentAndSpecifierWhitespace = textBetweenCommentAndSpecifier.match(/[^\s]/gim) == null;
-    const newLineCount = textBetweenCommentAndSpecifier.match(/\n/gim) || 0;
+    const newLineCount = textBetweenCommentAndSpecifier.match(/\n/gim)?.length || 0;
     if (newLineCount <= 1 && isTextBetweenCommentAndSpecifierWhitespace && !isCommentOwnedByPreviousLine) {
       latestCommentIndex = index;
     }

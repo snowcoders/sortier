@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useQueryState, setQueryParamValues } from "../hooks/use-query-state";
+import { setQueryParamValues, useQueryState } from "../hooks/use-query-state";
 import { useSortier } from "../hooks/use-sortier";
 import { useSortierOptions } from "../hooks/use-sortier-options";
 import { fileTypes, getDefaultText } from "../utilities/default-text";
@@ -12,7 +12,7 @@ export function App() {
   const [fileType] = useQueryState("fileType", fileTypes[0], {
     allowedValues: fileTypes,
   });
-  const [inputText] = useQueryState("code", getDefaultText(fileType));
+  const [inputText] = useQueryState("code", () => getDefaultText(fileType));
   const [options, setOptions] = useSortierOptions();
   //#region State variables
 
@@ -39,9 +39,7 @@ export function App() {
     });
   };
 
-  const onFileTypeChange: OptionsEditorProps["onFileTypeChange"] = (
-    newFileType
-  ) => {
+  const onFileTypeChange: OptionsEditorProps["onFileTypeChange"] = (newFileType) => {
     setQueryParamValues({
       code: getDefaultText(newFileType),
       fileType: newFileType,
@@ -60,12 +58,7 @@ export function App() {
         onOptionsChange={setOptions}
         options={options}
       />
-      <DiffEditor
-        fileType={type}
-        inputText={inputText}
-        onInputTextChange={onTextInputChange}
-        outputText={outputText}
-      />
+      <DiffEditor fileType={type} inputText={inputText} onInputTextChange={onTextInputChange} outputText={outputText} />
     </div>
   );
 }

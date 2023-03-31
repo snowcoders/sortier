@@ -14,7 +14,6 @@ const json = JSON.parse(packageJson);
 const { version } = json;
 
 // Available versions
-// https://typescript.azureedge.net/indexes/releases.json
-importScripts(`https://typescript.azureedge.net/cdn/${version}/typescript/lib/typescript.js`);
+importScripts(`https://unpkg.com/typescript/lib/typescript.js`);
 
 module.exports = self.ts;

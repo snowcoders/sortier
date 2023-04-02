@@ -22,7 +22,7 @@
   "devDependencies": {
     "@snowcoders/renovate-config": "3.0.0-beta.13",
     "@types/node": "18.15.11",
-    "@types/react": "18.0.31",
+    "@types/react": "18.0.32",
     "@types/react-dom": "18.0.11",
     "@types/webpack": "5.28.1",
     "css-loader": "6.7.3",

@@ -35,7 +35,7 @@
     "style-loader": "3.3.2",
     "ts-loader": "9.4.2",
     "ts-node": "10.9.1",
-    "typescript": "5.0.3",
+    "typescript": "5.0.4",
     "webpack": "5.78.0",
     "webpack-bundle-analyzer": "4.8.0",
     "webpack-cli": "5.0.1",

@@ -2,5 +2,6 @@
 coverage
 dist
 dist-cjs
+docs/playground
 node_modules
 *.log

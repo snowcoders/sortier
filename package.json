@@ -21,7 +21,7 @@
   "devDependencies": {
     "@release-it/keep-a-changelog": "3.1.0",
     "@snowcoders/renovate-config": "3.0.0-beta.13",
-    "@types/node": "18.16.12",
+    "@types/node": "18.16.13",
     "@typescript-eslint/eslint-plugin": "5.59.6",
     "@typescript-eslint/parser": "5.59.6",
     "changelog-updater": "2.0.3",

@@ -25,7 +25,7 @@
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
     "@types/webpack": "5.28.1",
-    "css-loader": "6.7.3",
+    "css-loader": "6.7.4",
     "history": "5.3.0",
     "html-webpack-plugin": "5.5.1",
     "react": "18.2.0",

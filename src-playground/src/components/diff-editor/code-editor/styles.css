@@ -1,0 +1,11 @@
+.site--diff-editor--code-editor {
+  position: relative;
+}
+
+.site--diff-editor--code-editor > * {
+  bottom: 0px;
+  left: 0px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}

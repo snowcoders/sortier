@@ -1,7 +1,14 @@
 /* eslint-disable */
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
+/**
+ *
+ * @param {*} env
+ * @param {*} argv
+ * @returns {import("webpack-dev-server").WebpackConfiguration}
+ */
 const config = (env, argv) => {
   const isWebpackServe = !!argv.env.WEBPACK_SERVE;
   const isWebpackWatch = !!argv.env.WEBPACK_WATCH;
@@ -13,22 +20,35 @@ const config = (env, argv) => {
     devServer: {
       port: 3001,
     },
+    devtool: isProduction ? false : "inline-source-map",
     entry: { app: "./src/index" },
     module: {
       rules: [
-        { test: /\.tsx?$/, use: "ts-loader" },
         {
-          test: /\.txt/,
+          loader: "ts-loader",
+          options: {
+            compilerOptions: {
+              sourceMap: !isProduction,
+            },
+          },
+          test: /\.tsx?$/,
+        },
+        {
+          test: /\.txt$/,
           type: "asset/source",
         },
         {
-          test: /\.json/,
+          test: /\.json$/,
           type: "asset/source",
         },
         {
           sideEffects: true,
-          test: /\.css/,
+          test: /\.css$/,
           use: ["style-loader", "css-loader"],
+        },
+        {
+          test: /\.ttf$/,
+          type: "asset/resource",
         },
       ],
     },
@@ -45,6 +65,7 @@ const config = (env, argv) => {
       publicPath: `${docSiteRoot}playground/`,
     },
     plugins: [
+      new MonacoWebpackPlugin(),
       new HTMLWebpackPlugin({
         chunks: "app",
         filename: "index.html",
@@ -81,11 +102,11 @@ const config = (env, argv) => {
         "semver-satisfies": "semver/functions/satisfies",
         typescript: path.resolve(".", "mocks", "typescript.js"),
       },
-      extensions: [".ts", ".tsx", ".js", ".jsx", ".html"],
       extensionAlias: {
         ".js": [".ts", ".js"],
         ".mjs": [".mts", ".mjs"],
       },
+      extensions: [".ts", ".tsx", ".js", ".jsx", ".html"],
       fallback: {
         // Node specific overrides
         browser: false,

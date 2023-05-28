@@ -25,7 +25,7 @@
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
     "@types/webpack": "5.28.1",
-    "css-loader": "6.8.0",
+    "css-loader": "6.8.1",
     "history": "5.3.0",
     "html-webpack-plugin": "5.5.1",
     "monaco-editor-webpack-plugin": "7.0.1",

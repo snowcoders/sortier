@@ -26,7 +26,6 @@
     "@typescript-eslint/parser": "5.59.11",
     "changelog-updater": "2.0.3",
     "concurrently": "8.2.0",
-    "coveralls": "3.1.1",
     "cpy-cli": "4.2.0",
     "docsify-cli": "4.4.4",
     "eslint": "8.42.0",
@@ -39,8 +38,7 @@
     "prettier": "2.8.8",
     "release-it": "15.11.0",
     "rimraf": "5.0.1",
-    "ts-jest": "29.1.0",
-    "ts-node": "10.9.1"
+    "ts-jest": "29.1.0"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -72,7 +70,6 @@
     "build:cjs": "tsc -p tsconfig.cjs.json && cpy ./src/cjs-package.json.txt ./dist-cjs --flat --rename=package.json",
     "build:esm": "tsc -p tsconfig.esm.json",
     "clean": "rimraf coverage dist dist-cjs",
-    "cover": "cat ./coverage/lcov.info | coveralls",
     "husky:commit-msg": "echo 'No commitlint installed'",
     "husky:pre-commit": "npx --no lint-staged",
     "husky:pre-push": "npm test",

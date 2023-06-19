@@ -7,7 +7,7 @@ about: Create a report to help us improve
 
 Typescript | Flow | JavaScript | CSS | other
 
-# Sample input source code
+# Input
 
 ```
 TODO

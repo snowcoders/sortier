@@ -1,4 +1,4 @@
-import { BaseExpression, BaseNodeWithoutComments, Comment, SwitchCase } from "estree";
+import { BaseNodeWithoutComments, Comment, SwitchCase } from "estree";
 
 import { BaseNode, compare, getContextGroups, reorderValues } from "../../utilities/sort-utils.js";
 
@@ -95,8 +95,8 @@ export function sortSwitchCases(
             .map((value: SwitchCase) => {
               return value.test;
             })
-            .filter((value) => value != null) as BaseExpression[];
-          const sorted = unsorted.slice().sort((a: any, b: any) => {
+            .filter((value): value is NonNullable<typeof value> => value != null);
+          const sorted = unsorted.slice().sort((a, b) => {
             const aText = getSortableText(a, fileContents);
             const bText = getSortableText(b, fileContents);
             return compare(aText, bText);
@@ -116,15 +116,11 @@ export function sortSwitchCases(
 
     // Now sort the actual switch groups
     const switchGroupsWithBreaksSorted = switchGroupsWithBreaks.slice();
-    const switchGroupToLowestCase = new Map();
+    const switchGroupToLowestCase = new Map<SwitchCase[], string>();
     for (const switchGroupsWithBreak of switchGroupsWithBreaksSorted) {
       let lowestText: null | string = null;
       for (const caseStatement of switchGroupsWithBreak) {
-        const test = caseStatement.test;
-        if (test == null) {
-          continue;
-        }
-        const testRange = test.range;
+        const testRange = caseStatement.test?.range;
         if (testRange == null) {
           continue;
         }
@@ -139,13 +135,10 @@ export function sortSwitchCases(
         switchGroupToLowestCase.set(switchGroupsWithBreak, lowestText);
       }
     }
-    switchGroupsWithBreaksSorted.sort((a: any, b: any) => {
+    switchGroupsWithBreaksSorted.sort((a, b) => {
       const aValue = switchGroupToLowestCase.get(a);
       const bValue = switchGroupToLowestCase.get(b);
-      if (aValue == null) {
-        throw new Error("Null value for switch case statement");
-      }
-      if (bValue == null) {
+      if (aValue == null || bValue == null) {
         throw new Error("Null value for switch case statement");
       }
 
@@ -163,11 +156,11 @@ export function sortSwitchCases(
   return newFileContents;
 }
 
-function doesCaseBreakOutOfSwitch(caseStatement: any): HasImmediateExitOption {
+function doesCaseBreakOutOfSwitch(caseStatement: SwitchCase): HasImmediateExitOption {
   return doesHaveImmediateExit(caseStatement.consequent);
 }
 
-function doesHaveImmediateExit(values: any): HasImmediateExitOption {
+function doesHaveImmediateExit(values: SwitchCase["consequent"]): HasImmediateExitOption {
   let isIndeterminate = false;
   for (const value of values) {
     switch (value.type) {
@@ -181,7 +174,7 @@ function doesHaveImmediateExit(values: any): HasImmediateExitOption {
       }
       case "SwitchStatement": {
         // If the last option in the switch statement has an exit, then either
-        // all previosu consequents have an exit (e.g. not getting to the last one)
+        // all previous consequents have an exit (e.g. not getting to the last one)
         // or they all fall through to the last one which means we exit
         if (doesHaveImmediateExit(value.cases[value.cases.length - 1].consequent) === HasImmediateExitOption.True) {
           return HasImmediateExitOption.True;
@@ -194,11 +187,11 @@ function doesHaveImmediateExit(values: any): HasImmediateExitOption {
         // leaves us in an undeterminate state if we will exit or not
         if (
           // Value is some sort of loop
-          value.body != null ||
+          ("body" in value && value.body != null) ||
           // Value is some sort of conditional
-          value.consequent != null ||
+          ("consequent" in value && value.consequent != null) ||
           // Value is a try catch
-          value.block != null
+          ("block" in value && value.block != null)
         ) {
           isIndeterminate = true;
         }
@@ -207,20 +200,14 @@ function doesHaveImmediateExit(values: any): HasImmediateExitOption {
   return isIndeterminate ? HasImmediateExitOption.Indeterminate : HasImmediateExitOption.False;
 }
 
-function getSortableText(a: any, fileContents: string) {
-  if (a == null) {
-    return null;
+function getSortableText(a: SwitchCase["test"], fileContents: string) {
+  if (a != null) {
+    if ("range" in a && a.range != null) {
+      return fileContents.substring(a.range[0], a.range[1]);
+    }
   }
 
-  if (a.raw != null) {
-    return a.raw;
-  }
-
-  if (a.expression != null) {
-    return a.expression.raw;
-  }
-
-  return fileContents.substring(a.range[0], a.range[1]);
+  throw new Error("Switch case test has no text?");
 }
 
 function caseGroupsToMinimumTypeinformations(switchGroupsWithBreaks: SwitchCase[][]) {

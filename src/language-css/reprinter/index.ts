@@ -1,4 +1,6 @@
 import { parse as lessParse } from "postcss-less";
+// @ts-ignore the types are all messed up for this package
+//  - https://arethetypeswrong.github.io/?p=postcss-scss
 import { parse as scssParse } from "postcss-scss";
 import { SortierOptions as BaseSortierOptions } from "../../config/index.js";
 import { ILanguage } from "../../language.js";

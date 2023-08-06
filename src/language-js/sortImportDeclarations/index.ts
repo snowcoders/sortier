@@ -12,7 +12,7 @@ export function sortImportDeclarations(
   program: Program,
   comments: Array<Comment>,
   fileContents: string,
-  options?: SortImportDeclarationsOptions
+  options?: SortImportDeclarationsOptions,
 ) {
   const ensuredOptions = ensureOptions(options);
 
@@ -21,7 +21,18 @@ export function sortImportDeclarations(
     return node.type.match(/Export.*Declaration/) || node.type.match(/Import.*Declaration/);
   }) as Array<ModuleDeclaration>;
 
-  const contextGroups = getContextGroups(importExportNodes, comments, fileContents);
+  // Polyfills shouldn't be sorted - Assuming all imports without specifiers are polyfills
+  const polyfillIndexesOrUndefined = importExportNodes.map((value) => {
+    if (value.type === "ImportDeclaration" && value.specifiers.length === 0) {
+      return value.range;
+    }
+    return undefined;
+  });
+  const polyfillIndexes = polyfillIndexesOrUndefined
+    .flat()
+    .filter((value): value is NonNullable<typeof value> => value != undefined);
+
+  const contextGroups = getContextGroups(importExportNodes, comments, fileContents, polyfillIndexes);
 
   let newFileContents = fileContents.slice();
 
@@ -30,7 +41,6 @@ export function sortImportDeclarations(
     const sortedNodes = unsortedNodes.slice().sort((a: ModuleDeclaration, b: ModuleDeclaration) => {
       return sortModuleDeclarations(a, b, ensuredOptions);
     });
-
     newFileContents = reorderValues(newFileContents, unsortedComments, unsortedNodes, sortedNodes);
   }
 
@@ -40,7 +50,7 @@ export function sortImportDeclarations(
 function sortModuleDeclarations(
   a: ModuleDeclaration,
   b: ModuleDeclaration,
-  ensuredOptions: SortImportDeclarationsOptionsRequired
+  ensuredOptions: SortImportDeclarationsOptionsRequired,
 ) {
   // If they both aren't import or both aren't export then order based off import/export
   if (a.type.substring(0, 4) !== b.type.substring(0, 4)) {
@@ -53,7 +63,7 @@ function sortModuleDeclarations(
 }
 
 function ensureOptions(
-  options: undefined | null | SortImportDeclarationsOptions
+  options: undefined | null | SortImportDeclarationsOptions,
 ): SortImportDeclarationsOptionsRequired {
   return {
     orderBy: "source",

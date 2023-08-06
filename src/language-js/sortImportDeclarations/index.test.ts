@@ -1,4 +1,4 @@
-import { describe, it, expect } from "@jest/globals";
+import { describe, expect, it } from "@jest/globals";
 
 import { runTestAssetsTests } from "../../utilities/test-utils.js";
 
@@ -26,8 +26,8 @@ import * as React from "react";
 import honda from "./cars.js";
 import { Banana } from "./food.js";
 import { Apple } from "./food.js";`;
-      const output = `import "./header.scss";
-import "./styles.scss";
+      const output = `import "./styles.scss";
+import "./header.scss";
 import { Apple } from "./food.js";
 import { Banana } from "./food.js";
 import * as React from "react";
@@ -48,12 +48,12 @@ import * as React from "react";
 import honda from "./cars.js";
 import { Banana } from "./food.js";
 import { Apple } from "./food.js";`;
-      const output = `import * as React from "react";
+      const output = `import "./styles.scss";
+import "./header.scss";
+import * as React from "react";
 import honda from "./cars.js";
 import { Apple } from "./food.js";
-import { Banana } from "./food.js";
-import "./header.scss";
-import "./styles.scss";`;
+import { Banana } from "./food.js";`;
 
       const parsed = flowParse(input);
       const actual = sortImportDeclarations(parsed, parsed.comments, input, {
@@ -69,11 +69,11 @@ import "./header.scss";
 import * as React from "react";
 import honda from "./cars.js";
 import { Apple } from "./food.js";`;
-      const output = `import * as React from "react";
-import honda from "./cars.js";
-import { Apple } from "./food.js";
+      const output = `import "./styles.scss";
 import "./header.scss";
-import "./styles.scss";`;
+import * as React from "react";
+import honda from "./cars.js";
+import { Apple } from "./food.js";`;
 
       const parsed = flowParse(input);
       const actual = sortImportDeclarations(parsed, parsed.comments, input, {

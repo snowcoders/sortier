@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed generics not being sorted
 - Refactored code for sorting switch cases
+- Avoid sorting polyfill imports as it could result in incorrect import order
 
 ## [2.0.0] - 2023-02-10
 

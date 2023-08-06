@@ -1,0 +1,3 @@
+// https://github.com/snowcoders/sortier/issues/2218
+
+import "b"; import "a"; import "c";

@@ -26,7 +26,8 @@ export interface ContextGroup<NodeType extends BaseNode, CommentType extends Com
 export function getContextGroups<NodeType extends BaseNode, CommentType extends Comment>(
   nodes: NodeType[],
   comments: CommentType[],
-  fileContents: string
+  fileContents: string,
+  additionalContextBarrierIndexes: number[] = [],
 ): ContextGroup<NodeType, CommentType>[] {
   comments = comments.filter((comment) => {
     // There seems to be bugs with the parsers regarding certain comments
@@ -75,7 +76,8 @@ export function getContextGroups<NodeType extends BaseNode, CommentType extends 
   });
 
   // Now figure out all the indexes of any whitespace surrounded by two new lines (e.g. context separator)
-  const contextBarrierIndices = StringUtils.getBlankLineLocations(fileContents, rangeStart, rangeEnd);
+  const blankLines = StringUtils.getBlankLineLocations(fileContents, rangeStart, rangeEnd);
+  const contextBarrierIndices = [...blankLines, ...additionalContextBarrierIndexes].sort((a, b) => a - b);
 
   // Now that we have the indices of all context breaks, anything that is between those breaks will be a single context
   const groupings: ContextGroup<NodeType, CommentType>[] = [];
@@ -165,11 +167,11 @@ export function reorderValues<NodeType extends BaseNode, CommentType extends Com
   fileContents: string,
   comments: CommentType[],
   unsortedTypes: NodeType[],
-  sortedTypes: NodeType[]
+  sortedTypes: NodeType[],
 ) {
   if (unsortedTypes.length !== sortedTypes.length) {
     throw new Error(
-      "Sortier ran into a problem - Expected the same number of unsorted types and sorted types to be provided"
+      "Sortier ran into a problem - Expected the same number of unsorted types and sorted types to be provided",
     );
   }
 
@@ -275,7 +277,7 @@ export function reorderValues<NodeType extends BaseNode, CommentType extends Com
 function getPrecedingCommentRangeForSpecifier<NodeType extends BaseNode, CommentType extends Comment>(
   fileContents: string,
   comments: CommentType[],
-  specifier: NodeType
+  specifier: NodeType,
 ): [number, number] {
   // Determine where the specifier line starts
   const range = specifier.range;
@@ -321,7 +323,7 @@ function getPrecedingCommentRangeForSpecifier<NodeType extends BaseNode, Comment
 function getSucceedingCommentRangeForSpecifier<NodeType extends BaseNode, CommentType extends Comment>(
   fileContents: string,
   comments: CommentType[],
-  specifier: NodeType
+  specifier: NodeType,
 ): [number, number] {
   // Determine where the specifier line starts
   const range = specifier.range;
@@ -365,7 +367,7 @@ function getSucceedingCommentRangeForSpecifier<NodeType extends BaseNode, Commen
 function getPrecedingCommentsForSpecifier<NodeType extends BaseNode, CommentType extends Comment>(
   fileContents: string,
   comments: CommentType[],
-  specifier: NodeType
+  specifier: NodeType,
 ): CommentType[] {
   comments = comments.filter((comment) => {
     // There seems to be bugs with the parsers regarding certain comments
@@ -408,7 +410,7 @@ function getPrecedingCommentsForSpecifier<NodeType extends BaseNode, CommentType
     }
     const textBetweenStartOfLineAndComment = fileContents.substring(
       fileContents.lastIndexOf("\n", commentRange[0]) + 1,
-      commentRange[0]
+      commentRange[0],
     );
     const textBetweenCommentAndSpecifier = fileContents.substring(commentRange[1], specifierRange[0]);
     const isTextBetweenStartOfLineAndCommentWhitespace = textBetweenStartOfLineAndComment.match(/[^\s]/gim) == null;
@@ -435,7 +437,7 @@ function getPrecedingCommentsForSpecifier<NodeType extends BaseNode, CommentType
       const textBetweenCommentAndSpecifier = fileContents.substring(previousComment[1], thisComment[0]);
       const textBetweenStartOfLineAndComment = fileContents.substring(
         fileContents.lastIndexOf("\n", previousComment[0]),
-        previousComment[0]
+        previousComment[0],
       );
       const isTextBetweenStartOfLineAndCommentWhitespace = textBetweenStartOfLineAndComment.match(/[^\s]/gim) == null;
       const isCommentOwnedByPreviousLine =
@@ -468,7 +470,7 @@ function getPrecedingCommentsForSpecifier<NodeType extends BaseNode, CommentType
 function getSucceedingCommentsForSpecifier<NodeType extends BaseNode, CommentType extends Comment>(
   fileContents: string,
   comments: CommentType[],
-  specifier: NodeType
+  specifier: NodeType,
 ): CommentType[] {
   comments = comments.filter((comment) => {
     // There seems to be bugs with the parsers regarding certain comments
@@ -514,7 +516,7 @@ function getSucceedingCommentsForSpecifier<NodeType extends BaseNode, CommentTyp
     const nextNewLine = fileContents.indexOf("\n", lastRange[1]);
     const textBetweenCommentAndEndOfLine = fileContents.substring(
       commentRange[1],
-      nextNewLine === -1 ? undefined : nextNewLine
+      nextNewLine === -1 ? undefined : nextNewLine,
     );
     const isTextBetweenCommentAndSpecifierWhitespaceButNotNewline =
       textBetweenCommentAndSpecifier.match(/[\w\n]/gim) == null;
@@ -553,7 +555,7 @@ function isValidComment(fileContents: string, comment: Comment) {
 export function isIgnored<NodeType extends BaseNode, CommentType extends Comment>(
   fileContents: string,
   comments: CommentType[],
-  node: NodeType
+  node: NodeType,
 ) {
   if (node.range == null) {
     return false;

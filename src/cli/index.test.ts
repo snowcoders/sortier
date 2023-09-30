@@ -1,7 +1,7 @@
 // Imports - non-mocked dependencies
+import { afterEach, describe, expect, it, jest } from "@jest/globals";
 import { IgnoredFileError } from "../error/ignored-file-error.js";
 import { UnsupportedExtensionError } from "../error/unsupported-extension-error.js";
-import { expect, it, jest, describe, afterEach } from "@jest/globals";
 
 // Imports - Mocked imports
 jest.unstable_mockModule("../lib/format-file/index.js", () => ({

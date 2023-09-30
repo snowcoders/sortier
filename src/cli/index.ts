@@ -1,10 +1,10 @@
-import { globbySync } from "globby";
 import { resolveOptions } from "../config/index.js";
 import { IgnoredFileError } from "../error/ignored-file-error.js";
 import { UnsupportedExtensionError } from "../error/unsupported-extension-error.js";
 import { formatFile } from "../lib/format-file/index.js";
 import { LogUtils, LoggerVerboseOption } from "../utilities/log-utils.js";
 import { parseArgs } from "./args-parser.js";
+import { getFiles } from "./get-files.js";
 
 export function run(args: string[]) {
   const context = parseArgs(args);
@@ -13,24 +13,22 @@ export function run(args: string[]) {
   if (context.filepatterns.length === 0) {
     LogUtils.log(
       LoggerVerboseOption.Normal,
-      "Must provide a file pattern to run sortier over (e.g. `sortier --ignore-unknown './**/*.ts'`)"
+      "Must provide a file pattern to run sortier over (e.g. `sortier --ignore-unknown './**/*.ts'`)",
     );
     return 1;
   }
 
-  const files = globbySync(context.filepatterns, {
-    dot: true,
-  });
+  const files = getFiles(context);
   if (files.length === 0) {
     if (context.filepatterns[0].indexOf("\\") !== -1) {
       LogUtils.log(
         LoggerVerboseOption.Normal,
-        "Sortier no longer supports file paths that contain '\\' (see fast-glob@3.0.0 release notes). Is your glob pattern correct?"
+        "Sortier no longer supports file paths that contain '\\' (see fast-glob@3.0.0 release notes). Is your glob pattern correct?",
       );
     } else {
       LogUtils.log(
         LoggerVerboseOption.Normal,
-        `No filepaths found for file pattern(s) ${context.filepatterns.map((value) => `"${value}"`).join(" ")}`
+        `No filepaths found for file pattern(s) ${context.filepatterns.map((value) => `"${value}"`).join(" ")}`,
       );
     }
     return 1;

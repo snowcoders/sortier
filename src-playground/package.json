@@ -21,7 +21,7 @@
   "description": "Browser compatible sortier functionality",
   "devDependencies": {
     "@snowcoders/renovate-config": "3.0.0-beta.14",
-    "@types/node": "18.18.4",
+    "@types/node": "18.18.5",
     "@types/react": "18.2.28",
     "@types/react-dom": "18.2.13",
     "@types/webpack": "5.28.3",

@@ -2,8 +2,16 @@
   "compilerOptions": {
     "noUnusedLocals": false,
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+
+    /*
+     * npm package `ignore` seems to be badly typed
+     *   - https://arethetypeswrong.github.io/?p=ignore%405.2.4
+     *   - https://github.com/kaelzhang/node-ignore/issues/96
+     */
+    "module": "ES2022",
+    "moduleResolution": "Bundler"
   },
-  "include": ["./src/**/*"],
-  "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.library.json"
+  "extends": "./node_modules/@snowcoders/renovate-config/tsconfig.library.json",
+  "include": ["./src/**/*"]
 }

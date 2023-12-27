@@ -20,7 +20,7 @@
   },
   "description": "Browser compatible sortier functionality",
   "devDependencies": {
-    "@snowcoders/renovate-config": "3.0.0-beta.14",
+    "@snowcoders/renovate-config": "3.0.0-beta.17",
     "@types/node": "20.10.5",
     "@types/react": "18.2.45",
     "@types/react-dom": "18.2.18",
@@ -36,7 +36,6 @@
     "rimraf": "5.0.5",
     "style-loader": "3.3.3",
     "ts-loader": "9.5.1",
-    "typescript": "5.1.6",
     "webpack": "5.89.0",
     "webpack-bundle-analyzer": "4.10.1",
     "webpack-cli": "5.1.4",

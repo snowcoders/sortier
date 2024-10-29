@@ -10,7 +10,7 @@
     "angular-html-parser": "^7.0.0",
     "cosmiconfig": "^9.0.0",
     "find-up": "^7.0.0",
-    "flow-parser": "~0.250.0",
+    "flow-parser": "~0.251.0",
     "globby": "^14.0.0",
     "ignore": "^6.0.0",
     "postcss-less": "^6.0.0",

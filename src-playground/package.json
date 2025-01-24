@@ -25,6 +25,7 @@
     "@types/react": "18.2.67",
     "@types/react-dom": "18.2.22",
     "@types/webpack": "5.28.5",
+    "@types/webpack-bundle-analyzer": "4.7.0",
     "css-loader": "7.1.2",
     "history": "5.3.0",
     "html-webpack-plugin": "5.6.3",
@@ -38,7 +39,7 @@
     "ts-loader": "9.5.2",
     "webpack": "5.95.0",
     "webpack-bundle-analyzer": "4.10.2",
-    "webpack-cli": "5.1.4",
+    "webpack-cli": "6.0.1",
     "webpack-dev-server": "5.2.0"
   },
   "homepage": "https://github.com/snowcoders/sortier#readme",
@@ -57,6 +58,6 @@
     "watch": "webpack --watch --mode=development"
   },
   "sideEffects": false,
-  "type": "commonjs",
+  "type": "module",
   "version": "0.0.0"
 }

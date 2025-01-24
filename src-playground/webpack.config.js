@@ -1,7 +1,59 @@
 /* eslint-disable */
-const HTMLWebpackPlugin = require("html-webpack-plugin");
-const path = require("path");
-const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
+import { globbySync } from "globby";
+import HTMLWebpackPlugin from "html-webpack-plugin";
+import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import path from "path";
+import webpack from "webpack";
+import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const { NormalModuleReplacementPlugin } = webpack;
+
+// The "mocks" folder creates stubs for node_module dependencies. We hack in our own
+// files so that we can remove deeper dependencies like path, globby, fast-glob, and more
+const mockNodeModuleData = globbySync("./mocks/**/*.js").map((relativeFilePath) => {
+  const nodeModuleSubPath = relativeFilePath.slice("./mocks/".length);
+  let filePathForOS = nodeModuleSubPath;
+
+  // Handle windows vs osx
+  if (path.sep === "\\") {
+    filePathForOS = filePathForOS.split("/").join("\\\\");
+  }
+  const regex = new RegExp(filePathForOS);
+  const mockOsCompatiblePath = path.resolve(__dirname, relativeFilePath);
+
+  return {
+    mockOsCompatiblePath,
+    nodeModuleSubPath,
+    regex,
+  };
+});
+
+// The "mocks" folder creates stubs for node API dependencies
+const mockNodeApiData = globbySync("./mocks/*.(j|t)s").map((relativeFilePath) => {
+  const nodeModuleSubPath = relativeFilePath.slice("./mocks/".length);
+  const packagename = nodeModuleSubPath.slice(0, nodeModuleSubPath.lastIndexOf("."));
+
+  const mockOsCompatiblePath = path.resolve(__dirname, relativeFilePath);
+
+  return {
+    mockOsCompatiblePath,
+    packagename,
+  };
+});
+const config_resolve_fallback = mockNodeApiData
+  .map((value) => {
+    const { mockOsCompatiblePath, packagename } = value;
+    return {
+      [`node:${packagename}`]: mockOsCompatiblePath,
+      [packagename]: mockOsCompatiblePath,
+    };
+  })
+  .reduce((result, current) => {
+    return Object.assign(result, current);
+  }, {});
 
 /**
  *
@@ -21,7 +73,9 @@ const config = (env, argv) => {
       port: 3001,
     },
     devtool: isProduction ? false : "inline-source-map",
-    entry: { app: "./src/index" },
+    entry: {
+      app: "./src/index",
+    },
     module: {
       rules: [
         {
@@ -65,9 +119,14 @@ const config = (env, argv) => {
       publicPath: `${docSiteRoot}playground/`,
     },
     plugins: [
+      // Apply node_module overrides defined in the mocks folder
+      ...mockNodeModuleData.map((file) => {
+        const { mockOsCompatiblePath, regex } = file;
+        return new NormalModuleReplacementPlugin(regex, mockOsCompatiblePath);
+      }),
       new MonacoWebpackPlugin(),
       new HTMLWebpackPlugin({
-        chunks: "app",
+        chunks: ["app"],
         filename: "index.html",
         template: "./src/index.html",
         templateParameters: {
@@ -75,63 +134,24 @@ const config = (env, argv) => {
           docSiteRoot: docSiteRoot,
         },
       }),
-      // new BundleAnalyzerPlugin({
-      //   openAnalyzer: false,
-      // }),
+      new BundleAnalyzerPlugin({
+        analyzerMode: isProduction ? "disabled" : "static",
+        openAnalyzer: false,
+      }),
     ],
     resolve: {
-      alias: {
-        // npm packages we have no use for in the browser
-        cosmiconfig: false,
-        "find-up": false,
-
-        // Low usage for flow, I'm not including it
-        "fast-glob": false,
-        "flow-parser": false,
-
-        // Reducing typescript-eslint because it's huge
-        "./create-program/createIsolatedProgram": false,
-        "./create-program/createProjectProgram": false,
-        "./create-program/createWatchProgram": false,
-
-        // Mock out typescript because it's 10mb
-        globby: false,
-        path: path.resolve(".", "mocks", "path.ts"),
-        semver$: path.resolve(".", "mocks", "semver.ts"),
-        "semver-major": "semver/functions/major",
-        "semver-satisfies": "semver/functions/satisfies",
-        typescript: path.resolve(".", "mocks", "typescript.js"),
-      },
       extensionAlias: {
         ".js": [".ts", ".js"],
         ".mjs": [".mts", ".mjs"],
       },
       extensions: [".ts", ".tsx", ".js", ".jsx", ".html"],
       fallback: {
-        // Node specific overrides
-        browser: false,
-        constants: false,
-        events: false,
-        fs: false,
-        "node:browser": false,
-        "node:constants": false,
-        "node:events": false,
-        "node:fs": false,
-        "node:os": false,
-        "node:path": false,
-        "node:process": false,
-        "node:stream": false,
-        "node:util": false,
-        os: false,
-        "os-browserify": false,
-        path: false,
-        process: false,
-        stream: false,
-        util: false,
+        // Apply Node API overrides defined in the mocks folder
+        ...config_resolve_fallback,
       },
     },
     target: "web",
   };
 };
 
-module.exports = config;
+export default config;

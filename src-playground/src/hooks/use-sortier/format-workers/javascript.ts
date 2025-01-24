@@ -1,3 +1,12 @@
+// @ts-ignore - The following is needed to mock process for typescript
+if (self.process == null) {
+  // @ts-ignore
+  self.process = {
+    env: {},
+    cwd: () => ".",
+  };
+}
+
 import { JavascriptReprinter } from "../../../../../src/language-js/index";
 import { getErrorString } from "../../../utilities/get-error-string";
 import { SortierWorkerInputData, SortierWorkerOutputData } from "../types";

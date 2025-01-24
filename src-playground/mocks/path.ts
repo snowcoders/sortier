@@ -54,8 +54,7 @@ function normalizeArray(parts, allowAboveRoot) {
 
 // Split a filename into [root, dir, basename, ext], unix version
 // 'root' is just a slash, or nothing.
-const splitPathRe =
-  /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+const splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
 const splitPath = function (filename) {
   return splitPathRe.exec(filename).slice(1);
 };
@@ -88,7 +87,7 @@ export function resolve() {
     filter(resolvedPath.split("/"), function (p) {
       return !!p;
     }),
-    !resolvedAbsolute
+    !resolvedAbsolute,
   ).join("/");
 
   return (resolvedAbsolute ? "/" : "") + resolvedPath || ".";
@@ -105,7 +104,7 @@ export function normalize(path) {
     filter(path.split("/"), function (p) {
       return !!p;
     }),
-    !isPathAbsolute
+    !isPathAbsolute,
   ).join("/");
 
   if (!path && !isPathAbsolute) {
@@ -132,7 +131,7 @@ export function join() {
         throw new TypeError("Arguments to path.join must be strings");
       }
       return p;
-    }).join("/")
+    }).join("/"),
   );
 }
 

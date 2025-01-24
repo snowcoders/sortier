@@ -1,7 +1,7 @@
 # Locally generated files
-coverage
-dist
-dist-cjs
-docs/playground
+/coverage
+/dist
+/dist-cjs
+/docs/playground
 node_modules
 *.log

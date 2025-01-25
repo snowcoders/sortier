@@ -74,7 +74,7 @@
     "husky:pre-commit": "npx --no lint-staged",
     "husky:pre-push": "npm test",
     "lint": "eslint --fix ./src/**/*.{js,jsx,ts,tsx}",
-    "prepare": "npm run clean && npm run build && npx --no-install husky install",
+    "prepare": "npm run clean && npm run build && npx --no-install husky",
     "start": "npm run start:cli",
     "start:cli": "node bin/index.js",
     "start:docs": "concurrently \"npm:start:docs-*\"",

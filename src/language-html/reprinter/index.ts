@@ -1,4 +1,4 @@
-import { parse } from "angular-html-parser";
+import { parse } from "angular-html-parser/lib/angular-html-parser/src/index.js";
 import { SortierOptions as BaseSortierOptions } from "../../config/index.js";
 import { CssReprinter } from "../../language-css/index.js";
 import { JavascriptReprinter } from "../../language-js/index.js";
@@ -22,7 +22,7 @@ export class Reprinter implements ILanguage {
       {
         children: ast.rootNodes,
       },
-      fileContents
+      fileContents,
     );
   }
 
@@ -60,7 +60,7 @@ export class Reprinter implements ILanguage {
         fileContents,
         child.sourceSpan.start.offset,
         child.sourceSpan.end.offset,
-        (text: string) => new CssReprinter().getRewrittenContents("example.css", text, options)
+        (text: string) => new CssReprinter().getRewrittenContents("example.css", text, options),
       );
     }
     return fileContents;
@@ -80,7 +80,7 @@ export class Reprinter implements ILanguage {
         fileContents,
         child.sourceSpan.start.offset,
         child.sourceSpan.end.offset,
-        (text: string) => new JavascriptReprinter().getRewrittenContents("example.js", text, options)
+        (text: string) => new JavascriptReprinter().getRewrittenContents("example.js", text, options),
       );
     }
     return fileContents;

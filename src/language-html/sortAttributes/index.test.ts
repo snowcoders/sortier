@@ -1,7 +1,7 @@
 import { describe } from "@jest/globals";
 
 // Parsers
-import { parse } from "angular-html-parser";
+import { parse } from "angular-html-parser/lib/angular-html-parser/src/index.js";
 
 // The methods being tested here
 import { sortAttributes } from "./index.js";

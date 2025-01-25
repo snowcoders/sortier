@@ -84,8 +84,17 @@ function getFirstSpecifier(declaration: ModuleDeclaration) {
     case "ExportDefaultDeclaration":
       return "";
     case "ExportNamedDeclaration":
-    case "ImportDeclaration":
-      return declaration.specifiers[0]?.local.name || "";
+    case "ImportDeclaration": {
+      const local = declaration.specifiers[0]?.local;
+      switch (local?.type) {
+        case "Identifier":
+          return local.name || "";
+        case "Literal":
+          return local.value?.toString() || "";
+        default:
+          return "";
+      }
+    }
   }
 }
 

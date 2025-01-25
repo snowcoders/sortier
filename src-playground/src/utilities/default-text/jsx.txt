@@ -1,5 +1,18 @@
-const options = {
-  sleep: 30,
-  write: true,
-  logLevel: "diagnostic",
-};
+import React from "react";
+
+export function OptionsViewer(props) {
+  const { logLevel, sleep, write } = props;
+
+  return (
+    <div>
+      <dl>
+        <dt>Log Level</dt>
+        <dl>{logLevel}</dl>
+        <dt>Sleep</dt>
+        <dl>{sleep}</dl>
+        <dt>Write</dt>
+        <dl>{write}</dl>
+      </dl>
+    </div>
+  );
+}

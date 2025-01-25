@@ -1,1 +1,1 @@
-export const simpleTraverse = () => {};
+exports.simpleTraverse = () => {};

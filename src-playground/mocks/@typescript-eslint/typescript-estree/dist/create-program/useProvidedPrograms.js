@@ -1,2 +1,2 @@
-export const useProvidedPrograms = () => {};
-export const createProgramFromConfigFile = () => {};
+exports.useProvidedPrograms = () => {};
+exports.createProgramFromConfigFile = () => {};

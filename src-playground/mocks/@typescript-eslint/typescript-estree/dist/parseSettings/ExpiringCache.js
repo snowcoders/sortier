@@ -1,2 +1,2 @@
-export const DEFAULT_TSCONFIG_CACHE_DURATION_SECONDS = undefined;
-export const ExpiringCache = class {};
+exports.DEFAULT_TSCONFIG_CACHE_DURATION_SECONDS = undefined;
+exports.ExpiringCache = class {};

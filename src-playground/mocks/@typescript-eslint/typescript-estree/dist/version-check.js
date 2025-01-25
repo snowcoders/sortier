@@ -1,1 +1,1 @@
-export const typescriptVersionIsAtLeast = new Proxy({}, { get: () => true });
+exports.typescriptVersionIsAtLeast = new Proxy({}, { get: () => true });

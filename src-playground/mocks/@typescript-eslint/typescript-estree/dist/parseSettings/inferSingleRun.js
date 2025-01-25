@@ -1,1 +1,1 @@
-export const inferSingleRun = () => false;
+exports.inferSingleRun = () => false;

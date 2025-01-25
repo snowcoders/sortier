@@ -1,1 +1,1 @@
-export const ensureAbsolutePath = (path) => path;
+exports.ensureAbsolutePath = (path) => path;

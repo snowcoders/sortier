@@ -1,1 +1,1 @@
-export const warnAboutTSVersion = () => {};
+exports.warnAboutTSVersion = () => {};

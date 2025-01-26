@@ -1,1 +1,1 @@
-export const resolveProjectList = () => [];
+exports.resolveProjectList = () => [];

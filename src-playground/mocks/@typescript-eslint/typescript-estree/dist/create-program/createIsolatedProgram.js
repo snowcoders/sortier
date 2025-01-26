@@ -1,1 +1,1 @@
-export const createIsolatedProgram = () => {};
+exports.createIsolatedProgram = () => {};

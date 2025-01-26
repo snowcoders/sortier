@@ -1,1 +1,1 @@
-export const getWatchProgramsForProjects = () => {};
+exports.getWatchProgramsForProjects = () => {};

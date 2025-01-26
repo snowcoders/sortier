@@ -1,1 +1,1 @@
-export const xhtmlEntities = {};
+exports.xhtmlEntities = {};

@@ -34,7 +34,7 @@ export function sortContents(
   classItems: any[],
   comments: any,
   fileContents: string,
-  options: SortContentsOptions
+  options: SortContentsOptions,
 ): string {
   return new ClassContentsSorter(className || "", classItems, comments, fileContents, options).sort();
 }
@@ -47,7 +47,7 @@ class ClassContentsSorter {
     private classItems: any[],
     private comments: any,
     private fileContents: string,
-    options: SortContentsOptions
+    options: SortContentsOptions,
   ) {
     this.options = this.getValidatedOptions(options);
   }
@@ -75,7 +75,7 @@ class ClassContentsSorter {
           default:
             return null;
         }
-      }
+      },
     );
     const sortableItems: Array<MinimumSortInformation> = possibleSortableItems.filter((value) => {
       return value != null;
@@ -341,25 +341,33 @@ class ClassContentsSorter {
       if (node == null) {
         continue;
       }
-      for (const property in node) {
-        if (property === "type" || property === "loc" || property === "range") {
-          continue;
-        }
-        const value = node[property];
-        if (value == null) {
-          continue;
-        } else if (
-          value != null &&
-          value.object != null &&
-          (value.object.type === "ThisExpression" || value.object.name === this.className) &&
-          value.type === "MemberExpression" &&
-          value.property.name != null
-        ) {
-          memberExpressionOrder.push(value.property.name);
-        } else if (value.type != null) {
-          memberExpressionOrder.push(...this.getCalleeOrder([value]));
-        } else if (Array.isArray(value)) {
-          memberExpressionOrder.push(...this.getCalleeOrder(value));
+      // If it's a literal or some other calling type thing
+      else if (
+        node.object != null &&
+        (node.object.type === "ThisExpression" || node.object.name === this.className) &&
+        node.type === "MemberExpression" &&
+        node.property.name != null
+      ) {
+        memberExpressionOrder.push(node.property.name);
+      }
+      // Check if it contains things to call into
+      else {
+        const nodeValues = Object.values<any>(node).flat();
+        const nodesToInvestigate = nodeValues.filter((possibleChildNode) => {
+          const isAstNode =
+            possibleChildNode != null && typeof possibleChildNode === "object" && "type" in possibleChildNode;
+          return isAstNode;
+        });
+        if (nodesToInvestigate.length > 0) {
+          nodesToInvestigate.sort((a, b) => {
+            const lineDiff = a.loc.start.line - b.loc.start.line;
+            if (lineDiff === 0) {
+              return a.loc.start.column - b.loc.start.column;
+            } else {
+              return lineDiff;
+            }
+          });
+          memberExpressionOrder.push(...this.getCalleeOrder(nodesToInvestigate));
         }
       }
     }

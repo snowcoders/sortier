@@ -1,3 +1,3 @@
-export const cosmiconfigSync = () => {
+exports.cosmiconfigSync = () => {
   return { search: () => null };
 };

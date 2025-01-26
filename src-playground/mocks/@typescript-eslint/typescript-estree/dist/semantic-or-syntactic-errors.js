@@ -1,1 +1,1 @@
-export const getFirstSemanticOrSyntacticError = () => {};
+exports.getFirstSemanticOrSyntacticError = () => {};

@@ -140,11 +140,11 @@ const FieldSet: typeof Input = ({ type, ...props }) => {
     <fieldset ref={ref}>
       <legend>{userProps.label}</legend>
       {userProps.children}
-    </fieldset>
+    </fieldset>,
   );
 };
 export function OptionsEditor(props: OptionsEditorProps) {
-  const formApiRef = React.useRef<any>();
+  const formApiRef = React.useRef<any>(null);
   const [isFormLoaded, setFormLoaded] = React.useState(false);
   const { className, fileType, onFileTypeChange, onOptionsChange, options } = props;
 

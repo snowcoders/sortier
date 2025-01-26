@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 - Updated our typescript parsing dependencies
-  - eslint-typescript@8.x.x
-  - typescript@5.x.x
+  - @typescript-eslint@8.21.0
+  - typescript@5.7.3
 - Fixed bug when sortContents is enabled, sometimes member functions aren't sorted
 
 ## [2.0.2] - 2023-09-30

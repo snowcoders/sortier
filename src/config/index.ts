@@ -26,7 +26,7 @@ export interface SortierOptions {
  * @returns The loaded options or a default options object
  */
 export function resolveOptions(filepath: string): SortierOptions {
-  const explorer = cosmiconfigSync("sortier");
+  const explorer = cosmiconfigSync("sortier", { searchStrategy: "global" });
   const result = explorer.search(filepath);
   const config = result?.config || {};
   const options = config as SortierOptions;

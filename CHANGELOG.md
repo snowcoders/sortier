@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Adds searchStrategy=global option to cosmiconfigSync to restore old config resolution behavior.
+## [2.1.1] - 2025-03-06
+
+- Fixed config file not being used if not in current working directory (thanks [@jpaas](https://github.com/jpaas))
 
 ## [2.1.0] - 2025-01-26
 

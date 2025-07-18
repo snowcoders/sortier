@@ -29,7 +29,7 @@
     "cpy-cli": "5.0.0",
     "docsify-cli": "4.4.4",
     "eslint": "9.23.0",
-    "eslint-config-prettier": "10.1.5",
+    "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-prettier": "5.5.1",
     "husky": "9.1.7",

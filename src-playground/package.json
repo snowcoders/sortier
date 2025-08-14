@@ -28,7 +28,7 @@
     "@types/webpack-bundle-analyzer": "4.7.0",
     "css-loader": "7.1.2",
     "history": "5.3.0",
-    "html-webpack-plugin": "5.6.3",
+    "html-webpack-plugin": "5.6.4",
     "informed": "4.66.0",
     "json-schema-to-ts": "3.1.1",
     "monaco-editor-webpack-plugin": "7.1.0",

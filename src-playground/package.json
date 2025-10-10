@@ -31,7 +31,7 @@
     "html-webpack-plugin": "5.6.4",
     "informed": "4.66.1",
     "json-schema-to-ts": "3.1.1",
-    "monaco-editor-webpack-plugin": "7.1.0",
+    "monaco-editor-webpack-plugin": "7.1.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "rimraf": "6.0.1",

@@ -19,7 +19,7 @@
   },
   "description": "An opinionated code sorter",
   "devDependencies": {
-    "@release-it/keep-a-changelog": "7.0.0",
+    "@release-it/keep-a-changelog": "7.0.1",
     "@snowcoders/renovate-config": "3.0.0-beta.17",
     "@types/node": "24.10.12",
     "@typescript-eslint/eslint-plugin": "8.29.0",
